@@ -114,17 +114,4 @@ export class PlayerActionRepository extends BaseRepository<PlayerAction> {
     `;
     return this.all(sql, [minRate, limit]);
   }
-
-  /**
-   * Search actions by name or description
-   */
-  async search(query: string): Promise<PlayerAction[]> {
-    const sql = `
-      SELECT * FROM ${this.config.table} 
-      WHERE name LIKE ? OR description LIKE ?
-      ORDER BY ${this.config.sortBy}
-    `;
-    const searchPattern = `%${query}%`;
-    return this.all(sql, [searchPattern, searchPattern]);
-  }
 }

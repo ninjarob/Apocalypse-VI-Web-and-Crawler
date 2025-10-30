@@ -39,9 +39,7 @@ export class ZoneService extends BaseService {
    * Get a zone by its name
    */
   async getZoneByName(name: string): Promise<Zone> {
-    if (!name || name.trim() === '') {
-      throw new BadRequestError('Zone name is required');
-    }
+    this.validateNonEmptyString(name, 'Zone name');
 
     const zone = await repositories.zones.findByUnique(name);
 
@@ -57,12 +55,13 @@ export class ZoneService extends BaseService {
    */
   async createZone(zoneData: Partial<Zone>): Promise<Zone> {
     // Validate required fields
-    if (!zoneData.name || zoneData.name.trim() === '') {
-      throw new BadRequestError('Zone name is required');
-    }
+    this.validateNonEmptyString(zoneData.name, 'Zone name');
+
+    // After validation, we know name is defined
+    const name = zoneData.name!;
 
     // Check if zone with this name already exists
-    const existing = await repositories.zones.findByUnique(zoneData.name);
+    const existing = await repositories.zones.findByUnique(name);
     if (existing) {
       throw new BadRequestError(`Zone with name "${zoneData.name}" already exists`);
     }

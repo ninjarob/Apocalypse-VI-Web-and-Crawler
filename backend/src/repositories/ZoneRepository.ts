@@ -75,19 +75,6 @@ export class ZoneRepository extends BaseRepository<Zone> {
   async findByDifficulty(difficulty: string): Promise<Zone[]> {
     return this.findAll({ difficulty });
   }
-
-  /**
-   * Search zones by name or description
-   */
-  async search(query: string): Promise<Zone[]> {
-    const sql = `
-      SELECT * FROM ${this.config.table} 
-      WHERE name LIKE ? OR description LIKE ?
-      ORDER BY ${this.config.sortBy}
-    `;
-    const searchPattern = `%${query}%`;
-    return this.all(sql, [searchPattern, searchPattern]);
-  }
 }
 
 export class ZoneAreaRepository extends BaseRepository<ZoneArea> {

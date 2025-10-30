@@ -14,6 +14,23 @@ const zoneService = new ZoneService();
 const router = express.Router();
 
 /**
+ * Helper function to apply validation middleware dynamically
+ * Wraps validation middleware in a promise-based pattern
+ */
+async function applyValidation(
+  req: Request,
+  res: Response,
+  validationMiddleware: (req: Request, res: Response, next: (err?: any) => void) => void
+): Promise<void> {
+  return new Promise<void>((resolve, reject) => {
+    validationMiddleware(req, res, (err?: any) => {
+      if (err) {reject(err);}
+      else {resolve();}
+    });
+  });
+}
+
+/**
  * Entity configuration - defines schema and serialization for each entity type
  * This is the single source of truth for all entity types in the system
  */
@@ -299,11 +316,18 @@ router.get(
 
     // Build filters from query parameters
     const filters: Record<string, any> = {};
-    const { category, ability_id, zone_id, id } = req.query;
+    const { category, ability_id, zone_id, class_id, id } = req.query;
 
+    console.log('[API] Query params:', req.query);
+    console.log('[API] Type:', type);
+    
     if (category && type === 'commands') {filters.category = category;}
     if (ability_id && type === 'ability_scores') {filters.ability_id = ability_id;}
     if (zone_id && type === 'rooms') {filters.zone_id = zone_id;}
+    if (class_id && type === 'class_proficiencies') {
+      console.log('[API] Adding class_id filter:', class_id);
+      filters.class_id = class_id;
+    }
     if (id) {filters[config.idField] = id;}
 
     console.log('[API] Filters:', filters);
@@ -366,16 +390,7 @@ router.post(
   '/:type',
   asyncHandler(async (req: Request, res: Response, next) => {
     const { type } = req.params;
-
-    // Apply validation middleware dynamically
-    const validationMiddleware = validateCreate(type);
-    await new Promise<void>((resolve, reject) => {
-      validationMiddleware(req, res, (err?: any) => {
-        if (err) {reject(err);}
-        else {resolve();}
-      });
-    });
-
+    await applyValidation(req, res, validateCreate(type));
     next();
   }),
   asyncHandler(async (req: Request, res: Response) => {
@@ -419,16 +434,7 @@ router.put(
   '/:type/:identifier',
   asyncHandler(async (req: Request, res: Response, next) => {
     const { type } = req.params;
-
-    // Apply validation middleware dynamically
-    const validationMiddleware = validateUpdate(type);
-    await new Promise<void>((resolve, reject) => {
-      validationMiddleware(req, res, (err?: any) => {
-        if (err) {reject(err);}
-        else {resolve();}
-      });
-    });
-
+    await applyValidation(req, res, validateUpdate(type));
     next();
   }),
   asyncHandler(async (req: Request, res: Response) => {

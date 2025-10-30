@@ -29,9 +29,7 @@ export class RoomService extends BaseService {
    * Get a single room by ID
    */
   async getRoomById(id: string): Promise<Room> {
-    if (!id || id.trim() === '') {
-      throw new BadRequestError('Room ID is required');
-    }
+    this.validateNonEmptyString(id, 'Room ID');
 
     const room = await repositories.rooms.findById(id);
 
@@ -46,9 +44,7 @@ export class RoomService extends BaseService {
    * Get a room by its name
    */
   async getRoomByName(name: string): Promise<Room> {
-    if (!name || name.trim() === '') {
-      throw new BadRequestError('Room name is required');
-    }
+    this.validateNonEmptyString(name, 'Room name');
 
     const room = await repositories.rooms.findByName(name);
 
@@ -65,26 +61,25 @@ export class RoomService extends BaseService {
    */
   async createOrUpdateRoom(roomData: Partial<Room>): Promise<Room> {
     // Validate required fields
-    if (!roomData.id || roomData.id.trim() === '') {
-      throw new BadRequestError('Room ID is required');
-    }
+    this.validateNonEmptyString(roomData.id, 'Room ID');
+    this.validateNonEmptyString(roomData.name, 'Room name');
 
-    if (!roomData.name || roomData.name.trim() === '') {
-      throw new BadRequestError('Room name is required');
-    }
+    // After validation, we know these are defined
+    const id = roomData.id!;
+    const name = roomData.name!;
 
     // Check if room already exists
-    const existing = await repositories.rooms.findById(roomData.id);
+    const existing = await repositories.rooms.findById(id);
 
     if (existing) {
       // Room exists - record visit and return updated room
-      return await this.recordVisit(roomData.id);
+      return await this.recordVisit(id);
     }
 
     // Room doesn't exist - create new room with visit tracking
     const newRoom: Partial<Room> = {
-      id: roomData.id,
-      name: roomData.name,
+      id,
+      name,
       description: roomData.description || undefined,
       exits: roomData.exits || undefined,
       npcs: roomData.npcs || undefined,
@@ -119,9 +114,7 @@ export class RoomService extends BaseService {
    * Update an existing room
    */
   async updateRoom(id: string, updates: Partial<Room>): Promise<Room> {
-    if (!id || id.trim() === '') {
-      throw new BadRequestError('Room ID is required');
-    }
+    this.validateNonEmptyString(id, 'Room ID');
 
     // Verify room exists
     const existing = await repositories.rooms.findById(id);
@@ -151,9 +144,7 @@ export class RoomService extends BaseService {
    * Delete a room
    */
   async deleteRoom(id: string): Promise<boolean> {
-    if (!id || id.trim() === '') {
-      throw new BadRequestError('Room ID is required');
-    }
+    this.validateNonEmptyString(id, 'Room ID');
 
     const deleted = await repositories.rooms.delete(id);
 
@@ -168,9 +159,7 @@ export class RoomService extends BaseService {
    * Record a visit to a room (increments visit count and updates timestamp)
    */
   async recordVisit(id: string): Promise<Room> {
-    if (!id || id.trim() === '') {
-      throw new BadRequestError('Room ID is required');
-    }
+    this.validateNonEmptyString(id, 'Room ID');
 
     const existing = await repositories.rooms.findById(id);
     if (!existing) {

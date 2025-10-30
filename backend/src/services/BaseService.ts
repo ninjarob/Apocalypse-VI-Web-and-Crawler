@@ -15,6 +15,17 @@ export abstract class BaseService {
   }
 
   /**
+   * Validates that a string is not empty after trimming
+   * Throws BadRequestError if validation fails
+   */
+  protected validateNonEmptyString(value: string | undefined | null, fieldName: string): void {
+    if (!value || value.trim() === '') {
+      const { BadRequestError } = require('../errors/CustomErrors');
+      throw new BadRequestError(`${fieldName} is required`);
+    }
+  }
+
+  /**
    * Validates that a value is a positive integer
    */
   protected validatePositiveInteger(value: number, fieldName: string): void {

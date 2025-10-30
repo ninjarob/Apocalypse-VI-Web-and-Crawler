@@ -85,17 +85,4 @@ export class RoomRepository extends BaseRepository<Room> {
   async findByTerrain(terrain: string): Promise<Room[]> {
     return this.findAll({ terrain });
   }
-
-  /**
-   * Search rooms by name or description
-   */
-  async search(query: string): Promise<Room[]> {
-    const sql = `
-      SELECT * FROM ${this.config.table} 
-      WHERE name LIKE ? OR description LIKE ?
-      ORDER BY ${this.config.sortBy}
-    `;
-    const searchPattern = `%${query}%`;
-    return this.all(sql, [searchPattern, searchPattern]);
-  }
 }

@@ -311,4 +311,41 @@ export abstract class BaseRepository<T = any> {
       return this.create(entity);
     }
   }
+
+  /**
+   * Search entities by name or description fields
+   * Searches the nameField and 'description' field if they exist in the entity
+   */
+  async search(query: string): Promise<T[]> {
+    if (!query || query.trim() === '') {
+      return this.findAll();
+    }
+
+    const searchPattern = `%${query}%`;
+    const conditions: string[] = [];
+    const params: any[] = [];
+
+    // Search in name field if configured
+    if (this.config.nameField) {
+      conditions.push(`${this.config.nameField} LIKE ?`);
+      params.push(searchPattern);
+    }
+
+    // Always try to search in description field (most entities have it)
+    conditions.push(`description LIKE ?`);
+    params.push(searchPattern);
+
+    if (conditions.length === 0) {
+      // No searchable fields, return all
+      return this.findAll();
+    }
+
+    const sql = `
+      SELECT * FROM ${this.config.table} 
+      WHERE ${conditions.join(' OR ')}
+      ORDER BY ${this.config.sortBy}
+    `;
+
+    return this.all(sql, params);
+  }
 }
