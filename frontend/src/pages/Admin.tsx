@@ -114,6 +114,30 @@ const ENTITY_CONFIGS: EntityConfig[] = [
     ]
   },
   {
+    name: 'Player Actions',
+    endpoint: 'player_actions',
+    readOnly: true,
+    clickable: true,
+    fields: [
+      { name: 'id', type: 'number', label: 'ID', hideInTable: true },
+      { name: 'name', type: 'text', label: 'Action', required: true },
+      { name: 'type', type: 'text', label: 'Type', required: true },
+      { name: 'category', type: 'text', label: 'Category' },
+      { name: 'description', type: 'textarea', label: 'Description' },
+      { name: 'syntax', type: 'textarea', label: 'Syntax', hideInTable: true },
+      { name: 'examples', type: 'textarea', label: 'Examples', hideInTable: true },
+      { name: 'requirements', type: 'text', label: 'Requirements', hideInTable: true },
+      { name: 'levelRequired', type: 'number', label: 'Level Required', hideInTable: true },
+      { name: 'relatedActions', type: 'text', label: 'Related Actions', hideInTable: true },
+      { name: 'documented', type: 'number', label: 'Documented', hideInTable: true },
+      { name: 'discovered', type: 'text', label: 'Discovered', hideInTable: true },
+      { name: 'lastTested', type: 'text', label: 'Last Tested', hideInTable: true },
+      { name: 'timesUsed', type: 'number', label: 'Times Used', hideInTable: true },
+      { name: 'successCount', type: 'number', label: 'Success Count', hideInTable: true },
+      { name: 'failCount', type: 'number', label: 'Fail Count', hideInTable: true }
+    ]
+  },
+  {
     name: 'Rooms',
     endpoint: 'rooms',
     readOnly: true,
@@ -159,6 +183,7 @@ function Admin() {
   const [allRooms, setAllRooms] = useState<Entity[]>([]);
   const [roomExits, setRoomExits] = useState<any[]>([]);
   const [selectedRoom, setSelectedRoom] = useState<Entity | null>(null);
+  const [selectedAction, setSelectedAction] = useState<Entity | null>(null);
 
   useEffect(() => {
     loadEntities();
@@ -278,11 +303,21 @@ function Admin() {
     setSelectedRoom(null);
   };
 
+  const handleActionClick = (action: Entity) => {
+    setSelectedAction(action);
+  };
+
+  const handleBackToActions = () => {
+    setSelectedAction(null);
+  };
+
   const handleEntityClick = (entity: Entity) => {
     if (selectedEntity.endpoint === 'zones') {
       handleZoneClick(entity);
     } else if (selectedEntity.endpoint === 'rooms') {
       handleRoomClick(entity);
+    } else if (selectedEntity.endpoint === 'player_actions') {
+      handleActionClick(entity);
     }
   };
 
@@ -593,6 +628,85 @@ function Admin() {
                 </div>
               );
             })()}
+          </div>
+        </div>
+      ) : selectedAction ? (
+        <div className="action-detail-view">
+          <div className="action-detail-header">
+            <button className="btn-back" onClick={handleBackToActions}>← Back to Player Actions</button>
+            <h3>Action: {selectedAction.name}</h3>
+          </div>
+          
+          <div className="action-detail-info">
+            <p><strong>Type:</strong> <span className="action-type-badge">{selectedAction.type}</span></p>
+            {selectedAction.category && <p><strong>Category:</strong> {selectedAction.category}</p>}
+            {selectedAction.levelRequired && <p><strong>Level Required:</strong> {selectedAction.levelRequired}</p>}
+            
+            {selectedAction.description && (
+              <div className="action-description">
+                <strong>Description:</strong>
+                <pre>{selectedAction.description}</pre>
+              </div>
+            )}
+            
+            {selectedAction.syntax && (
+              <div className="action-syntax">
+                <strong>Syntax:</strong>
+                <pre>{selectedAction.syntax}</pre>
+              </div>
+            )}
+            
+            {selectedAction.examples && (
+              <div className="action-examples">
+                <strong>Examples:</strong>
+                <pre>{selectedAction.examples}</pre>
+              </div>
+            )}
+            
+            {selectedAction.requirements && <p><strong>Requirements:</strong> {selectedAction.requirements}</p>}
+            {selectedAction.relatedActions && <p><strong>Related Actions:</strong> {selectedAction.relatedActions}</p>}
+          </div>
+
+          <div className="action-stats-section">
+            <h4>Statistics</h4>
+            <div className="stats-grid">
+              <div className="stat-item">
+                <span className="stat-label">Documented:</span>
+                <span className="stat-value">{selectedAction.documented ? 'Yes' : 'No'}</span>
+              </div>
+              {selectedAction.discovered && (
+                <div className="stat-item">
+                  <span className="stat-label">Discovered:</span>
+                  <span className="stat-value">{new Date(selectedAction.discovered).toLocaleDateString()}</span>
+                </div>
+              )}
+              {selectedAction.lastTested && (
+                <div className="stat-item">
+                  <span className="stat-label">Last Tested:</span>
+                  <span className="stat-value">{new Date(selectedAction.lastTested).toLocaleDateString()}</span>
+                </div>
+              )}
+              <div className="stat-item">
+                <span className="stat-label">Times Used:</span>
+                <span className="stat-value">{selectedAction.timesUsed || 0}</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-label">Success Count:</span>
+                <span className="stat-value">{selectedAction.successCount || 0}</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-label">Fail Count:</span>
+                <span className="stat-value">{selectedAction.failCount || 0}</span>
+              </div>
+              {(selectedAction.successCount > 0 || selectedAction.failCount > 0) && (
+                <div className="stat-item">
+                  <span className="stat-label">Success Rate:</span>
+                  <span className="stat-value">
+                    {((selectedAction.successCount / (selectedAction.successCount + selectedAction.failCount)) * 100).toFixed(1)}%
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       ) : selectedZone ? (

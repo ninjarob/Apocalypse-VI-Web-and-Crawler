@@ -48,6 +48,16 @@ const ENTITY_CONFIG = {
     jsonFields: ['requirements'],
     sortBy: 'name'
   },
+  player_actions: {
+    table: 'player_actions',
+    idField: 'id',
+    nameField: 'name',
+    autoIncrement: true,
+    uniqueField: 'name',
+    jsonFields: ['examples', 'requirements', 'relatedActions'],
+    booleanFields: ['documented'],
+    sortBy: 'type, category, name'
+  },
   commands: {
     table: 'commands',
     idField: 'id',

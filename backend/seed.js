@@ -24,6 +24,8 @@ function seedDatabase() {
     'DROP TABLE IF EXISTS command_usage',
     'DROP TABLE IF EXISTS exploration_queue',
     'DROP TABLE IF EXISTS crawler_status',
+    'DROP TABLE IF EXISTS player_actions',
+    'DROP TABLE IF EXISTS socials',
     'DROP TABLE IF EXISTS commands',
     'DROP TABLE IF EXISTS room_exits',
     'DROP TABLE IF EXISTS rooms',
@@ -161,32 +163,33 @@ function createTables(callback) {
     updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
 
-  // Commands table
-  db.run(`CREATE TABLE commands (
+  // Player Actions table - unified table for all player input types
+  db.run(`CREATE TABLE player_actions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL UNIQUE,
+    type TEXT NOT NULL,
     category TEXT,
     description TEXT,
     syntax TEXT,
     examples TEXT,
     requirements TEXT,
     levelRequired INTEGER,
-    relatedCommands TEXT,
+    relatedActions TEXT,
     documented INTEGER DEFAULT 0,
-    rawHelpText TEXT,
     discovered DATETIME,
     lastTested DATETIME,
     timesUsed INTEGER DEFAULT 0,
     successCount INTEGER DEFAULT 0,
     failCount INTEGER DEFAULT 0,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    CHECK(type IN ('command', 'social', 'emote', 'spell', 'skill', 'other'))
   )`);
 
   // Command usage log
   db.run(`CREATE TABLE command_usage (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    commandName TEXT NOT NULL,
+    actionName TEXT NOT NULL,
     fullCommand TEXT,
     roomLocation TEXT,
     context TEXT,
@@ -194,7 +197,7 @@ function createTables(callback) {
     response TEXT,
     errorMessage TEXT,
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (commandName) REFERENCES commands(name)
+    FOREIGN KEY (actionName) REFERENCES player_actions(name)
   )`);
 
   // Exploration queue
@@ -417,7 +420,7 @@ function createTables(callback) {
 
 function seedData() {
   let completed = 0;
-  const totalTasks = 21; // abilities + races + strength_scores + int_scores + wis_scores + dex_scores + con_scores + cha_scores + saving_throws + spell_modifiers + elemental_resistances + physical_resistances + class_groups + classes + proficiencies + perks + zones + zone_areas + zone_connections + rooms + room_exits
+  const totalTasks = 22; // abilities + races + strength_scores + int_scores + wis_scores + dex_scores + con_scores + cha_scores + saving_throws + spell_modifiers + elemental_resistances + physical_resistances + class_groups + classes + proficiencies + perks + zones + zone_areas + zone_connections + rooms + room_exits + player_actions
   
   const checkComplete = () => {
     completed++;
@@ -494,8 +497,12 @@ function seedData() {
       });
       
       db.get('SELECT COUNT(*) as count FROM room_exits', (err, row) => {
+        if (!err) console.log(`  - Room Exits: ${row.count}`);
+      });
+      
+      db.get('SELECT COUNT(*) as count FROM player_actions', (err, row) => {
         if (!err) {
-          console.log(`  - Room Exits: ${row.count}`);
+          console.log(`  - Player Actions: ${row.count}`);
           db.close(() => {
             console.log('\n✓ Database connection closed');
             process.exit(0);
@@ -1529,6 +1536,88 @@ function seedData() {
   
   insertRoomExit.finalize(() => {
     console.log(`  ✓ Seeded ${roomExits.length} room exits`);
+    checkComplete();
+  });
+
+  // Seed sample player actions (will be populated by crawler)
+  const sampleActions = [
+    {
+      name: 'who',
+      type: 'command',
+      category: 'information',
+      description: `WHO
+Usage: who [minlev[-maxlev]] [-n sname] [-s] [-o] [-q] [-r] [-z]
+
+Lists the people currently in the game. Some people may be invisible.
+Command-line options can be used to limit the listing. The parameters
+can be specified on the command-line in any order.
+
+minlev, maxlev : list only people whose level is at or above minlev, and
+                 optionally, at or below maxlev
+-n : list only people whose names or titles contain names
+-s : list names in the short form (4 columns of names, without titles or flags)
+-o : list only outlaws (i.e., people with a killer or thief flag)
+-q : list only people who are on the Quest
+-r : list only people who are in your room
+-z : list only people in your zone
+
+Examples:
+
+  > who -c fc -s -l 20
+  List, in short form, fighters and clerics at or above level 20
+
+  > who 15-25 -o -z
+  List all outlaws between levels 15 and 25 who are in your zone.`,
+      syntax: 'who [minlev[-maxlev]] [-n sname] [-s] [-o] [-q] [-r] [-z]',
+      examples: 'who -c fc -s -l 20\nList, in short form, fighters and clerics at or above level 20\n\nwho 15-25 -o -z\nList all outlaws between levels 15 and 25 who are in your zone.',
+      documented: 1
+    },
+    {
+      name: 'look',
+      type: 'command',
+      category: 'information',
+      description: `LOOK
+Usage: look
+       look [in | at] [the] <item>
+       look <direction>
+
+Used for studying your surroundings. (Short usage: l)
+
+Examples:
+
+look (or l)
+look at room  (l room) (check out room description if you are in brief mode)
+
+> look AT the fountain  (l fountain)
+> look IN the bag    (l bag)
+> look to the south  (look south)
+
+Note: If you LOOK AT CORPSE you will not see its inventory. To see what's 
+inside a container (e.i. Corpse) use LOOK IN <OBJECT>, or EXAMINE CORPSE.
+
+See Also:  EXAMINE READ SCAN`,
+      syntax: 'look\nlook [in | at] [the] <item>\nlook <direction>',
+      examples: 'look (or l)\nlook at room\nlook AT the fountain\nlook IN the bag\nlook to the south',
+      documented: 1
+    },
+    {
+      name: 'hug',
+      type: 'social',
+      category: 'social',
+      description: 'A social action that displays a predefined message for hugging another player.',
+      syntax: 'hug [target]',
+      documented: 0
+    }
+  ];
+
+  const insertAction = db.prepare('INSERT INTO player_actions (name, type, category, description, syntax, examples, documented) VALUES (?, ?, ?, ?, ?, ?, ?)');
+  
+  sampleActions.forEach(action => {
+    insertAction.run(action.name, action.type, action.category, action.description, action.syntax, action.examples, action.documented);
+  });
+  
+  insertAction.finalize(() => {
+    console.log(`  ✓ Seeded ${sampleActions.length} sample player actions`);
     checkComplete();
   });
 
