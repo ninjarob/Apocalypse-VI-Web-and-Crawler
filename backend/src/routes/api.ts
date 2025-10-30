@@ -3,7 +3,7 @@ import { EntityConfig } from '../repositories/BaseRepository';
 import { RepositoryFactory } from '../repositories/GenericRepository';
 import { repositories } from '../repositories';
 import { Room } from '../repositories/RoomRepository';
-import { asyncHandler } from '../middleware';
+import { asyncHandler, validateCreate, validateUpdate } from '../middleware';
 
 console.log('[API ROUTES] Loading api.ts module');
 
@@ -268,7 +268,7 @@ router.get('/rooms/by-name/:name', asyncHandler(async (req: Request, res: Respon
 /**
  * POST /rooms - Create or update a room (with visit tracking)
  */
-router.post('/rooms', asyncHandler(async (req: Request, res: Response) => {
+router.post('/rooms', validateCreate('rooms'), asyncHandler(async (req: Request, res: Response) => {
   const existing = await repositories.rooms.findById(req.body.id);
   
   if (existing) {
@@ -372,6 +372,20 @@ router.get(
  */
 router.post(
   '/:type',
+  asyncHandler(async (req: Request, res: Response, next) => {
+    const { type } = req.params;
+    
+    // Apply validation middleware dynamically
+    const validationMiddleware = validateCreate(type);
+    await new Promise<void>((resolve, reject) => {
+      validationMiddleware(req, res, (err?: any) => {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
+    
+    next();
+  }),
   asyncHandler(async (req: Request, res: Response) => {
     const { type } = req.params;
     const config = ENTITY_CONFIG[type];
@@ -415,6 +429,20 @@ router.post(
  */
 router.put(
   '/:type/:identifier',
+  asyncHandler(async (req: Request, res: Response, next) => {
+    const { type } = req.params;
+    
+    // Apply validation middleware dynamically
+    const validationMiddleware = validateUpdate(type);
+    await new Promise<void>((resolve, reject) => {
+      validationMiddleware(req, res, (err?: any) => {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
+    
+    next();
+  }),
   asyncHandler(async (req: Request, res: Response) => {
     const { type, identifier } = req.params;
     const config = ENTITY_CONFIG[type];

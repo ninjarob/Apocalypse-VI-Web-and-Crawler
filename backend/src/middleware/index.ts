@@ -1,5 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 
+// Export validation middleware
+export * from './validation';
+
 /**
  * Async route handler wrapper
  * Catches errors from async route handlers and passes them to Express error middleware
