@@ -1,105 +1,64 @@
-import { useState, useEffect } from 'react';
-import { api, NPC } from '../api';
+import { NPC } from '../api';
+import { useApi, useSearch, useDetailView } from '../hooks';
+import { Loading, SearchBox, BackButton, DetailSection, DetailItem, DetailGrid, EmptyState } from '../components';
 
 export default function NPCs() {
-  const [npcs, setNPCs] = useState<NPC[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
-  const [selectedNPC, setSelectedNPC] = useState<NPC | null>(null);
-
-  useEffect(() => {
-    loadNPCs();
-  }, []);
-
-  const loadNPCs = async () => {
-    try {
-      const data = await api.get('/npcs');
-      setNPCs(data);
-      setLoading(false);
-    } catch (error) {
-      console.error('Failed to load NPCs:', error);
-      setLoading(false);
-    }
-  };
-
-  const filteredNPCs = npcs.filter(
-    npc =>
-      npc.name.toLowerCase().includes(search.toLowerCase()) ||
-      npc.description?.toLowerCase().includes(search.toLowerCase()) ||
-      npc.location?.toLowerCase().includes(search.toLowerCase()) ||
-      npc.race?.toLowerCase().includes(search.toLowerCase()) ||
-      npc.class?.toLowerCase().includes(search.toLowerCase())
+  const { data: npcs, loading } = useApi<NPC>('/npcs');
+  const { selectedItem: selectedNPC, showDetail, hideDetail } = useDetailView<NPC>();
+  
+  const { searchTerm, setSearchTerm, filteredItems: filteredNPCs } = useSearch(
+    npcs,
+    (npc, term) =>
+      npc.name.toLowerCase().includes(term) ||
+      (npc.description?.toLowerCase().includes(term) ?? false) ||
+      (npc.location?.toLowerCase().includes(term) ?? false) ||
+      (npc.race?.toLowerCase().includes(term) ?? false) ||
+      (npc.class?.toLowerCase().includes(term) ?? false)
   );
 
-  const handleNPCClick = (npc: NPC) => {
-    setSelectedNPC(npc);
-  };
-
-  const handleBackToList = () => {
-    setSelectedNPC(null);
-  };
-
   if (loading) {
-    return <div className="loading">Loading NPCs...</div>;
+    return <Loading message="Loading NPCs..." />;
   }
 
   // Detail View
   if (selectedNPC) {
     return (
       <div>
-        <button onClick={handleBackToList} style={{ marginBottom: '20px' }}>
-          ← Back to NPCs List
-        </button>
+        <BackButton onClick={hideDetail} label="Back to NPCs List" />
 
         <div className="detail-view">
           <h2>{selectedNPC.name}</h2>
 
           {/* NPC Info Section */}
-          <div className="detail-section">
-            <h3>NPC Information</h3>
-            <div className="detail-grid">
-              <div className="detail-item">
-                <span className="detail-label">Name:</span>
-                <span className="detail-value">{selectedNPC.name}</span>
-              </div>
+          <DetailSection title="NPC Information">
+            <DetailGrid>
+              <DetailItem label="Name" value={selectedNPC.name} />
 
               {selectedNPC.level && (
-                <div className="detail-item">
-                  <span className="detail-label">Level:</span>
-                  <span className="detail-value">{selectedNPC.level}</span>
-                </div>
+                <DetailItem label="Level" value={selectedNPC.level} />
               )}
 
               {selectedNPC.race && (
-                <div className="detail-item">
-                  <span className="detail-label">Race:</span>
-                  <span className="detail-value">{selectedNPC.race}</span>
-                </div>
+                <DetailItem label="Race" value={selectedNPC.race} />
               )}
 
               {selectedNPC.class && (
-                <div className="detail-item">
-                  <span className="detail-label">Class:</span>
-                  <span className="detail-value">{selectedNPC.class}</span>
-                </div>
+                <DetailItem label="Class" value={selectedNPC.class} />
               )}
 
-              <div className="detail-item">
-                <span className="detail-label">Disposition:</span>
-                <span className="detail-value">
+              <DetailItem
+                label="Disposition"
+                value={
                   <span className={`tag ${selectedNPC.hostile ? 'hostile' : 'friendly'}`}>
                     {selectedNPC.hostile ? 'Hostile' : 'Friendly'}
                   </span>
-                </span>
-              </div>
+                }
+              />
 
               {selectedNPC.location && (
-                <div className="detail-item">
-                  <span className="detail-label">Location:</span>
-                  <span className="detail-value">{selectedNPC.location}</span>
-                </div>
+                <DetailItem label="Location" value={selectedNPC.location} />
               )}
-            </div>
+            </DetailGrid>
 
             {selectedNPC.description && (
               <div className="detail-item full-width" style={{ marginTop: '15px' }}>
@@ -107,12 +66,11 @@ export default function NPCs() {
                 <div className="detail-description">{selectedNPC.description}</div>
               </div>
             )}
-          </div>
+          </DetailSection>
 
           {/* Dialogue Section */}
           {selectedNPC.dialogue && Array.isArray(selectedNPC.dialogue) && selectedNPC.dialogue.length > 0 && (
-            <div className="detail-section">
-              <h3>Dialogue</h3>
+            <DetailSection title="Dialogue">
               <ul style={{ margin: '10px 0', paddingLeft: '20px' }}>
                 {selectedNPC.dialogue.map((line, index) => (
                   <li key={index} style={{ marginBottom: '8px' }}>
@@ -120,15 +78,14 @@ export default function NPCs() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </DetailSection>
           )}
 
           {/* Raw Text Section */}
           {selectedNPC.rawText && (
-            <div className="detail-section">
-              <h3>Raw MUD Text</h3>
+            <DetailSection title="Raw MUD Text">
               <pre className="raw-text">{selectedNPC.rawText}</pre>
-            </div>
+            </DetailSection>
           )}
         </div>
       </div>
@@ -140,20 +97,20 @@ export default function NPCs() {
     <div>
       <h2>NPCs ({npcs.length})</h2>
 
-      <input
-        type="text"
-        className="search-box"
+      <SearchBox
+        value={searchTerm}
+        onChange={setSearchTerm}
         placeholder="Search NPCs by name, description, location, race, or class..."
-        value={search}
-        onChange={e => setSearch(e.target.value)}
       />
 
       {filteredNPCs.length === 0 ? (
-        <p style={{ textAlign: 'center', color: '#888', marginTop: '40px' }}>
-          {npcs.length === 0 
-            ? 'No NPCs discovered yet. The crawler will populate this data during exploration.'
-            : 'No NPCs found matching your search.'}
-        </p>
+        <EmptyState
+          message={
+            npcs.length === 0
+              ? 'No NPCs discovered yet. The crawler will populate this data during exploration.'
+              : 'No NPCs found matching your search.'
+          }
+        />
       ) : (
         <table className="entity-table">
           <thead>
@@ -169,7 +126,7 @@ export default function NPCs() {
           </thead>
           <tbody>
             {filteredNPCs.map(npc => (
-              <tr key={npc.id} onClick={() => handleNPCClick(npc)} style={{ cursor: 'pointer' }}>
+              <tr key={npc.id} onClick={() => showDetail(npc)} style={{ cursor: 'pointer' }}>
                 <td>
                   <strong>{npc.name}</strong>
                 </td>

@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { api } from '../api';
+import { useApi, useDetailView } from '../hooks';
+import { Loading } from '../components';
 
 interface Race {
   id: string;
@@ -13,26 +13,8 @@ interface Race {
 }
 
 function Races() {
-  const [races, setRaces] = useState<Race[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedRace, setSelectedRace] = useState<Race | null>(null);
-
-  useEffect(() => {
-    fetchRaces();
-    const interval = setInterval(fetchRaces, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const fetchRaces = async () => {
-    try {
-      const data = await api.get('/races');
-      setRaces(data);
-    } catch (error) {
-      console.error('Error fetching races:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data: races, loading } = useApi<Race>('/races', { refreshInterval: 5000 });
+  const { selectedItem: selectedRace, showDetail } = useDetailView<Race>();
 
   const formatStats = (stats?: Record<string, any>) => {
     if (!stats) {
@@ -47,7 +29,7 @@ function Races() {
   };
 
   if (loading) {
-    return <div className="page">Loading races...</div>;
+    return <Loading message="Loading races..." />;
   }
 
   return (
@@ -61,7 +43,7 @@ function Races() {
               <div
                 key={race.id}
                 className={`entity-card ${selectedRace?.id === race.id ? 'selected' : ''}`}
-                onClick={() => setSelectedRace(race)}
+                onClick={() => showDetail(race)}
               >
                 <h3>{race.name}</h3>
                 {race.description && (

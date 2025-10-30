@@ -1,83 +1,46 @@
-import { useState, useEffect } from 'react';
-import { api, Item } from '../api';
+import { Item } from '../api';
+import { useApi, useSearch, useDetailView } from '../hooks';
+import { Loading, SearchBox, BackButton, DetailSection, DetailItem, DetailGrid, EmptyState } from '../components';
 
 export default function Items() {
-  const [items, setItems] = useState<Item[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
-  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
-
-  useEffect(() => {
-    loadItems();
-  }, []);
-
-  const loadItems = async () => {
-    try {
-      const data = await api.get('/items');
-      setItems(data);
-      setLoading(false);
-    } catch (error) {
-      console.error('Failed to load items:', error);
-      setLoading(false);
-    }
-  };
-
-  const filteredItems = items.filter(
-    item =>
-      item.name.toLowerCase().includes(search.toLowerCase()) ||
-      item.description?.toLowerCase().includes(search.toLowerCase()) ||
-      item.type?.toLowerCase().includes(search.toLowerCase()) ||
-      item.location?.toLowerCase().includes(search.toLowerCase())
+  const { data: items, loading } = useApi<Item>('/items');
+  const { selectedItem, showDetail, hideDetail } = useDetailView<Item>();
+  
+  const { searchTerm, setSearchTerm, filteredItems } = useSearch(
+    items,
+    (item, term) =>
+      item.name.toLowerCase().includes(term) ||
+      (item.description?.toLowerCase().includes(term) ?? false) ||
+      (item.type?.toLowerCase().includes(term) ?? false) ||
+      (item.location?.toLowerCase().includes(term) ?? false)
   );
 
-  const handleItemClick = (item: Item) => {
-    setSelectedItem(item);
-  };
-
-  const handleBackToList = () => {
-    setSelectedItem(null);
-  };
-
   if (loading) {
-    return <div className="loading">Loading items...</div>;
+    return <Loading message="Loading items..." />;
   }
 
   // Detail View
   if (selectedItem) {
     return (
       <div>
-        <button onClick={handleBackToList} style={{ marginBottom: '20px' }}>
-          ← Back to Items List
-        </button>
+        <BackButton onClick={hideDetail} label="Back to Items List" />
 
         <div className="detail-view">
           <h2>{selectedItem.name}</h2>
 
           {/* Item Info Section */}
-          <div className="detail-section">
-            <h3>Item Information</h3>
-            <div className="detail-grid">
-              <div className="detail-item">
-                <span className="detail-label">Name:</span>
-                <span className="detail-value">{selectedItem.name}</span>
-              </div>
+          <DetailSection title="Item Information">
+            <DetailGrid>
+              <DetailItem label="Name" value={selectedItem.name} />
 
               {selectedItem.type && (
-                <div className="detail-item">
-                  <span className="detail-label">Type:</span>
-                  <span className="detail-value">
-                    <span className="tag">{selectedItem.type}</span>
-                  </span>
-                </div>
+                <DetailItem label="Type" value={<span className="tag">{selectedItem.type}</span>} />
               )}
 
               {selectedItem.location && (
-                <div className="detail-item">
-                  <span className="detail-label">Location:</span>
-                  <span className="detail-value">{selectedItem.location}</span>
-                </div>
+                <DetailItem label="Location" value={selectedItem.location} />
               )}
-            </div>
+            </DetailGrid>
 
             {selectedItem.description && (
               <div className="detail-item full-width" style={{ marginTop: '15px' }}>
@@ -85,70 +48,51 @@ export default function Items() {
                 <div className="detail-description">{selectedItem.description}</div>
               </div>
             )}
-          </div>
+          </DetailSection>
 
           {/* Item Stats Section */}
           {selectedItem.stats && Object.keys(selectedItem.stats).length > 0 && (
-            <div className="detail-section">
-              <h3>Stats</h3>
-              <div className="detail-grid">
+            <DetailSection title="Stats">
+              <DetailGrid>
                 {selectedItem.stats.damage && (
-                  <div className="detail-item">
-                    <span className="detail-label">Damage:</span>
-                    <span className="detail-value">{selectedItem.stats.damage}</span>
-                  </div>
+                  <DetailItem label="Damage" value={selectedItem.stats.damage} />
                 )}
                 {selectedItem.stats.armor !== undefined && (
-                  <div className="detail-item">
-                    <span className="detail-label">Armor:</span>
-                    <span className="detail-value">{selectedItem.stats.armor}</span>
-                  </div>
+                  <DetailItem label="Armor" value={selectedItem.stats.armor} />
                 )}
                 {selectedItem.stats.weight !== undefined && (
-                  <div className="detail-item">
-                    <span className="detail-label">Weight:</span>
-                    <span className="detail-value">{selectedItem.stats.weight}</span>
-                  </div>
+                  <DetailItem label="Weight" value={selectedItem.stats.weight} />
                 )}
                 {selectedItem.stats.value !== undefined && (
-                  <div className="detail-item">
-                    <span className="detail-label">Value:</span>
-                    <span className="detail-value">{selectedItem.stats.value} gold</span>
-                  </div>
+                  <DetailItem label="Value" value={`${selectedItem.stats.value} gold`} />
                 )}
                 {selectedItem.stats.level !== undefined && (
-                  <div className="detail-item">
-                    <span className="detail-label">Level Requirement:</span>
-                    <span className="detail-value">{selectedItem.stats.level}</span>
-                  </div>
+                  <DetailItem label="Level Requirement" value={selectedItem.stats.level} />
                 )}
-              </div>
-            </div>
+              </DetailGrid>
+            </DetailSection>
           )}
 
           {/* Properties Section */}
           {selectedItem.properties && Object.keys(selectedItem.properties).length > 0 && (
-            <div className="detail-section">
-              <h3>Properties</h3>
-              <div className="detail-grid">
+            <DetailSection title="Properties">
+              <DetailGrid>
                 {Object.entries(selectedItem.properties).map(([key, value]) => (
-                  <div key={key} className="detail-item">
-                    <span className="detail-label">{key}:</span>
-                    <span className="detail-value">
-                      {typeof value === 'object' ? JSON.stringify(value) : String(value)}
-                    </span>
-                  </div>
+                  <DetailItem
+                    key={key}
+                    label={key}
+                    value={typeof value === 'object' ? JSON.stringify(value) : String(value)}
+                  />
                 ))}
-              </div>
-            </div>
+              </DetailGrid>
+            </DetailSection>
           )}
 
           {/* Raw Text Section */}
           {selectedItem.rawText && (
-            <div className="detail-section">
-              <h3>Raw MUD Text</h3>
+            <DetailSection title="Raw MUD Text">
               <pre className="raw-text">{selectedItem.rawText}</pre>
-            </div>
+            </DetailSection>
           )}
         </div>
       </div>
@@ -160,20 +104,20 @@ export default function Items() {
     <div>
       <h2>Items ({items.length})</h2>
 
-      <input
-        type="text"
-        className="search-box"
+      <SearchBox
+        value={searchTerm}
+        onChange={setSearchTerm}
         placeholder="Search items by name, type, description, or location..."
-        value={search}
-        onChange={e => setSearch(e.target.value)}
       />
 
       {filteredItems.length === 0 ? (
-        <p style={{ textAlign: 'center', color: '#888', marginTop: '40px' }}>
-          {items.length === 0 
-            ? 'No items discovered yet. The crawler will populate this data during exploration.'
-            : 'No items found matching your search.'}
-        </p>
+        <EmptyState
+          message={
+            items.length === 0
+              ? 'No items discovered yet. The crawler will populate this data during exploration.'
+              : 'No items found matching your search.'
+          }
+        />
       ) : (
         <table className="entity-table">
           <thead>
@@ -187,7 +131,7 @@ export default function Items() {
           </thead>
           <tbody>
             {filteredItems.map(item => (
-              <tr key={item.id} onClick={() => handleItemClick(item)} style={{ cursor: 'pointer' }}>
+              <tr key={item.id} onClick={() => showDetail(item)} style={{ cursor: 'pointer' }}>
                 <td>
                   <strong>{item.name}</strong>
                 </td>

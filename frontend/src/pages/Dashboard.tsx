@@ -1,27 +1,27 @@
 import { useState, useEffect } from 'react';
 import { api, Stats } from '../api';
+import { Loading } from '../components';
 
 export default function Dashboard() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const loadData = async () => {
+      try {
+        const statsData = await api.getStats();
+        setStats(statsData);
+      } catch (error) {
+        console.error('Failed to load stats:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
     loadData();
   }, []);
 
-  const loadData = async () => {
-    try {
-      const statsData = await api.getStats();
-      setStats(statsData);
-      setLoading(false);
-    } catch (error) {
-      console.error('Failed to load stats:', error);
-      setLoading(false);
-    }
-  };
-
   if (loading) {
-    return <div className="loading">Loading...</div>;
+    return <Loading />;
   }
 
   return (

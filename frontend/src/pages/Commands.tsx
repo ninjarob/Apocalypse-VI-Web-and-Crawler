@@ -1,5 +1,7 @@
-import { useState, useEffect } from 'react';
-import { api } from '../api';
+import { useState } from 'react';
+import { useApi } from '../hooks';
+import { Loading, Badge, StatCard } from '../components';
+import { getCategoryBadgeVariant, getStatusBadgeVariant } from '../utils/helpers';
 
 interface Command {
   name: string;
@@ -22,26 +24,9 @@ interface Command {
 }
 
 export default function Commands() {
-  const [commands, setCommands] = useState<Command[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: commands, loading, reload } = useApi<Command>('/commands');
   const [filter, setFilter] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
-
-  useEffect(() => {
-    loadCommands();
-  }, []);
-
-  const loadCommands = async () => {
-    try {
-      setLoading(true);
-      const data = await api.get('/commands');
-      setCommands(data);
-    } catch (error) {
-      console.error('Failed to load commands:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const categories = ['all', ...new Set(commands.map(c => c.category).filter(Boolean))];
 
@@ -53,38 +38,8 @@ export default function Commands() {
     return matchesCategory && matchesSearch;
   });
 
-  const getStatusBadgeClass = (status: string) => {
-    switch (status) {
-      case 'working':
-        return 'bg-green-100 text-green-800';
-      case 'requires-args':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'failed':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const getCategoryBadgeClass = (category: string) => {
-    const colors: Record<string, string> = {
-      navigation: 'bg-blue-100 text-blue-800',
-      combat: 'bg-red-100 text-red-800',
-      interaction: 'bg-purple-100 text-purple-800',
-      information: 'bg-cyan-100 text-cyan-800',
-      inventory: 'bg-green-100 text-green-800',
-      social: 'bg-pink-100 text-pink-800',
-      system: 'bg-gray-100 text-gray-800'
-    };
-    return colors[category] || 'bg-gray-100 text-gray-800';
-  };
-
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-xl">Loading commands...</div>
-      </div>
-    );
+    return <Loading message="Loading commands..." />;
   }
 
   return (
@@ -93,28 +48,22 @@ export default function Commands() {
         <h1 className="text-3xl font-bold mb-2">MUD Commands</h1>
         <p className="text-gray-600">Discovered and documented commands from the game</p>
         <div className="mt-4 grid grid-cols-4 gap-4 text-sm">
-          <div className="bg-white p-4 rounded shadow">
-            <div className="text-2xl font-bold">{commands.length}</div>
-            <div className="text-gray-600">Total Commands</div>
-          </div>
-          <div className="bg-white p-4 rounded shadow">
-            <div className="text-2xl font-bold text-green-600">
-              {commands.filter(c => c.workingStatus === 'working').length}
-            </div>
-            <div className="text-gray-600">Working</div>
-          </div>
-          <div className="bg-white p-4 rounded shadow">
-            <div className="text-2xl font-bold text-yellow-600">
-              {commands.filter(c => c.workingStatus === 'requires-args').length}
-            </div>
-            <div className="text-gray-600">Requires Args</div>
-          </div>
-          <div className="bg-white p-4 rounded shadow">
-            <div className="text-2xl font-bold text-red-600">
-              {commands.filter(c => c.workingStatus === 'failed').length}
-            </div>
-            <div className="text-gray-600">Failed</div>
-          </div>
+          <StatCard label="Total Commands" value={commands.length} />
+          <StatCard 
+            label="Working" 
+            value={commands.filter(c => c.workingStatus === 'working').length}
+            color="#16a34a"
+          />
+          <StatCard 
+            label="Requires Args" 
+            value={commands.filter(c => c.workingStatus === 'requires-args').length}
+            color="#ca8a04"
+          />
+          <StatCard 
+            label="Failed" 
+            value={commands.filter(c => c.workingStatus === 'failed').length}
+            color="#dc2626"
+          />
         </div>
       </div>
 
@@ -138,7 +87,7 @@ export default function Commands() {
           ))}
         </select>
         <button
-          onClick={loadCommands}
+          onClick={reload}
           className="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
         >
           Refresh
@@ -185,11 +134,9 @@ export default function Commands() {
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`px-2 py-1 text-xs rounded-full ${getCategoryBadgeClass(command.category)}`}
-                    >
+                    <Badge variant={getCategoryBadgeVariant(command.category)}>
                       {command.category || 'unknown'}
-                    </span>
+                    </Badge>
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-sm text-gray-900">
@@ -200,11 +147,9 @@ export default function Commands() {
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`px-2 py-1 text-xs rounded-full ${getStatusBadgeClass(command.workingStatus)}`}
-                    >
+                    <Badge variant={getStatusBadgeVariant(command.workingStatus)}>
                       {command.workingStatus || 'unknown'}
-                    </span>
+                    </Badge>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {command.testResults ? command.testResults.length : 0} test
