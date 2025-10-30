@@ -75,7 +75,13 @@ Apocalypse VI MUD/
 - **spell_modifiers**: Fire, Cold, Elec, Poison, Acid, etc.
 - **elemental_resistances**: 13 types
 - **physical_resistances**: Slash, Pierce, Bludgeon, Legendary
-- **commands**: Command documentation with syntax and examples
+- **player_actions**: Unified table for commands, socials, and emotes (replaces old commands table)
+  - Type-based classification (command/social/emote/spell/skill/other)
+  - Full help text stored in description field
+  - Usage tracking (timesUsed, successCount, failCount)
+  - Discovery metadata (documented, lastTested, discovered date)
+  - Related info: syntax, examples, requirements, levelRequired, relatedActions
+  - 3 sample actions seeded (who, look, hug)
 - **npcs, items, spells, attacks**: Game entity storage (crawler-populated)
 
 ### 2. Frontend Admin Panel ⭐ MAJOR UPDATE!
@@ -111,6 +117,30 @@ Apocalypse VI MUD/
     - Description (what the exit looks like)
     - Door info (door name, locked status)
   - Navigation between connected rooms via exit links
+
+#### Player Actions Management ⭐ NEW!
+- **Unified Action System**: Single table for all player input types
+  - Commands (game actions like 'who', 'look', 'kill')
+  - Socials (roleplay emotes like 'hug', 'smile', 'wave')
+  - Emotes (custom text emotes)
+  - Spells and Skills (castable/usable abilities)
+- **Player Actions List View**:
+  - Shows name, type, category, and full description (help text)
+  - Read-only view (crawler-populated)
+  - Clickable rows navigate to action detail
+- **Player Actions Detail View**:
+  - **Action Info Section**:
+    - Type badge (command/social/emote)
+    - Category, Level Required
+    - Full description (preserves MUD help text formatting)
+    - Syntax (command flags and options)
+    - Examples (usage examples from MUD)
+    - Requirements, Related Actions
+  - **Statistics Section**:
+    - Documented status, Discovery date, Last tested date
+    - Times Used, Success Count, Fail Count
+    - Success Rate (calculated percentage)
+  - Clean, grid-based layout with dark theme styling
 
 #### Recent Bug Fixes
 - ✅ Fixed room exit navigation showing zones instead of rooms
@@ -233,7 +263,12 @@ The database uses SQLite with 21 tables organized into logical groups:
 - Supports unidirectional and bidirectional connections
 
 #### Dynamic Content (6 tables)
-- `commands` - Discovered commands with syntax/help
+- `player_actions` - Unified table for commands, socials, emotes (replaces commands table)
+  - Type classification: command, social, emote, spell, skill, other
+  - Full help text in description field
+  - Usage tracking: timesUsed, successCount, failCount
+  - Discovery metadata: documented, discovered, lastTested
+  - Syntax, examples, requirements, levelRequired, relatedActions
 - `npcs`, `items`, `spells`, `attacks` - Game entities
 - `command_usage` - Command execution log
 - `exploration_queue` - Planned actions
@@ -243,7 +278,8 @@ The database uses SQLite with 21 tables organized into logical groups:
 - ✅ **Classes**: 14 classes fully seeded with 93 proficiencies
 - ✅ **Zones**: All 74 zones with areas and connections
 - ✅ **Rooms**: 5 sample Midgaard rooms with 17 exits
-- ⏳ **Commands**: Populated by crawler as they're discovered
+- ✅ **Player Actions**: 3 sample actions (who, look, hug) with full help text
+- ⏳ **More Actions**: Populated by crawler as discovered (200+ commands, 300+ socials)
 - ⏳ **NPCs/Items/Spells**: Populated by crawler during exploration
 
 ## ⚠️ Current Issues (In Progress)
@@ -379,17 +415,27 @@ SINGLE_TASK_MODE=false  # ✅ Set to false for extended sessions
    - View rooms in each zone
    - Click rooms to see full details with exits
    - Navigate between rooms via exit links
+   - **NEW**: Browse Player Actions, click to see full help text and statistics
    - Test CRUD operations on classes, perks, zones
 
 3. **Monitor Crawler Integration**:
    - Crawler will populate rooms table as it explores
    - Room exits will be created for discovered connections
-   - Commands will be documented in database
+   - **NEW**: Player actions will be documented as discovered (commands/socials/emotes)
+   - **NEW**: Crawler will execute `help <action>` and store full text in description
    - View real-time data in admin panel
 
 ### Immediate Next Priorities
 
-1. **Crawler Room Discovery**:
+1. **Crawler Action Discovery**:
+   - Parse `commands` output to get all available commands
+   - Parse `social` output to get all social actions
+   - Execute `help <action>` for each discovered action
+   - Store full help text in player_actions.description field
+   - Auto-detect action type (command vs social vs emote)
+   - Track usage statistics during exploration
+
+2. **Crawler Room Discovery**:
    - Implement room parsing to extract name, description, terrain
    - Auto-create room records in database
    - Parse exits and create room_exit records
@@ -498,19 +544,25 @@ npm run dev
 8. ✅ Fixed room navigation bug (allRooms caching)
 9. ✅ Generic CRUD API with query filters (id, zone_id, etc.)
 10. ✅ Code pushed to GitHub repository
+11. ✅ **Player Actions system** - Unified command/social/emote documentation
+12. ✅ **Player Actions Detail View** - Full drill-down with usage statistics
+13. ✅ **Action Types** - Replaced separate commands/socials tables with unified system
 
 **Database Highlights**:
 - **Classes**: 14 playable classes across 4 groups
 - **Zones**: 74 fully documented zones with difficulty ratings
 - **Rooms**: 5 sample Midgaard rooms with 17 directional exits
 - **Perks**: 54 perks including Weapon Prof, Universal, Playstyle
+- **Player Actions**: 3 sample actions with full MUD help text (who, look, hug)
 - **All game mechanics**: abilities, races, saves, resistances
 
 **Frontend Features**:
 - **Entity Views**: List views for all database entities
 - **Zone Detail**: Shows zone info, areas, connections, and rooms
 - **Room Detail**: Full info with description, terrain, flags, exits table
-- **Navigation**: Seamless clicking between zones, rooms, and connected rooms
+- **Player Actions**: List view with clickable rows for detail drill-down
+- **Action Detail**: Complete action info with usage statistics and success rates
+- **Navigation**: Seamless clicking between zones, rooms, connected rooms, and actions
 - **Custom Fields**: zone_info_combined, zone_name_link, room_exits
 - **Smart Rendering**: Clickable links throughout for intuitive browsing
 
