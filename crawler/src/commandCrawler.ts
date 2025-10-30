@@ -20,16 +20,16 @@ class CommandCrawler {
   private learningMode: CommandLearningMode;
 
   constructor() {
-    const mudHost = process.env.MUD_HOST || 'apocalypse6.com';
-    const mudPort = parseInt(process.env.MUD_PORT || '6000');
-    const username = process.env.MUD_USERNAME || 'Pocket';
-    const password = process.env.MUD_PASSWORD || 'P0ck3t';
+    const host = process.env.MUD_HOST || 'apocalypse6.com';
+    const port = parseInt(process.env.MUD_PORT || '6000');
+    const username = process.env.MUD_USERNAME || '';
+    const password = process.env.MUD_PASSWORD || '';
     const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
     const ollamaModel = process.env.OLLAMA_MODEL || 'llama3.2:3b';
     const backendUrl = process.env.BACKEND_URL || 'http://localhost:3002';
     const delayBetweenCommands = parseInt(process.env.DELAY_BETWEEN_COMMANDS_MS || '1500');
 
-    this.mudClient = new MUDClient(mudHost, mudPort, username, password);
+    this.mudClient = new MUDClient(host, port, username, password);
     this.discoveryAgent = new CommandDiscoveryAgent(backendUrl + '/api', ollamaUrl, ollamaModel);
     this.learningMode = new CommandLearningMode(
       this.mudClient,

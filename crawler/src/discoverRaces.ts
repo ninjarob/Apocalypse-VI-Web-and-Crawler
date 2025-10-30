@@ -8,25 +8,25 @@ import logger from './logger';
  * Run with: npm run discover-races
  */
 async function main() {
-  const client = new MUDClient(
+  const mudClient = new MUDClient(
     process.env.MUD_HOST || 'apocalypse6.com',
     parseInt(process.env.MUD_PORT || '6000'),
-    process.env.MUD_USERNAME || 'Pocket',
-    process.env.MUD_PASSWORD || 'P0ck3t'
+    process.env.MUD_USERNAME || '',
+    process.env.MUD_PASSWORD || ''
   );
 
   const api = new BackendAPI('http://localhost:3002/api');
-  const raceDiscovery = new RaceDiscovery(client, api);
+  const raceDiscovery = new RaceDiscovery(mudClient, api);
 
   try {
     // Connect to MUD
     console.log('Connecting to MUD server...');
-    await client.connect();
+    await mudClient.connect();
     console.log('✓ Connected and logged in\n');
 
     // Wait a moment for any initial messages to clear
     await new Promise(resolve => setTimeout(resolve, 2000));
-    client.clearBuffer();
+    mudClient.clearBuffer();
 
     // Run race discovery
     await raceDiscovery.discoverRaces();
@@ -40,12 +40,12 @@ async function main() {
     }
 
     // Disconnect
-    await client.disconnect();
+    await mudClient.disconnect();
     console.log('\n✓ Race discovery completed successfully');
     process.exit(0);
   } catch (error) {
     logger.error('Error during race discovery:', error);
-    await client.disconnect();
+    await mudClient.disconnect();
     process.exit(1);
   }
 }

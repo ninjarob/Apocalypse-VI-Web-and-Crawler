@@ -54,8 +54,8 @@ NODE_ENV=development
 ```env
 MUD_HOST=apocalypse6.com
 MUD_PORT=6000
-MUD_USERNAME=Pocket
-MUD_PASSWORD=P0ck3t
+MUD_USERNAME=YourCharacterName
+MUD_PASSWORD=YourPassword
 
 # Ollama settings (local AI - FREE!)
 OLLAMA_BASE_URL=http://localhost:11434
@@ -110,7 +110,7 @@ You'll see:
 ### The Crawler Process
 
 1. **Connects** to apocalypse6.com:6000 via telnet
-2. **Logs in** with your character (Pocket)
+2. **Logs in** with your character
 3. **AI decides** what command to execute next based on:
    - Current room description
    - Unexplored exits

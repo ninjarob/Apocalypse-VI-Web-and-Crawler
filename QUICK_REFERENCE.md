@@ -31,8 +31,8 @@ npm run dev
 # MUD Connection
 MUD_HOST=apocalypse6.com
 MUD_PORT=6000
-MUD_USERNAME=Pocket
-MUD_PASSWORD=P0ck3t
+MUD_USERNAME=YourCharacterName
+MUD_PASSWORD=YourPassword
 
 # AI Provider (Ollama - Local & Free!)
 AI_PROVIDER=ollama
