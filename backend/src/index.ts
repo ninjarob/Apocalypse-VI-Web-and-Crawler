@@ -3,9 +3,9 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
-import routes from './routes';
-import genericRoutes from './genericRoutes';
+import apiRouter from './routes';
 import { initDatabase, closeDatabase } from './database';
+import { responseTime } from './middleware';
 
 dotenv.config();
 
@@ -16,12 +16,12 @@ const PORT = process.env.PORT || 3002;
 app.use(helmet());
 app.use(cors());
 app.use(morgan('dev'));
+app.use(responseTime);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Routes
-app.use('/api', routes);
-app.use('/api', genericRoutes);
+// Consolidated API Routes
+app.use('/api', apiRouter);
 
 // Health check
 app.get('/health', (_req, res) => {

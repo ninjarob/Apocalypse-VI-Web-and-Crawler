@@ -1,9 +1,12 @@
 import sqlite3 from 'sqlite3';
 import path from 'path';
 
-const DB_FILE = process.env.DB_FILE || path.resolve(__dirname, '../mud-data.db');
+// Database location: data/mud-data.db at project root
+// When running: backend/seed.ts -> ../data/mud-data.db
+const DB_FILE = process.env.DB_FILE || path.resolve(__dirname, '../data/mud-data.db');
 
 console.log('🌱 Starting database seed...');
+console.log(`📁 Database location: ${DB_FILE}`);
 
 // Create fresh database connection
 const db = new sqlite3.Database(DB_FILE, (err) => {

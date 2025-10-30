@@ -19,13 +19,27 @@ AI-powered MUD (Multi-User Dungeon) crawler that uses Ollama LLM to autonomously
 Apocalypse VI MUD/
 ├── backend/          # API server for data persistence (FULLY TYPESCRIPT)
 │   ├── src/
-│   │   ├── index.ts        # Express server setup
-│   │   ├── database.ts     # SQLite connection & schema
-│   │   ├── routes.ts       # Custom routes (rooms, stats)
-│   │   └── genericRoutes.ts # Generic CRUD for all entities
+│   │   ├── index.ts             # Express server setup
+│   │   ├── database.ts          # SQLite connection & schema
+│   │   ├── middleware/
+│   │   │   └── index.ts         # Reusable middleware (asyncHandler, responseTime, etc.)
+│   │   ├── repositories/
+│   │   │   ├── BaseRepository.ts       # Generic CRUD base class
+│   │   │   ├── RoomRepository.ts       # Room-specific operations
+│   │   │   ├── ZoneRepository.ts       # Zone management
+│   │   │   ├── PlayerActionRepository.ts
+│   │   │   ├── RoomExitRepository.ts
+│   │   │   ├── GenericRepository.ts    # Dynamic repository factory
+│   │   │   └── index.ts                # Repository exports
+│   │   └── routes/
+│   │       ├── api.ts           # Consolidated API router (485 lines)
+│   │       └── index.ts         # Router exports
 │   ├── seed.ts             # Database seeding (1,883 lines)
 │   ├── package.json        # Build scripts, dependencies
 │   └── tsconfig.json       # TypeScript configuration
+├── data/                # Centralized data directory
+│   ├── mud-data.db      # SQLite database (shared by all services)
+│   └── README.md        # Data directory documentation
 ├── frontend/         # React UI for viewing collected data
 ├── crawler/          # Main AI crawler application
 │   ├── src/
@@ -39,8 +53,7 @@ Apocalypse VI MUD/
 │   ├── dist/crawler/src/   # Compiled output (nested structure)
 │   ├── logs/               # Timestamped log files
 │   └── .env                # Configuration
-├── shared/           # TypeScript types shared across modules
-└── mud-data.db       # SQLite database (root directory)
+└── shared/           # TypeScript types shared across modules
 ```
 
 ## ✅ Completed Features
@@ -713,28 +726,43 @@ npm run dev
 
 ## Summary for Next Chat Session
 
-**Status**: ✅ MAJOR MILESTONE - FULL TYPESCRIPT MIGRATION COMPLETE
+**Status**: ✅ MAJOR MILESTONE - ROUTING CONSOLIDATION COMPLETE
 
 **What Was Completed** (October 30, 2025):
 1. ✅ **Complete TypeScript Migration** - Backend fully converted to TypeScript
    - seed.js → seed.ts (1,883 lines, restored from git)
    - genericRoutes.js → genericRoutes.ts with proper types
    - All build scripts configured and working
-   - Database path unified to mud-data.db in root
-2. ✅ Comprehensive database schema (21 tables, fully normalized)
-3. ✅ Class system with 14 classes, 95 proficiencies, 54 perks
-4. ✅ Ability score system with 156 score-to-effect mappings
-5. ✅ Zone system with 74 zones, 103 areas, 190 connections
-6. ✅ Room navigation system with directional exits
-7. ✅ Frontend admin panel with hierarchical navigation
-8. ✅ **Enhanced Admin Navigation** - Admin button always returns to main view
-   - React Router key-based component remounting
-   - Location-aware state reset
-   - Works from any drill-down depth
-9. ✅ Zone → Zone Detail → Room Detail navigation flow
-10. ✅ Room exit system with clickable destinations
-11. ✅ Player Actions system - Unified command/social/emote documentation
-12. ✅ Code pushed to GitHub repository
+2. ✅ **Database Architecture Improvement** - Centralized data directory
+   - Database moved from root to data/mud-data.db
+   - Consistent path resolution across all services
+   - data/README.md for documentation
+3. ✅ **Repository Pattern Implementation** - Database abstraction layer
+   - BaseRepository<T> with generic CRUD operations (320 lines)
+   - Entity-specific repositories: Room, Zone, PlayerAction, RoomExit
+   - GenericRepository with RepositoryFactory for dynamic entity handling
+   - All operations use async/await with proper error handling
+4. ✅ **Routing System Consolidation** - Unified API router
+   - Merged routes.ts + genericRoutes.ts → routes/api.ts (485 lines)
+   - Removed old route files to fix module resolution conflicts
+   - Consistent middleware chain throughout
+   - 24 entity types configured in ENTITY_CONFIG
+   - Generic CRUD endpoints: GET /:type, GET /:type/:id, POST /:type, PUT /:type/:identifier, DELETE /:type/:id
+   - All routes tested and working (abilities, zones, rooms, player_actions, etc.)
+5. ✅ Comprehensive database schema (21 tables, fully normalized)
+6. ✅ Class system with 14 classes, 95 proficiencies, 54 perks
+7. ✅ Ability score system with 156 score-to-effect mappings
+8. ✅ Zone system with 74 zones, 103 areas, 190 connections
+9. ✅ Room navigation system with directional exits
+10. ✅ Frontend admin panel with hierarchical navigation
+11. ✅ **Enhanced Admin Navigation** - Admin button always returns to main view
+    - React Router key-based component remounting
+    - Location-aware state reset
+    - Works from any drill-down depth
+12. ✅ Zone → Zone Detail → Room Detail navigation flow
+13. ✅ Room exit system with clickable destinations
+14. ✅ Player Actions system - Unified command/social/emote documentation
+15. ✅ Code pushed to GitHub repository
 
 **TypeScript Migration Details**:
 - **Backend**: 100% TypeScript (no more .js files)
@@ -789,22 +817,35 @@ npm run dev
 - ✅ Ready for crawler integration
 - ✅ Code safely backed up on GitHub
 
-**Next Architecture Improvements** (From TODO List):
-1. ⏭️ Create Database Abstraction Layer
-   - Implement repository pattern with proper async/await
-   - Centralize database operations
-   - Add connection pooling
-2. ⏭️ Consolidate Routing Systems
-   - Merge routes.ts and genericRoutes.ts into unified system
-   - Implement consistent middleware chain
-3. ⏭️ Add Input Validation Layer
+**Backend Architecture Improvements Progress**:
+1. ✅ **Database Abstraction Layer** (COMPLETE - October 30, 2025)
+   - Implemented repository pattern with BaseRepository<T>
+   - Created entity-specific repositories (Room, Zone, PlayerAction, RoomExit)
+   - Added GenericRepository with RepositoryFactory
+   - All operations use proper async/await
+   - Comprehensive type safety with TypeScript
+
+2. ✅ **Routing System Consolidation** (COMPLETE - October 30, 2025)
+   - Merged routes.ts and genericRoutes.ts into single routes/api.ts (485 lines)
+   - Created routes/index.ts for clean imports
+   - Implemented consistent middleware chain (asyncHandler, responseTime, pagination)
+   - Added 24 entity type configurations in ENTITY_CONFIG
+   - Generic CRUD endpoints: GET /:type, GET /:type/:id, POST /:type, PUT /:type/:identifier, DELETE /:type/:id
+   - Custom endpoints preserved: /entity-types, /stats, /rooms/by-name/:name
+   - Fixed module resolution issue by removing old route files
+   - All routes working: abilities, zones, rooms, player_actions, etc.
+
+3. ⏭️ **Input Validation Layer** (NEXT)
    - Implement Zod schemas for all API endpoints
    - Validate incoming data
-4. ⏭️ Implement Proper Error Handling
+   - Type-safe request handling
+
+4. ⏭️ **Enhanced Error Handling** (FUTURE)
    - Create custom error classes
    - Add global error middleware
    - Standardize error responses
-5. ⏭️ Add Service Layer
+
+5. ⏭️ **Service Layer** (FUTURE)
    - Extract business logic from routes into service classes
    - Better separation of concerns
 
@@ -817,11 +858,11 @@ npm run dev
 6. Test full stack integration
 
 **Configuration**:
-- Database file: `mud-data.db` (root directory)
+- Database file: `data/mud-data.db` (centralized data directory)
 - Seed script: `backend/seed.ts` (1,883 lines, TypeScript)
 - Frontend port: 3000
 - Backend port: 3002
-- Generic routes: `backend/src/genericRoutes.ts` (TypeScript)
+- API router: `backend/src/routes/api.ts` (485 lines, consolidated)
 
 **No Critical Issues** - System ready for production use!
 

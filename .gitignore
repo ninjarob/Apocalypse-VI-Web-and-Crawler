@@ -15,6 +15,7 @@ npm-debug.log*
 # Database
 *.db
 *.sqlite
+data/
 
 # Build outputs
 dist/

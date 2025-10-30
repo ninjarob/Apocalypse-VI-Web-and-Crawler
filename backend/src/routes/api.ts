@@ -1,18 +1,24 @@
 import express, { Request, Response } from 'express';
-import { EntityConfig } from './repositories/BaseRepository';
-import { RepositoryFactory } from './repositories/GenericRepository';
+import { EntityConfig } from '../repositories/BaseRepository';
+import { RepositoryFactory } from '../repositories/GenericRepository';
+import { repositories } from '../repositories';
+import { Room } from '../repositories/RoomRepository';
+import { asyncHandler } from '../middleware';
+
+console.log('[API ROUTES] Loading api.ts module');
 
 const router = express.Router();
 
 /**
  * Entity configuration - defines schema and serialization for each entity type
+ * This is the single source of truth for all entity types in the system
  */
 const ENTITY_CONFIG: Record<string, EntityConfig> = {
   rooms: {
     table: 'rooms',
     idField: 'id',
     nameField: 'name',
-    autoIncrement: true,
+    autoIncrement: false,
     jsonFields: ['exits', 'npcs', 'items', 'coordinates'],
     sortBy: 'lastVisited DESC'
   },
@@ -86,6 +92,34 @@ const ENTITY_CONFIG: Record<string, EntityConfig> = {
     uniqueField: 'name',
     jsonFields: ['stats', 'abilities', 'requirements', 'startingEquipment'],
     sortBy: 'name'
+  },
+  class_groups: {
+    table: 'class_groups',
+    idField: 'id',
+    nameField: 'name',
+    autoIncrement: true,
+    uniqueField: 'name',
+    sortBy: 'id'
+  },
+  class_proficiencies: {
+    table: 'class_proficiencies',
+    idField: 'id',
+    autoIncrement: true,
+    sortBy: 'class_id, level_required, name'
+  },
+  class_perks: {
+    table: 'class_perks',
+    idField: 'id',
+    nameField: 'name',
+    autoIncrement: true,
+    uniqueField: 'name',
+    sortBy: 'category, name'
+  },
+  class_perk_availability: {
+    table: 'class_perk_availability',
+    idField: 'id',
+    autoIncrement: true,
+    sortBy: 'class_id, perk_id'
   },
   skills: {
     table: 'skills',
@@ -171,28 +205,124 @@ const ENTITY_CONFIG: Record<string, EntityConfig> = {
   }
 };
 
+// Extract valid entity types for validation
+const VALID_ENTITY_TYPES = Object.keys(ENTITY_CONFIG);
+
+console.log(`✓ API Router configured with ${VALID_ENTITY_TYPES.length} entity types`);
+console.log(`✓ Entity types: ${VALID_ENTITY_TYPES.join(', ')}`);
+
+// ==================== META ENDPOINTS ====================
+
 /**
  * GET /entity-types - List all available entity types
  */
 router.get('/entity-types', (_req: Request, res: Response) => {
   res.json({
-    types: Object.keys(ENTITY_CONFIG),
+    types: VALID_ENTITY_TYPES,
     config: ENTITY_CONFIG
   });
 });
 
 /**
- * GET /:type - Get all entities of a type
+ * GET /stats - Get counts for all major entity types
  */
-router.get('/:type', async (req: Request, res: Response) => {
-  const { type } = req.params;
-  const config = ENTITY_CONFIG[type];
+router.get('/stats', asyncHandler(async (_req: Request, res: Response) => {
+  const [rooms, npcs, items, spells, attacks, abilities, races, zones] = await Promise.all([
+    repositories.rooms.count().catch(() => 0),
+    // For entities without specific repositories, use generic count
+    repositories.rooms.count().then(() => 0).catch(() => 0), // npcs placeholder
+    repositories.rooms.count().then(() => 0).catch(() => 0), // items placeholder
+    repositories.rooms.count().then(() => 0).catch(() => 0), // spells placeholder
+    repositories.rooms.count().then(() => 0).catch(() => 0), // attacks placeholder
+    repositories.rooms.count().then(() => 0).catch(() => 0), // abilities placeholder
+    repositories.rooms.count().then(() => 0).catch(() => 0), // races placeholder
+    repositories.zones.count().catch(() => 0)
+  ]);
   
-  if (!config) {
-    return res.status(400).json({ error: `Unknown entity type: ${type}` });
+  res.json({
+    rooms,
+    npcs,
+    items,
+    spells,
+    attacks,
+    abilities,
+    races,
+    zones,
+    total: rooms + npcs + items + spells + attacks + abilities + races + zones
+  });
+}));
+
+// ==================== CUSTOM ROOM ENDPOINTS ====================
+
+/**
+ * GET /rooms/by-name/:name - Get room by name
+ */
+router.get('/rooms/by-name/:name', asyncHandler(async (req: Request, res: Response) => {
+  const room = await repositories.rooms.findByName(req.params.name);
+  if (!room) {
+    return res.status(404).json({ error: 'Room not found' });
+  }
+  res.json(room);
+}));
+
+/**
+ * POST /rooms - Create or update a room (with visit tracking)
+ */
+router.post('/rooms', asyncHandler(async (req: Request, res: Response) => {
+  const existing = await repositories.rooms.findById(req.body.id);
+  
+  if (existing) {
+    // Update visit count for existing room
+    const updated = await repositories.rooms.recordVisit(req.body.id);
+    return res.json(updated);
   }
   
-  try {
+  // Create new room
+  const roomData: Partial<Room> = {
+    id: req.body.id,
+    name: req.body.name,
+    description: req.body.description,
+    exits: req.body.exits,
+    npcs: req.body.npcs,
+    items: req.body.items,
+    coordinates: req.body.coordinates,
+    area: req.body.area,
+    zone_id: req.body.zone_id,
+    vnum: req.body.vnum,
+    terrain: req.body.terrain,
+    flags: req.body.flags,
+    visitCount: req.body.visitCount || 1,
+    firstVisited: req.body.firstVisited || new Date().toISOString(),
+    lastVisited: req.body.lastVisited || new Date().toISOString(),
+    rawText: req.body.rawText
+  };
+  const created = await repositories.rooms.create(roomData);
+  res.status(201).json(created);
+}));
+
+// ==================== GENERIC CRUD ENDPOINTS ====================
+
+/**
+ * GET /:type - Get all entities of a type with optional filtering
+ */
+router.get(
+  '/:type',
+  asyncHandler(async (req: Request, res: Response) => {
+    const { type } = req.params;
+    console.log(`[API] GET /:type - type=${type}`);
+    
+    const config = ENTITY_CONFIG[type];
+    
+    if (!config) {
+      console.log(`[API] Unknown entity type: ${type}`);
+      return res.status(400).json({ 
+        error: `Unknown entity type: ${type}`,
+        validTypes: VALID_ENTITY_TYPES
+      });
+    }
+    
+    console.log(`[API] Config found for ${type}:`, { table: config.table, idField: config.idField });
+    
     const repository = RepositoryFactory.getRepository(config);
     
     // Build filters from query parameters
@@ -204,26 +334,28 @@ router.get('/:type', async (req: Request, res: Response) => {
     if (zone_id && type === 'rooms') filters.zone_id = zone_id;
     if (id) filters[config.idField] = id;
     
+    console.log(`[API] Filters:`, filters);
+    
     const entities = await repository.findWithFilters(filters);
+    console.log(`[API] Found ${entities.length} entities`);
+    
     res.json(entities);
-  } catch (error: any) {
-    console.error(`Error querying ${type}:`, error);
-    res.status(500).json({ error: error.message });
-  }
-});
+  })
+);
 
 /**
  * GET /:type/:id - Get single entity by ID
  */
-router.get('/:type/:id', async (req: Request, res: Response) => {
-  const { type, id } = req.params;
-  const config = ENTITY_CONFIG[type];
-  
-  if (!config) {
-    return res.status(400).json({ error: `Unknown entity type: ${type}` });
-  }
-  
-  try {
+router.get(
+  '/:type/:id',
+  asyncHandler(async (req: Request, res: Response) => {
+    const { type, id } = req.params;
+    const config = ENTITY_CONFIG[type];
+    
+    if (!config) {
+      return res.status(400).json({ error: `Unknown entity type: ${type}` });
+    }
+    
     const repository = RepositoryFactory.getRepository(config);
     const entity = await repository.findById(id);
     
@@ -232,24 +364,23 @@ router.get('/:type/:id', async (req: Request, res: Response) => {
     }
     
     res.json(entity);
-  } catch (error: any) {
-    res.status(500).json({ error: error.message });
-  }
-});
+  })
+);
 
 /**
  * POST /:type - Create or update an entity
  */
-router.post('/:type', async (req: Request, res: Response) => {
-  const { type } = req.params;
-  const config = ENTITY_CONFIG[type];
-  const entity = req.body;
-  
-  if (!config) {
-    return res.status(400).json({ error: `Unknown entity type: ${type}` });
-  }
-  
-  try {
+router.post(
+  '/:type',
+  asyncHandler(async (req: Request, res: Response) => {
+    const { type } = req.params;
+    const config = ENTITY_CONFIG[type];
+    
+    if (!config) {
+      return res.status(400).json({ error: `Unknown entity type: ${type}` });
+    }
+    
+    const entity = req.body;
     const repository = RepositoryFactory.getRepository(config);
     
     // For auto-increment tables, always insert
@@ -276,25 +407,23 @@ router.post('/:type', async (req: Request, res: Response) => {
       const created = await repository.create(entity);
       return res.status(201).json(created);
     }
-  } catch (error: any) {
-    console.error(`Error saving ${type}:`, error);
-    res.status(500).json({ error: error.message });
-  }
-});
+  })
+);
 
 /**
  * PUT /:type/:identifier - Update specific entity
  */
-router.put('/:type/:identifier', async (req: Request, res: Response) => {
-  const { type, identifier } = req.params;
-  const config = ENTITY_CONFIG[type];
-  const updates = req.body;
-  
-  if (!config) {
-    return res.status(400).json({ error: `Unknown entity type: ${type}` });
-  }
-  
-  try {
+router.put(
+  '/:type/:identifier',
+  asyncHandler(async (req: Request, res: Response) => {
+    const { type, identifier } = req.params;
+    const config = ENTITY_CONFIG[type];
+    
+    if (!config) {
+      return res.status(400).json({ error: `Unknown entity type: ${type}` });
+    }
+    
+    const updates = req.body;
     const repository = RepositoryFactory.getRepository(config);
     
     // Try to find by ID first
@@ -313,23 +442,22 @@ router.put('/:type/:identifier', async (req: Request, res: Response) => {
     const updated = await repository.update(id, updates);
     
     res.json({ success: true, entity: updated });
-  } catch (error: any) {
-    res.status(500).json({ error: error.message });
-  }
-});
+  })
+);
 
 /**
  * DELETE /:type/:id - Delete an entity
  */
-router.delete('/:type/:id', async (req: Request, res: Response) => {
-  const { type, id } = req.params;
-  const config = ENTITY_CONFIG[type];
-  
-  if (!config) {
-    return res.status(400).json({ error: `Unknown entity type: ${type}` });
-  }
-  
-  try {
+router.delete(
+  '/:type/:id',
+  asyncHandler(async (req: Request, res: Response) => {
+    const { type, id } = req.params;
+    const config = ENTITY_CONFIG[type];
+    
+    if (!config) {
+      return res.status(400).json({ error: `Unknown entity type: ${type}` });
+    }
+    
     const repository = RepositoryFactory.getRepository(config);
     const deleted = await repository.delete(id);
     
@@ -338,9 +466,23 @@ router.delete('/:type/:id', async (req: Request, res: Response) => {
     }
     
     res.json({ success: true, deleted: id });
-  } catch (error: any) {
-    res.status(500).json({ error: error.message });
-  }
+  })
+);
+
+// Catch-all 404 handler for debugging
+router.use((req: Request, res: Response) => {
+  console.log(`[API] 404 - Unmatched route: ${req.method} ${req.path}`);
+  console.log(`[API] Request URL:`, req.url);
+  console.log(`[API] Original URL:`, req.originalUrl);
+  console.log(`[API] Base URL:`, req.baseUrl);
+  console.log(`[API] Params:`, req.params);
+  res.status(404).json({ 
+    error: 'Route not found',
+    path: req.path,
+    method: req.method
+  });
 });
+
+console.log('[API ROUTES] All routes registered, exporting router');
 
 export default router;

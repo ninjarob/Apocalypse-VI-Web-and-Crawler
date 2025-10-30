@@ -7,7 +7,10 @@ let db: sqlite3.Database | null = null;
 export async function initDatabase(): Promise<sqlite3.Database> {
   if (db) return db;
 
-  const dbPath = path.resolve(__dirname, '../../mud-data.db');
+  // Database location: data/mud-data.db (at project root level)
+  // When compiled: dist/src/database.js -> ../../../data/mud-data.db
+  // When running with tsx: backend/src/database.ts -> ../../data/mud-data.db
+  const dbPath = path.resolve(__dirname, '../../../data/mud-data.db');
   
   return new Promise((resolve, reject) => {
     db = new sqlite3.Database(dbPath, async (err) => {
