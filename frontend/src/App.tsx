@@ -27,7 +27,9 @@ function AppContent() {
       <div className="sidebar">
         <h1>Apocalypse VI</h1>
         <nav>
-          <NavLink to="/" end>Dashboard</NavLink>
+          <NavLink to="/" end>
+            Dashboard
+          </NavLink>
           <NavLink to="/rooms">Rooms</NavLink>
           <NavLink to="/npcs">NPCs</NavLink>
           <NavLink to="/items">Items</NavLink>
@@ -35,10 +37,12 @@ function AppContent() {
           <NavLink to="/commands">Commands</NavLink>
           <NavLink to="/races">Races</NavLink>
           <hr style={{ margin: '10px 0', border: '1px solid #333' }} />
-          <NavLink to="/admin" onClick={handleAdminClick}>⚙️ Admin</NavLink>
+          <NavLink to="/admin" onClick={handleAdminClick}>
+            ⚙️ Admin
+          </NavLink>
         </nav>
       </div>
-      
+
       <div className="main-content">
         <Routes>
           <Route path="/" element={<Dashboard />} />

@@ -35,11 +35,15 @@ function Races() {
   };
 
   const formatStats = (stats?: Record<string, any>) => {
-    if (!stats) return 'None';
-    return Object.entries(stats).map(([key, value]) => {
-      const sign = value > 0 ? '+' : '';
-      return `${key}: ${sign}${value}`;
-    }).join(', ');
+    if (!stats) {
+      return 'None';
+    }
+    return Object.entries(stats)
+      .map(([key, value]) => {
+        const sign = value > 0 ? '+' : '';
+        return `${key}: ${sign}${value}`;
+      })
+      .join(', ');
   };
 
   if (loading) {
@@ -49,19 +53,22 @@ function Races() {
   return (
     <div className="page">
       <h2>Races ({races.length})</h2>
-      
+
       <div className="grid">
         <div className="list-section">
           <div className="entity-list">
             {races.map(race => (
-              <div 
-                key={race.id} 
+              <div
+                key={race.id}
                 className={`entity-card ${selectedRace?.id === race.id ? 'selected' : ''}`}
                 onClick={() => setSelectedRace(race)}
               >
                 <h3>{race.name}</h3>
                 {race.description && (
-                  <p className="description">{race.description.substring(0, 100)}{race.description.length > 100 ? '...' : ''}</p>
+                  <p className="description">
+                    {race.description.substring(0, 100)}
+                    {race.description.length > 100 ? '...' : ''}
+                  </p>
                 )}
                 {race.stats && (
                   <div className="meta">
@@ -75,7 +82,7 @@ function Races() {
                 )}
               </div>
             ))}
-            
+
             {races.length === 0 && (
               <div className="empty-state">
                 <p>No races discovered yet.</p>
@@ -89,7 +96,7 @@ function Races() {
           <div className="detail-section">
             <div className="detail-panel">
               <h2>{selectedRace.name}</h2>
-              
+
               {selectedRace.description && (
                 <section>
                   <h3>Description</h3>
@@ -103,9 +110,14 @@ function Races() {
                   <div className="stats-grid">
                     {Object.entries(selectedRace.stats).map(([stat, value]) => (
                       <div key={stat} className="stat-item">
-                        <span className="stat-name">{stat.charAt(0).toUpperCase() + stat.slice(1)}</span>
-                        <span className={`stat-value ${value > 0 ? 'positive' : value < 0 ? 'negative' : ''}`}>
-                          {value > 0 ? '+' : ''}{value}
+                        <span className="stat-name">
+                          {stat.charAt(0).toUpperCase() + stat.slice(1)}
+                        </span>
+                        <span
+                          className={`stat-value ${value > 0 ? 'positive' : value < 0 ? 'negative' : ''}`}
+                        >
+                          {value > 0 ? '+' : ''}
+                          {value}
                         </span>
                       </div>
                     ))}
@@ -152,7 +164,9 @@ function Races() {
                   {selectedRace.discovered && (
                     <div className="meta-item">
                       <span className="meta-label">Discovered:</span>
-                      <span className="meta-value">{new Date(selectedRace.discovered).toLocaleString()}</span>
+                      <span className="meta-value">
+                        {new Date(selectedRace.discovered).toLocaleString()}
+                      </span>
                     </div>
                   )}
                 </div>

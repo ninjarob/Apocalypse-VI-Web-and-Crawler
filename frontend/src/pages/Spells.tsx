@@ -6,10 +6,6 @@ export default function Spells() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
 
-  useEffect(() => {
-    loadSpells();
-  }, []);
-
   const loadSpells = async () => {
     try {
       const data = await api.get('/spells');
@@ -21,9 +17,14 @@ export default function Spells() {
     }
   };
 
-  const filteredSpells = spells.filter(spell =>
-    spell.name.toLowerCase().includes(search.toLowerCase()) ||
-    spell.description?.toLowerCase().includes(search.toLowerCase())
+  useEffect(() => {
+    loadSpells();
+  }, []);
+
+  const filteredSpells = spells.filter(
+    spell =>
+      spell.name.toLowerCase().includes(search.toLowerCase()) ||
+      spell.description?.toLowerCase().includes(search.toLowerCase())
   );
 
   if (loading) {
@@ -33,21 +34,21 @@ export default function Spells() {
   return (
     <div>
       <h2>Spells ({spells.length})</h2>
-      
+
       <input
         type="text"
         className="search-box"
         placeholder="Search spells..."
         value={search}
-        onChange={(e) => setSearch(e.target.value)}
+        onChange={e => setSearch(e.target.value)}
       />
-      
+
       <div className="entity-grid">
-        {filteredSpells.map((spell) => (
+        {filteredSpells.map(spell => (
           <div key={spell.id} className="entity-card">
             <h3>{spell.name}</h3>
             <p>{spell.description}</p>
-            
+
             <div style={{ marginTop: '10px' }}>
               {spell.manaCost && <span className="tag">Mana: {spell.manaCost}</span>}
               {spell.level && <span className="tag">Level: {spell.level}</span>}
@@ -56,10 +57,10 @@ export default function Spells() {
           </div>
         ))}
       </div>
-      
+
       {filteredSpells.length === 0 && (
         <p style={{ textAlign: 'center', color: '#888', marginTop: '40px' }}>
-          {spells.length === 0 
+          {spells.length === 0
             ? 'No spells discovered yet. The crawler will document them as it explores.'
             : 'No spells found matching your search.'}
         </p>

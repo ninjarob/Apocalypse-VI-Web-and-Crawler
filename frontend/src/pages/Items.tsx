@@ -6,10 +6,6 @@ export default function Items() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
 
-  useEffect(() => {
-    loadItems();
-  }, []);
-
   const loadItems = async () => {
     try {
       const data = await api.get('/items');
@@ -21,9 +17,14 @@ export default function Items() {
     }
   };
 
-  const filteredItems = items.filter(item =>
-    item.name.toLowerCase().includes(search.toLowerCase()) ||
-    item.description?.toLowerCase().includes(search.toLowerCase())
+  useEffect(() => {
+    loadItems();
+  }, []);
+
+  const filteredItems = items.filter(
+    item =>
+      item.name.toLowerCase().includes(search.toLowerCase()) ||
+      item.description?.toLowerCase().includes(search.toLowerCase())
   );
 
   if (loading) {
@@ -33,21 +34,21 @@ export default function Items() {
   return (
     <div>
       <h2>Items ({items.length})</h2>
-      
+
       <input
         type="text"
         className="search-box"
         placeholder="Search items..."
         value={search}
-        onChange={(e) => setSearch(e.target.value)}
+        onChange={e => setSearch(e.target.value)}
       />
-      
+
       <div className="entity-grid">
-        {filteredItems.map((item) => (
+        {filteredItems.map(item => (
           <div key={item.id} className="entity-card">
             <h3>{item.name}</h3>
             <p>{item.description}</p>
-            
+
             {item.stats && Object.keys(item.stats).length > 0 && (
               <div style={{ marginTop: '10px' }}>
                 {item.stats.damage && <span className="tag">Damage: {item.stats.damage}</span>}
@@ -56,7 +57,7 @@ export default function Items() {
                 {item.stats.value && <span className="tag">Value: {item.stats.value}</span>}
               </div>
             )}
-            
+
             {item.type && (
               <div style={{ marginTop: '10px' }}>
                 <span className="tag">{item.type}</span>
@@ -65,7 +66,7 @@ export default function Items() {
           </div>
         ))}
       </div>
-      
+
       {filteredItems.length === 0 && (
         <p style={{ textAlign: 'center', color: '#888', marginTop: '40px' }}>
           No items found matching your search.

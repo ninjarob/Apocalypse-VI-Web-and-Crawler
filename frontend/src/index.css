@@ -142,7 +142,9 @@ button:focus-visible {
   padding: 20px;
   border-radius: 8px;
   border: 1px solid #333;
-  transition: transform 0.2s, border-color 0.2s;
+  transition:
+    transform 0.2s,
+    border-color 0.2s;
 }
 
 .entity-card:hover {
@@ -277,12 +279,14 @@ button:focus-visible {
   color: #ff4444;
 }
 
-.ability-list, .requirement-list {
+.ability-list,
+.requirement-list {
   list-style: none;
   margin-top: 10px;
 }
 
-.ability-list li, .requirement-list li {
+.ability-list li,
+.requirement-list li {
   background-color: #1a1a1a;
   padding: 8px 12px;
   margin-bottom: 6px;
@@ -473,7 +477,7 @@ button:focus-visible {
 }
 
 /* Special styling for ability descriptions */
-.entity-table td[data-field="description"] {
+.entity-table td[data-field='description'] {
   font-size: 0.85em;
   line-height: 1.5;
   max-width: 600px;
@@ -481,7 +485,7 @@ button:focus-visible {
   padding: 16px 12px;
 }
 
-.entity-table td[data-field="author"] {
+.entity-table td[data-field='author'] {
   font-size: 0.85em;
   font-style: italic;
   color: #aaa;

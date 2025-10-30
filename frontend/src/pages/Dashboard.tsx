@@ -6,18 +6,9 @@ export default function Dashboard() {
   const [status, setStatus] = useState<CrawlerStatus | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadData();
-    const interval = setInterval(loadData, 5000); // Refresh every 5 seconds
-    return () => clearInterval(interval);
-  }, []);
-
   const loadData = async () => {
     try {
-      const [statsData, statusData] = await Promise.all([
-        api.getStats(),
-        api.getCrawlerStatus(),
-      ]);
+      const [statsData, statusData] = await Promise.all([api.getStats(), api.getCrawlerStatus()]);
       setStats(statsData);
       setStatus(statusData);
       setLoading(false);
@@ -27,6 +18,12 @@ export default function Dashboard() {
     }
   };
 
+  useEffect(() => {
+    loadData();
+    const interval = setInterval(loadData, 5000); // Refresh every 5 seconds
+    return () => clearInterval(interval);
+  }, []);
+
   if (loading) {
     return <div className="loading">Loading...</div>;
   }
@@ -34,15 +31,19 @@ export default function Dashboard() {
   return (
     <div>
       <h2>Dashboard</h2>
-      
+
       {status && (
         <div className={`crawler-status ${status.status !== 'idle' ? 'active' : ''}`}>
           <h3>Crawler Status</h3>
-          <p><strong>Status:</strong> {status.status}</p>
-          <p><strong>Last Update:</strong> {new Date(status.timestamp).toLocaleString()}</p>
+          <p>
+            <strong>Status:</strong> {status.status}
+          </p>
+          <p>
+            <strong>Last Update:</strong> {new Date(status.timestamp).toLocaleString()}
+          </p>
         </div>
       )}
-      
+
       {stats && (
         <div className="stats-grid">
           <div className="stat-card">
@@ -71,12 +72,12 @@ export default function Dashboard() {
           </div>
         </div>
       )}
-      
+
       <div style={{ marginTop: '40px' }}>
         <h3>Recent Activity</h3>
         <p style={{ color: '#888' }}>
-          The crawler is systematically exploring the Apocalypse VI MUD and documenting everything it finds.
-          Use the navigation menu to browse discovered rooms, NPCs, items, and more.
+          The crawler is systematically exploring the Apocalypse VI MUD and documenting everything
+          it finds. Use the navigation menu to browse discovered rooms, NPCs, items, and more.
         </p>
       </div>
     </div>

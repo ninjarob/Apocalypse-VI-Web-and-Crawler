@@ -47,17 +47,22 @@ export default function Commands() {
 
   const filteredCommands = commands.filter(cmd => {
     const matchesCategory = filter === 'all' || cmd.category === filter;
-    const matchesSearch = cmd.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         cmd.description?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch =
+      cmd.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      cmd.description?.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
   const getStatusBadgeClass = (status: string) => {
     switch (status) {
-      case 'working': return 'bg-green-100 text-green-800';
-      case 'requires-args': return 'bg-yellow-100 text-yellow-800';
-      case 'failed': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'working':
+        return 'bg-green-100 text-green-800';
+      case 'requires-args':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'failed':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -69,7 +74,7 @@ export default function Commands() {
       information: 'bg-cyan-100 text-cyan-800',
       inventory: 'bg-green-100 text-green-800',
       social: 'bg-pink-100 text-pink-800',
-      system: 'bg-gray-100 text-gray-800',
+      system: 'bg-gray-100 text-gray-800'
     };
     return colors[category] || 'bg-gray-100 text-gray-800';
   };
@@ -86,9 +91,7 @@ export default function Commands() {
     <div className="p-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">MUD Commands</h1>
-        <p className="text-gray-600">
-          Discovered and documented commands from the game
-        </p>
+        <p className="text-gray-600">Discovered and documented commands from the game</p>
         <div className="mt-4 grid grid-cols-4 gap-4 text-sm">
           <div className="bg-white p-4 rounded shadow">
             <div className="text-2xl font-bold">{commands.length}</div>
@@ -120,12 +123,12 @@ export default function Commands() {
           type="text"
           placeholder="Search commands..."
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={e => setSearchTerm(e.target.value)}
           className="flex-1 px-4 py-2 border rounded"
         />
         <select
           value={filter}
-          onChange={(e) => setFilter(e.target.value)}
+          onChange={e => setFilter(e.target.value)}
           className="px-4 py-2 border rounded"
         >
           {categories.map(cat => (
@@ -171,7 +174,7 @@ export default function Commands() {
                 </td>
               </tr>
             ) : (
-              filteredCommands.map((command) => (
+              filteredCommands.map(command => (
                 <tr key={command.name} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="font-mono font-bold">{command.name}</div>
@@ -182,7 +185,9 @@ export default function Commands() {
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 py-1 text-xs rounded-full ${getCategoryBadgeClass(command.category)}`}>
+                    <span
+                      className={`px-2 py-1 text-xs rounded-full ${getCategoryBadgeClass(command.category)}`}
+                    >
                       {command.category || 'unknown'}
                     </span>
                   </td>
@@ -191,18 +196,19 @@ export default function Commands() {
                       {command.description || 'No description'}
                     </div>
                     {command.syntax && (
-                      <div className="text-xs font-mono text-gray-500 mt-1">
-                        {command.syntax}
-                      </div>
+                      <div className="text-xs font-mono text-gray-500 mt-1">{command.syntax}</div>
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 py-1 text-xs rounded-full ${getStatusBadgeClass(command.workingStatus)}`}>
+                    <span
+                      className={`px-2 py-1 text-xs rounded-full ${getStatusBadgeClass(command.workingStatus)}`}
+                    >
                       {command.workingStatus || 'unknown'}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {command.testResults ? command.testResults.length : 0} test{command.testResults?.length !== 1 ? 's' : ''}
+                    {command.testResults ? command.testResults.length : 0} test
+                    {command.testResults?.length !== 1 ? 's' : ''}
                     {command.usageCount ? ` | Used ${command.usageCount}x` : ''}
                   </td>
                 </tr>

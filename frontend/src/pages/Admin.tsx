@@ -207,7 +207,7 @@ function Admin() {
     try {
       const data = await api.get(`/${selectedEntity.endpoint}`);
       setEntities(data);
-      
+
       // If loading zones, also load zone areas and connections
       if (selectedEntity.endpoint === 'zones') {
         const [areas, connections] = await Promise.all([
@@ -217,13 +217,10 @@ function Admin() {
         setZoneAreas(areas);
         setZoneConnections(connections);
       }
-      
+
       // If loading rooms, also load zones for zone name lookup
       if (selectedEntity.endpoint === 'rooms') {
-        const [zones, exits] = await Promise.all([
-          api.get('/zones'),
-          api.get('/room_exits')
-        ]);
+        const [zones, exits] = await Promise.all([api.get('/zones'), api.get('/room_exits')]);
         setAllZones(zones);
         setAllRooms(data);
         setRoomExits(exits);
@@ -248,8 +245,10 @@ function Admin() {
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this item?')) return;
-    
+    if (!confirm('Are you sure you want to delete this item?')) {
+      return;
+    }
+
     try {
       await api.delete(`/${selectedEntity.endpoint}/${id}`);
       loadEntities();
@@ -336,7 +335,7 @@ function Admin() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       // Process JSON fields
       const processedData = { ...formData };
@@ -357,7 +356,7 @@ function Admin() {
         // Create
         await api.post(`/${selectedEntity.endpoint}`, processedData);
       }
-      
+
       setShowForm(false);
       loadEntities();
     } catch (error) {
@@ -370,24 +369,29 @@ function Admin() {
     setFormData((prev: any) => ({ ...prev, [fieldName]: value }));
   };
 
-  const renderFieldValue = (entity: Entity, field: { name: string; type: string; custom?: string }) => {
+  const renderFieldValue = (
+    entity: Entity,
+    field: { name: string; type: string; custom?: string }
+  ) => {
     const value = entity[field.name];
-    
+
     // Special handling for zone_name custom field
     if (field.custom === 'zone_name') {
       const zone = allZones.find(z => z.id === value);
       return zone ? zone.name : value;
     }
-    
+
     // Special handling for zone_name_link custom field
     if (field.custom === 'zone_name_link') {
       const zone = allZones.find(z => z.id === value);
-      if (!zone) return value;
+      if (!zone) {
+        return value;
+      }
       return (
-        <a 
-          href="#" 
+        <a
+          href="#"
           className="zone-link"
-          onClick={(e) => {
+          onClick={e => {
             e.preventDefault();
             e.stopPropagation();
             // Switch to Zones entity and open that zone's detail view
@@ -402,78 +406,98 @@ function Admin() {
         </a>
       );
     }
-    
+
     // Special handling for room_exits custom field
     if (field.custom === 'room_exits') {
       const exits = roomExits.filter(exit => exit.from_room_id === entity.id);
-      if (exits.length === 0) return <em className="text-gray">No exits</em>;
-      
+      if (exits.length === 0) {
+        return <em className="text-gray">No exits</em>;
+      }
+
       // Sort exits by direction
-      const directionOrder: { [key: string]: number } = { 
-        north: 1, northeast: 2, east: 3, southeast: 4, 
-        south: 5, southwest: 6, west: 7, northwest: 8, 
-        up: 9, down: 10 
+      const directionOrder: { [key: string]: number } = {
+        north: 1,
+        northeast: 2,
+        east: 3,
+        southeast: 4,
+        south: 5,
+        southwest: 6,
+        west: 7,
+        northwest: 8,
+        up: 9,
+        down: 10
       };
-      exits.sort((a, b) => (directionOrder[a.direction] || 99) - (directionOrder[b.direction] || 99));
-      
+      exits.sort(
+        (a, b) => (directionOrder[a.direction] || 99) - (directionOrder[b.direction] || 99)
+      );
+
       return (
         <div className="room-exits">
           {exits.map((exit, idx) => {
             const toRoom = entities.find(r => r.id === exit.to_room_id);
-            const exitText = exit.to_room_id 
+            const exitText = exit.to_room_id
               ? `${exit.direction} → ${toRoom?.name || `Room ${exit.to_room_id}`}`
               : `${exit.direction} (unimplemented)`;
-            return <div key={idx} className="exit-item">{exitText}</div>;
+            return (
+              <div key={idx} className="exit-item">
+                {exitText}
+              </div>
+            );
           })}
         </div>
       );
     }
-    
+
     // Special handling for combined zone info column in Zones table
     if (field.name === 'zone_info_combined') {
       const parts = [];
-      
+
       // Add author
       if (entity.author) {
         parts.push(`Author: ${entity.author}`);
       }
-      
+
       // Add difficulty
       if (entity.difficulty !== null && entity.difficulty !== undefined) {
         const difficultyStars = '★'.repeat(entity.difficulty) + '☆'.repeat(5 - entity.difficulty);
         parts.push(`Difficulty: ${difficultyStars} (${entity.difficulty}/5)`);
       }
-      
+
       // Add areas
       const areas = zoneAreas.filter(area => area.zone_id === entity.id);
       if (areas.length > 0) {
-        parts.push(`Areas:`);
+        parts.push('Areas:');
         areas.forEach(area => {
-          const levelRange = area.min_level && area.max_level 
-            ? `${area.min_level}-${area.max_level}` 
-            : area.min_level 
-              ? `${area.min_level}+` 
-              : 'Legend';
+          const levelRange =
+            area.min_level && area.max_level
+              ? `${area.min_level}-${area.max_level}`
+              : area.min_level
+                ? `${area.min_level}+`
+                : 'Legend';
           parts.push(`  • ${area.name} (${levelRange})`);
         });
       }
-      
+
       // Add connections
       const connections = zoneConnections.filter(conn => conn.zone_id === entity.id);
       if (connections.length > 0) {
-        const connectedZoneIds = connections.map(conn => conn.connected_zone_id).sort((a, b) => a - b);
+        const connectedZoneIds = connections
+          .map(conn => conn.connected_zone_id)
+          .sort((a, b) => a - b);
         const connectedZoneDetails = connectedZoneIds.map(id => {
           const zone = entities.find(z => z.id === id);
           return zone ? `${id}: ${zone.name}` : `${id}`;
         });
-        parts.push({ text: `Connected Zones:`, small: false });
+        parts.push({ text: 'Connected Zones:', small: false });
         connectedZoneDetails.forEach(detail => {
           parts.push({ text: `  • ${detail}`, small: true });
         });
       }
-      
-      if (parts.length === 0) return <em className="text-gray">—</em>;
-      
+
+      if (parts.length === 0) {
+        return <em className="text-gray">—</em>;
+      }
+
       return (
         <div className="zone-info-combined">
           {parts.map((part, idx) => (
@@ -484,17 +508,27 @@ function Admin() {
         </div>
       );
     }
-    
+
     // Special handling for combined stats column in Classes table
     if (field.name === 'stats_combined') {
       const parts = [];
-      if (entity.alignment_requirement) parts.push(`Alignment: ${entity.alignment_requirement}`);
-      if (entity.hp_regen !== null && entity.hp_regen !== undefined) parts.push(`HP Regen: ${entity.hp_regen}`);
-      if (entity.mana_regen !== null && entity.mana_regen !== undefined) parts.push(`Mana Regen: ${entity.mana_regen}`);
-      if (entity.move_regen !== null && entity.move_regen !== undefined) parts.push(`Move Regen: ${entity.move_regen}`);
-      
-      if (parts.length === 0) return <em className="text-gray">—</em>;
-      
+      if (entity.alignment_requirement) {
+        parts.push(`Alignment: ${entity.alignment_requirement}`);
+      }
+      if (entity.hp_regen !== null && entity.hp_regen !== undefined) {
+        parts.push(`HP Regen: ${entity.hp_regen}`);
+      }
+      if (entity.mana_regen !== null && entity.mana_regen !== undefined) {
+        parts.push(`Mana Regen: ${entity.mana_regen}`);
+      }
+      if (entity.move_regen !== null && entity.move_regen !== undefined) {
+        parts.push(`Move Regen: ${entity.move_regen}`);
+      }
+
+      if (parts.length === 0) {
+        return <em className="text-gray">—</em>;
+      }
+
       return (
         <div className="stats-combined">
           {parts.map((part, idx) => (
@@ -503,50 +537,71 @@ function Admin() {
         </div>
       );
     }
-    
+
     if (field.type === 'json') {
-      if (value === null || value === undefined) return <em className="text-gray">null</em>;
+      if (value === null || value === undefined) {
+        return <em className="text-gray">null</em>;
+      }
       return <code className="json-preview">{JSON.stringify(value)}</code>;
     }
-    
-    if (value === null || value === undefined || value === '') return <em className="text-gray">—</em>;
-    
+
+    if (value === null || value === undefined || value === '') {
+      return <em className="text-gray">—</em>;
+    }
+
     // Render HTML for description fields
     if (field.name === 'description' && typeof value === 'string') {
       return <span dangerouslySetInnerHTML={{ __html: value }} />;
     }
-    
+
     // Don't truncate description or special_notes fields
-    if (typeof value === 'string' && value.length > 50 && field.name !== 'description' && field.name !== 'special_notes') {
+    if (
+      typeof value === 'string' &&
+      value.length > 50 &&
+      field.name !== 'description' &&
+      field.name !== 'special_notes'
+    ) {
       return value.substring(0, 50) + '...';
     }
-    
+
     return value;
   };
 
   return (
     <div className="page admin-page">
       <h2>Admin Panel</h2>
-      
+
       {/* Room Detail View */}
       {selectedRoom ? (
         <div className="room-detail-view">
           <div className="room-detail-header">
-            <button className="btn-back" onClick={handleBackToRooms}>← Back to Rooms</button>
+            <button className="btn-back" onClick={handleBackToRooms}>
+              ← Back to Rooms
+            </button>
             <h3>Room: {selectedRoom.name}</h3>
           </div>
-          
+
           <div className="room-detail-info">
-            <p><strong>Description:</strong> {selectedRoom.description}</p>
-            {selectedRoom.terrain && <p><strong>Terrain:</strong> {selectedRoom.terrain}</p>}
-            {selectedRoom.flags && <p><strong>Flags:</strong> {selectedRoom.flags}</p>}
+            <p>
+              <strong>Description:</strong> {selectedRoom.description}
+            </p>
+            {selectedRoom.terrain && (
+              <p>
+                <strong>Terrain:</strong> {selectedRoom.terrain}
+              </p>
+            )}
+            {selectedRoom.flags && (
+              <p>
+                <strong>Flags:</strong> {selectedRoom.flags}
+              </p>
+            )}
             {selectedRoom.zone_id && (
               <p>
                 <strong>Zone:</strong>{' '}
-                <a 
-                  href="#" 
+                <a
+                  href="#"
                   className="zone-link"
-                  onClick={(e) => {
+                  onClick={e => {
                     e.preventDefault();
                     const zone = allZones.find(z => z.id === selectedRoom.zone_id);
                     if (zone) {
@@ -569,17 +624,26 @@ function Admin() {
             <h4>Exits</h4>
             {(() => {
               const exits = roomExits.filter(exit => exit.from_room_id === selectedRoom.id);
-              const directionOrder: { [key: string]: number } = { 
-                north: 1, northeast: 2, east: 3, southeast: 4, 
-                south: 5, southwest: 6, west: 7, northwest: 8, 
-                up: 9, down: 10 
+              const directionOrder: { [key: string]: number } = {
+                north: 1,
+                northeast: 2,
+                east: 3,
+                southeast: 4,
+                south: 5,
+                southwest: 6,
+                west: 7,
+                northwest: 8,
+                up: 9,
+                down: 10
               };
-              exits.sort((a, b) => (directionOrder[a.direction] || 99) - (directionOrder[b.direction] || 99));
-              
+              exits.sort(
+                (a, b) => (directionOrder[a.direction] || 99) - (directionOrder[b.direction] || 99)
+              );
+
               if (exits.length === 0) {
                 return <p className="empty-message">No exits from this room.</p>;
               }
-              
+
               return (
                 <div className="entity-table-container">
                   <table className="entity-table">
@@ -597,10 +661,10 @@ function Admin() {
                           <td>{exit.direction}</td>
                           <td>
                             {exit.to_room_id ? (
-                              <a 
-                                href="#" 
+                              <a
+                                href="#"
                                 className="zone-link"
-                                onClick={async (e) => {
+                                onClick={async e => {
                                   e.preventDefault();
                                   // First check allRooms
                                   let room = allRooms.find(r => r.id === exit.to_room_id);
@@ -616,10 +680,13 @@ function Admin() {
                                       console.error('Error loading room:', error);
                                     }
                                   }
-                                  if (room) handleRoomClick(room);
+                                  if (room) {
+                                    handleRoomClick(room);
+                                  }
                                 }}
                               >
-                                {allRooms.find(r => r.id === exit.to_room_id)?.name || `Room ${exit.to_room_id}`}
+                                {allRooms.find(r => r.id === exit.to_room_id)?.name ||
+                                  `Room ${exit.to_room_id}`}
                               </a>
                             ) : (
                               <em className="text-gray">Unimplemented</em>
@@ -632,7 +699,9 @@ function Admin() {
                                 {exit.door_name || 'Door'}
                                 {exit.is_locked ? ' (locked)' : ''}
                               </>
-                            ) : '—'}
+                            ) : (
+                              '—'
+                            )}
                           </td>
                         </tr>
                       ))}
@@ -646,38 +715,59 @@ function Admin() {
       ) : selectedAction ? (
         <div className="action-detail-view">
           <div className="action-detail-header">
-            <button className="btn-back" onClick={handleBackToActions}>← Back to Player Actions</button>
+            <button className="btn-back" onClick={handleBackToActions}>
+              ← Back to Player Actions
+            </button>
             <h3>Action: {selectedAction.name}</h3>
           </div>
-          
+
           <div className="action-detail-info">
-            <p><strong>Type:</strong> <span className="action-type-badge">{selectedAction.type}</span></p>
-            {selectedAction.category && <p><strong>Category:</strong> {selectedAction.category}</p>}
-            {selectedAction.levelRequired && <p><strong>Level Required:</strong> {selectedAction.levelRequired}</p>}
-            
+            <p>
+              <strong>Type:</strong>{' '}
+              <span className="action-type-badge">{selectedAction.type}</span>
+            </p>
+            {selectedAction.category && (
+              <p>
+                <strong>Category:</strong> {selectedAction.category}
+              </p>
+            )}
+            {selectedAction.levelRequired && (
+              <p>
+                <strong>Level Required:</strong> {selectedAction.levelRequired}
+              </p>
+            )}
+
             {selectedAction.description && (
               <div className="action-description">
                 <strong>Description:</strong>
                 <pre>{selectedAction.description}</pre>
               </div>
             )}
-            
+
             {selectedAction.syntax && (
               <div className="action-syntax">
                 <strong>Syntax:</strong>
                 <pre>{selectedAction.syntax}</pre>
               </div>
             )}
-            
+
             {selectedAction.examples && (
               <div className="action-examples">
                 <strong>Examples:</strong>
                 <pre>{selectedAction.examples}</pre>
               </div>
             )}
-            
-            {selectedAction.requirements && <p><strong>Requirements:</strong> {selectedAction.requirements}</p>}
-            {selectedAction.relatedActions && <p><strong>Related Actions:</strong> {selectedAction.relatedActions}</p>}
+
+            {selectedAction.requirements && (
+              <p>
+                <strong>Requirements:</strong> {selectedAction.requirements}
+              </p>
+            )}
+            {selectedAction.relatedActions && (
+              <p>
+                <strong>Related Actions:</strong> {selectedAction.relatedActions}
+              </p>
+            )}
           </div>
 
           <div className="action-stats-section">
@@ -690,13 +780,17 @@ function Admin() {
               {selectedAction.discovered && (
                 <div className="stat-item">
                   <span className="stat-label">Discovered:</span>
-                  <span className="stat-value">{new Date(selectedAction.discovered).toLocaleDateString()}</span>
+                  <span className="stat-value">
+                    {new Date(selectedAction.discovered).toLocaleDateString()}
+                  </span>
                 </div>
               )}
               {selectedAction.lastTested && (
                 <div className="stat-item">
                   <span className="stat-label">Last Tested:</span>
-                  <span className="stat-value">{new Date(selectedAction.lastTested).toLocaleDateString()}</span>
+                  <span className="stat-value">
+                    {new Date(selectedAction.lastTested).toLocaleDateString()}
+                  </span>
                 </div>
               )}
               <div className="stat-item">
@@ -715,7 +809,12 @@ function Admin() {
                 <div className="stat-item">
                   <span className="stat-label">Success Rate:</span>
                   <span className="stat-value">
-                    {((selectedAction.successCount / (selectedAction.successCount + selectedAction.failCount)) * 100).toFixed(1)}%
+                    {(
+                      (selectedAction.successCount /
+                        (selectedAction.successCount + selectedAction.failCount)) *
+                      100
+                    ).toFixed(1)}
+                    %
                   </span>
                 </div>
               )}
@@ -725,15 +824,34 @@ function Admin() {
       ) : selectedZone ? (
         <div className="zone-detail-view">
           <div className="zone-detail-header">
-            <button className="btn-back" onClick={handleBackToZones}>← Back to Zones</button>
-            <h3>Zone #{selectedZone.id}: {selectedZone.name}</h3>
+            <button className="btn-back" onClick={handleBackToZones}>
+              ← Back to Zones
+            </button>
+            <h3>
+              Zone #{selectedZone.id}: {selectedZone.name}
+            </h3>
           </div>
-          
+
           <div className="zone-detail-info">
-            <p><strong>Description:</strong> {selectedZone.description}</p>
-            {selectedZone.author && <p><strong>Author:</strong> {selectedZone.author}</p>}
-            {selectedZone.difficulty && <p><strong>Difficulty:</strong> {'★'.repeat(selectedZone.difficulty)}{'☆'.repeat(5 - selectedZone.difficulty)} ({selectedZone.difficulty}/5)</p>}
-            {selectedZone.notes && <p><strong>Notes:</strong> {selectedZone.notes}</p>}
+            <p>
+              <strong>Description:</strong> {selectedZone.description}
+            </p>
+            {selectedZone.author && (
+              <p>
+                <strong>Author:</strong> {selectedZone.author}
+              </p>
+            )}
+            {selectedZone.difficulty && (
+              <p>
+                <strong>Difficulty:</strong> {'★'.repeat(selectedZone.difficulty)}
+                {'☆'.repeat(5 - selectedZone.difficulty)} ({selectedZone.difficulty}/5)
+              </p>
+            )}
+            {selectedZone.notes && (
+              <p>
+                <strong>Notes:</strong> {selectedZone.notes}
+              </p>
+            )}
           </div>
 
           <div className="zone-rooms-section">
@@ -752,15 +870,25 @@ function Admin() {
                   <tbody>
                     {zoneRooms.map(room => {
                       const exits = roomExits.filter(exit => exit.from_room_id === room.id);
-                      const directionOrder: { [key: string]: number } = { 
-                        north: 1, northeast: 2, east: 3, southeast: 4, 
-                        south: 5, southwest: 6, west: 7, northwest: 8, 
-                        up: 9, down: 10 
+                      const directionOrder: { [key: string]: number } = {
+                        north: 1,
+                        northeast: 2,
+                        east: 3,
+                        southeast: 4,
+                        south: 5,
+                        southwest: 6,
+                        west: 7,
+                        northwest: 8,
+                        up: 9,
+                        down: 10
                       };
-                      exits.sort((a, b) => (directionOrder[a.direction] || 99) - (directionOrder[b.direction] || 99));
-                      
+                      exits.sort(
+                        (a, b) =>
+                          (directionOrder[a.direction] || 99) - (directionOrder[b.direction] || 99)
+                      );
+
                       return (
-                        <tr 
+                        <tr
                           key={room.id}
                           className="clickable-row"
                           onClick={() => handleRoomClick(room)}
@@ -773,10 +901,14 @@ function Admin() {
                               <div className="room-exits">
                                 {exits.map((exit, idx) => {
                                   const toRoom = zoneRooms.find(r => r.id === exit.to_room_id);
-                                  const exitText = exit.to_room_id 
+                                  const exitText = exit.to_room_id
                                     ? `${exit.direction} → ${toRoom?.name || `Room ${exit.to_room_id}`}`
                                     : `${exit.direction} (unimplemented)`;
-                                  return <div key={idx} className="exit-item">{exitText}</div>;
+                                  return (
+                                    <div key={idx} className="exit-item">
+                                      {exitText}
+                                    </div>
+                                  );
                                 })}
                               </div>
                             )}
@@ -791,93 +923,121 @@ function Admin() {
           </div>
         </div>
       ) : (
-      <div className="admin-container">
-        {/* Entity Selector */}
-        <div className="entity-selector">
-          <h3>Entity Types</h3>
-          {ENTITY_CONFIGS.map(config => (
-            <button
-              key={config.endpoint}
-              className={`entity-button ${selectedEntity.endpoint === config.endpoint ? 'active' : ''}`}
-              onClick={() => setSelectedEntity(config)}
-            >
-              {config.name}
-            </button>
-          ))}
-        </div>
-
-        {/* Entity List */}
-        <div className="entity-content">
-          <div className="entity-header">
-            <h3>{selectedEntity.name}</h3>
-            {!selectedEntity.readOnly && (
-              <button className="btn-primary" onClick={handleCreate}>
-                + Create New
+        <div className="admin-container">
+          {/* Entity Selector */}
+          <div className="entity-selector">
+            <h3>Entity Types</h3>
+            {ENTITY_CONFIGS.map(config => (
+              <button
+                key={config.endpoint}
+                className={`entity-button ${selectedEntity.endpoint === config.endpoint ? 'active' : ''}`}
+                onClick={() => setSelectedEntity(config)}
+              >
+                {config.name}
               </button>
-            )}
+            ))}
           </div>
 
-          {loading ? (
-            <div className="loading">Loading...</div>
-          ) : (
-            <div className="entity-table-container">
-              <table className="entity-table">
-                <thead>
-                  <tr>
-                    {selectedEntity.fields.filter(f => !f.hideInTable).map(field => (
-                      <th key={field.name}>{field.label}</th>
-                    ))}
-                    {!selectedEntity.readOnly && <th>Actions</th>}
-                  </tr>
-                </thead>
-                <tbody>
-                  {entities.length === 0 ? (
-                    <tr>
-                      <td colSpan={selectedEntity.fields.filter(f => !f.hideInTable).length + (!selectedEntity.readOnly ? 1 : 0)} className="empty-cell">
-                        No {selectedEntity.name.toLowerCase()} found. Click "Create New" to add one.
-                      </td>
-                    </tr>
-                  ) : (
-                    entities.map(entity => (
-                      <tr 
-                        key={entity.id}
-                        className={selectedEntity.clickable ? 'clickable-row' : ''}
-                        onClick={() => selectedEntity.clickable && handleEntityClick(entity)}
-                      >
-                        {selectedEntity.fields.filter(f => !f.hideInTable).map(field => (
-                          <td key={field.name} data-field={field.name}>{renderFieldValue(entity, field)}</td>
-                        ))}
-                        {!selectedEntity.readOnly && (
-                          <td className="actions-cell">
-                            {selectedEntity.endpoint === 'abilities' ? (
-                              <button className="btn-small" onClick={() => handleViewScores(entity)}>
-                                View Scores
-                              </button>
-                            ) : (
-                              <>
-                                <button className="btn-small btn-edit" onClick={() => handleEdit(entity)}>Edit</button>
-                                <button className="btn-small btn-delete" onClick={() => handleDelete(entity.id)}>Delete</button>
-                              </>
-                            )}
-                          </td>
-                        )}
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
+          {/* Entity List */}
+          <div className="entity-content">
+            <div className="entity-header">
+              <h3>{selectedEntity.name}</h3>
+              {!selectedEntity.readOnly && (
+                <button className="btn-primary" onClick={handleCreate}>
+                  + Create New
+                </button>
+              )}
             </div>
-          )}
+
+            {loading ? (
+              <div className="loading">Loading...</div>
+            ) : (
+              <div className="entity-table-container">
+                <table className="entity-table">
+                  <thead>
+                    <tr>
+                      {selectedEntity.fields
+                        .filter(f => !f.hideInTable)
+                        .map(field => (
+                          <th key={field.name}>{field.label}</th>
+                        ))}
+                      {!selectedEntity.readOnly && <th>Actions</th>}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {entities.length === 0 ? (
+                      <tr>
+                        <td
+                          colSpan={
+                            selectedEntity.fields.filter(f => !f.hideInTable).length +
+                            (!selectedEntity.readOnly ? 1 : 0)
+                          }
+                          className="empty-cell"
+                        >
+                          No {selectedEntity.name.toLowerCase()} found. Click &quot;Create New&quot;
+                          to add one.
+                        </td>
+                      </tr>
+                    ) : (
+                      entities.map(entity => (
+                        <tr
+                          key={entity.id}
+                          className={selectedEntity.clickable ? 'clickable-row' : ''}
+                          onClick={() => selectedEntity.clickable && handleEntityClick(entity)}
+                        >
+                          {selectedEntity.fields
+                            .filter(f => !f.hideInTable)
+                            .map(field => (
+                              <td key={field.name} data-field={field.name}>
+                                {renderFieldValue(entity, field)}
+                              </td>
+                            ))}
+                          {!selectedEntity.readOnly && (
+                            <td className="actions-cell">
+                              {selectedEntity.endpoint === 'abilities' ? (
+                                <button
+                                  className="btn-small"
+                                  onClick={() => handleViewScores(entity)}
+                                >
+                                  View Scores
+                                </button>
+                              ) : (
+                                <>
+                                  <button
+                                    className="btn-small btn-edit"
+                                    onClick={() => handleEdit(entity)}
+                                  >
+                                    Edit
+                                  </button>
+                                  <button
+                                    className="btn-small btn-delete"
+                                    onClick={() => handleDelete(entity.id)}
+                                  >
+                                    Delete
+                                  </button>
+                                </>
+                              )}
+                            </td>
+                          )}
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
       )}
 
       {/* Edit/Create Form Modal */}
       {showForm && (
         <div className="modal-overlay" onClick={() => setShowForm(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h3>{editingEntity ? 'Edit' : 'Create'} {getSingularName(selectedEntity.name)}</h3>
-            
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <h3>
+              {editingEntity ? 'Edit' : 'Create'} {getSingularName(selectedEntity.name)}
+            </h3>
+
             <form onSubmit={handleSubmit}>
               {selectedEntity.fields.map(field => (
                 <div key={field.name} className="form-group">
@@ -885,11 +1045,11 @@ function Admin() {
                     {field.label}
                     {field.required && <span className="required">*</span>}
                   </label>
-                  
+
                   {field.type === 'textarea' ? (
                     <textarea
                       value={formData[field.name] || ''}
-                      onChange={(e) => handleFieldChange(field.name, e.target.value)}
+                      onChange={e => handleFieldChange(field.name, e.target.value)}
                       required={field.required}
                       rows={4}
                     />
@@ -900,7 +1060,7 @@ function Admin() {
                           ? formData[field.name]
                           : JSON.stringify(formData[field.name], null, 2) || ''
                       }
-                      onChange={(e) => handleFieldChange(field.name, e.target.value)}
+                      onChange={e => handleFieldChange(field.name, e.target.value)}
                       placeholder='{"key": "value"} or ["item1", "item2"]'
                       rows={4}
                       className="json-input"
@@ -909,13 +1069,13 @@ function Admin() {
                     <input
                       type={field.type}
                       value={formData[field.name] || ''}
-                      onChange={(e) => handleFieldChange(field.name, e.target.value)}
+                      onChange={e => handleFieldChange(field.name, e.target.value)}
                       required={field.required}
                     />
                   )}
                 </div>
               ))}
-              
+
               <div className="form-actions">
                 <button type="button" className="btn-secondary" onClick={() => setShowForm(false)}>
                   Cancel
@@ -932,9 +1092,11 @@ function Admin() {
       {/* Ability Scores Modal (Read-only) */}
       {showScores && (
         <div className="modal-overlay" onClick={() => setShowScores(false)}>
-          <div className="modal-content scores-modal" onClick={(e) => e.stopPropagation()}>
-            <h3>{selectedAbility?.name} ({selectedAbility?.short_name}) - Score Table</h3>
-            
+          <div className="modal-content scores-modal" onClick={e => e.stopPropagation()}>
+            <h3>
+              {selectedAbility?.name} ({selectedAbility?.short_name}) - Score Table
+            </h3>
+
             {abilityScores.length === 0 ? (
               <p>No scores defined for this ability.</p>
             ) : (
@@ -944,24 +1106,31 @@ function Admin() {
                     <thead>
                       <tr>
                         <th>Score</th>
-                        {abilityScores[0] && Object.keys(abilityScores[0].effects).map(key => (
-                          <th key={key}>{key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</th>
-                        ))}
+                        {abilityScores[0] &&
+                          Object.keys(abilityScores[0].effects).map(key => (
+                            <th key={key}>
+                              {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                            </th>
+                          ))}
                       </tr>
                     </thead>
                     <tbody>
                       {abilityScores.map(score => (
                         <tr key={score.id}>
-                          <td><strong>{score.score}</strong></td>
+                          <td>
+                            <strong>{score.score}</strong>
+                          </td>
                           {Object.values(score.effects).map((value: any, idx) => (
-                            <td key={idx}>{typeof value === 'number' && value > 0 ? `+${value}` : value}</td>
+                            <td key={idx}>
+                              {typeof value === 'number' && value > 0 ? `+${value}` : value}
+                            </td>
                           ))}
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
-                
+
                 {/* Show class bonus table for Charisma */}
                 {selectedAbility?.short_name === 'CHA' && (
                   <div style={{ marginTop: '30px' }}>
@@ -977,9 +1146,15 @@ function Admin() {
                         </thead>
                         <tbody>
                           <tr>
-                            <td><strong>+10</strong></td>
-                            <td><strong>+5</strong></td>
-                            <td><strong>0</strong></td>
+                            <td>
+                              <strong>+10</strong>
+                            </td>
+                            <td>
+                              <strong>+5</strong>
+                            </td>
+                            <td>
+                              <strong>0</strong>
+                            </td>
                           </tr>
                         </tbody>
                       </table>
@@ -988,9 +1163,11 @@ function Admin() {
                 )}
               </>
             )}
-            
+
             <div style={{ marginTop: '20px', textAlign: 'right' }}>
-              <button className="btn-secondary" onClick={() => setShowScores(false)}>Close</button>
+              <button className="btn-secondary" onClick={() => setShowScores(false)}>
+                Close
+              </button>
             </div>
           </div>
         </div>

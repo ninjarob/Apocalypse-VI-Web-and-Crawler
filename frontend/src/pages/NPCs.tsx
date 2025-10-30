@@ -6,10 +6,6 @@ export default function NPCs() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
 
-  useEffect(() => {
-    loadNPCs();
-  }, []);
-
   const loadNPCs = async () => {
     try {
       const data = await api.get('/npcs');
@@ -21,9 +17,14 @@ export default function NPCs() {
     }
   };
 
-  const filteredNPCs = npcs.filter(npc =>
-    npc.name.toLowerCase().includes(search.toLowerCase()) ||
-    npc.description?.toLowerCase().includes(search.toLowerCase())
+  useEffect(() => {
+    loadNPCs();
+  }, []);
+
+  const filteredNPCs = npcs.filter(
+    npc =>
+      npc.name.toLowerCase().includes(search.toLowerCase()) ||
+      npc.description?.toLowerCase().includes(search.toLowerCase())
   );
 
   if (loading) {
@@ -33,21 +34,21 @@ export default function NPCs() {
   return (
     <div>
       <h2>NPCs ({npcs.length})</h2>
-      
+
       <input
         type="text"
         className="search-box"
         placeholder="Search NPCs..."
         value={search}
-        onChange={(e) => setSearch(e.target.value)}
+        onChange={e => setSearch(e.target.value)}
       />
-      
+
       <div className="entity-grid">
-        {filteredNPCs.map((npc) => (
+        {filteredNPCs.map(npc => (
           <div key={npc.id} className="entity-card">
             <h3>{npc.name}</h3>
             <p>{npc.description}</p>
-            
+
             <div style={{ marginTop: '10px' }}>
               {npc.hostile !== undefined && (
                 <span className={`tag ${npc.hostile ? 'hostile' : 'friendly'}`}>
@@ -58,7 +59,7 @@ export default function NPCs() {
               {npc.race && <span className="tag">{npc.race}</span>}
               {npc.class && <span className="tag">{npc.class}</span>}
             </div>
-            
+
             {npc.location && (
               <div style={{ marginTop: '10px', fontSize: '0.8em', color: '#666' }}>
                 Location: {npc.location}
@@ -67,7 +68,7 @@ export default function NPCs() {
           </div>
         ))}
       </div>
-      
+
       {filteredNPCs.length === 0 && (
         <p style={{ textAlign: 'center', color: '#888', marginTop: '40px' }}>
           No NPCs found matching your search.

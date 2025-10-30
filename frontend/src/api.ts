@@ -133,31 +133,31 @@ export const api = {
     const response = await axios.get(`${API_BASE}${path}`);
     return response.data;
   },
-  
+
   post: async (path: string, data: any): Promise<any> => {
     const response = await axios.post(`${API_BASE}${path}`, data);
     return response.data;
   },
-  
+
   put: async (path: string, data: any): Promise<any> => {
     const response = await axios.put(`${API_BASE}${path}`, data);
     return response.data;
   },
-  
+
   delete: async (path: string): Promise<any> => {
     const response = await axios.delete(`${API_BASE}${path}`);
     return response.data;
   },
-  
+
   // Stats
   getStats: async (): Promise<Stats> => {
     const response = await axios.get(`${API_BASE}/stats`);
     return response.data;
   },
-  
+
   // Crawler Status
   getCrawlerStatus: async (): Promise<CrawlerStatus> => {
     const response = await axios.get(`${API_BASE}/crawler/status`);
     return response.data;
-  },
+  }
 };
