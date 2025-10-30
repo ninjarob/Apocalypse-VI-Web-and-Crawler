@@ -4,6 +4,7 @@ import { RepositoryFactory } from '../repositories/GenericRepository';
 import { repositories } from '../repositories';
 import { Room } from '../repositories/RoomRepository';
 import { asyncHandler, validateCreate, validateUpdate } from '../middleware';
+import { BadRequestError, createNotFoundError } from '../errors/CustomErrors';
 
 console.log('[API ROUTES] Loading api.ts module');
 
@@ -260,7 +261,7 @@ router.get('/stats', asyncHandler(async (_req: Request, res: Response) => {
 router.get('/rooms/by-name/:name', asyncHandler(async (req: Request, res: Response) => {
   const room = await repositories.rooms.findByName(req.params.name);
   if (!room) {
-    return res.status(404).json({ error: 'Room not found' });
+    throw createNotFoundError('Room', req.params.name);
   }
   res.json(room);
 }));
@@ -315,10 +316,10 @@ router.get(
     
     if (!config) {
       console.log(`[API] Unknown entity type: ${type}`);
-      return res.status(400).json({ 
-        error: `Unknown entity type: ${type}`,
-        validTypes: VALID_ENTITY_TYPES
-      });
+      throw new BadRequestError(
+        `Unknown entity type: ${type}`,
+        { validTypes: VALID_ENTITY_TYPES }
+      );
     }
     
     console.log(`[API] Config found for ${type}:`, { table: config.table, idField: config.idField });
@@ -353,14 +354,14 @@ router.get(
     const config = ENTITY_CONFIG[type];
     
     if (!config) {
-      return res.status(400).json({ error: `Unknown entity type: ${type}` });
+      throw new BadRequestError(`Unknown entity type: ${type}`);
     }
     
     const repository = RepositoryFactory.getRepository(config);
     const entity = await repository.findById(id);
     
     if (!entity) {
-      return res.status(404).json({ error: `${type} not found` });
+      throw createNotFoundError(type, id);
     }
     
     res.json(entity);
@@ -391,7 +392,7 @@ router.post(
     const config = ENTITY_CONFIG[type];
     
     if (!config) {
-      return res.status(400).json({ error: `Unknown entity type: ${type}` });
+      throw new BadRequestError(`Unknown entity type: ${type}`);
     }
     
     const entity = req.body;
@@ -408,7 +409,7 @@ router.post(
     const uniqueValue = entity[uniqueField];
     
     if (!uniqueValue) {
-      return res.status(400).json({ error: `${uniqueField} is required` });
+      throw new BadRequestError(`${uniqueField} is required`);
     }
     
     const existing = await repository.findByUnique(uniqueValue);
@@ -448,7 +449,7 @@ router.put(
     const config = ENTITY_CONFIG[type];
     
     if (!config) {
-      return res.status(400).json({ error: `Unknown entity type: ${type}` });
+      throw new BadRequestError(`Unknown entity type: ${type}`);
     }
     
     const updates = req.body;
@@ -463,7 +464,7 @@ router.put(
     }
     
     if (!existing) {
-      return res.status(404).json({ error: `${type} not found` });
+      throw createNotFoundError(type, identifier);
     }
     
     const id = (existing as any)[config.idField];
@@ -483,33 +484,21 @@ router.delete(
     const config = ENTITY_CONFIG[type];
     
     if (!config) {
-      return res.status(400).json({ error: `Unknown entity type: ${type}` });
+      throw new BadRequestError(`Unknown entity type: ${type}`);
     }
     
     const repository = RepositoryFactory.getRepository(config);
     const deleted = await repository.delete(id);
     
     if (!deleted) {
-      return res.status(404).json({ error: `${type} not found` });
+      throw createNotFoundError(type, id);
     }
     
     res.json({ success: true, deleted: id });
   })
 );
 
-// Catch-all 404 handler for debugging
-router.use((req: Request, res: Response) => {
-  console.log(`[API] 404 - Unmatched route: ${req.method} ${req.path}`);
-  console.log(`[API] Request URL:`, req.url);
-  console.log(`[API] Original URL:`, req.originalUrl);
-  console.log(`[API] Base URL:`, req.baseUrl);
-  console.log(`[API] Params:`, req.params);
-  res.status(404).json({ 
-    error: 'Route not found',
-    path: req.path,
-    method: req.method
-  });
-});
+// Catch-all 404 handler has been moved to global error handler in index.ts
 
 console.log('[API ROUTES] All routes registered, exporting router');
 

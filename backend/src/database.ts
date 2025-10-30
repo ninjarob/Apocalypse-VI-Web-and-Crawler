@@ -1,6 +1,34 @@
 import sqlite3 from 'sqlite3';
 import path from 'path';
 import { promisify } from 'util';
+import fs from 'fs';
+
+// Handle both CommonJS (__dirname) and dev mode (tsx) environments
+const getDatabasePath = () => {
+  // Option 1: Use environment variable if set
+  if (process.env.DB_PATH) {
+    return process.env.DB_PATH;
+  }
+  
+  // Option 2: Use __dirname if available (compiled code)
+  if (typeof __dirname !== 'undefined') {
+    // When compiled: dist/src/database.js -> ../../../data/mud-data.db
+    return path.resolve(__dirname, '../../../data/mud-data.db');
+  }
+  
+  // Option 3: Search upwards from cwd to find data directory
+  let currentDir = process.cwd();
+  for (let i = 0; i < 3; i++) {
+    const testPath = path.join(currentDir, 'data', 'mud-data.db');
+    if (fs.existsSync(testPath)) {
+      return testPath;
+    }
+    currentDir = path.dirname(currentDir);
+  }
+  
+  // Fallback: assume data is one level up from backend
+  return path.join(process.cwd(), '..', 'data', 'mud-data.db');
+};
 
 let db: sqlite3.Database | null = null;
 
@@ -8,14 +36,15 @@ export async function initDatabase(): Promise<sqlite3.Database> {
   if (db) return db;
 
   // Database location: data/mud-data.db (at project root level)
-  // When compiled: dist/src/database.js -> ../../../data/mud-data.db
-  // When running with tsx: backend/src/database.ts -> ../../data/mud-data.db
-  const dbPath = path.resolve(__dirname, '../../../data/mud-data.db');
+  const dbPath = getDatabasePath();
+  
+  console.log(`[Database] Attempting to connect to: ${dbPath}`);
   
   return new Promise((resolve, reject) => {
     db = new sqlite3.Database(dbPath, async (err) => {
       if (err) {
         console.error('Failed to connect to database:', err);
+        console.error('Database path was:', dbPath);
         reject(err);
       } else {
         console.log(`✓ Connected to SQLite database at ${dbPath}`);

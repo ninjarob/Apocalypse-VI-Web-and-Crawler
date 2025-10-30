@@ -5,7 +5,7 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import apiRouter from './routes';
 import { initDatabase, closeDatabase } from './database';
-import { responseTime } from './middleware';
+import { responseTime, errorHandler, notFoundHandler } from './middleware';
 
 dotenv.config();
 
@@ -28,11 +28,11 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date() });
 });
 
-// Error handling
-app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
-});
+// 404 handler for all unmatched routes (must be after all routes)
+app.use(notFoundHandler);
+
+// Global error handler (must be last middleware)
+app.use(errorHandler);
 
 // Database connection and server start
 async function start() {
