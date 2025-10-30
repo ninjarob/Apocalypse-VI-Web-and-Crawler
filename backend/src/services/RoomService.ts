@@ -1,6 +1,6 @@
 /**
  * Room Service
- * 
+ *
  * Encapsulates business logic for room operations including:
  * - Room retrieval and filtering
  * - Room creation with visit tracking
@@ -21,7 +21,7 @@ export class RoomService extends BaseService {
     if (filters?.zone_id) {
       this.validatePositiveInteger(filters.zone_id, 'zone_id');
     }
-    
+
     return await repositories.rooms.findAll(filters);
   }
 
@@ -34,11 +34,11 @@ export class RoomService extends BaseService {
     }
 
     const room = await repositories.rooms.findById(id);
-    
+
     if (!room) {
       throw createNotFoundError('Room', id);
     }
-    
+
     return room;
   }
 
@@ -51,11 +51,11 @@ export class RoomService extends BaseService {
     }
 
     const room = await repositories.rooms.findByName(name);
-    
+
     if (!room) {
       throw createNotFoundError('Room', name);
     }
-    
+
     return room;
   }
 
@@ -68,19 +68,19 @@ export class RoomService extends BaseService {
     if (!roomData.id || roomData.id.trim() === '') {
       throw new BadRequestError('Room ID is required');
     }
-    
+
     if (!roomData.name || roomData.name.trim() === '') {
       throw new BadRequestError('Room name is required');
     }
 
     // Check if room already exists
     const existing = await repositories.rooms.findById(roomData.id);
-    
+
     if (existing) {
       // Room exists - record visit and return updated room
       return await this.recordVisit(roomData.id);
     }
-    
+
     // Room doesn't exist - create new room with visit tracking
     const newRoom: Partial<Room> = {
       id: roomData.id,
@@ -100,18 +100,18 @@ export class RoomService extends BaseService {
       lastVisited: new Date().toISOString(),
       rawText: roomData.rawText || undefined
     };
-    
+
     // Validate zone_id if provided
     if (newRoom.zone_id) {
       this.validatePositiveInteger(newRoom.zone_id, 'zone_id');
-      
+
       // Verify zone exists
       const zone = await repositories.zones.findById(newRoom.zone_id.toString());
       if (!zone) {
         throw new BadRequestError(`Zone with ID ${newRoom.zone_id} does not exist`);
       }
     }
-    
+
     return await repositories.rooms.create(newRoom);
   }
 
@@ -132,14 +132,14 @@ export class RoomService extends BaseService {
     // Validate zone_id if being updated
     if (updates.zone_id) {
       this.validatePositiveInteger(updates.zone_id, 'zone_id');
-      
+
       // Verify zone exists
       const zone = await repositories.zones.findById(updates.zone_id.toString());
       if (!zone) {
         throw new BadRequestError(`Zone with ID ${updates.zone_id} does not exist`);
       }
     }
-    
+
     const updated = await repositories.rooms.update(id, updates);
     if (!updated) {
       throw new Error(`Failed to update room ${id}`);
@@ -156,11 +156,11 @@ export class RoomService extends BaseService {
     }
 
     const deleted = await repositories.rooms.delete(id);
-    
+
     if (!deleted) {
       throw createNotFoundError('Room', id);
     }
-    
+
     return deleted;
   }
 
@@ -196,13 +196,13 @@ export class RoomService extends BaseService {
    */
   async getRoomsByZone(zoneId: number): Promise<Room[]> {
     this.validatePositiveInteger(zoneId, 'zone_id');
-    
+
     // Verify zone exists
     const zone = await repositories.zones.findById(zoneId.toString());
     if (!zone) {
       throw createNotFoundError('Zone', zoneId.toString());
     }
-    
+
     return await repositories.rooms.findAll({ zone_id: zoneId });
   }
 }

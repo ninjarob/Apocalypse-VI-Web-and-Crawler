@@ -47,8 +47,8 @@ export abstract class BaseRepository<T = any> {
   protected async get(sql: string, params: any[] = []): Promise<T | null> {
     return new Promise((resolve, reject) => {
       this.getDb().get(sql, params, (err, row) => {
-        if (err) reject(err);
-        else resolve(row ? this.deserializeEntity(row) : null);
+        if (err) {reject(err);}
+        else {resolve(row ? this.deserializeEntity(row) : null);}
       });
     });
   }
@@ -59,8 +59,8 @@ export abstract class BaseRepository<T = any> {
   protected async all(sql: string, params: any[] = []): Promise<T[]> {
     return new Promise((resolve, reject) => {
       this.getDb().all(sql, params, (err, rows) => {
-        if (err) reject(err);
-        else resolve(rows.map(row => this.deserializeEntity(row)));
+        if (err) {reject(err);}
+        else {resolve(rows.map(row => this.deserializeEntity(row)));}
       });
     });
   }
@@ -71,8 +71,8 @@ export abstract class BaseRepository<T = any> {
   protected async run(sql: string, params: any[] = []): Promise<QueryResult> {
     return new Promise((resolve, reject) => {
       this.getDb().run(sql, params, function(err) {
-        if (err) reject(err);
-        else resolve({ changes: this.changes, lastID: this.lastID });
+        if (err) {reject(err);}
+        else {resolve({ changes: this.changes, lastID: this.lastID });}
       });
     });
   }
@@ -81,8 +81,8 @@ export abstract class BaseRepository<T = any> {
    * Serialize JSON fields for storage
    */
   protected serialize(value: any): string | null {
-    if (!value) return null;
-    if (typeof value === 'string') return value;
+    if (!value) {return null;}
+    if (typeof value === 'string') {return value;}
     return JSON.stringify(value);
   }
 
@@ -90,7 +90,7 @@ export abstract class BaseRepository<T = any> {
    * Deserialize JSON fields from storage
    */
   protected deserialize(value: string | null): any {
-    if (!value) return null;
+    if (!value) {return null;}
     try {
       return JSON.parse(value);
     } catch {
@@ -102,10 +102,10 @@ export abstract class BaseRepository<T = any> {
    * Deserialize an entity based on its configuration
    */
   protected deserializeEntity(row: any): T {
-    if (!row) return row;
-    
+    if (!row) {return row;}
+
     const entity = { ...row };
-    
+
     // Deserialize JSON fields
     if (this.config.jsonFields) {
       this.config.jsonFields.forEach(field => {
@@ -114,7 +114,7 @@ export abstract class BaseRepository<T = any> {
         }
       });
     }
-    
+
     // Convert boolean fields
     if (this.config.booleanFields) {
       this.config.booleanFields.forEach(field => {
@@ -123,7 +123,7 @@ export abstract class BaseRepository<T = any> {
         }
       });
     }
-    
+
     return entity as T;
   }
 
@@ -132,7 +132,7 @@ export abstract class BaseRepository<T = any> {
    */
   protected serializeEntity(entity: Partial<T>): any {
     const serialized = { ...entity };
-    
+
     // Serialize JSON fields
     if (this.config.jsonFields) {
       this.config.jsonFields.forEach(field => {
@@ -141,7 +141,7 @@ export abstract class BaseRepository<T = any> {
         }
       });
     }
-    
+
     // Convert boolean fields
     if (this.config.booleanFields) {
       this.config.booleanFields.forEach(field => {
@@ -150,7 +150,7 @@ export abstract class BaseRepository<T = any> {
         }
       });
     }
-    
+
     return serialized;
   }
 
@@ -160,15 +160,15 @@ export abstract class BaseRepository<T = any> {
   async findAll(filters?: Record<string, any>): Promise<T[]> {
     let sql = `SELECT * FROM ${this.config.table}`;
     const params: any[] = [];
-    
+
     if (filters && Object.keys(filters).length > 0) {
       const conditions = Object.keys(filters).map(key => `${key} = ?`);
       sql += ` WHERE ${conditions.join(' AND ')}`;
       params.push(...Object.values(filters));
     }
-    
+
     sql += ` ORDER BY ${this.config.sortBy}`;
-    
+
     return this.all(sql, params);
   }
 
@@ -187,7 +187,7 @@ export abstract class BaseRepository<T = any> {
     if (!this.config.uniqueField) {
       throw new Error('No unique field configured for this repository');
     }
-    
+
     const sql = `SELECT * FROM ${this.config.table} WHERE ${this.config.uniqueField} = ?`;
     return this.get(sql, [value]);
   }
@@ -198,28 +198,28 @@ export abstract class BaseRepository<T = any> {
   async create(entity: Partial<T>): Promise<T> {
     const serialized = this.serializeEntity(entity);
     const columns = Object.keys(serialized).filter(key => {
-      if (serialized[key] === undefined) return false;
-      if (this.config.autoIncrement && key === this.config.idField) return false;
+      if (serialized[key] === undefined) {return false;}
+      if (this.config.autoIncrement && key === this.config.idField) {return false;}
       return true;
     });
-    
+
     const placeholders = columns.map(() => '?').join(', ');
     const values = columns.map(col => serialized[col]);
-    
+
     const sql = `INSERT INTO ${this.config.table} (${columns.join(', ')}) VALUES (${placeholders})`;
     const result = await this.run(sql, values);
-    
+
     // If auto-increment, fetch the created entity
     if (this.config.autoIncrement && result.lastID) {
       const created = await this.findById(result.lastID);
-      if (!created) throw new Error('Failed to fetch created entity');
+      if (!created) {throw new Error('Failed to fetch created entity');}
       return created;
     }
-    
+
     // Otherwise, return the entity with the provided ID
     const id = (entity as any)[this.config.idField];
     const created = await this.findById(id);
-    if (!created) throw new Error('Failed to fetch created entity');
+    if (!created) {throw new Error('Failed to fetch created entity');}
     return created;
   }
 
@@ -230,24 +230,24 @@ export abstract class BaseRepository<T = any> {
     const serialized = this.serializeEntity(updates);
     const fields: string[] = [];
     const params: any[] = [];
-    
+
     Object.keys(serialized).forEach(key => {
       if (key !== this.config.idField && serialized[key] !== undefined) {
         fields.push(`${key} = ?`);
         params.push(serialized[key]);
       }
     });
-    
+
     if (fields.length === 0) {
       return this.findById(id);
     }
-    
+
     fields.push('updatedAt = CURRENT_TIMESTAMP');
     params.push(id);
-    
+
     const sql = `UPDATE ${this.config.table} SET ${fields.join(', ')} WHERE ${this.config.idField} = ?`;
     await this.run(sql, params);
-    
+
     return this.findById(id);
   }
 
@@ -274,17 +274,17 @@ export abstract class BaseRepository<T = any> {
   async count(filters?: Record<string, any>): Promise<number> {
     let sql = `SELECT COUNT(*) as count FROM ${this.config.table}`;
     const params: any[] = [];
-    
+
     if (filters && Object.keys(filters).length > 0) {
       const conditions = Object.keys(filters).map(key => `${key} = ?`);
       sql += ` WHERE ${conditions.join(' AND ')}`;
       params.push(...Object.values(filters));
     }
-    
+
     return new Promise((resolve, reject) => {
       this.getDb().get(sql, params, (err, row: any) => {
-        if (err) reject(err);
-        else resolve(row?.count || 0);
+        if (err) {reject(err);}
+        else {resolve(row?.count || 0);}
       });
     });
   }
@@ -295,17 +295,17 @@ export abstract class BaseRepository<T = any> {
   async upsert(entity: Partial<T>): Promise<T> {
     const uniqueField = this.config.uniqueField || this.config.idField;
     const uniqueValue = (entity as any)[uniqueField];
-    
+
     if (!uniqueValue) {
       throw new Error(`Unique field ${uniqueField} is required for upsert`);
     }
-    
+
     const existing = await this.findByUnique(uniqueValue);
-    
+
     if (existing) {
       const id = (existing as any)[this.config.idField];
       const updated = await this.update(id, entity);
-      if (!updated) throw new Error('Failed to update entity');
+      if (!updated) {throw new Error('Failed to update entity');}
       return updated;
     } else {
       return this.create(entity);

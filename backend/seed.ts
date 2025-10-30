@@ -22,7 +22,7 @@ const db = new sqlite3.Database(DB_FILE, (err) => {
 function seedDatabase() {
   // Drop all tables first for a clean slate
   console.log('\n🗑️  Dropping existing tables...');
-  
+
   const dropTables = [
     'DROP TABLE IF EXISTS command_usage',
     'DROP TABLE IF EXISTS exploration_queue',
@@ -55,10 +55,10 @@ function seedDatabase() {
   ];
 
   dropTables.forEach(sql => db.run(sql));
-  
+
   console.log('✓ Tables dropped');
   console.log('\n📊 Creating tables...');
-  
+
   createTables(() => {
     console.log('✓ Tables created');
     console.log('\n🌱 Seeding data...');
@@ -424,85 +424,85 @@ function createTables(callback: () => void) {
 function seedData() {
   let completed = 0;
   const totalTasks = 22; // abilities + races + strength_scores + int_scores + wis_scores + dex_scores + con_scores + cha_scores + saving_throws + spell_modifiers + elemental_resistances + physical_resistances + class_groups + classes + proficiencies + perks + zones + zone_areas + zone_connections + rooms + room_exits + player_actions
-  
+
   const checkComplete = () => {
     completed++;
     if (completed === totalTasks) {
       console.log('\n✨ Database seeded successfully!');
       console.log('\n📈 Summary:');
-      
+
       db.get('SELECT COUNT(*) as count FROM abilities', (err, row: any) => {
-        if (!err) console.log(`  - Abilities: ${row.count}`);
+        if (!err) {console.log(`  - Abilities: ${row.count}`);}
       });
-      
+
       db.get('SELECT COUNT(*) as count FROM ability_scores', (err, row: any) => {
-        if (!err) console.log(`  - Ability Scores: ${row.count}`);
+        if (!err) {console.log(`  - Ability Scores: ${row.count}`);}
       });
-      
+
       db.get('SELECT COUNT(*) as count FROM races', (err, row: any) => {
-        if (!err) console.log(`  - Races: ${row.count}`);
+        if (!err) {console.log(`  - Races: ${row.count}`);}
       });
-      
+
       db.get('SELECT COUNT(*) as count FROM saving_throws', (err, row: any) => {
         if (!err) {
           console.log(`  - Saving Throws: ${row.count}`);
         }
       });
-      
+
       db.get('SELECT COUNT(*) as count FROM spell_modifiers', (err, row: any) => {
         if (!err) {
           console.log(`  - Spell Modifiers: ${row.count}`);
         }
       });
-      
+
       db.get('SELECT COUNT(*) as count FROM elemental_resistances', (err, row: any) => {
         if (!err) {
           console.log(`  - Elemental Resistances: ${row.count}`);
         }
       });
-      
+
       db.get('SELECT COUNT(*) as count FROM physical_resistances', (err, row: any) => {
         if (!err) {
           console.log(`  - Physical Resistances: ${row.count}`);
         }
       });
-      
+
       db.get('SELECT COUNT(*) as count FROM class_groups', (err, row: any) => {
-        if (!err) console.log(`  - Class Groups: ${row.count}`);
+        if (!err) {console.log(`  - Class Groups: ${row.count}`);}
       });
-      
+
       db.get('SELECT COUNT(*) as count FROM classes', (err, row: any) => {
-        if (!err) console.log(`  - Classes: ${row.count}`);
+        if (!err) {console.log(`  - Classes: ${row.count}`);}
       });
-      
+
       db.get('SELECT COUNT(*) as count FROM class_proficiencies', (err, row: any) => {
-        if (!err) console.log(`  - Class Proficiencies: ${row.count}`);
+        if (!err) {console.log(`  - Class Proficiencies: ${row.count}`);}
       });
-      
+
       db.get('SELECT COUNT(*) as count FROM class_perks', (err, row: any) => {
-        if (!err) console.log(`  - Class Perks: ${row.count}`);
+        if (!err) {console.log(`  - Class Perks: ${row.count}`);}
       });
-      
+
       db.get('SELECT COUNT(*) as count FROM zones', (err, row: any) => {
-        if (!err) console.log(`  - Zones: ${row.count}`);
+        if (!err) {console.log(`  - Zones: ${row.count}`);}
       });
-      
+
       db.get('SELECT COUNT(*) as count FROM zone_areas', (err, row: any) => {
-        if (!err) console.log(`  - Zone Areas: ${row.count}`);
+        if (!err) {console.log(`  - Zone Areas: ${row.count}`);}
       });
-      
+
       db.get('SELECT COUNT(*) as count FROM zone_connections', (err, row: any) => {
-        if (!err) console.log(`  - Zone Connections: ${row.count}`);
+        if (!err) {console.log(`  - Zone Connections: ${row.count}`);}
       });
-      
+
       db.get('SELECT COUNT(*) as count FROM rooms', (err, row: any) => {
-        if (!err) console.log(`  - Rooms: ${row.count}`);
+        if (!err) {console.log(`  - Rooms: ${row.count}`);}
       });
-      
+
       db.get('SELECT COUNT(*) as count FROM room_exits', (err, row: any) => {
-        if (!err) console.log(`  - Room Exits: ${row.count}`);
+        if (!err) {console.log(`  - Room Exits: ${row.count}`);}
       });
-      
+
       db.get('SELECT COUNT(*) as count FROM player_actions', (err, row: any) => {
         if (!err) {
           console.log(`  - Player Actions: ${row.count}`);
@@ -526,11 +526,11 @@ function seedData() {
   ];
 
   const insertAbility = db.prepare('INSERT INTO abilities (name, short_name, description) VALUES (?, ?, ?)');
-  
+
   abilities.forEach(ability => {
     insertAbility.run(ability.name, ability.short_name, ability.description);
   });
-  
+
   insertAbility.finalize(() => {
     console.log(`  ✓ Seeded ${abilities.length} abilities`);
     checkComplete();
@@ -558,11 +558,11 @@ function seedData() {
   ];
 
   const insertRace = db.prepare('INSERT INTO races (name, description) VALUES (?, ?)');
-  
+
   races.forEach(race => {
     insertRace.run(race.name, race.description);
   });
-  
+
   insertRace.finalize(() => {
     console.log(`  ✓ Seeded ${races.length} races`);
     checkComplete();
@@ -578,11 +578,11 @@ function seedData() {
   ];
 
   const insertSavingThrow = db.prepare('INSERT INTO saving_throws (name, description) VALUES (?, ?)');
-  
+
   savingThrows.forEach(st => {
     insertSavingThrow.run(st.name, st.description);
   });
-  
+
   insertSavingThrow.finalize(() => {
     console.log(`  ✓ Seeded ${savingThrows.length} saving throws`);
     checkComplete();
@@ -610,11 +610,11 @@ function seedData() {
   ];
 
   const insertSpellModifier = db.prepare('INSERT INTO spell_modifiers (name, description) VALUES (?, ?)');
-  
+
   spellModifiers.forEach(sm => {
     insertSpellModifier.run(sm.name, sm.description);
   });
-  
+
   insertSpellModifier.finalize(() => {
     console.log(`  ✓ Seeded ${spellModifiers.length} spell modifiers`);
     checkComplete();
@@ -638,11 +638,11 @@ function seedData() {
   ];
 
   const insertElementalResistance = db.prepare('INSERT INTO elemental_resistances (name, description) VALUES (?, ?)');
-  
+
   elementalResistances.forEach(er => {
     insertElementalResistance.run(er.name, er.description);
   });
-  
+
   insertElementalResistance.finalize(() => {
     console.log(`  ✓ Seeded ${elementalResistances.length} elemental resistances`);
     checkComplete();
@@ -657,11 +657,11 @@ function seedData() {
   ];
 
   const insertPhysicalResistance = db.prepare('INSERT INTO physical_resistances (name, description) VALUES (?, ?)');
-  
+
   physicalResistances.forEach(pr => {
     insertPhysicalResistance.run(pr.name, pr.description);
   });
-  
+
   insertPhysicalResistance.finalize(() => {
     console.log(`  ✓ Seeded ${physicalResistances.length} physical resistances`);
     checkComplete();
@@ -676,11 +676,11 @@ function seedData() {
   ];
 
   const insertClassGroup = db.prepare('INSERT INTO class_groups (name, description) VALUES (?, ?)');
-  
+
   classGroups.forEach(group => {
     insertClassGroup.run(group.name, group.description);
   });
-  
+
   insertClassGroup.finalize(() => {
     console.log(`  ✓ Seeded ${classGroups.length} class groups`);
     checkComplete();
@@ -705,11 +705,11 @@ function seedData() {
   ];
 
   const insertClass = db.prepare('INSERT INTO classes (name, class_group_id, description, alignment_requirement, hp_regen, mana_regen, move_regen, special_notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
-  
+
   classes.forEach(cls => {
     insertClass.run(cls.name, cls.class_group_id, cls.description, cls.alignment_requirement, cls.hp_regen, cls.mana_regen, cls.move_regen, cls.special_notes);
   });
-  
+
   insertClass.finalize(() => {
     console.log(`  ✓ Seeded ${classes.length} classes`);
     checkComplete();
@@ -744,7 +744,7 @@ function seedData() {
     { class_id: 1, name: 'Unholy Word', level_required: 34, is_skill: 0, prerequisite_id: null },
     { class_id: 1, name: 'Malign', level_required: 35, is_skill: 0, prerequisite_id: null },
     { class_id: 1, name: 'Shadow Flare', level_required: 37, is_skill: 0, prerequisite_id: null },
-    
+
     // Fighter proficiencies (class_id = 5)
     { class_id: 5, name: 'Kick', level_required: 1, is_skill: 1, prerequisite_id: null },
     { class_id: 5, name: 'Parry', level_required: 1, is_skill: 1, prerequisite_id: null },
@@ -763,7 +763,7 @@ function seedData() {
     { class_id: 5, name: 'Blitz', level_required: 33, is_skill: 1, prerequisite_id: null },
     { class_id: 5, name: 'Group Retreat', level_required: 35, is_skill: 1, prerequisite_id: null },
     { class_id: 5, name: 'Second Wind', level_required: 37, is_skill: 1, prerequisite_id: null },
-    
+
     // Cleric proficiencies (class_id = 3)
     { class_id: 3, name: 'Cure Light', level_required: 1, is_skill: 0, prerequisite_id: null },
     { class_id: 3, name: 'Create Water', level_required: 1, is_skill: 0, prerequisite_id: null },
@@ -820,27 +820,27 @@ function seedData() {
   ];
 
   const insertProficiency = db.prepare('INSERT INTO class_proficiencies (class_id, name, level_required, is_skill, prerequisite_id) VALUES (?, ?, ?, ?, ?)');
-  
+
   proficiencies.forEach(prof => {
     insertProficiency.run(prof.class_id, prof.name, prof.level_required, prof.is_skill, prof.prerequisite_id);
   });
-  
+
   insertProficiency.finalize(() => {
     console.log(`  ✓ Seeded ${proficiencies.length} class proficiencies`);
-    
+
     // Update prerequisites for Anti-Paladin proficiencies
     db.get('SELECT id FROM class_proficiencies WHERE class_id = 1 AND name = ?', ['Kick'], (_err, kickRow: any) => {
       if (kickRow) {
         db.run('UPDATE class_proficiencies SET prerequisite_id = ? WHERE class_id = 1 AND name = ?', [kickRow.id, 'Bash']);
       }
     });
-    
+
     db.get('SELECT id FROM class_proficiencies WHERE class_id = 1 AND name = ?', ['Hide'], (_err, hideRow: any) => {
       if (hideRow) {
         db.run('UPDATE class_proficiencies SET prerequisite_id = ? WHERE class_id = 1 AND name = ?', [hideRow.id, 'Sneak']);
       }
     });
-    
+
     checkComplete();
   });
 
@@ -851,7 +851,7 @@ function seedData() {
     { name: 'Pugilist', category: 'Weapon Prof', description: '+1/10 levels while using a blunt weapon or bare-hands', effect: '+1 damage per 10 levels with blunt weapons or unarmed', is_unique: 1 },
     { name: 'Tentmaker', category: 'Weapon Prof', description: '+1/10 levels while using a piercing weapon', effect: '+1 damage per 10 levels with piercing weapons', is_unique: 1 },
     { name: 'Fletcher', category: 'Weapon Prof', description: '+1/10 levels while using a special weapon (bows/whips/etc)', effect: '+1 damage per 10 levels with special weapons', is_unique: 1 },
-    
+
     // Universal perks (unlimited)
     { name: 'Pyromaniac', category: 'Universal', description: '+25 Fire Damage', effect: '+25 fire damage', is_unique: 0 },
     { name: 'Boreal Native', category: 'Universal', description: '+25 Frost Damage', effect: '+25 frost damage', is_unique: 0 },
@@ -880,23 +880,23 @@ function seedData() {
     { name: 'Nomad', category: 'Universal', description: 'Haste no longer affects food costs', effect: 'Haste doesn\'t increase hunger', is_unique: 0 },
     { name: 'Siege Captain', category: 'Universal', description: 'All resistance buffs cast on you will now last 50% longer', effect: '+50% resistance buff duration', is_unique: 0 },
     { name: 'Pack Mule', category: 'Universal', description: 'Your pack mule increases your carrying capacity by 50%', effect: '+50% carrying capacity', is_unique: 0 },
-    
+
     // HMV perks (choose one)
     { name: 'Bodybuilder', category: 'HMV', description: '+50hp', effect: '+50 HP', is_unique: 1 },
     { name: 'Educated', category: 'HMV', description: '+40mana', effect: '+40 mana', is_unique: 1 },
     { name: 'Marathon Runner', category: 'HMV', description: '+40mv', effect: '+40 movement', is_unique: 1 },
-    
+
     // Alignment perks (choose one) - Fighter
     { name: 'Chaotic Evil', category: 'Alignment', description: '-30 align/tick', effect: '-30 alignment per tick', is_unique: 1 },
     { name: 'Chaotic Neutral', category: 'Alignment', description: '-15/+15 align/tick movement towards neutrality', effect: 'Alignment moves toward neutral', is_unique: 1 },
     { name: 'Chaotic Good', category: 'Alignment', description: '+30 align/tick', effect: '+30 alignment per tick', is_unique: 1 },
-    
+
     // Playstyle perks - Anti-Paladin
     { name: 'Netherdrake Symbiote', category: 'Playstyle', description: 'In dark conditions (-5 or below), backstab damage equals thief class', effect: 'Thief-level backstab in darkness', is_unique: 1 },
     { name: 'Frost Wyrm Symbiote', category: 'Playstyle', description: 'Glacial Fist and Shadow Flare: +15% crit chance. Shadow Flare: +25% crit damage', effect: 'Enhanced frost spell crits', is_unique: 1 },
     { name: 'Mana Wraith Symbiote', category: 'Playstyle', description: 'Fortress of Hate: -10% damage, maintains resistances, returns mana per round (cumulative)', effect: 'Fortress mana return', is_unique: 1 },
     { name: 'Plague Symbiote', category: 'Playstyle', description: 'Poison spell bypasses all elemental resistances and saving throws', effect: 'Poison ignores all defenses', is_unique: 1 },
-    
+
     // Playstyle perks - Fighter
     { name: 'Defender', category: 'Playstyle', description: 'Shield specialization effectiveness doubled. Parry +3% success rate with shield', effect: '2x shield spec, +3% parry', is_unique: 1 },
     { name: 'Blademaster', category: 'Playstyle', description: 'While using slash weapons, critical hit damage +20%', effect: '+20% crit damage with slash', is_unique: 1 },
@@ -905,7 +905,7 @@ function seedData() {
     { name: 'Rune Knight', category: 'Playstyle', description: 'Combat summon restrictions removed. RES_SUMMON ignored. Can be summoned from no-summon rooms', effect: 'Always summonable', is_unique: 1 },
     { name: 'Bodyguard', category: 'Playstyle', description: 'Second Wind cooldowns halved (both success and failure)', effect: '50% Second Wind cooldown', is_unique: 1 },
     { name: 'Warlord', category: 'Playstyle', description: 'Taunt never fails on tauntable mobiles. Immune to Hamstring and Ensnare', effect: 'Perfect taunt, hamstring immunity', is_unique: 1 },
-    
+
     // Playstyle perks - Cleric
     { name: 'Flamewarden', category: 'Playstyle', description: 'Flamestrike and Firestorm will certainly ignite an enemy in flames', effect: 'Guaranteed ignite on fire spells', is_unique: 1 },
     { name: 'Exorcist', category: 'Playstyle', description: 'Smite Good and Evil spells deal increased damage', effect: 'Enhanced smite damage', is_unique: 1 },
@@ -916,11 +916,11 @@ function seedData() {
   ];
 
   const insertPerk = db.prepare('INSERT INTO class_perks (name, category, description, effect, is_unique) VALUES (?, ?, ?, ?, ?)');
-  
+
   perks.forEach(perk => {
     insertPerk.run(perk.name, perk.category, perk.description, perk.effect, perk.is_unique);
   });
-  
+
   insertPerk.finalize(() => {
     console.log(`  ✓ Seeded ${perks.length} class perks`);
     checkComplete();
@@ -1005,11 +1005,11 @@ function seedData() {
   ];
 
   const insertZone = db.prepare('INSERT INTO zones (id, name, description, author, difficulty, notes) VALUES (?, ?, ?, ?, ?, ?)');
-  
+
   zones.forEach(zone => {
     insertZone.run(zone.id, zone.name, zone.description, zone.author, zone.difficulty, zone.notes);
   });
-  
+
   insertZone.finalize(() => {
     console.log(`  ✓ Seeded ${zones.length} zones`);
     checkComplete();
@@ -1197,11 +1197,11 @@ function seedData() {
   ];
 
   const insertZoneArea = db.prepare('INSERT INTO zone_areas (zone_id, name, min_level, max_level, recommended_class) VALUES (?, ?, ?, ?, ?)');
-  
+
   zoneAreas.forEach(area => {
     insertZoneArea.run(area.zone_id, area.name, area.min_level, area.max_level, area.recommended_class);
   });
-  
+
   insertZoneArea.finalize(() => {
     console.log(`  ✓ Seeded ${zoneAreas.length} zone areas`);
     checkComplete();
@@ -1475,11 +1475,11 @@ function seedData() {
   ];
 
   const insertZoneConnection = db.prepare('INSERT INTO zone_connections (zone_id, connected_zone_id) VALUES (?, ?)');
-  
+
   zoneConnections.forEach(conn => {
     insertZoneConnection.run(conn.zone_id, conn.connected_zone_id);
   });
-  
+
   insertZoneConnection.finalize(() => {
     console.log(`  ✓ Seeded ${zoneConnections.length} zone connections`);
     checkComplete();
@@ -1495,11 +1495,11 @@ function seedData() {
   ];
 
   const insertRoom = db.prepare('INSERT INTO rooms (id, zone_id, name, description, terrain, flags) VALUES (?, ?, ?, ?, ?, ?)');
-  
+
   sampleRooms.forEach(room => {
     insertRoom.run(room.id, room.zone_id, room.name, room.description, room.terrain, room.flags);
   });
-  
+
   insertRoom.finalize(() => {
     console.log(`  ✓ Seeded ${sampleRooms.length} sample rooms`);
     checkComplete();
@@ -1532,11 +1532,11 @@ function seedData() {
   ];
 
   const insertRoomExit = db.prepare('INSERT INTO room_exits (from_room_id, to_room_id, direction, description) VALUES (?, ?, ?, ?)');
-  
+
   roomExits.forEach(exit => {
     insertRoomExit.run(exit.from_room_id, exit.to_room_id, exit.direction, exit.description);
   });
-  
+
   insertRoomExit.finalize(() => {
     console.log(`  ✓ Seeded ${roomExits.length} room exits`);
     checkComplete();
@@ -1614,11 +1614,11 @@ See Also:  EXAMINE READ SCAN`,
   ];
 
   const insertAction = db.prepare('INSERT INTO player_actions (name, type, category, description, syntax, examples, documented) VALUES (?, ?, ?, ?, ?, ?, ?)');
-  
+
   sampleActions.forEach(action => {
     insertAction.run(action.name, action.type, action.category, action.description, action.syntax, action.examples, action.documented);
   });
-  
+
   insertAction.finalize(() => {
     console.log(`  ✓ Seeded ${sampleActions.length} sample player actions`);
     checkComplete();
@@ -1655,11 +1655,11 @@ See Also:  EXAMINE READ SCAN`,
   ];
 
   const insertAbilityScore = db.prepare('INSERT INTO ability_scores (ability_id, score, effects) VALUES (?, ?, ?)');
-  
+
   strengthScores.forEach(item => {
     insertAbilityScore.run(1, item.score, JSON.stringify(item.effects));
   });
-  
+
   insertAbilityScore.finalize(() => {
     console.log(`  ✓ Seeded ${strengthScores.length} ability scores for Strength`);
     checkComplete();
@@ -1696,11 +1696,11 @@ See Also:  EXAMINE READ SCAN`,
   ];
 
   const insertIntScore = db.prepare('INSERT INTO ability_scores (ability_id, score, effects) VALUES (?, ?, ?)');
-  
+
   intScores.forEach(item => {
     insertIntScore.run(2, item.score, JSON.stringify(item.effects));
   });
-  
+
   insertIntScore.finalize(() => {
     console.log(`  ✓ Seeded ${intScores.length} ability scores for Intelligence`);
     checkComplete();
@@ -1737,11 +1737,11 @@ See Also:  EXAMINE READ SCAN`,
   ];
 
   const insertWisScore = db.prepare('INSERT INTO ability_scores (ability_id, score, effects) VALUES (?, ?, ?)');
-  
+
   wisScores.forEach(item => {
     insertWisScore.run(3, item.score, JSON.stringify(item.effects));
   });
-  
+
   insertWisScore.finalize(() => {
     console.log(`  ✓ Seeded ${wisScores.length} ability scores for Wisdom`);
     checkComplete();
@@ -1778,11 +1778,11 @@ See Also:  EXAMINE READ SCAN`,
   ];
 
   const insertDexScore = db.prepare('INSERT INTO ability_scores (ability_id, score, effects) VALUES (?, ?, ?)');
-  
+
   dexScores.forEach(item => {
     insertDexScore.run(4, item.score, JSON.stringify(item.effects));
   });
-  
+
   insertDexScore.finalize(() => {
     console.log(`  ✓ Seeded ${dexScores.length} ability scores for Dexterity`);
     checkComplete();
@@ -1819,11 +1819,11 @@ See Also:  EXAMINE READ SCAN`,
   ];
 
   const insertConScore = db.prepare('INSERT INTO ability_scores (ability_id, score, effects) VALUES (?, ?, ?)');
-  
+
   conScores.forEach(item => {
     insertConScore.run(5, item.score, JSON.stringify(item.effects));
   });
-  
+
   insertConScore.finalize(() => {
     console.log(`  ✓ Seeded ${conScores.length} ability scores for Constitution`);
     checkComplete();
@@ -1862,11 +1862,11 @@ See Also:  EXAMINE READ SCAN`,
   ];
 
   const insertChaScore = db.prepare('INSERT INTO ability_scores (ability_id, score, effects) VALUES (?, ?, ?)');
-  
+
   chaScores.forEach(item => {
     insertChaScore.run(6, item.score, JSON.stringify(item.effects));
   });
-  
+
   insertChaScore.finalize(() => {
     console.log(`  ✓ Seeded ${chaScores.length} ability scores for Charisma`);
     checkComplete();

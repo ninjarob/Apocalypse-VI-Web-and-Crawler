@@ -242,7 +242,7 @@ router.get('/stats', asyncHandler(async (_req: Request, res: Response) => {
     repositories.rooms.count().then(() => 0).catch(() => 0), // races placeholder
     repositories.zones.count().catch(() => 0)
   ]);
-  
+
   res.json({
     rooms,
     npcs,
@@ -284,9 +284,9 @@ router.get(
   asyncHandler(async (req: Request, res: Response) => {
     const { type } = req.params;
     console.log(`[API] GET /:type - type=${type}`);
-    
+
     const config = ENTITY_CONFIG[type];
-    
+
     if (!config) {
       console.log(`[API] Unknown entity type: ${type}`);
       throw new BadRequestError(
@@ -294,20 +294,20 @@ router.get(
         { validTypes: VALID_ENTITY_TYPES }
       );
     }
-    
+
     console.log(`[API] Config found for ${type}:`, { table: config.table, idField: config.idField });
-    
+
     // Build filters from query parameters
     const filters: Record<string, any> = {};
     const { category, ability_id, zone_id, id } = req.query;
-    
-    if (category && type === 'commands') filters.category = category;
-    if (ability_id && type === 'ability_scores') filters.ability_id = ability_id;
-    if (zone_id && type === 'rooms') filters.zone_id = zone_id;
-    if (id) filters[config.idField] = id;
-    
-    console.log(`[API] Filters:`, filters);
-    
+
+    if (category && type === 'commands') {filters.category = category;}
+    if (ability_id && type === 'ability_scores') {filters.ability_id = ability_id;}
+    if (zone_id && type === 'rooms') {filters.zone_id = zone_id;}
+    if (id) {filters[config.idField] = id;}
+
+    console.log('[API] Filters:', filters);
+
     // Use appropriate service based on entity type
     let entities;
     if (type === 'rooms') {
@@ -318,9 +318,9 @@ router.get(
       const service = new GenericService(config);
       entities = await service.getAll(filters);
     }
-    
+
     console.log(`[API] Found ${entities.length} entities`);
-    
+
     res.json(entities);
   })
 );
@@ -333,11 +333,11 @@ router.get(
   asyncHandler(async (req: Request, res: Response) => {
     const { type, id } = req.params;
     const config = ENTITY_CONFIG[type];
-    
+
     if (!config) {
       throw new BadRequestError(`Unknown entity type: ${type}`);
     }
-    
+
     // Use appropriate service based on entity type
     let entity;
     if (type === 'rooms') {
@@ -348,7 +348,7 @@ router.get(
       const service = new GenericService(config);
       entity = await service.getById(id);
     }
-    
+
     res.json(entity);
   })
 );
@@ -360,28 +360,28 @@ router.post(
   '/:type',
   asyncHandler(async (req: Request, res: Response, next) => {
     const { type } = req.params;
-    
+
     // Apply validation middleware dynamically
     const validationMiddleware = validateCreate(type);
     await new Promise<void>((resolve, reject) => {
       validationMiddleware(req, res, (err?: any) => {
-        if (err) reject(err);
-        else resolve();
+        if (err) {reject(err);}
+        else {resolve();}
       });
     });
-    
+
     next();
   }),
   asyncHandler(async (req: Request, res: Response) => {
     const { type } = req.params;
     const config = ENTITY_CONFIG[type];
-    
+
     if (!config) {
       throw new BadRequestError(`Unknown entity type: ${type}`);
     }
-    
+
     const entity = req.body;
-    
+
     // Use appropriate service based on entity type
     let result;
     if (type === 'rooms') {
@@ -392,13 +392,13 @@ router.post(
       return res.status(201).json(result);
     } else {
       const service = new GenericService(config);
-      
+
       // For auto-increment tables, always create
       if (config.autoIncrement) {
         result = await service.create(entity);
         return res.status(201).json(result);
       }
-      
+
       // For tables with unique constraints, upsert
       result = await service.createOrUpdate(entity);
       return res.status(201).json(result);
@@ -413,28 +413,28 @@ router.put(
   '/:type/:identifier',
   asyncHandler(async (req: Request, res: Response, next) => {
     const { type } = req.params;
-    
+
     // Apply validation middleware dynamically
     const validationMiddleware = validateUpdate(type);
     await new Promise<void>((resolve, reject) => {
       validationMiddleware(req, res, (err?: any) => {
-        if (err) reject(err);
-        else resolve();
+        if (err) {reject(err);}
+        else {resolve();}
       });
     });
-    
+
     next();
   }),
   asyncHandler(async (req: Request, res: Response) => {
     const { type, identifier } = req.params;
     const config = ENTITY_CONFIG[type];
-    
+
     if (!config) {
       throw new BadRequestError(`Unknown entity type: ${type}`);
     }
-    
+
     const updates = req.body;
-    
+
     // Use appropriate service based on entity type
     let updated;
     if (type === 'rooms') {
@@ -445,7 +445,7 @@ router.put(
       const service = new GenericService(config);
       updated = await service.update(identifier, updates);
     }
-    
+
     res.json({ success: true, entity: updated });
   })
 );
@@ -458,11 +458,11 @@ router.delete(
   asyncHandler(async (req: Request, res: Response) => {
     const { type, id } = req.params;
     const config = ENTITY_CONFIG[type];
-    
+
     if (!config) {
       throw new BadRequestError(`Unknown entity type: ${type}`);
     }
-    
+
     // Use appropriate service based on entity type
     if (type === 'rooms') {
       await roomService.deleteRoom(id);
@@ -472,7 +472,7 @@ router.delete(
       const service = new GenericService(config);
       await service.delete(id);
     }
-    
+
     res.json({ success: true, deleted: id });
   })
 );

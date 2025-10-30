@@ -5,7 +5,7 @@ import {
   isAppError,
   isOperationalError,
   ValidationError,
-  DatabaseError,
+  DatabaseError
 } from '../errors/CustomErrors';
 
 /**
@@ -54,14 +54,14 @@ function handleZodError(error: ZodError, res: Response) {
   const validationErrors = error.issues.map((issue) => ({
     field: issue.path.join('.'),
     message: issue.message,
-    value: issue.code,
+    value: issue.code
   }));
 
   const response: ErrorResponse = {
     error: 'ValidationError',
     message: 'Request validation failed',
     statusCode: 400,
-    details: { errors: validationErrors },
+    details: { errors: validationErrors }
   };
 
   res.status(400).json(response);
@@ -75,7 +75,7 @@ function handleAppError(error: AppError, res: Response) {
     error: error.name,
     message: error.message,
     statusCode: error.statusCode,
-    details: error.details,
+    details: error.details
   };
 
   // Include stack trace in development
@@ -95,10 +95,10 @@ function handleUnknownError(error: Error, res: Response) {
 
   const response: ErrorResponse = {
     error: 'InternalServerError',
-    message: process.env.NODE_ENV === 'development' 
-      ? error.message 
+    message: process.env.NODE_ENV === 'development'
+      ? error.message
       : 'An unexpected error occurred',
-    statusCode: 500,
+    statusCode: 500
   };
 
   // Include stack trace in development
@@ -106,7 +106,7 @@ function handleUnknownError(error: Error, res: Response) {
     response.stack = error.stack;
     response.details = {
       name: error.name,
-      message: error.message,
+      message: error.message
     };
   }
 
@@ -124,7 +124,7 @@ function logError(error: Error | AppError, req: Request) {
     query: req.query,
     body: req.body,
     ip: req.ip,
-    userAgent: req.get('user-agent'),
+    userAgent: req.get('user-agent')
   };
 
   // Determine log level based on error type
@@ -135,7 +135,7 @@ function logError(error: Error | AppError, req: Request) {
         name: error.name,
         message: error.message,
         statusCode: error.statusCode,
-        ...errorInfo,
+        ...errorInfo
       });
     } else {
       // Unexpected operational errors - log as error
@@ -144,7 +144,7 @@ function logError(error: Error | AppError, req: Request) {
         message: error.message,
         statusCode: error.statusCode,
         stack: error.stack,
-        ...errorInfo,
+        ...errorInfo
       });
     }
   } else {
@@ -153,7 +153,7 @@ function logError(error: Error | AppError, req: Request) {
       name: error.name,
       message: error.message,
       stack: error.stack,
-      ...errorInfo,
+      ...errorInfo
     });
   }
 }
@@ -183,7 +183,7 @@ export function notFoundHandler(req: Request, _res: Response, next: NextFunction
     {
       method: req.method,
       path: req.path,
-      originalUrl: req.originalUrl,
+      originalUrl: req.originalUrl
     }
   );
   next(error);

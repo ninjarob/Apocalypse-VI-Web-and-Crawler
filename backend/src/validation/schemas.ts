@@ -35,7 +35,7 @@ export const roomSchema = z.object({
   lastVisited: timestampSchema.nullable(),
   rawText: z.string().optional().nullable(),
   createdAt: timestampSchema,
-  updatedAt: timestampSchema,
+  updatedAt: timestampSchema
 });
 
 export const roomUpdateSchema = roomSchema.partial().required({ id: true });
@@ -45,7 +45,7 @@ export const roomUpdateSchema = roomSchema.partial().required({ id: true });
 // ============================================================================
 
 const directionEnum = z.enum([
-  'north', 'south', 'east', 'west', 
+  'north', 'south', 'east', 'west',
   'northeast', 'northwest', 'southeast', 'southwest',
   'up', 'down'
 ]);
@@ -61,7 +61,7 @@ export const roomExitSchema = z.object({
   is_locked: booleanFieldSchema,
   key_vnum: z.number().int().positive().optional().nullable(),
   createdAt: timestampSchema,
-  updatedAt: timestampSchema,
+  updatedAt: timestampSchema
 });
 
 export const roomExitUpdateSchema = roomExitSchema.partial().required({ id: true });
@@ -82,7 +82,7 @@ export const npcSchema = z.object({
   class: z.string().max(100).optional().nullable(),
   rawText: z.string().optional().nullable(),
   createdAt: timestampSchema,
-  updatedAt: timestampSchema,
+  updatedAt: timestampSchema
 });
 
 export const npcUpdateSchema = npcSchema.partial().required({ id: true });
@@ -101,7 +101,7 @@ export const itemSchema = z.object({
   stats: jsonFieldSchema,
   rawText: z.string().optional().nullable(),
   createdAt: timestampSchema,
-  updatedAt: timestampSchema,
+  updatedAt: timestampSchema
 });
 
 export const itemUpdateSchema = itemSchema.partial().required({ id: true });
@@ -120,7 +120,7 @@ export const spellSchema = z.object({
   effects: jsonFieldSchema,
   rawText: z.string().optional().nullable(),
   createdAt: timestampSchema,
-  updatedAt: timestampSchema,
+  updatedAt: timestampSchema
 });
 
 export const spellUpdateSchema = spellSchema.partial().required({ id: true });
@@ -138,7 +138,7 @@ export const attackSchema = z.object({
   requirements: jsonFieldSchema,
   rawText: z.string().optional().nullable(),
   createdAt: timestampSchema,
-  updatedAt: timestampSchema,
+  updatedAt: timestampSchema
 });
 
 export const attackUpdateSchema = attackSchema.partial().required({ id: true });
@@ -167,7 +167,7 @@ export const playerActionSchema = z.object({
   successCount: z.number().int().min(0).optional(),
   failCount: z.number().int().min(0).optional(),
   createdAt: timestampSchema,
-  updatedAt: timestampSchema,
+  updatedAt: timestampSchema
 });
 
 export const playerActionUpdateSchema = playerActionSchema.partial().required({ id: true });
@@ -186,7 +186,7 @@ export const raceSchema = z.object({
   helpText: z.string().optional().nullable(),
   discovered: timestampSchema.nullable(),
   createdAt: timestampSchema,
-  updatedAt: timestampSchema,
+  updatedAt: timestampSchema
 });
 
 export const raceUpdateSchema = raceSchema.partial().required({ id: true });
@@ -207,7 +207,7 @@ export const skillSchema = z.object({
   helpText: z.string().optional().nullable(),
   discovered: timestampSchema.nullable(),
   createdAt: timestampSchema,
-  updatedAt: timestampSchema,
+  updatedAt: timestampSchema
 });
 
 export const skillUpdateSchema = skillSchema.partial().required({ id: true });
@@ -222,7 +222,7 @@ export const abilitySchema = z.object({
   short_name: z.string().max(10).optional().nullable(),
   description: z.string().optional().nullable(),
   createdAt: timestampSchema,
-  updatedAt: timestampSchema,
+  updatedAt: timestampSchema
 });
 
 export const abilityUpdateSchema = abilitySchema.partial().required({ id: true });
@@ -237,7 +237,7 @@ export const abilityScoreSchema = z.object({
   score: z.number().int().min(1).max(26),
   effects: jsonFieldSchema,
   createdAt: timestampSchema,
-  updatedAt: timestampSchema,
+  updatedAt: timestampSchema
 });
 
 export const abilityScoreUpdateSchema = abilityScoreSchema.partial().required({ id: true });
@@ -251,7 +251,7 @@ export const savingThrowSchema = z.object({
   name: z.string().min(1).max(100),
   description: z.string().optional().nullable(),
   createdAt: timestampSchema,
-  updatedAt: timestampSchema,
+  updatedAt: timestampSchema
 });
 
 export const savingThrowUpdateSchema = savingThrowSchema.partial().required({ id: true });
@@ -265,7 +265,7 @@ export const spellModifierSchema = z.object({
   name: z.string().min(1).max(100),
   description: z.string().optional().nullable(),
   createdAt: timestampSchema,
-  updatedAt: timestampSchema,
+  updatedAt: timestampSchema
 });
 
 export const spellModifierUpdateSchema = spellModifierSchema.partial().required({ id: true });
@@ -279,7 +279,7 @@ export const elementalResistanceSchema = z.object({
   name: z.string().min(1).max(100),
   description: z.string().optional().nullable(),
   createdAt: timestampSchema,
-  updatedAt: timestampSchema,
+  updatedAt: timestampSchema
 });
 
 export const elementalResistanceUpdateSchema = elementalResistanceSchema.partial().required({ id: true });
@@ -293,7 +293,7 @@ export const physicalResistanceSchema = z.object({
   name: z.string().min(1).max(100),
   description: z.string().optional().nullable(),
   createdAt: timestampSchema,
-  updatedAt: timestampSchema,
+  updatedAt: timestampSchema
 });
 
 export const physicalResistanceUpdateSchema = physicalResistanceSchema.partial().required({ id: true });
@@ -307,7 +307,7 @@ export const classGroupSchema = z.object({
   name: z.string().min(1).max(100),
   description: z.string().optional().nullable(),
   createdAt: timestampSchema,
-  updatedAt: timestampSchema,
+  updatedAt: timestampSchema
 });
 
 export const classGroupUpdateSchema = classGroupSchema.partial().required({ id: true });
@@ -327,7 +327,7 @@ export const classSchema = z.object({
   move_regen: z.number().int().optional().nullable(),
   special_notes: z.string().optional().nullable(),
   createdAt: timestampSchema,
-  updatedAt: timestampSchema,
+  updatedAt: timestampSchema
 });
 
 export const classUpdateSchema = classSchema.partial().required({ id: true });
@@ -345,7 +345,7 @@ export const classProficiencySchema = z.object({
   prerequisite_id: z.number().int().positive().optional().nullable(),
   description: z.string().optional().nullable(),
   createdAt: timestampSchema,
-  updatedAt: timestampSchema,
+  updatedAt: timestampSchema
 });
 
 export const classProficiencyUpdateSchema = classProficiencySchema.partial().required({ id: true });
@@ -362,7 +362,7 @@ export const classPerkSchema = z.object({
   effect: z.string().max(500).optional().nullable(),
   is_unique: booleanFieldSchema,
   createdAt: timestampSchema,
-  updatedAt: timestampSchema,
+  updatedAt: timestampSchema
 });
 
 export const classPerkUpdateSchema = classPerkSchema.partial().required({ id: true });
@@ -377,7 +377,7 @@ export const classPerkAvailabilitySchema = z.object({
   perk_id: z.number().int().positive(),
   min_level: z.number().int().min(1).max(100).optional(),
   createdAt: timestampSchema,
-  updatedAt: timestampSchema,
+  updatedAt: timestampSchema
 });
 
 export const classPerkAvailabilityUpdateSchema = classPerkAvailabilitySchema.partial().required({ id: true });
@@ -394,7 +394,7 @@ export const zoneSchema = z.object({
   difficulty: z.number().int().min(1).max(10).optional().nullable(),
   notes: z.string().optional().nullable(),
   createdAt: timestampSchema,
-  updatedAt: timestampSchema,
+  updatedAt: timestampSchema
 });
 
 export const zoneUpdateSchema = zoneSchema.partial().required({ id: true });
@@ -411,10 +411,10 @@ export const zoneAreaSchema = z.object({
   max_level: z.number().int().min(1).max(100).optional().nullable(),
   recommended_class: z.string().max(200).optional().nullable(),
   createdAt: timestampSchema,
-  updatedAt: timestampSchema,
+  updatedAt: timestampSchema
 }).refine(
   (data) => !data.min_level || !data.max_level || data.min_level <= data.max_level,
-  { message: "min_level must be less than or equal to max_level" }
+  { message: 'min_level must be less than or equal to max_level' }
 );
 
 export const zoneAreaUpdateSchema = zoneAreaSchema.partial().required({ id: true });
@@ -427,10 +427,10 @@ export const zoneConnectionSchema = z.object({
   id: z.number().int().positive().optional(),
   zone_id: z.number().int().positive(),
   connected_zone_id: z.number().int().positive(),
-  createdAt: timestampSchema,
+  createdAt: timestampSchema
 }).refine(
   (data) => data.zone_id !== data.connected_zone_id,
-  { message: "A zone cannot connect to itself" }
+  { message: 'A zone cannot connect to itself' }
 );
 
 export const zoneConnectionUpdateSchema = zoneConnectionSchema.partial().required({ id: true });
@@ -462,7 +462,7 @@ export const CREATE_SCHEMAS: Record<string, z.ZodSchema> = {
   class_perk_availability: classPerkAvailabilitySchema,
   zones: zoneSchema,
   zone_areas: zoneAreaSchema,
-  zone_connections: zoneConnectionSchema,
+  zone_connections: zoneConnectionSchema
 };
 
 export const UPDATE_SCHEMAS: Record<string, z.ZodSchema> = {
@@ -488,7 +488,7 @@ export const UPDATE_SCHEMAS: Record<string, z.ZodSchema> = {
   class_perk_availability: classPerkAvailabilityUpdateSchema,
   zones: zoneUpdateSchema,
   zone_areas: zoneAreaUpdateSchema,
-  zone_connections: zoneConnectionUpdateSchema,
+  zone_connections: zoneConnectionUpdateSchema
 };
 
 // ============================================================================

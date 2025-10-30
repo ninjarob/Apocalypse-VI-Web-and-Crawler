@@ -1,6 +1,6 @@
 /**
  * Zone Service
- * 
+ *
  * Encapsulates business logic for zone operations including:
  * - Zone retrieval and filtering
  * - Zone creation and updates
@@ -27,11 +27,11 @@ export class ZoneService extends BaseService {
     this.validatePositiveInteger(id, 'zone_id');
 
     const zone = await repositories.zones.findById(id.toString());
-    
+
     if (!zone) {
       throw createNotFoundError('Zone', id.toString());
     }
-    
+
     return zone;
   }
 
@@ -44,11 +44,11 @@ export class ZoneService extends BaseService {
     }
 
     const zone = await repositories.zones.findByUnique(name);
-    
+
     if (!zone) {
       throw createNotFoundError('Zone', name);
     }
-    
+
     return zone;
   }
 
@@ -66,7 +66,7 @@ export class ZoneService extends BaseService {
     if (existing) {
       throw new BadRequestError(`Zone with name "${zoneData.name}" already exists`);
     }
-    
+
     return await repositories.zones.create(zoneData);
   }
 
@@ -89,7 +89,7 @@ export class ZoneService extends BaseService {
         throw new BadRequestError(`Zone with name "${updates.name}" already exists`);
       }
     }
-    
+
     const updated = await repositories.zones.update(id.toString(), updates);
     if (!updated) {
       throw new Error(`Failed to update zone ${id}`);
@@ -113,11 +113,11 @@ export class ZoneService extends BaseService {
     }
 
     const deleted = await repositories.zones.delete(id.toString());
-    
+
     if (!deleted) {
       throw createNotFoundError('Zone', id.toString());
     }
-    
+
     return deleted;
   }
 

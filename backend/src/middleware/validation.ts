@@ -16,7 +16,7 @@ interface ValidationError {
 function formatZodErrors(error: ZodError): ValidationError[] {
   return error.issues.map((err: z.ZodIssue) => ({
     field: err.path.join('.'),
-    message: err.message,
+    message: err.message
   }));
 }
 
@@ -41,13 +41,13 @@ export function validateCreate(entityType: string) {
       if (error instanceof ZodError) {
         return res.status(400).json({
           error: 'Validation failed',
-          details: formatZodErrors(error),
+          details: formatZodErrors(error)
         });
       }
       // Unexpected error
       console.error('Validation error:', error);
       return res.status(500).json({
-        error: 'Internal server error during validation',
+        error: 'Internal server error during validation'
       });
     }
   };
@@ -74,13 +74,13 @@ export function validateUpdate(entityType: string) {
       if (error instanceof ZodError) {
         return res.status(400).json({
           error: 'Validation failed',
-          details: formatZodErrors(error),
+          details: formatZodErrors(error)
         });
       }
       // Unexpected error
       console.error('Validation error:', error);
       return res.status(500).json({
-        error: 'Internal server error during validation',
+        error: 'Internal server error during validation'
       });
     }
   };
@@ -100,13 +100,13 @@ export function validateQuery(schema: z.ZodSchema) {
       if (error instanceof ZodError) {
         return res.status(400).json({
           error: 'Invalid query parameters',
-          details: formatZodErrors(error),
+          details: formatZodErrors(error)
         });
       }
       // Unexpected error
       console.error('Query validation error:', error);
       return res.status(500).json({
-        error: 'Internal server error during query validation',
+        error: 'Internal server error during query validation'
       });
     }
   };
@@ -119,39 +119,39 @@ export const commonQuerySchemas = {
   // Pagination parameters
   pagination: z.object({
     page: z.coerce.number().int().positive().optional().default(1),
-    limit: z.coerce.number().int().positive().max(1000).optional().default(50),
+    limit: z.coerce.number().int().positive().max(1000).optional().default(50)
   }),
 
   // Sorting parameters
   sort: z.object({
     sortBy: z.string().optional(),
-    sortOrder: z.enum(['asc', 'desc', 'ASC', 'DESC']).optional(),
+    sortOrder: z.enum(['asc', 'desc', 'ASC', 'DESC']).optional()
   }),
 
   // Generic ID lookup
   idLookup: z.object({
-    id: z.coerce.number().int().positive(),
+    id: z.coerce.number().int().positive()
   }),
 
   // Category filter
   categoryFilter: z.object({
-    category: z.string().optional(),
+    category: z.string().optional()
   }),
 
   // Ability ID filter
   abilityFilter: z.object({
-    ability_id: z.coerce.number().int().positive().optional(),
+    ability_id: z.coerce.number().int().positive().optional()
   }),
 
   // Zone ID filter
   zoneFilter: z.object({
-    zone_id: z.coerce.number().int().positive().optional(),
+    zone_id: z.coerce.number().int().positive().optional()
   }),
 
   // Search by name
   nameSearch: z.object({
-    name: z.string().min(1).optional(),
-  }),
+    name: z.string().min(1).optional()
+  })
 };
 
 /**
@@ -167,13 +167,13 @@ export function validateParams(schema: z.ZodSchema) {
       if (error instanceof ZodError) {
         return res.status(400).json({
           error: 'Invalid path parameters',
-          details: formatZodErrors(error),
+          details: formatZodErrors(error)
         });
       }
       // Unexpected error
       console.error('Path parameter validation error:', error);
       return res.status(500).json({
-        error: 'Internal server error during parameter validation',
+        error: 'Internal server error during parameter validation'
       });
     }
   };

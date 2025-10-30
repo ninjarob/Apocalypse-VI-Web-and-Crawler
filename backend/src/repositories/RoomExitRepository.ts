@@ -77,8 +77,8 @@ export class RoomExitRepository extends BaseRepository<RoomExit> {
     `;
     return new Promise((resolve, reject) => {
       this.getDb().get(sql, [roomId1, roomId2, roomId2, roomId1], (err, row: any) => {
-        if (err) reject(err);
-        else resolve(row?.count === 2);
+        if (err) {reject(err);}
+        else {resolve(row?.count === 2);}
       });
     });
   }

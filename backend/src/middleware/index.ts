@@ -36,18 +36,18 @@ export const requestLogger = (req: Request, _res: Response, next: NextFunction) 
 export const validateEntityType = (validTypes: string[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const { type } = req.params;
-    
+
     if (!type) {
       return res.status(400).json({ error: 'Entity type is required' });
     }
-    
+
     if (!validTypes.includes(type)) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         error: `Unknown entity type: ${type}`,
         validTypes
       });
     }
-    
+
     next();
   };
 };
@@ -59,14 +59,14 @@ export const validateEntityType = (validTypes: string[]) => {
 export const validateRequiredFields = (fields: string[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const missing = fields.filter(field => !(field in req.body));
-    
+
     if (missing.length > 0) {
       return res.status(400).json({
         error: 'Missing required fields',
         missingFields: missing
       });
     }
-    
+
     next();
   };
 };
@@ -77,10 +77,10 @@ export const validateRequiredFields = (fields: string[]) => {
  */
 export const responseTime = (_req: Request, res: Response, next: NextFunction) => {
   const start = Date.now();
-  
+
   // Store original end function
   const originalEnd = res.end.bind(res);
-  
+
   // Override end to set header before response is sent
   (res.end as any) = function(chunk?: any, encoding?: any, callback?: any) {
     const duration = Date.now() - start;
@@ -89,7 +89,7 @@ export const responseTime = (_req: Request, res: Response, next: NextFunction) =
     }
     return originalEnd(chunk, encoding, callback);
   };
-  
+
   next();
 };
 
@@ -107,14 +107,14 @@ export const pagination = (req: Request, _res: Response, next: NextFunction) => 
   const page = parseInt(req.query.page as string) || 1;
   const limit = parseInt(req.query.limit as string) || 50;
   const offset = (page - 1) * limit;
-  
+
   // Attach to request for use in handlers
   (req as any).pagination = {
     page,
     limit,
     offset
   } as PaginationParams;
-  
+
   next();
 };
 

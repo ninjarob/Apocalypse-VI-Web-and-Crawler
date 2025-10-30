@@ -1,6 +1,6 @@
 /**
  * Generic Service
- * 
+ *
  * Provides generic CRUD operations for all entity types that don't require
  * specialized business logic. Works with the GenericRepository to provide
  * a consistent service layer interface.
@@ -33,11 +33,11 @@ export class GenericService extends BaseService {
   async getById(id: string | number): Promise<any> {
     const repository = RepositoryFactory.getRepository(this.config);
     const entity = await repository.findById(id);
-    
+
     if (!entity) {
       throw createNotFoundError(this.config.table, id.toString());
     }
-    
+
     return entity;
   }
 
@@ -51,11 +51,11 @@ export class GenericService extends BaseService {
 
     const repository = RepositoryFactory.getRepository(this.config);
     const entity = await repository.findByUnique(value);
-    
+
     if (!entity) {
       throw createNotFoundError(this.config.table, value);
     }
-    
+
     return entity;
   }
 
@@ -79,7 +79,7 @@ export class GenericService extends BaseService {
         }
       }
     }
-    
+
     return await repository.create(entityData);
   }
 
@@ -99,7 +99,7 @@ export class GenericService extends BaseService {
     if (this.config.uniqueField && updates[this.config.uniqueField]) {
       const uniqueValue = updates[this.config.uniqueField];
       const existingValue = (existing as any)[this.config.uniqueField];
-      
+
       if (uniqueValue !== existingValue) {
         const duplicate = await repository.findByUnique(uniqueValue);
         if (duplicate) {
@@ -111,7 +111,7 @@ export class GenericService extends BaseService {
         }
       }
     }
-    
+
     const updated = await repository.update(id, updates);
     if (!updated) {
       throw new Error(`Failed to update ${this.config.table} with id ${id}`);
@@ -126,11 +126,11 @@ export class GenericService extends BaseService {
     const repository = RepositoryFactory.getRepository(this.config);
 
     const deleted = await repository.delete(id);
-    
+
     if (!deleted) {
       throw createNotFoundError(this.config.table, id.toString());
     }
-    
+
     return deleted;
   }
 

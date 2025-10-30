@@ -1,6 +1,6 @@
 /**
  * Base Service Class
- * 
+ *
  * Provides common service layer functionality and patterns.
  * Services encapsulate business logic and coordinate between repositories and external services.
  */
@@ -10,7 +10,7 @@ export abstract class BaseService {
    * Sanitizes user input by trimming whitespace and removing null bytes
    */
   protected sanitizeString(value: string | null | undefined): string | null {
-    if (!value) return null;
+    if (!value) {return null;}
     return value.trim().replace(/\0/g, '');
   }
 
@@ -37,7 +37,7 @@ export abstract class BaseService {
    * Safely parses JSON field, returns null if invalid
    */
   protected parseJsonField<T>(value: string | null | undefined): T | null {
-    if (!value) return null;
+    if (!value) {return null;}
     try {
       return JSON.parse(value) as T;
     } catch {
@@ -49,8 +49,8 @@ export abstract class BaseService {
    * Converts boolean-like values to actual boolean
    */
   protected normalizeBoolean(value: any): boolean {
-    if (typeof value === 'boolean') return value;
-    if (typeof value === 'number') return value !== 0;
+    if (typeof value === 'boolean') {return value;}
+    if (typeof value === 'number') {return value !== 0;}
     if (typeof value === 'string') {
       const lower = value.toLowerCase();
       return lower === 'true' || lower === '1' || lower === 'yes';

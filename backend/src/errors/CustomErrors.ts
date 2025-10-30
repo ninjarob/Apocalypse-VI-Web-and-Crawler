@@ -138,7 +138,7 @@ export class DatabaseError extends AppError {
     super(message, 500, false, {
       operation,
       table,
-      originalError: originalError?.message,
+      originalError: originalError?.message
     });
     this.name = 'DatabaseError';
     this.operation = operation;
@@ -200,7 +200,7 @@ export function createDuplicateError(entityType: string, field: string, value: a
  */
 export function handleDatabaseConstraintError(error: any, entityType: string): ConflictError {
   const message = error.message || error.toString();
-  
+
   // SQLite unique constraint violation
   if (message.includes('UNIQUE constraint failed')) {
     const match = message.match(/UNIQUE constraint failed: \w+\.(\w+)/);
@@ -211,7 +211,7 @@ export function handleDatabaseConstraintError(error: any, entityType: string): C
       { field, originalError: message }
     );
   }
-  
+
   // SQLite foreign key constraint
   if (message.includes('FOREIGN KEY constraint failed')) {
     return new ConflictError(
@@ -220,7 +220,7 @@ export function handleDatabaseConstraintError(error: any, entityType: string): C
       { originalError: message }
     );
   }
-  
+
   // Generic constraint error
   return new ConflictError(
     `Database constraint violation for ${entityType}`,

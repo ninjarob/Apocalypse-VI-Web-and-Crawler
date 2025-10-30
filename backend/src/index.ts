@@ -38,7 +38,7 @@ app.use(errorHandler);
 async function start() {
   try {
     await initDatabase();
-    
+
     const server = app.listen(PORT, () => {
       console.log(`✓ Server running on http://localhost:${PORT}`);
       console.log(`✓ API available at http://localhost:${PORT}/api`);

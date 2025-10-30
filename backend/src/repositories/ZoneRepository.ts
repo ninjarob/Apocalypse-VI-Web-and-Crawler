@@ -134,8 +134,8 @@ export class ZoneConnectionRepository extends BaseRepository<ZoneConnection> {
     `;
     return new Promise((resolve, reject) => {
       this.getDb().get(sql, [zone1Id, zone2Id, zone2Id, zone1Id], (err, row: any) => {
-        if (err) reject(err);
-        else resolve(row?.count > 0);
+        if (err) {reject(err);}
+        else {resolve(row?.count > 0);}
       });
     });
   }

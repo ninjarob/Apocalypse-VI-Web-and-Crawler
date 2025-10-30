@@ -9,13 +9,13 @@ const getDatabasePath = () => {
   if (process.env.DB_PATH) {
     return process.env.DB_PATH;
   }
-  
+
   // Option 2: Use __dirname if available (compiled code)
   if (typeof __dirname !== 'undefined') {
     // When compiled: dist/src/database.js -> ../../../data/mud-data.db
     return path.resolve(__dirname, '../../../data/mud-data.db');
   }
-  
+
   // Option 3: Search upwards from cwd to find data directory
   let currentDir = process.cwd();
   for (let i = 0; i < 3; i++) {
@@ -25,7 +25,7 @@ const getDatabasePath = () => {
     }
     currentDir = path.dirname(currentDir);
   }
-  
+
   // Fallback: assume data is one level up from backend
   return path.join(process.cwd(), '..', 'data', 'mud-data.db');
 };
@@ -33,13 +33,13 @@ const getDatabasePath = () => {
 let db: sqlite3.Database | null = null;
 
 export async function initDatabase(): Promise<sqlite3.Database> {
-  if (db) return db;
+  if (db) {return db;}
 
   // Database location: data/mud-data.db (at project root level)
   const dbPath = getDatabasePath();
-  
+
   console.log(`[Database] Attempting to connect to: ${dbPath}`);
-  
+
   return new Promise((resolve, reject) => {
     db = new sqlite3.Database(dbPath, async (err) => {
       if (err) {
@@ -60,7 +60,7 @@ export async function initDatabase(): Promise<sqlite3.Database> {
 }
 
 async function createTables() {
-  if (!db) throw new Error('Database not initialized');
+  if (!db) {throw new Error('Database not initialized');}
 
   const run = promisify(db.run.bind(db));
 
@@ -272,7 +272,7 @@ async function createTables() {
 }
 
 export function getDatabase(): sqlite3.Database {
-  if (!db) throw new Error('Database not initialized. Call initDatabase() first.');
+  if (!db) {throw new Error('Database not initialized. Call initDatabase() first.');}
   return db;
 }
 
@@ -280,7 +280,7 @@ export async function closeDatabase(): Promise<void> {
   if (db) {
     return new Promise((resolve, reject) => {
       db!.close((err) => {
-        if (err) reject(err);
+        if (err) {reject(err);}
         else {
           db = null;
           console.log('✓ Database connection closed');
