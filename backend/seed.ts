@@ -1,5 +1,6 @@
 import sqlite3 from 'sqlite3';
 import path from 'path';
+import fs from 'fs';
 
 // Database location: data/mud-data.db at project root
 // When running: backend/seed.ts -> ../data/mud-data.db
@@ -1063,133 +1064,103 @@ function seedData() {
     checkComplete();
   });
 
-  // Seed class proficiencies (Anti-Paladin and Fighter only for now)
-  const proficiencies = [
-    // Anti-Paladin proficiencies (class_id = 1)
-    { class_id: 1, name: 'Detect Alignment', level_required: 1, is_skill: 0, prerequisite_id: null },
-    { class_id: 1, name: 'Kick', level_required: 1, is_skill: 1, prerequisite_id: null },
-    { class_id: 1, name: 'Hide', level_required: 2, is_skill: 1, prerequisite_id: null },
-    { class_id: 1, name: 'Bash', level_required: 3, is_skill: 1, prerequisite_id: null }, // Will update prerequisite_id after insert
-    { class_id: 1, name: 'Sneak', level_required: 3, is_skill: 1, prerequisite_id: null }, // Will update prerequisite_id after insert
-    { class_id: 1, name: 'Cause Minor Wounds', level_required: 5, is_skill: 0, prerequisite_id: null },
-    { class_id: 1, name: 'Backstab', level_required: 5, is_skill: 1, prerequisite_id: null },
-    { class_id: 1, name: 'Poison', level_required: 7, is_skill: 0, prerequisite_id: null },
-    { class_id: 1, name: 'Cause Major Wounds', level_required: 9, is_skill: 0, prerequisite_id: null },
-    { class_id: 1, name: 'Shield Against Good', level_required: 11, is_skill: 0, prerequisite_id: null },
-    { class_id: 1, name: 'Cloak of Shadows', level_required: 13, is_skill: 0, prerequisite_id: null },
-    { class_id: 1, name: 'Chill Touch', level_required: 14, is_skill: 0, prerequisite_id: null },
-    { class_id: 1, name: 'Trip', level_required: 15, is_skill: 0, prerequisite_id: null },
-    { class_id: 1, name: 'Somnolent Gaze', level_required: 17, is_skill: 0, prerequisite_id: null },
-    { class_id: 1, name: 'Dispel Good', level_required: 18, is_skill: 0, prerequisite_id: null },
-    { class_id: 1, name: 'Harm', level_required: 21, is_skill: 0, prerequisite_id: null },
-    { class_id: 1, name: 'Protection from Good', level_required: 23, is_skill: 0, prerequisite_id: null },
-    { class_id: 1, name: 'Detect Trap', level_required: 24, is_skill: 1, prerequisite_id: null },
-    { class_id: 1, name: 'Glacial Fist', level_required: 25, is_skill: 0, prerequisite_id: null },
-    { class_id: 1, name: 'Smite Good', level_required: 27, is_skill: 0, prerequisite_id: null },
-    { class_id: 1, name: 'Asphyxiate', level_required: 29, is_skill: 0, prerequisite_id: null },
-    { class_id: 1, name: 'Disable Trap', level_required: 31, is_skill: 1, prerequisite_id: null },
-    { class_id: 1, name: 'Fortress of Hate', level_required: 33, is_skill: 0, prerequisite_id: null },
-    { class_id: 1, name: 'Unholy Word', level_required: 34, is_skill: 0, prerequisite_id: null },
-    { class_id: 1, name: 'Malign', level_required: 35, is_skill: 0, prerequisite_id: null },
-    { class_id: 1, name: 'Shadow Flare', level_required: 37, is_skill: 0, prerequisite_id: null },
+  // Seed class proficiencies from JSON file
+  const profDataPath = path.resolve(__dirname, 'data', 'class-proficiencies.json');
+  const profData = JSON.parse(fs.readFileSync(profDataPath, 'utf-8'));
+  
+  // Map class names to IDs
+  const classNameToId: Record<string, number> = {
+    'Anti-Paladin': 1,
+    'Bard': 2,
+    'Cleric': 3,
+    'Druid': 4,
+    'Fighter': 5,
+    'Magic User': 6,
+    'Monk': 7,
+    'Necromancer': 8,
+    'Paladin': 9,
+    'Ranger': 10,
+    'Samurai': 11,
+    'Thief': 12,
+    'Berserker': 13,
+    'Warlock': 14
+  };
 
-    // Fighter proficiencies (class_id = 5)
-    { class_id: 5, name: 'Kick', level_required: 1, is_skill: 1, prerequisite_id: null },
-    { class_id: 5, name: 'Parry', level_required: 1, is_skill: 1, prerequisite_id: null },
-    { class_id: 5, name: 'Rescue', level_required: 3, is_skill: 1, prerequisite_id: null },
-    { class_id: 5, name: 'Retreat', level_required: 3, is_skill: 1, prerequisite_id: null },
-    { class_id: 5, name: 'Bash', level_required: 3, is_skill: 1, prerequisite_id: null },
-    { class_id: 5, name: 'Disarm', level_required: 5, is_skill: 1, prerequisite_id: null },
-    { class_id: 5, name: 'Shield Specialization', level_required: 7, is_skill: 1, prerequisite_id: null },
-    { class_id: 5, name: 'Track', level_required: 10, is_skill: 1, prerequisite_id: null },
-    { class_id: 5, name: 'Rage', level_required: 10, is_skill: 1, prerequisite_id: null },
-    { class_id: 5, name: 'Shield Punch', level_required: 12, is_skill: 1, prerequisite_id: null },
-    { class_id: 5, name: 'Armor Specialization', level_required: 20, is_skill: 1, prerequisite_id: null },
-    { class_id: 5, name: 'Shield Rush', level_required: 24, is_skill: 1, prerequisite_id: null },
-    { class_id: 5, name: 'Taunt', level_required: 28, is_skill: 1, prerequisite_id: null },
-    { class_id: 5, name: 'Hamstring', level_required: 30, is_skill: 1, prerequisite_id: null },
-    { class_id: 5, name: 'Blitz', level_required: 33, is_skill: 1, prerequisite_id: null },
-    { class_id: 5, name: 'Group Retreat', level_required: 35, is_skill: 1, prerequisite_id: null },
-    { class_id: 5, name: 'Second Wind', level_required: 37, is_skill: 1, prerequisite_id: null },
+  const proficiencies: Array<{
+    class_id: number;
+    name: string;
+    level_required: number;
+    is_skill: number;
+    prerequisite_name?: string;
+  }> = [];
 
-    // Cleric proficiencies (class_id = 3)
-    { class_id: 3, name: 'Cure Light', level_required: 1, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Create Water', level_required: 1, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Turn Undead', level_required: 1, is_skill: 1, prerequisite_id: null },
-    { class_id: 3, name: 'Create Food', level_required: 2, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Magical Vestments', level_required: 2, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Vigorize Light', level_required: 2, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Bless', level_required: 3, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Cause Minor Wounds', level_required: 3, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Detect Poison', level_required: 3, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Cure Blind', level_required: 4, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Detect Alignment', level_required: 4, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Sense Life', level_required: 4, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Cure Serious', level_required: 5, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Shield Against Evil', level_required: 5, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Shield Against Good', level_required: 5, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Blindness', level_required: 6, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Cause Major Wounds', level_required: 6, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Remove Poison', level_required: 6, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Aid', level_required: 7, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Dispel Silence', level_required: 7, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Vitality', level_required: 7, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Remove Paralysis', level_required: 8, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Silence', level_required: 8, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Lesser Summon', level_required: 8, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Cure Critic', level_required: 9, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Flamestrike', level_required: 9, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Remove Curse', level_required: 10, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Vigorize Serious', level_required: 10, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Dispel Evil', level_required: 11, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Dispel Good', level_required: 11, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Free Action', level_required: 12, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Word of Recall', level_required: 12, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Protection from Evil', level_required: 13, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Protection from Good', level_required: 13, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Heal Light', level_required: 14, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Harm', level_required: 15, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Sanctuary', level_required: 15, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Vitalize Mana', level_required: 17, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Heal Serious', level_required: 18, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Smite Evil', level_required: 19, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Smite Good', level_required: 19, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Heroes Feast', level_required: 20, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Greater Summon', level_required: 21, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Heal Critic', level_required: 22, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Vigorize Critic', level_required: 24, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Regeneration', level_required: 25, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Group Recall', level_required: 27, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Heal Group', level_required: 30, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Holy Word', level_required: 33, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Unholy Word', level_required: 33, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Sovereign Heal', level_required: 35, is_skill: 0, prerequisite_id: null },
-    { class_id: 3, name: 'Firestorm', level_required: 37, is_skill: 0, prerequisite_id: null }
-  ];
+  // Convert JSON data to proficiency records
+  profData.proficiencies.forEach((classData: any) => {
+    const classId = classNameToId[classData.className];
+    if (!classId) {
+      console.warn(`  ⚠️  Unknown class name: ${classData.className}`);
+      return;
+    }
+
+    classData.proficiencies.forEach((prof: any) => {
+      proficiencies.push({
+        class_id: classId,
+        name: prof.name,
+        level_required: prof.level,
+        is_skill: prof.isSkill ? 1 : 0,
+        prerequisite_name: prof.prereq
+      });
+    });
+  });
 
   const insertProficiency = db.prepare('INSERT INTO class_proficiencies (class_id, name, level_required, is_skill, prerequisite_id) VALUES (?, ?, ?, ?, ?)');
 
   proficiencies.forEach(prof => {
-    insertProficiency.run(prof.class_id, prof.name, prof.level_required, prof.is_skill, prof.prerequisite_id);
+    insertProficiency.run(prof.class_id, prof.name, prof.level_required, prof.is_skill, null);
   });
 
   insertProficiency.finalize(() => {
-    console.log(`  ✓ Seeded ${proficiencies.length} class proficiencies`);
+    console.log(`  ✓ Seeded ${proficiencies.length} class proficiencies from JSON file`);
 
-    // Update prerequisites for Anti-Paladin proficiencies
-    db.get('SELECT id FROM class_proficiencies WHERE class_id = 1 AND name = ?', ['Kick'], (_err, kickRow: any) => {
-      if (kickRow) {
-        db.run('UPDATE class_proficiencies SET prerequisite_id = ? WHERE class_id = 1 AND name = ?', [kickRow.id, 'Bash']);
+    // Now update prerequisites based on prerequisite_name
+    let prerequisitesUpdated = 0;
+    let prerequisitesRemaining = proficiencies.filter(p => p.prerequisite_name).length;
+
+    if (prerequisitesRemaining === 0) {
+      checkComplete();
+      return;
+    }
+
+    proficiencies.forEach(prof => {
+      if (prof.prerequisite_name) {
+        db.get(
+          'SELECT id FROM class_proficiencies WHERE class_id = ? AND name = ?',
+          [prof.class_id, prof.prerequisite_name],
+          (_err, prereqRow: any) => {
+            if (prereqRow) {
+              db.run(
+                'UPDATE class_proficiencies SET prerequisite_id = ? WHERE class_id = ? AND name = ?',
+                [prereqRow.id, prof.class_id, prof.name],
+                () => {
+                  prerequisitesUpdated++;
+                  if (prerequisitesUpdated === prerequisitesRemaining) {
+                    console.log(`  ✓ Updated ${prerequisitesUpdated} prerequisite relationships`);
+                    checkComplete();
+                  }
+                }
+              );
+            } else {
+              console.warn(`  ⚠️  Prerequisite not found: ${prof.prerequisite_name} for ${prof.name} (class ${prof.class_id})`);
+              prerequisitesUpdated++;
+              if (prerequisitesUpdated === prerequisitesRemaining) {
+                console.log(`  ✓ Updated ${prerequisitesUpdated} prerequisite relationships`);
+                checkComplete();
+              }
+            }
+          }
+        );
       }
     });
-
-    db.get('SELECT id FROM class_proficiencies WHERE class_id = 1 AND name = ?', ['Hide'], (_err, hideRow: any) => {
-      if (hideRow) {
-        db.run('UPDATE class_proficiencies SET prerequisite_id = ? WHERE class_id = 1 AND name = ?', [hideRow.id, 'Sneak']);
-      }
-    });
-
-    checkComplete();
   });
 
   // Seed universal perks (shared across all classes)

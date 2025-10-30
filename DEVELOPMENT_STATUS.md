@@ -133,7 +133,82 @@ Apocalypse VI MUD/
 - Easily extensible for new item properties
 - Ready for advanced features (enchantments, sets, socketed items, durability)
 
-### 3. Comprehensive Database System
+### 3. Class Proficiency System ⭐ NEW! (October 30, 2025)
+**Status**: ✅ COMPLETE - All 14 classes with comprehensive proficiency data
+
+**Complete Proficiency Coverage**:
+- ✅ **476 total proficiencies** across all 14 playable classes
+- ✅ **External JSON data file**: `backend/data/class-proficiencies.json` for maintainability
+- ✅ **Prerequisite relationships**: 295 prerequisites resolved (chains like Bash requires Kick)
+- ✅ **Skill/Spell distinction**: Each proficiency marked as skill or spell
+- ✅ **Level requirements**: Progressive unlock from level 1 to 40+
+
+**Class Proficiency Breakdown**:
+- ✅ **Anti-Paladin**: 26 proficiencies (dark magic + stealth hybrid)
+- ✅ **Bard**: 43 proficiencies (bardic music + utility spells)
+- ✅ **Berserker**: 16 proficiencies (rage + dual-wield combat)
+- ✅ **Cleric**: 52 proficiencies (healing chains + holy magic)
+- ✅ **Druid**: 50 proficiencies (elemental magic + nature spells)
+- ✅ **Fighter**: 17 proficiencies (combat skills + specializations)
+- ✅ **Magic User**: 55 proficiencies (largest spell list, full arcane tree)
+- ✅ **Monk**: 45 proficiencies (martial arts + stances + mystical)
+- ✅ **Necromancer**: 41 proficiencies (undead control + shadow magic)
+- ✅ **Paladin**: 26 proficiencies (holy warrior + healing)
+- ✅ **Ranger**: 35 proficiencies (nature magic + tracking + archery)
+- ✅ **Samurai**: 13 proficiencies (smallest list, focused mastery)
+- ✅ **Thief**: 18 proficiencies (stealth + backstab + traps)
+- ✅ **Warlock**: 39 proficiencies (channeled spells + shadow/fire)
+
+**Implementation Details**:
+- ✅ **Data Structure**: JSON file with className and proficiencies array per class
+- ✅ **Proficiency Fields**: name, level, isSkill, optional prereq, optional channeled (Warlock)
+- ✅ **Two-Pass Seeding**: 
+  1. First pass: INSERT all proficiencies with NULL prerequisite_id
+  2. Second pass: UPDATE prerequisite_id by looking up prereq name within same class
+- ✅ **Class ID Mapping**: className strings mapped to database class IDs
+- ✅ **Prerequisite Chains**: Multi-level dependencies (e.g., Shield Rush → Shield Punch → Shield Specialization)
+
+**Example Prerequisite Chains**:
+- Fighter: Shield Rush requires Shield Punch, which requires Shield Specialization
+- Fighter: Hamstring requires Kick, Blitz requires Rage
+- Cleric: Cure Blind requires Cure Light, Cure Serious requires Cure Light
+- Anti-Paladin: Bash requires Kick, Sneak requires Hide
+
+**Database Seeding Results**:
+```
+✅ Seeded 476 class proficiencies from JSON file
+✅ Updated 295 prerequisite relationships
+```
+
+**Verification**:
+```
+📊 Class Proficiency Counts:
+  Anti-Paladin    26 proficiencies
+  Bard            43 proficiencies
+  Berserker       16 proficiencies
+  Cleric          52 proficiencies
+  Druid           50 proficiencies
+  Fighter         17 proficiencies
+  Magic User      55 proficiencies
+  Monk            45 proficiencies
+  Necromancer     41 proficiencies
+  Paladin         26 proficiencies
+  Ranger          35 proficiencies
+  Samurai         13 proficiencies
+  Thief           18 proficiencies
+  Warlock         39 proficiencies
+  
+  Total: 476 proficiencies
+```
+
+**Benefits**:
+- Complete profession skills list from MUD source data
+- Maintainable external JSON file (easy to update/extend)
+- Proper prerequisite chain enforcement
+- Ready for frontend class browser
+- Supports progression planning and character builds
+
+### 4. Comprehensive Database System
 
 #### Class System (5 Tables)
 - **class_groups**: 4 groups (Warrior, Priest, Wizard, Rogue)
@@ -142,10 +217,10 @@ Apocalypse VI MUD/
   - Priest: Cleric, Druid, Monk
   - Wizard: Magic User, Necromancer, Warlock
   - Rogue: Thief, Bard, Anti-Paladin
-- **class_proficiencies**: 95 proficiencies with level requirements and prerequisites
-  - Anti-Paladin: 26 proficiencies (Kick → Bash prerequisite chain)
-  - Fighter: 17 proficiencies (Shield specialization, Blitz, etc.)
-  - Cleric: 52 proficiencies (full healing and offensive spell trees)
+- **class_proficiencies**: 476 proficiencies with level requirements and prerequisites
+  - Complete coverage: All 14 classes from Anti-Paladin (26) to Magic User (55)
+  - 295 prerequisite relationships (Bash requires Kick, Shield Rush requires Shield Punch, etc.)
+  - External JSON data file: `backend/data/class-proficiencies.json`
 - **class_perks**: 54 perks (Weapon Prof, Universal, HMV, Alignment, Playstyle)
   - Weapon Prof: Lumberjack, Pugilist, Tentmaker, Fletcher
   - Universal: Pyromaniac, Conduit, Glass Cannon, Treasure Hunter, etc.
@@ -863,7 +938,8 @@ npm run dev
 
 **Database Highlights**:
 - **Classes**: 14 playable classes across 4 groups
-- **Proficiencies**: 95 total (26 Anti-Paladin, 17 Fighter, 52 Cleric)
+- **Proficiencies**: 476 total across all 14 classes (Anti-Paladin: 26, Bard: 43, Berserker: 16, Cleric: 52, Druid: 50, Fighter: 17, Magic User: 55, Monk: 45, Necromancer: 41, Paladin: 26, Ranger: 35, Samurai: 13, Thief: 18, Warlock: 39)
+- **Prerequisite Chains**: 295 resolved relationships (Bash requires Kick, Shield Rush requires Shield Punch, etc.)
 - **Ability Scores**: 156 mappings (26 levels × 6 abilities) with JSON effects
 - **Zones**: 74 fully documented zones with difficulty ratings
 - **Rooms**: 5 sample Midgaard rooms with 17 directional exits
@@ -900,7 +976,7 @@ npm run dev
 - ✅ **Frontend fully linted with ESLint + Prettier** ⭐ NEW!
 - ✅ **Service layer implemented** - Clean separation of concerns
 - ✅ **Code quality enforced** - Consistent style across full stack (backend + frontend)
-- ✅ Database fully seeded with static game data (74 zones, 95 proficiencies, 156 ability scores)
+- ✅ Database fully seeded with static game data (74 zones, 476 proficiencies, 156 ability scores)
 - ✅ Admin panel functional with full navigation and smart reset
 - ✅ Ready for crawler integration
 - ✅ Code safely backed up on GitHub
