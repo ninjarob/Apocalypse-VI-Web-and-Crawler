@@ -36,21 +36,6 @@ export class RoomRepository extends BaseRepository<Room> {
   }
 
   /**
-   * Find room by name
-   */
-  async findByName(name: string): Promise<Room | null> {
-    const sql = `SELECT * FROM ${this.config.table} WHERE name = ?`;
-    return this.get(sql, [name]);
-  }
-
-  /**
-   * Find rooms by zone ID
-   */
-  async findByZone(zoneId: number): Promise<Room[]> {
-    return this.findAll({ zone_id: zoneId });
-  }
-
-  /**
    * Increment visit count and update last visited timestamp
    */
   async recordVisit(id: string): Promise<Room | null> {
@@ -77,12 +62,5 @@ export class RoomRepository extends BaseRepository<Room> {
       LIMIT ?
     `;
     return this.all(sql, [limit]);
-  }
-
-  /**
-   * Get rooms by terrain type
-   */
-  async findByTerrain(terrain: string): Promise<Room[]> {
-    return this.findAll({ terrain });
   }
 }

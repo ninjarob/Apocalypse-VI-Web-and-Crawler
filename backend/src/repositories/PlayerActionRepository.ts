@@ -38,41 +38,6 @@ export class PlayerActionRepository extends BaseRepository<PlayerAction> {
   }
 
   /**
-   * Find action by name
-   */
-  async findByName(name: string): Promise<PlayerAction | null> {
-    return this.findByUnique(name);
-  }
-
-  /**
-   * Get all actions by type
-   */
-  async findByType(type: string): Promise<PlayerAction[]> {
-    return this.findAll({ type });
-  }
-
-  /**
-   * Get all actions by category
-   */
-  async findByCategory(category: string): Promise<PlayerAction[]> {
-    return this.findAll({ category });
-  }
-
-  /**
-   * Get documented actions
-   */
-  async findDocumented(): Promise<PlayerAction[]> {
-    return this.findAll({ documented: 1 });
-  }
-
-  /**
-   * Get undocumented actions
-   */
-  async findUndocumented(): Promise<PlayerAction[]> {
-    return this.findAll({ documented: 0 });
-  }
-
-  /**
    * Record action usage
    */
   async recordUsage(id: number, success: boolean): Promise<PlayerAction | null> {

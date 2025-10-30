@@ -30,14 +30,7 @@ export class RoomService extends BaseService {
    */
   async getRoomById(id: string): Promise<Room> {
     this.validateNonEmptyString(id, 'Room ID');
-
-    const room = await repositories.rooms.findById(id);
-
-    if (!room) {
-      throw createNotFoundError('Room', id);
-    }
-
-    return room;
+    return await repositories.rooms.findByIdOrThrow(id, 'Room');
   }
 
   /**
@@ -45,14 +38,7 @@ export class RoomService extends BaseService {
    */
   async getRoomByName(name: string): Promise<Room> {
     this.validateNonEmptyString(name, 'Room name');
-
-    const room = await repositories.rooms.findByName(name);
-
-    if (!room) {
-      throw createNotFoundError('Room', name);
-    }
-
-    return room;
+    return await repositories.rooms.findByUniqueOrThrow(name, 'Room');
   }
 
   /**
@@ -117,10 +103,7 @@ export class RoomService extends BaseService {
     this.validateNonEmptyString(id, 'Room ID');
 
     // Verify room exists
-    const existing = await repositories.rooms.findById(id);
-    if (!existing) {
-      throw createNotFoundError('Room', id);
-    }
+    await repositories.rooms.findByIdOrThrow(id, 'Room');
 
     // Validate zone_id if being updated
     if (updates.zone_id) {
@@ -161,10 +144,7 @@ export class RoomService extends BaseService {
   async recordVisit(id: string): Promise<Room> {
     this.validateNonEmptyString(id, 'Room ID');
 
-    const existing = await repositories.rooms.findById(id);
-    if (!existing) {
-      throw createNotFoundError('Room', id);
-    }
+    await repositories.rooms.findByIdOrThrow(id, 'Room');
 
     const updated = await repositories.rooms.recordVisit(id);
     if (!updated) {
@@ -187,10 +167,7 @@ export class RoomService extends BaseService {
     this.validatePositiveInteger(zoneId, 'zone_id');
 
     // Verify zone exists
-    const zone = await repositories.zones.findById(zoneId.toString());
-    if (!zone) {
-      throw createNotFoundError('Zone', zoneId.toString());
-    }
+    await repositories.zones.findByIdOrThrow(zoneId.toString(), 'Zone');
 
     return await repositories.rooms.findAll({ zone_id: zoneId });
   }

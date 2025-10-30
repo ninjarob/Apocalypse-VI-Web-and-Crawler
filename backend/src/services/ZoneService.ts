@@ -25,14 +25,7 @@ export class ZoneService extends BaseService {
    */
   async getZoneById(id: number): Promise<Zone> {
     this.validatePositiveInteger(id, 'zone_id');
-
-    const zone = await repositories.zones.findById(id.toString());
-
-    if (!zone) {
-      throw createNotFoundError('Zone', id.toString());
-    }
-
-    return zone;
+    return await repositories.zones.findByIdOrThrow(id.toString(), 'Zone');
   }
 
   /**
@@ -40,14 +33,7 @@ export class ZoneService extends BaseService {
    */
   async getZoneByName(name: string): Promise<Zone> {
     this.validateNonEmptyString(name, 'Zone name');
-
-    const zone = await repositories.zones.findByUnique(name);
-
-    if (!zone) {
-      throw createNotFoundError('Zone', name);
-    }
-
-    return zone;
+    return await repositories.zones.findByUniqueOrThrow(name, 'Zone');
   }
 
   /**
@@ -76,10 +62,7 @@ export class ZoneService extends BaseService {
     this.validatePositiveInteger(id, 'zone_id');
 
     // Verify zone exists
-    const existing = await repositories.zones.findById(id.toString());
-    if (!existing) {
-      throw createNotFoundError('Zone', id.toString());
-    }
+    const existing = await repositories.zones.findByIdOrThrow(id.toString(), 'Zone');
 
     // If updating name, check for duplicates
     if (updates.name && updates.name !== existing.name) {

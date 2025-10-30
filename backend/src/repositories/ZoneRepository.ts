@@ -61,32 +61,11 @@ export class ZoneRepository extends BaseRepository<Zone> {
   constructor() {
     super(zoneConfig);
   }
-
-  /**
-   * Find zone by name
-   */
-  async findByName(name: string): Promise<Zone | null> {
-    return this.findByUnique(name);
-  }
-
-  /**
-   * Get zones by difficulty
-   */
-  async findByDifficulty(difficulty: string): Promise<Zone[]> {
-    return this.findAll({ difficulty });
-  }
 }
 
 export class ZoneAreaRepository extends BaseRepository<ZoneArea> {
   constructor() {
     super(areaConfig);
-  }
-
-  /**
-   * Get all areas for a specific zone
-   */
-  async findByZone(zoneId: number): Promise<ZoneArea[]> {
-    return this.findAll({ zone_id: zoneId });
   }
 }
 
@@ -96,17 +75,10 @@ export class ZoneConnectionRepository extends BaseRepository<ZoneConnection> {
   }
 
   /**
-   * Get all connections for a specific zone
-   */
-  async findByZone(zoneId: number): Promise<ZoneConnection[]> {
-    return this.findAll({ zone_id: zoneId });
-  }
-
-  /**
    * Get all zones connected to a specific zone
    */
   async findConnectedZones(zoneId: number): Promise<number[]> {
-    const connections = await this.findByZone(zoneId);
+    const connections = await this.findAll({ zone_id: zoneId });
     return connections.map(c => c.connected_zone_id);
   }
 

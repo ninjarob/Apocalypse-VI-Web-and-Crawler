@@ -28,13 +28,6 @@ export class RoomExitRepository extends BaseRepository<RoomExit> {
   }
 
   /**
-   * Get all exits from a specific room
-   */
-  async findByRoom(roomId: number): Promise<RoomExit[]> {
-    return this.findAll({ from_room_id: roomId });
-  }
-
-  /**
    * Get exit in a specific direction from a room
    */
   async findByDirection(roomId: number, direction: string): Promise<RoomExit | null> {
@@ -43,27 +36,6 @@ export class RoomExitRepository extends BaseRepository<RoomExit> {
       WHERE from_room_id = ? AND direction = ?
     `;
     return this.get(sql, [roomId, direction]);
-  }
-
-  /**
-   * Get all exits leading to a specific room
-   */
-  async findExitsTo(roomId: number): Promise<RoomExit[]> {
-    return this.findAll({ to_room_id: roomId });
-  }
-
-  /**
-   * Get locked exits
-   */
-  async findLocked(): Promise<RoomExit[]> {
-    return this.findAll({ is_locked: 1 });
-  }
-
-  /**
-   * Get doors (exits that are doors)
-   */
-  async findDoors(): Promise<RoomExit[]> {
-    return this.findAll({ is_door: 1 });
   }
 
   /**

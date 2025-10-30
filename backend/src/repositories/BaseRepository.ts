@@ -181,6 +181,19 @@ export abstract class BaseRepository<T = any> {
   }
 
   /**
+   * Find entity by ID or throw NotFoundError
+   */
+  async findByIdOrThrow(id: string | number, entityName?: string): Promise<T> {
+    const entity = await this.findById(id);
+    if (!entity) {
+      const { createNotFoundError } = require('../errors/CustomErrors');
+      const name = entityName || this.config.table;
+      throw createNotFoundError(name, id.toString());
+    }
+    return entity;
+  }
+
+  /**
    * Find entity by unique field (e.g., name)
    */
   async findByUnique(value: string): Promise<T | null> {
@@ -190,6 +203,19 @@ export abstract class BaseRepository<T = any> {
 
     const sql = `SELECT * FROM ${this.config.table} WHERE ${this.config.uniqueField} = ?`;
     return this.get(sql, [value]);
+  }
+
+  /**
+   * Find entity by unique field or throw NotFoundError
+   */
+  async findByUniqueOrThrow(value: string, entityName?: string): Promise<T> {
+    const entity = await this.findByUnique(value);
+    if (!entity) {
+      const { createNotFoundError } = require('../errors/CustomErrors');
+      const name = entityName || this.config.table;
+      throw createNotFoundError(name, value);
+    }
+    return entity;
   }
 
   /**

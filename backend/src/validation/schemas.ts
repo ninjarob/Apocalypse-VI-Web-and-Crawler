@@ -13,6 +13,32 @@ const timestampSchema = z.string().datetime().optional();
 const jsonFieldSchema = z.union([z.string(), z.record(z.string(), z.any()), z.array(z.any())]).optional();
 const booleanFieldSchema = z.union([z.boolean(), z.number().int().min(0).max(1)]).optional();
 
+/**
+ * Factory function for simple entities with id, name, description, and timestamps
+ * Reduces duplication for lookup/reference tables
+ */
+function createSimpleEntitySchema(options?: { maxNameLength?: number; requireDescription?: boolean }) {
+  const maxNameLength = options?.maxNameLength || 100;
+  const requireDescription = options?.requireDescription || false;
+
+  return z.object({
+    id: z.number().int().positive().optional(),
+    name: z.string().min(1).max(maxNameLength),
+    description: requireDescription 
+      ? z.string().min(1) 
+      : z.string().optional().nullable(),
+    createdAt: timestampSchema,
+    updatedAt: timestampSchema
+  });
+}
+
+/**
+ * Factory function for update schemas of simple entities
+ */
+function createSimpleEntityUpdateSchema(baseSchema: z.ZodObject<any>) {
+  return baseSchema.partial().required({ id: true });
+}
+
 // ============================================================================
 // Room Schemas
 // ============================================================================
@@ -216,16 +242,11 @@ export const skillUpdateSchema = skillSchema.partial().required({ id: true });
 // Ability Schemas
 // ============================================================================
 
-export const abilitySchema = z.object({
-  id: z.number().int().positive().optional(),
-  name: z.string().min(1).max(100),
-  short_name: z.string().max(10).optional().nullable(),
-  description: z.string().optional().nullable(),
-  createdAt: timestampSchema,
-  updatedAt: timestampSchema
+export const abilitySchema = createSimpleEntitySchema().extend({
+  short_name: z.string().max(10).optional().nullable()
 });
 
-export const abilityUpdateSchema = abilitySchema.partial().required({ id: true });
+export const abilityUpdateSchema = createSimpleEntityUpdateSchema(abilitySchema);
 
 // ============================================================================
 // Ability Score Schemas
@@ -246,71 +267,36 @@ export const abilityScoreUpdateSchema = abilityScoreSchema.partial().required({ 
 // Saving Throw Schemas
 // ============================================================================
 
-export const savingThrowSchema = z.object({
-  id: z.number().int().positive().optional(),
-  name: z.string().min(1).max(100),
-  description: z.string().optional().nullable(),
-  createdAt: timestampSchema,
-  updatedAt: timestampSchema
-});
-
-export const savingThrowUpdateSchema = savingThrowSchema.partial().required({ id: true });
+export const savingThrowSchema = createSimpleEntitySchema();
+export const savingThrowUpdateSchema = createSimpleEntityUpdateSchema(savingThrowSchema);
 
 // ============================================================================
 // Spell Modifier Schemas
 // ============================================================================
 
-export const spellModifierSchema = z.object({
-  id: z.number().int().positive().optional(),
-  name: z.string().min(1).max(100),
-  description: z.string().optional().nullable(),
-  createdAt: timestampSchema,
-  updatedAt: timestampSchema
-});
-
-export const spellModifierUpdateSchema = spellModifierSchema.partial().required({ id: true });
+export const spellModifierSchema = createSimpleEntitySchema();
+export const spellModifierUpdateSchema = createSimpleEntityUpdateSchema(spellModifierSchema);
 
 // ============================================================================
 // Elemental Resistance Schemas
 // ============================================================================
 
-export const elementalResistanceSchema = z.object({
-  id: z.number().int().positive().optional(),
-  name: z.string().min(1).max(100),
-  description: z.string().optional().nullable(),
-  createdAt: timestampSchema,
-  updatedAt: timestampSchema
-});
-
-export const elementalResistanceUpdateSchema = elementalResistanceSchema.partial().required({ id: true });
+export const elementalResistanceSchema = createSimpleEntitySchema();
+export const elementalResistanceUpdateSchema = createSimpleEntityUpdateSchema(elementalResistanceSchema);
 
 // ============================================================================
 // Physical Resistance Schemas
 // ============================================================================
 
-export const physicalResistanceSchema = z.object({
-  id: z.number().int().positive().optional(),
-  name: z.string().min(1).max(100),
-  description: z.string().optional().nullable(),
-  createdAt: timestampSchema,
-  updatedAt: timestampSchema
-});
-
-export const physicalResistanceUpdateSchema = physicalResistanceSchema.partial().required({ id: true });
+export const physicalResistanceSchema = createSimpleEntitySchema();
+export const physicalResistanceUpdateSchema = createSimpleEntityUpdateSchema(physicalResistanceSchema);
 
 // ============================================================================
 // Class Group Schemas
 // ============================================================================
 
-export const classGroupSchema = z.object({
-  id: z.number().int().positive().optional(),
-  name: z.string().min(1).max(100),
-  description: z.string().optional().nullable(),
-  createdAt: timestampSchema,
-  updatedAt: timestampSchema
-});
-
-export const classGroupUpdateSchema = classGroupSchema.partial().required({ id: true });
+export const classGroupSchema = createSimpleEntitySchema();
+export const classGroupUpdateSchema = createSimpleEntityUpdateSchema(classGroupSchema);
 
 // ============================================================================
 // Class Schemas
