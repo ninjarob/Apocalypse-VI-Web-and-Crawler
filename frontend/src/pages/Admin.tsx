@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { api } from '../api';
 
 interface Entity {
@@ -166,6 +167,7 @@ function getSingularName(pluralName: string): string {
 }
 
 function Admin() {
+  const location = useLocation();
   const [selectedEntity, setSelectedEntity] = useState<EntityConfig>(ENTITY_CONFIGS[0]);
   const [entities, setEntities] = useState<Entity[]>([]);
   const [loading, setLoading] = useState(false);
@@ -184,6 +186,17 @@ function Admin() {
   const [roomExits, setRoomExits] = useState<any[]>([]);
   const [selectedRoom, setSelectedRoom] = useState<Entity | null>(null);
   const [selectedAction, setSelectedAction] = useState<Entity | null>(null);
+
+  // Reset all drilled-in states when navigating to /admin
+  useEffect(() => {
+    setSelectedZone(null);
+    setSelectedRoom(null);
+    setSelectedAction(null);
+    setSelectedAbility(null);
+    setShowScores(false);
+    setShowForm(false);
+    setEditingEntity(null);
+  }, [location.pathname]);
 
   useEffect(() => {
     loadEntities();

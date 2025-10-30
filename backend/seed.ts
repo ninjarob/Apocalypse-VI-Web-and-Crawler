@@ -1,7 +1,7 @@
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
+import sqlite3 from 'sqlite3';
+import path from 'path';
 
-const DB_FILE = process.env.DB_FILE || './mud_data.db';
+const DB_FILE = process.env.DB_FILE || path.resolve(__dirname, '../mud-data.db');
 
 console.log('🌱 Starting database seed...');
 
@@ -63,7 +63,7 @@ function seedDatabase() {
   });
 }
 
-function createTables(callback) {
+function createTables(callback: () => void) {
   db.serialize(() => {
   // Rooms table
   db.run(`CREATE TABLE rooms (
@@ -428,79 +428,79 @@ function seedData() {
       console.log('\n✨ Database seeded successfully!');
       console.log('\n📈 Summary:');
       
-      db.get('SELECT COUNT(*) as count FROM abilities', (err, row) => {
+      db.get('SELECT COUNT(*) as count FROM abilities', (err, row: any) => {
         if (!err) console.log(`  - Abilities: ${row.count}`);
       });
       
-      db.get('SELECT COUNT(*) as count FROM ability_scores', (err, row) => {
+      db.get('SELECT COUNT(*) as count FROM ability_scores', (err, row: any) => {
         if (!err) console.log(`  - Ability Scores: ${row.count}`);
       });
       
-      db.get('SELECT COUNT(*) as count FROM races', (err, row) => {
+      db.get('SELECT COUNT(*) as count FROM races', (err, row: any) => {
         if (!err) console.log(`  - Races: ${row.count}`);
       });
       
-      db.get('SELECT COUNT(*) as count FROM saving_throws', (err, row) => {
+      db.get('SELECT COUNT(*) as count FROM saving_throws', (err, row: any) => {
         if (!err) {
           console.log(`  - Saving Throws: ${row.count}`);
         }
       });
       
-      db.get('SELECT COUNT(*) as count FROM spell_modifiers', (err, row) => {
+      db.get('SELECT COUNT(*) as count FROM spell_modifiers', (err, row: any) => {
         if (!err) {
           console.log(`  - Spell Modifiers: ${row.count}`);
         }
       });
       
-      db.get('SELECT COUNT(*) as count FROM elemental_resistances', (err, row) => {
+      db.get('SELECT COUNT(*) as count FROM elemental_resistances', (err, row: any) => {
         if (!err) {
           console.log(`  - Elemental Resistances: ${row.count}`);
         }
       });
       
-      db.get('SELECT COUNT(*) as count FROM physical_resistances', (err, row) => {
+      db.get('SELECT COUNT(*) as count FROM physical_resistances', (err, row: any) => {
         if (!err) {
           console.log(`  - Physical Resistances: ${row.count}`);
         }
       });
       
-      db.get('SELECT COUNT(*) as count FROM class_groups', (err, row) => {
+      db.get('SELECT COUNT(*) as count FROM class_groups', (err, row: any) => {
         if (!err) console.log(`  - Class Groups: ${row.count}`);
       });
       
-      db.get('SELECT COUNT(*) as count FROM classes', (err, row) => {
+      db.get('SELECT COUNT(*) as count FROM classes', (err, row: any) => {
         if (!err) console.log(`  - Classes: ${row.count}`);
       });
       
-      db.get('SELECT COUNT(*) as count FROM class_proficiencies', (err, row) => {
+      db.get('SELECT COUNT(*) as count FROM class_proficiencies', (err, row: any) => {
         if (!err) console.log(`  - Class Proficiencies: ${row.count}`);
       });
       
-      db.get('SELECT COUNT(*) as count FROM class_perks', (err, row) => {
+      db.get('SELECT COUNT(*) as count FROM class_perks', (err, row: any) => {
         if (!err) console.log(`  - Class Perks: ${row.count}`);
       });
       
-      db.get('SELECT COUNT(*) as count FROM zones', (err, row) => {
+      db.get('SELECT COUNT(*) as count FROM zones', (err, row: any) => {
         if (!err) console.log(`  - Zones: ${row.count}`);
       });
       
-      db.get('SELECT COUNT(*) as count FROM zone_areas', (err, row) => {
+      db.get('SELECT COUNT(*) as count FROM zone_areas', (err, row: any) => {
         if (!err) console.log(`  - Zone Areas: ${row.count}`);
       });
       
-      db.get('SELECT COUNT(*) as count FROM zone_connections', (err, row) => {
+      db.get('SELECT COUNT(*) as count FROM zone_connections', (err, row: any) => {
         if (!err) console.log(`  - Zone Connections: ${row.count}`);
       });
       
-      db.get('SELECT COUNT(*) as count FROM rooms', (err, row) => {
+      db.get('SELECT COUNT(*) as count FROM rooms', (err, row: any) => {
         if (!err) console.log(`  - Rooms: ${row.count}`);
       });
       
-      db.get('SELECT COUNT(*) as count FROM room_exits', (err, row) => {
+      db.get('SELECT COUNT(*) as count FROM room_exits', (err, row: any) => {
         if (!err) console.log(`  - Room Exits: ${row.count}`);
       });
       
-      db.get('SELECT COUNT(*) as count FROM player_actions', (err, row) => {
+      db.get('SELECT COUNT(*) as count FROM player_actions', (err, row: any) => {
         if (!err) {
           console.log(`  - Player Actions: ${row.count}`);
           db.close(() => {
@@ -826,13 +826,13 @@ function seedData() {
     console.log(`  ✓ Seeded ${proficiencies.length} class proficiencies`);
     
     // Update prerequisites for Anti-Paladin proficiencies
-    db.get('SELECT id FROM class_proficiencies WHERE class_id = 1 AND name = ?', ['Kick'], (err, kickRow) => {
+    db.get('SELECT id FROM class_proficiencies WHERE class_id = 1 AND name = ?', ['Kick'], (_err, kickRow: any) => {
       if (kickRow) {
         db.run('UPDATE class_proficiencies SET prerequisite_id = ? WHERE class_id = 1 AND name = ?', [kickRow.id, 'Bash']);
       }
     });
     
-    db.get('SELECT id FROM class_proficiencies WHERE class_id = 1 AND name = ?', ['Hide'], (err, hideRow) => {
+    db.get('SELECT id FROM class_proficiencies WHERE class_id = 1 AND name = ?', ['Hide'], (_err, hideRow: any) => {
       if (hideRow) {
         db.run('UPDATE class_proficiencies SET prerequisite_id = ? WHERE class_id = 1 AND name = ?', [hideRow.id, 'Sneak']);
       }
@@ -1880,3 +1880,4 @@ process.on('unhandledRejection', (err) => {
   console.error('❌ Unhandled rejection:', err);
   process.exit(1);
 });
+

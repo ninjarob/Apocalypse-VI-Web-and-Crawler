@@ -1,8 +1,42 @@
 import express from 'express';
 import { getDatabase } from './database';
-import { promisify } from 'util';
+import { Database } from 'sqlite3';
 
 const router = express.Router();
+
+// Promisify database methods
+function promisifyGet(db: Database) {
+  return (sql: string, params?: any[]): Promise<any> => {
+    return new Promise((resolve, reject) => {
+      db.get(sql, params || [], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
+    });
+  };
+}
+
+function promisifyAll(db: Database) {
+  return (sql: string, params?: any[]): Promise<any[]> => {
+    return new Promise((resolve, reject) => {
+      db.all(sql, params || [], (err, rows) => {
+        if (err) reject(err);
+        else resolve(rows);
+      });
+    });
+  };
+}
+
+function promisifyRun(db: Database) {
+  return (sql: string, params?: any[]): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      db.run(sql, params || [], (err) => {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
+  };
+}
 
 // Helper to parse JSON fields
 function parseJSON(value: string | null): any {
@@ -23,10 +57,10 @@ function stringifyJSON(value: any): string | null {
 
 // ===== ROOMS =====
 
-router.get('/rooms', async (req, res) => {
+router.get('/rooms', async (_req, res) => {
   try {
     const db = getDatabase();
-    const all = promisify(db.all.bind(db));
+    const all = promisifyAll(db);
     const rows = await all('SELECT * FROM rooms ORDER BY lastVisited DESC');
     const rooms = rows.map((row: any) => ({
       ...row,
@@ -45,7 +79,7 @@ router.get('/rooms', async (req, res) => {
 router.get('/rooms/:id', async (req, res) => {
   try {
     const db = getDatabase();
-    const get = promisify(db.get.bind(db));
+    const get = promisifyGet(db);
     const row = await get('SELECT * FROM rooms WHERE id = ?', [req.params.id]);
     if (!row) return res.status(404).json({ error: 'Room not found' });
     const room = {
@@ -64,7 +98,7 @@ router.get('/rooms/:id', async (req, res) => {
 router.get('/rooms/by-name/:name', async (req, res) => {
   try {
     const db = getDatabase();
-    const get = promisify(db.get.bind(db));
+    const get = promisifyGet(db);
     const row = await get('SELECT * FROM rooms WHERE name = ?', [req.params.name]);
     if (!row) return res.status(404).json({ error: 'Room not found' });
     const room = {
@@ -83,8 +117,8 @@ router.get('/rooms/by-name/:name', async (req, res) => {
 router.post('/rooms', async (req, res) => {
   try {
     const db = getDatabase();
-    const get = promisify(db.get.bind(db));
-    const run = promisify(db.run.bind(db));
+    const get = promisifyGet(db);
+    const run = promisifyRun(db);
     
     const existing = await get('SELECT * FROM rooms WHERE id = ?', [req.body.id]);
     
@@ -124,23 +158,21 @@ router.post('/rooms', async (req, res) => {
 });
 
 // Stats endpoint - must come before other wildcard routes
-router.get('/stats', async (req, res) => {
+router.get('/stats', async (_req, res) => {
   try {
     const db = getDatabase();
-    const get = promisify(db.get.bind(db));
+    const get = promisifyGet(db);
     
-    const [rooms, npcs, items, spells, attacks, commands, lore, factions, quests, regions, relationships] = await Promise.all([
-      get('SELECT COUNT(*) as count FROM rooms').then((r: any) => r.count),
-      get('SELECT COUNT(*) as count FROM npcs').then((r: any) => r.count),
-      get('SELECT COUNT(*) as count FROM items').then((r: any) => r.count),
-      get('SELECT COUNT(*) as count FROM spells').then((r: any) => r.count),
-      get('SELECT COUNT(*) as count FROM attacks').then((r: any) => r.count),
-      get('SELECT COUNT(*) as count FROM commands').then((r: any) => r.count),
-      get('SELECT COUNT(*) as count FROM lore').then((r: any) => r.count),
-      get('SELECT COUNT(*) as count FROM factions').then((r: any) => r.count),
-      get('SELECT COUNT(*) as count FROM quests').then((r: any) => r.count),
-      get('SELECT COUNT(*) as count FROM regions').then((r: any) => r.count),
-      get('SELECT COUNT(*) as count FROM relationships').then((r: any) => r.count)
+    // Only query tables that actually exist in the current schema
+    const [rooms, npcs, items, spells, attacks, abilities, races, zones] = await Promise.all([
+      get('SELECT COUNT(*) as count FROM rooms').then((r: any) => r?.count || 0).catch(() => 0),
+      get('SELECT COUNT(*) as count FROM npcs').then((r: any) => r?.count || 0).catch(() => 0),
+      get('SELECT COUNT(*) as count FROM items').then((r: any) => r?.count || 0).catch(() => 0),
+      get('SELECT COUNT(*) as count FROM spells').then((r: any) => r?.count || 0).catch(() => 0),
+      get('SELECT COUNT(*) as count FROM attacks').then((r: any) => r?.count || 0).catch(() => 0),
+      get('SELECT COUNT(*) as count FROM abilities').then((r: any) => r?.count || 0).catch(() => 0),
+      get('SELECT COUNT(*) as count FROM races').then((r: any) => r?.count || 0).catch(() => 0),
+      get('SELECT COUNT(*) as count FROM zones').then((r: any) => r?.count || 0).catch(() => 0)
     ]);
     
     res.json({
@@ -149,13 +181,10 @@ router.get('/stats', async (req, res) => {
       items,
       spells,
       attacks,
-      commands,
-      lore,
-      factions,
-      quests,
-      regions,
-      relationships,
-      total: rooms + npcs + items + spells + attacks + commands + lore + factions + quests + regions + relationships
+      abilities,
+      races,
+      zones,
+      total: rooms + npcs + items + spells + attacks + abilities + races + zones
     });
   } catch (error) {
     console.error('Error fetching stats:', error);

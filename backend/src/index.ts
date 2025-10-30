@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import routes from './routes';
+import genericRoutes from './genericRoutes';
 import { initDatabase, closeDatabase } from './database';
 
 dotenv.config();
@@ -20,14 +21,15 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api', routes);
+app.use('/api', genericRoutes);
 
 // Health check
-app.get('/health', (req, res) => {
+app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date() });
 });
 
 // Error handling
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Something went wrong!' });
 });

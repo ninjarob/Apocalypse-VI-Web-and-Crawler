@@ -1,12 +1,23 @@
-const express = require('express');
-const { db, serialize, deserialize } = require('./database');
+import express, { Request, Response } from 'express';
+import { getDatabase } from './database';
 
 const router = express.Router();
 
 /**
  * Entity configuration - defines schema and serialization for each entity type
  */
-const ENTITY_CONFIG = {
+interface EntityConfig {
+  table: string;
+  idField: string;
+  nameField?: string;
+  autoIncrement: boolean;
+  uniqueField?: string;
+  jsonFields?: string[];
+  booleanFields?: string[];
+  sortBy: string;
+}
+
+const ENTITY_CONFIG: Record<string, EntityConfig> = {
   rooms: {
     table: 'rooms',
     idField: 'id',
@@ -171,9 +182,30 @@ const ENTITY_CONFIG = {
 };
 
 /**
+ * Serialize JSON fields for storage
+ */
+function serialize(value: any): string | null {
+  if (!value) return null;
+  if (typeof value === 'string') return value;
+  return JSON.stringify(value);
+}
+
+/**
+ * Deserialize JSON fields from storage
+ */
+function deserialize(value: string | null): any {
+  if (!value) return null;
+  try {
+    return JSON.parse(value);
+  } catch {
+    return value;
+  }
+}
+
+/**
  * Deserialize an entity based on its configuration
  */
-function deserializeEntity(row, config) {
+function deserializeEntity(row: any, config: EntityConfig): any {
   if (!row) return null;
   
   const entity = { ...row };
@@ -202,7 +234,7 @@ function deserializeEntity(row, config) {
 /**
  * GET /entity-types - List all available entity types
  */
-router.get('/entity-types', (req, res) => {
+router.get('/entity-types', (_req: Request, res: Response) => {
   res.json({
     types: Object.keys(ENTITY_CONFIG),
     config: ENTITY_CONFIG
@@ -212,7 +244,7 @@ router.get('/entity-types', (req, res) => {
 /**
  * GET /:type - Get all entities of a type
  */
-router.get('/:type', (req, res) => {
+router.get('/:type', (req: Request, res: Response) => {
   const { type } = req.params;
   const config = ENTITY_CONFIG[type];
   
@@ -222,8 +254,8 @@ router.get('/:type', (req, res) => {
   
   const { category, ability_id, zone_id, id } = req.query;
   let sql = `SELECT * FROM ${config.table}`;
-  let params = [];
-  let conditions = [];
+  const params: any[] = [];
+  const conditions: string[] = [];
   
   // Support category filter for commands
   if (category && type === 'commands') {
@@ -255,8 +287,10 @@ router.get('/:type', (req, res) => {
   
   sql += ` ORDER BY ${config.sortBy}`;
   
+  const db = getDatabase();
   db.all(sql, params, (err, rows) => {
     if (err) {
+      console.error(`Error querying ${type}:`, err);
       return res.status(500).json({ error: err.message });
     }
     res.json(rows.map(row => deserializeEntity(row, config)));
@@ -266,7 +300,7 @@ router.get('/:type', (req, res) => {
 /**
  * GET /:type/:id - Get single entity by ID
  */
-router.get('/:type/:id', (req, res) => {
+router.get('/:type/:id', (req: Request, res: Response) => {
   const { type, id } = req.params;
   const config = ENTITY_CONFIG[type];
   
@@ -276,31 +310,8 @@ router.get('/:type/:id', (req, res) => {
   
   const sql = `SELECT * FROM ${config.table} WHERE ${config.idField} = ?`;
   
+  const db = getDatabase();
   db.get(sql, [id], (err, row) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    if (!row) {
-      return res.status(404).json({ error: `${type} not found` });
-    }
-    res.json(deserializeEntity(row, config));
-  });
-});
-
-/**
- * GET /:type/by-name/:name - Get entity by name (for entities with name field)
- */
-router.get('/:type/by-name/:name', (req, res) => {
-  const { type, name } = req.params;
-  const config = ENTITY_CONFIG[type];
-  
-  if (!config || !config.nameField) {
-    return res.status(400).json({ error: `Entity type ${type} does not support name lookup` });
-  }
-  
-  const sql = `SELECT * FROM ${config.table} WHERE ${config.nameField} = ?`;
-  
-  db.get(sql, [name], (err, row) => {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
@@ -314,7 +325,7 @@ router.get('/:type/by-name/:name', (req, res) => {
 /**
  * POST /:type - Create or update an entity
  */
-router.post('/:type', (req, res) => {
+router.post('/:type', (req: Request, res: Response) => {
   const { type } = req.params;
   const config = ENTITY_CONFIG[type];
   const entity = req.body;
@@ -328,28 +339,19 @@ router.post('/:type', (req, res) => {
     return insertEntity(type, config, entity, res);
   }
   
-  // Legacy: Generate ID if not provided and not auto-increment
-  if (!entity[config.idField] && entity[config.nameField]) {
-    entity[config.idField] = entity[config.nameField]
-      .toLowerCase()
-      .replace(/\s+/g, '-')
-      .replace(/[^a-z0-9-]/g, '');
-  }
-  
-  // Check for uniqueness constraint (use unique field if specified, otherwise use id)
+  // Check for uniqueness constraint
   const uniqueField = config.uniqueField || config.idField;
   const checkSql = `SELECT * FROM ${config.table} WHERE ${uniqueField} = ?`;
   
+  const db = getDatabase();
   db.get(checkSql, [entity[uniqueField]], (err, existing) => {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
     
     if (existing) {
-      // Update existing entity
       updateEntity(type, config, entity, existing, res);
     } else {
-      // Insert new entity
       insertEntity(type, config, entity, res);
     }
   });
@@ -358,7 +360,7 @@ router.post('/:type', (req, res) => {
 /**
  * PUT /:type/:identifier - Update specific entity
  */
-router.put('/:type/:identifier', (req, res) => {
+router.put('/:type/:identifier', (req: Request, res: Response) => {
   const { type, identifier } = req.params;
   const config = ENTITY_CONFIG[type];
   const updates = req.body;
@@ -367,7 +369,7 @@ router.put('/:type/:identifier', (req, res) => {
     return res.status(400).json({ error: `Unknown entity type: ${type}` });
   }
   
-  // Check if entity exists (by id OR name if applicable)
+  // Check if entity exists
   let checkSql = `SELECT * FROM ${config.table} WHERE ${config.idField} = ?`;
   if (config.uniqueField && config.uniqueField !== config.idField) {
     checkSql = `SELECT * FROM ${config.table} WHERE ${config.idField} = ? OR ${config.uniqueField} = ?`;
@@ -377,6 +379,7 @@ router.put('/:type/:identifier', (req, res) => {
     ? [identifier, identifier] 
     : [identifier];
   
+  const db = getDatabase();
   db.get(checkSql, checkParams, (err, existing) => {
     if (err) {
       return res.status(500).json({ error: err.message });
@@ -387,22 +390,18 @@ router.put('/:type/:identifier', (req, res) => {
     }
     
     // Build dynamic update query
-    const fields = [];
-    const params = [];
+    const fields: string[] = [];
+    const params: any[] = [];
     
     Object.keys(updates).forEach(key => {
       if (key !== config.idField && updates[key] !== undefined) {
         fields.push(`${key} = ?`);
         
-        // Serialize JSON fields
         if (config.jsonFields && config.jsonFields.includes(key)) {
           params.push(serialize(updates[key]));
-        }
-        // Convert boolean fields
-        else if (config.booleanFields && config.booleanFields.includes(key)) {
+        } else if (config.booleanFields && config.booleanFields.includes(key)) {
           params.push(updates[key] ? 1 : 0);
-        }
-        else {
+        } else {
           params.push(updates[key]);
         }
       }
@@ -414,11 +413,10 @@ router.put('/:type/:identifier', (req, res) => {
     
     fields.push('updatedAt = CURRENT_TIMESTAMP');
     params.push(identifier);
+    params.push(identifier);
     
-    // Update by id or unique field
     const updateField = config.uniqueField || config.idField;
     const sql = `UPDATE ${config.table} SET ${fields.join(', ')} WHERE ${updateField} = ? OR ${config.idField} = ?`;
-    params.push(identifier); // Add second parameter for id check
     
     db.run(sql, params, function(err) {
       if (err) {
@@ -432,7 +430,7 @@ router.put('/:type/:identifier', (req, res) => {
 /**
  * DELETE /:type/:id - Delete an entity
  */
-router.delete('/:type/:id', (req, res) => {
+router.delete('/:type/:id', (req: Request, res: Response) => {
   const { type, id } = req.params;
   const config = ENTITY_CONFIG[type];
   
@@ -442,6 +440,7 @@ router.delete('/:type/:id', (req, res) => {
   
   const sql = `DELETE FROM ${config.table} WHERE ${config.idField} = ?`;
   
+  const db = getDatabase();
   db.run(sql, [id], function(err) {
     if (err) {
       return res.status(500).json({ error: err.message });
@@ -456,8 +455,7 @@ router.delete('/:type/:id', (req, res) => {
 /**
  * Helper: Insert new entity
  */
-function insertEntity(type, config, entity, res) {
-  // Get all columns from the entity, excluding id for auto-increment tables
+function insertEntity(_type: string, config: EntityConfig, entity: any, res: Response): void {
   const columns = Object.keys(entity).filter(key => {
     if (entity[key] === undefined) return false;
     if (config.autoIncrement && key === config.idField) return false;
@@ -468,22 +466,20 @@ function insertEntity(type, config, entity, res) {
   const sql = `INSERT INTO ${config.table} (${columns.join(', ')}) VALUES (${placeholders})`;
   
   const params = columns.map(col => {
-    // Serialize JSON fields
     if (config.jsonFields && config.jsonFields.includes(col)) {
       return serialize(entity[col]);
     }
-    // Convert boolean fields
     if (config.booleanFields && config.booleanFields.includes(col)) {
       return entity[col] ? 1 : 0;
     }
     return entity[col];
   });
   
+  const db = getDatabase();
   db.run(sql, params, function(err) {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
-    // For auto-increment, include the generated ID in response
     if (config.autoIncrement) {
       entity[config.idField] = this.lastID;
     }
@@ -494,30 +490,27 @@ function insertEntity(type, config, entity, res) {
 /**
  * Helper: Update existing entity
  */
-function updateEntity(type, config, entity, existing, res) {
-  const updates = [];
-  const params = [];
+function updateEntity(_type: string, config: EntityConfig, entity: any, _existing: any, res: Response): void {
+  const updates: string[] = [];
+  const params: any[] = [];
   
   Object.keys(entity).forEach(key => {
     if (key !== config.idField && entity[key] !== undefined) {
       updates.push(`${key} = ?`);
       
-      // Serialize JSON fields
       if (config.jsonFields && config.jsonFields.includes(key)) {
         params.push(serialize(entity[key]));
-      }
-      // Convert boolean fields
-      else if (config.booleanFields && config.booleanFields.includes(key)) {
+      } else if (config.booleanFields && config.booleanFields.includes(key)) {
         params.push(entity[key] ? 1 : 0);
-      }
-      else {
+      } else {
         params.push(entity[key]);
       }
     }
   });
   
   if (updates.length === 0) {
-    return res.json(entity);
+    res.json(entity);
+    return;
   }
   
   updates.push('updatedAt = CURRENT_TIMESTAMP');
@@ -526,6 +519,7 @@ function updateEntity(type, config, entity, existing, res) {
   
   const sql = `UPDATE ${config.table} SET ${updates.join(', ')} WHERE ${uniqueField} = ?`;
   
+  const db = getDatabase();
   db.run(sql, params, function(err) {
     if (err) {
       return res.status(500).json({ error: err.message });
@@ -534,4 +528,4 @@ function updateEntity(type, config, entity, existing, res) {
   });
 }
 
-module.exports = router;
+export default router;
