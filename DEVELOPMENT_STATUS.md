@@ -2,6 +2,72 @@
 
 **Last Updated:** October 30, 2025
 
+## Recent Updates (October 30, 2025)
+
+### ✅ Code Duplication Reduction - COMPLETE
+**Status**: All duplicated code eliminated from backend
+
+**Major Refactorings Completed**:
+1. ✅ **Added `search()` method to BaseRepository**
+   - Generic search across name and description fields
+   - Removed duplicate implementations from RoomRepository, ZoneRepository, PlayerActionRepository
+   - Lines saved: ~30 lines
+
+2. ✅ **Added validation helpers to BaseService**
+   - `validateNonEmptyString()` for common string validation
+   - Refactored RoomService and ZoneService to use helper
+   - Lines saved: ~45 lines
+
+3. ✅ **Extracted validation middleware wrapper in api.ts**
+   - Created `applyValidation()` helper function
+   - Applied to POST and PUT routes
+   - Lines saved: ~18 lines
+
+4. ✅ **Removed redundant `findByName()` methods**
+   - Removed from RoomRepository, ZoneRepository, PlayerActionRepository
+   - These just called `findByUnique()`, now call it directly
+   - Lines saved: ~27 lines
+
+5. ✅ **Added `findByIdOrThrow()` and `findByUniqueOrThrow()` to BaseRepository**
+   - Eliminates "find then check then throw" pattern
+   - Updated RoomService and ZoneService to use helpers
+   - Lines saved: ~55 lines
+
+6. ✅ **Created Zod schema factory function**
+   - `createSimpleEntitySchema()` for name/description entities
+   - Applied to 6 repetitive schemas (savingThrow, spellModifier, etc.)
+   - Lines saved: ~84 lines
+
+7. ✅ **Removed trivial filter wrapper methods**
+   - Removed single-field wrappers: findByZone(), findByTerrain(), findByType(), etc.
+   - Callers use `findAll({ field: value })` directly
+   - Lines saved: ~60 lines
+
+**Total Impact**:
+- **~319 lines of duplicated code removed**
+- Enhanced maintainability - changes to patterns happen in one place
+- Improved consistency - all repositories/services follow same patterns
+- Better error handling - centralized NotFoundError handling
+- Zero compilation errors - all changes verified
+
+### ✅ Bug Fix: Query Parameter Parsing
+**Status**: Fixed zone_id filter causing 500 errors
+
+**Problem**: 
+- Query parameters come in as strings from URL (`?zone_id=2`)
+- Service layer expected numbers
+- Error: "zone_id must be a positive integer"
+
+**Fix Applied**:
+- Parse numeric query parameters using `parseInt()` in api.ts
+- Applied to: `zone_id`, `ability_id`, `class_id`
+- Now properly converts strings to numbers before validation
+
+**Result**:
+- Midgaard city now shows its rooms correctly
+- All zone filtering works properly
+- Build successful, no errors
+
 ## Project Overview
 AI-powered MUD (Multi-User Dungeon) crawler that uses Ollama LLM to autonomously explore the game, learn mechanics, and document rooms, NPCs, items, and spells.
 

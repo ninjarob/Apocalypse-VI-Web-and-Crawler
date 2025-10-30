@@ -322,11 +322,11 @@ router.get(
     console.log('[API] Type:', type);
     
     if (category && type === 'commands') {filters.category = category;}
-    if (ability_id && type === 'ability_scores') {filters.ability_id = ability_id;}
-    if (zone_id && type === 'rooms') {filters.zone_id = zone_id;}
+    if (ability_id && type === 'ability_scores') {filters.ability_id = parseInt(ability_id as string);}
+    if (zone_id && type === 'rooms') {filters.zone_id = parseInt(zone_id as string);}
     if (class_id && type === 'class_proficiencies') {
       console.log('[API] Adding class_id filter:', class_id);
-      filters.class_id = class_id;
+      filters.class_id = parseInt(class_id as string);
     }
     if (id) {filters[config.idField] = id;}
 
