@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 /**
  * Validation schemas for all entity types in the system
- * Uses Zod for type-safe input validation
+ * Uses Zod for type-safe input validation with schema composition
  */
 
 // ============================================================================
@@ -14,28 +14,70 @@ const jsonFieldSchema = z.union([z.string(), z.record(z.string(), z.any()), z.ar
 const booleanFieldSchema = z.union([z.boolean(), z.number().int().min(0).max(1)]).optional();
 
 /**
+ * Base schema for entities with timestamps
+ */
+const withTimestamps = z.object({
+  createdAt: timestampSchema,
+  updatedAt: timestampSchema
+});
+
+/**
+ * Base schema for entities with ID
+ */
+const withId = z.object({
+  id: z.number().int().positive().optional()
+});
+
+/**
+ * Base schema for entities with name
+ */
+const withName = (maxLength = 255) => z.object({
+  name: z.string().min(1).max(maxLength)
+});
+
+/**
+ * Base schema for entities with description
+ */
+const withDescription = (required = false) => z.object({
+  description: required ? z.string().min(1) : z.string().optional().nullable()
+});
+
+/**
+ * Base schema for entities with raw MUD text
+ */
+const withRawText = z.object({
+  rawText: z.string().optional().nullable()
+});
+
+/**
  * Factory function for simple entities with id, name, description, and timestamps
  * Reduces duplication for lookup/reference tables
  */
-function createSimpleEntitySchema(options?: { maxNameLength?: number; requireDescription?: boolean }) {
+function createSimpleEntitySchema(options?: { 
+  maxNameLength?: number; 
+  requireDescription?: boolean;
+  includeRawText?: boolean;
+}) {
   const maxNameLength = options?.maxNameLength || 100;
   const requireDescription = options?.requireDescription || false;
+  const includeRawText = options?.includeRawText || false;
 
-  return z.object({
-    id: z.number().int().positive().optional(),
-    name: z.string().min(1).max(maxNameLength),
-    description: requireDescription 
-      ? z.string().min(1) 
-      : z.string().optional().nullable(),
-    createdAt: timestampSchema,
-    updatedAt: timestampSchema
-  });
+  let schema = withId
+    .merge(withName(maxNameLength))
+    .merge(withDescription(requireDescription))
+    .merge(withTimestamps);
+
+  if (includeRawText) {
+    schema = schema.merge(withRawText);
+  }
+
+  return schema;
 }
 
 /**
- * Factory function for update schemas of simple entities
+ * Factory function for update schemas - makes all fields optional except ID
  */
-function createSimpleEntityUpdateSchema(baseSchema: z.ZodObject<any>) {
+function createUpdateSchema<T extends z.ZodRawShape>(baseSchema: z.ZodObject<T>) {
   return baseSchema.partial().required({ id: true });
 }
 
@@ -96,78 +138,74 @@ export const roomExitUpdateSchema = roomExitSchema.partial().required({ id: true
 // NPC Schemas
 // ============================================================================
 
-export const npcSchema = z.object({
-  id: z.number().int().positive().optional(),
-  name: z.string().min(1).max(255),
-  description: z.string().optional().nullable(),
-  location: z.string().max(255).optional().nullable(),
-  dialogue: jsonFieldSchema,
-  hostile: booleanFieldSchema,
-  level: z.number().int().min(1).max(100).optional().nullable(),
-  race: z.string().max(100).optional().nullable(),
-  class: z.string().max(100).optional().nullable(),
-  rawText: z.string().optional().nullable(),
-  createdAt: timestampSchema,
-  updatedAt: timestampSchema
-});
+export const npcSchema = withId
+  .merge(withName(255))
+  .merge(withDescription(false))
+  .merge(withRawText)
+  .merge(withTimestamps)
+  .extend({
+    location: z.string().max(255).optional().nullable(),
+    dialogue: jsonFieldSchema,
+    hostile: booleanFieldSchema,
+    level: z.number().int().min(1).max(100).optional().nullable(),
+    race: z.string().max(100).optional().nullable(),
+    class: z.string().max(100).optional().nullable()
+  });
 
-export const npcUpdateSchema = npcSchema.partial().required({ id: true });
+export const npcUpdateSchema = createUpdateSchema(npcSchema);
 
 // ============================================================================
 // Item Schemas
 // ============================================================================
 
-export const itemSchema = z.object({
-  id: z.number().int().positive().optional(),
-  name: z.string().min(1).max(255),
-  description: z.string().optional().nullable(),
-  type: z.string().max(100).optional().nullable(),
-  location: z.string().max(255).optional().nullable(),
-  properties: jsonFieldSchema,
-  stats: jsonFieldSchema,
-  rawText: z.string().optional().nullable(),
-  createdAt: timestampSchema,
-  updatedAt: timestampSchema
-});
+export const itemSchema = withId
+  .merge(withName(255))
+  .merge(withDescription(false))
+  .merge(withRawText)
+  .merge(withTimestamps)
+  .extend({
+    type: z.string().max(100).optional().nullable(),
+    location: z.string().max(255).optional().nullable(),
+    properties: jsonFieldSchema,
+    stats: jsonFieldSchema
+  });
 
-export const itemUpdateSchema = itemSchema.partial().required({ id: true });
+export const itemUpdateSchema = createUpdateSchema(itemSchema);
 
 // ============================================================================
 // Spell Schemas
 // ============================================================================
 
-export const spellSchema = z.object({
-  id: z.number().int().positive().optional(),
-  name: z.string().min(1).max(255),
-  description: z.string().optional().nullable(),
-  manaCost: z.number().int().min(0).optional().nullable(),
-  level: z.number().int().min(1).max(100).optional().nullable(),
-  type: z.string().max(100).optional().nullable(),
-  effects: jsonFieldSchema,
-  rawText: z.string().optional().nullable(),
-  createdAt: timestampSchema,
-  updatedAt: timestampSchema
-});
+export const spellSchema = withId
+  .merge(withName(255))
+  .merge(withDescription(false))
+  .merge(withRawText)
+  .merge(withTimestamps)
+  .extend({
+    manaCost: z.number().int().min(0).optional().nullable(),
+    level: z.number().int().min(1).max(100).optional().nullable(),
+    type: z.string().max(100).optional().nullable(),
+    effects: jsonFieldSchema
+  });
 
-export const spellUpdateSchema = spellSchema.partial().required({ id: true });
+export const spellUpdateSchema = createUpdateSchema(spellSchema);
 
 // ============================================================================
 // Attack Schemas
 // ============================================================================
 
-export const attackSchema = z.object({
-  id: z.number().int().positive().optional(),
-  name: z.string().min(1).max(255),
-  description: z.string().optional().nullable(),
-  damage: z.string().max(100).optional().nullable(),
-  type: z.string().max(100).optional().nullable(),
-  requirements: jsonFieldSchema,
-  rawText: z.string().optional().nullable(),
-  createdAt: timestampSchema,
-  updatedAt: timestampSchema
-});
+export const attackSchema = withId
+  .merge(withName(255))
+  .merge(withDescription(false))
+  .merge(withRawText)
+  .merge(withTimestamps)
+  .extend({
+    damage: z.string().max(100).optional().nullable(),
+    type: z.string().max(100).optional().nullable(),
+    requirements: jsonFieldSchema
+  });
 
-export const attackUpdateSchema = attackSchema.partial().required({ id: true });
+export const attackUpdateSchema = createUpdateSchema(attackSchema);
 
 // ============================================================================
 // Player Action Schemas
@@ -246,7 +284,7 @@ export const abilitySchema = createSimpleEntitySchema().extend({
   short_name: z.string().max(10).optional().nullable()
 });
 
-export const abilityUpdateSchema = createSimpleEntityUpdateSchema(abilitySchema);
+export const abilityUpdateSchema = createUpdateSchema(abilitySchema);
 
 // ============================================================================
 // Ability Score Schemas
@@ -268,35 +306,35 @@ export const abilityScoreUpdateSchema = abilityScoreSchema.partial().required({ 
 // ============================================================================
 
 export const savingThrowSchema = createSimpleEntitySchema();
-export const savingThrowUpdateSchema = createSimpleEntityUpdateSchema(savingThrowSchema);
+export const savingThrowUpdateSchema = createUpdateSchema(savingThrowSchema);
 
 // ============================================================================
 // Spell Modifier Schemas
 // ============================================================================
 
 export const spellModifierSchema = createSimpleEntitySchema();
-export const spellModifierUpdateSchema = createSimpleEntityUpdateSchema(spellModifierSchema);
+export const spellModifierUpdateSchema = createUpdateSchema(spellModifierSchema);
 
 // ============================================================================
 // Elemental Resistance Schemas
 // ============================================================================
 
 export const elementalResistanceSchema = createSimpleEntitySchema();
-export const elementalResistanceUpdateSchema = createSimpleEntityUpdateSchema(elementalResistanceSchema);
+export const elementalResistanceUpdateSchema = createUpdateSchema(elementalResistanceSchema);
 
 // ============================================================================
 // Physical Resistance Schemas
 // ============================================================================
 
 export const physicalResistanceSchema = createSimpleEntitySchema();
-export const physicalResistanceUpdateSchema = createSimpleEntityUpdateSchema(physicalResistanceSchema);
+export const physicalResistanceUpdateSchema = createUpdateSchema(physicalResistanceSchema);
 
 // ============================================================================
 // Class Group Schemas
 // ============================================================================
 
 export const classGroupSchema = createSimpleEntitySchema();
-export const classGroupUpdateSchema = createSimpleEntityUpdateSchema(classGroupSchema);
+export const classGroupUpdateSchema = createUpdateSchema(classGroupSchema);
 
 // ============================================================================
 // Class Schemas

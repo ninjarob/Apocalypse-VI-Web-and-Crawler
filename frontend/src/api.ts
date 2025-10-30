@@ -1,148 +1,75 @@
 import axios from 'axios';
+import type {
+  Room,
+  NPC,
+  Item,
+  Spell,
+  Command,
+  Race,
+  Abilities,
+  SavingThrow,
+  SpellModifier,
+  ElementalResistance,
+  PhysicalResistance,
+  Stats,
+  CrawlerStatus
+} from '@shared/types';
 
 const API_BASE = '/api';
 
-export interface Room {
-  id: number;
-  name: string;
-  description: string;
-  exits: Array<{ direction: string; destination?: string }>;
-  npcs: string[];
-  items: string[];
-  visitCount: number;
-  coordinates?: { x: number; y: number; z: number };
-}
-
-export interface NPC {
-  id: number;
-  name: string;
-  description: string;
-  location?: string;
-  dialogue?: string[];
-  hostile?: boolean;
-  level?: number;
-  race?: string;
-  class?: string;
-  rawText?: string;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-export interface Item {
-  id: number;
-  name: string;
-  description: string;
-  type?: string;
-  location?: string;
-  properties?: Record<string, any>;
-  stats?: {
-    damage?: string;
-    armor?: number;
-    weight?: number;
-    value?: number;
-    level?: number;
-  };
-  rawText?: string;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-export interface Spell {
-  id: number;
-  name: string;
-  description: string;
-  manaCost?: number;
-  level?: number;
-  type?: string;
-  effects?: string[];
-  rawText?: string;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-export interface Command {
-  id: number;
-  name: string;
-  category: string;
-  description: string;
-  syntax?: string;
-  workingStatus: string;
-  tested: boolean;
-  aliases?: string[];
-  examples?: string[];
-  testResults?: Array<{
-    input: string;
-    output: string;
-    success: boolean;
-    timestamp: Date;
-  }>;
-  usageCount?: number;
-  lastUsed?: Date;
-  createdAt?: Date;
-}
-
-export interface Race {
-  id: number;
-  name: string;
-  description?: string;
-  stats?: Record<string, any>;
-  abilities?: string[];
-  requirements?: string[];
-  helpText?: string;
-  discovered?: string;
-}
-
-export interface Abilities {
-  id: number;
-  name: string;
-  short_name?: string;
-  description: string;
-}
-
-export interface SavingThrow {
-  id: number;
-  name: string;
-  description: string;
-}
-
-export interface SpellModifier {
-  id: number;
-  name: string;
-  description: string;
-}
-
-export interface ElementalResistance {
-  id: number;
-  name: string;
-  description: string;
-}
-
-export interface PhysicalResistance {
-  id: number;
-  name: string;
-  description: string;
-}
-
-export interface Stats {
-  rooms: number;
-  npcs: number;
-  items: number;
-  spells: number;
-  attacks: number;
-  commands: number;
-  total: number;
-}
-
-export interface CrawlerStatus {
-  status: string;
-  timestamp: Date;
-  roomsDiscovered: number;
-  npcsDiscovered: number;
-  itemsDiscovered: number;
-}
+// Re-export types for convenience
+export type {
+  Room,
+  NPC,
+  Item,
+  Spell,
+  Command,
+  Race,
+  Abilities,
+  SavingThrow,
+  SpellModifier,
+  ElementalResistance,
+  PhysicalResistance,
+  Stats,
+  CrawlerStatus
+};
 
 export const api = {
-  // Generic entity methods (for future use)
+  // Generic entity methods
+  async getAll<T>(endpoint: string, filters?: Record<string, any>): Promise<T[]> {
+    const params = new URLSearchParams();
+    if (filters) {
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          params.append(key, String(value));
+        }
+      });
+    }
+    const url = `${API_BASE}${endpoint}${params.toString() ? `?${params.toString()}` : ''}`;
+    const response = await axios.get<T[]>(url);
+    return response.data;
+  },
+
+  async getById<T>(endpoint: string, id: string | number): Promise<T> {
+    const response = await axios.get<T>(`${API_BASE}${endpoint}/${id}`);
+    return response.data;
+  },
+
+  async create<T>(endpoint: string, data: Partial<T>): Promise<T> {
+    const response = await axios.post<T>(`${API_BASE}${endpoint}`, data);
+    return response.data;
+  },
+
+  async update<T>(endpoint: string, id: string | number, data: Partial<T>): Promise<T> {
+    const response = await axios.put<T>(`${API_BASE}${endpoint}/${id}`, data);
+    return response.data;
+  },
+
+  async delete(endpoint: string, id: string | number): Promise<void> {
+    await axios.delete(`${API_BASE}${endpoint}/${id}`);
+  },
+
+  // Legacy generic methods (kept for backwards compatibility)
   get: async (path: string): Promise<any> => {
     const response = await axios.get(`${API_BASE}${path}`);
     return response.data;
@@ -158,20 +85,20 @@ export const api = {
     return response.data;
   },
 
-  delete: async (path: string): Promise<any> => {
+  deleteRaw: async (path: string): Promise<any> => {
     const response = await axios.delete(`${API_BASE}${path}`);
     return response.data;
   },
 
   // Stats
   getStats: async (): Promise<Stats> => {
-    const response = await axios.get(`${API_BASE}/stats`);
+    const response = await axios.get<Stats>(`${API_BASE}/stats`);
     return response.data;
   },
 
   // Crawler Status
   getCrawlerStatus: async (): Promise<CrawlerStatus> => {
-    const response = await axios.get(`${API_BASE}/crawler/status`);
+    const response = await axios.get<CrawlerStatus>(`${API_BASE}/crawler/status`);
     return response.data;
   }
 };

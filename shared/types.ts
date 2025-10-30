@@ -1,7 +1,7 @@
 // Shared TypeScript types across all projects
 
 export interface Room {
-  id: string;
+  id: number;  // Changed from string to match database
   name: string;
   description: string;
   exits: Exit[];
@@ -10,8 +10,8 @@ export interface Room {
   coordinates?: { x: number; y: number; z: number };
   area?: string;
   visitCount: number;
-  firstVisited: Date;
-  lastVisited: Date;
+  firstVisited?: Date;
+  lastVisited?: Date;
   rawText?: string;
 }
 
@@ -23,7 +23,7 @@ export interface Exit {
 }
 
 export interface NPC {
-  id: string;
+  id: number;  // Changed from string to match database
   name: string;
   description: string;
   location?: string;
@@ -33,10 +33,12 @@ export interface NPC {
   race?: string;
   class?: string;
   rawText?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Item {
-  id: string;
+  id: number;  // Changed from string to match database
   name: string;
   description: string;
   type?: string;
@@ -44,6 +46,8 @@ export interface Item {
   properties?: Record<string, any>;
   stats?: ItemStats;
   rawText?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface ItemStats {
@@ -55,7 +59,7 @@ export interface ItemStats {
 }
 
 export interface Spell {
-  id: string;
+  id: number;  // Changed from string to match database
   name: string;
   description: string;
   manaCost?: number;
@@ -63,10 +67,12 @@ export interface Spell {
   type?: string;
   effects?: string[];
   rawText?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Attack {
-  id: string;
+  id: number;  // Changed from string to match database
   name: string;
   description: string;
   damage?: string;
@@ -75,15 +81,88 @@ export interface Attack {
   rawText?: string;
 }
 
+export interface Command {
+  id: number;
+  name: string;
+  category: string;
+  description: string;
+  syntax?: string;
+  workingStatus: string;
+  tested: boolean;
+  aliases?: string[];
+  examples?: string[];
+  testResults?: Array<{
+    input: string;
+    output: string;
+    success: boolean;
+    timestamp: Date;
+  }>;
+  usageCount?: number;
+  lastUsed?: Date;
+  createdAt?: Date;
+}
+
+export interface Abilities {
+  id: number;
+  name: string;
+  short_name?: string;
+  description: string;
+}
+
+export interface SavingThrow {
+  id: number;
+  name: string;
+  description: string;
+}
+
+export interface SpellModifier {
+  id: number;
+  name: string;
+  description: string;
+}
+
+export interface ElementalResistance {
+  id: number;
+  name: string;
+  description: string;
+}
+
+export interface PhysicalResistance {
+  id: number;
+  name: string;
+  description: string;
+}
+
+export interface Stats {
+  rooms: number;
+  npcs: number;
+  items: number;
+  spells: number;
+  attacks: number;
+  abilities?: number;
+  races?: number;
+  zones?: number;
+  commands?: number;
+  total: number;
+}
+
+export interface CrawlerStatus {
+  status: string;
+  timestamp: Date;
+  roomsDiscovered: number;
+  npcsDiscovered: number;
+  itemsDiscovered: number;
+}
+
 export interface Race {
-  id: string;
+  id: number;  // Changed from string to match database
   name: string;
   description?: string;
   stats?: Record<string, any>;
   abilities?: string[];
   requirements?: string[];
   helpText?: string;
-  discovered?: Date;
+  discovered?: string;
 }
 
 export interface Class {

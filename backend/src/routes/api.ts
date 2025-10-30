@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
-import { EntityConfig } from '../repositories/BaseRepository';
+import { EntityConfig, ENTITY_CONFIG } from '@shared/entity-config';
+import { RepositoryFactory } from '../repositories/GenericRepository';
 import { repositories } from '../repositories';
 import { asyncHandler, validateCreate, validateUpdate } from '../middleware';
 import { BadRequestError } from '../errors/CustomErrors';
@@ -30,202 +31,6 @@ async function applyValidation(
   });
 }
 
-/**
- * Entity configuration - defines schema and serialization for each entity type
- * This is the single source of truth for all entity types in the system
- */
-const ENTITY_CONFIG: Record<string, EntityConfig> = {
-  rooms: {
-    table: 'rooms',
-    idField: 'id',
-    nameField: 'name',
-    autoIncrement: false,
-    jsonFields: ['exits', 'npcs', 'items', 'coordinates'],
-    sortBy: 'lastVisited DESC'
-  },
-  npcs: {
-    table: 'npcs',
-    idField: 'id',
-    nameField: 'name',
-    autoIncrement: true,
-    jsonFields: ['dialogue'],
-    booleanFields: ['hostile'],
-    sortBy: 'name'
-  },
-  items: {
-    table: 'items',
-    idField: 'id',
-    nameField: 'name',
-    autoIncrement: true,
-    jsonFields: ['properties', 'stats'],
-    sortBy: 'name'
-  },
-  spells: {
-    table: 'spells',
-    idField: 'id',
-    nameField: 'name',
-    autoIncrement: true,
-    jsonFields: ['effects'],
-    sortBy: 'name'
-  },
-  attacks: {
-    table: 'attacks',
-    idField: 'id',
-    nameField: 'name',
-    autoIncrement: true,
-    jsonFields: ['requirements'],
-    sortBy: 'name'
-  },
-  player_actions: {
-    table: 'player_actions',
-    idField: 'id',
-    nameField: 'name',
-    autoIncrement: true,
-    uniqueField: 'name',
-    jsonFields: ['examples', 'requirements', 'relatedActions'],
-    booleanFields: ['documented'],
-    sortBy: 'type, category, name'
-  },
-  commands: {
-    table: 'commands',
-    idField: 'id',
-    nameField: 'name',
-    autoIncrement: true,
-    uniqueField: 'name',
-    jsonFields: ['examples', 'requirements', 'relatedCommands'],
-    booleanFields: ['documented'],
-    sortBy: 'category, name'
-  },
-  races: {
-    table: 'races',
-    idField: 'id',
-    nameField: 'name',
-    autoIncrement: true,
-    uniqueField: 'name',
-    jsonFields: ['stats', 'abilities', 'requirements'],
-    sortBy: 'name'
-  },
-  classes: {
-    table: 'classes',
-    idField: 'id',
-    nameField: 'name',
-    autoIncrement: true,
-    uniqueField: 'name',
-    jsonFields: ['stats', 'abilities', 'requirements', 'startingEquipment'],
-    sortBy: 'name'
-  },
-  class_groups: {
-    table: 'class_groups',
-    idField: 'id',
-    nameField: 'name',
-    autoIncrement: true,
-    uniqueField: 'name',
-    sortBy: 'id'
-  },
-  class_proficiencies: {
-    table: 'class_proficiencies',
-    idField: 'id',
-    autoIncrement: true,
-    sortBy: 'class_id, level_required, name'
-  },
-  class_perks: {
-    table: 'class_perks',
-    idField: 'id',
-    nameField: 'name',
-    autoIncrement: true,
-    uniqueField: 'name',
-    sortBy: 'category, name'
-  },
-  class_perk_availability: {
-    table: 'class_perk_availability',
-    idField: 'id',
-    autoIncrement: true,
-    sortBy: 'class_id, perk_id'
-  },
-  skills: {
-    table: 'skills',
-    idField: 'id',
-    nameField: 'name',
-    autoIncrement: true,
-    uniqueField: 'name',
-    jsonFields: ['requirements', 'effects'],
-    sortBy: 'name'
-  },
-  abilities: {
-    table: 'abilities',
-    idField: 'id',
-    nameField: 'name',
-    autoIncrement: true,
-    sortBy: 'name'
-  },
-  ability_scores: {
-    table: 'ability_scores',
-    idField: 'id',
-    autoIncrement: true,
-    jsonFields: ['effects'],
-    sortBy: 'ability_id, score'
-  },
-  saving_throws: {
-    table: 'saving_throws',
-    idField: 'id',
-    nameField: 'name',
-    autoIncrement: true,
-    uniqueField: 'name',
-    sortBy: 'id'
-  },
-  spell_modifiers: {
-    table: 'spell_modifiers',
-    idField: 'id',
-    nameField: 'name',
-    autoIncrement: true,
-    uniqueField: 'name',
-    sortBy: 'name'
-  },
-  elemental_resistances: {
-    table: 'elemental_resistances',
-    idField: 'id',
-    nameField: 'name',
-    autoIncrement: true,
-    uniqueField: 'name',
-    sortBy: 'name'
-  },
-  physical_resistances: {
-    table: 'physical_resistances',
-    idField: 'id',
-    nameField: 'name',
-    autoIncrement: true,
-    uniqueField: 'name',
-    sortBy: 'name'
-  },
-  zones: {
-    table: 'zones',
-    idField: 'id',
-    nameField: 'name',
-    autoIncrement: true,
-    uniqueField: 'name',
-    sortBy: 'id'
-  },
-  zone_areas: {
-    table: 'zone_areas',
-    idField: 'id',
-    autoIncrement: true,
-    sortBy: 'zone_id, id'
-  },
-  zone_connections: {
-    table: 'zone_connections',
-    idField: 'id',
-    autoIncrement: true,
-    sortBy: 'zone_id, connected_zone_id'
-  },
-  room_exits: {
-    table: 'room_exits',
-    idField: 'id',
-    autoIncrement: true,
-    booleanFields: ['is_door', 'is_locked'],
-    sortBy: 'from_room_id, direction'
-  }
-};
-
 // Extract valid entity types for validation
 const VALID_ENTITY_TYPES = Object.keys(ENTITY_CONFIG);
 
@@ -248,16 +53,27 @@ router.get('/entity-types', (_req: Request, res: Response) => {
  * GET /stats - Get counts for all major entity types
  */
 router.get('/stats', asyncHandler(async (_req: Request, res: Response) => {
-  const [rooms, npcs, items, spells, attacks, abilities, races, zones] = await Promise.all([
+  // Get counts for all entity types using GenericRepository
+  const getCount = async (config: EntityConfig): Promise<number> => {
+    try {
+      const repository = RepositoryFactory.getRepository(config);
+      return await repository.count();
+    } catch (error) {
+      console.error(`Error counting ${config.table}:`, error);
+      return 0;
+    }
+  };
+
+  const [rooms, npcs, items, spells, attacks, abilities, races, zones, commands] = await Promise.all([
     repositories.rooms.count().catch(() => 0),
-    // For entities without specific repositories, use generic count
-    repositories.rooms.count().then(() => 0).catch(() => 0), // npcs placeholder
-    repositories.rooms.count().then(() => 0).catch(() => 0), // items placeholder
-    repositories.rooms.count().then(() => 0).catch(() => 0), // spells placeholder
-    repositories.rooms.count().then(() => 0).catch(() => 0), // attacks placeholder
-    repositories.rooms.count().then(() => 0).catch(() => 0), // abilities placeholder
-    repositories.rooms.count().then(() => 0).catch(() => 0), // races placeholder
-    repositories.zones.count().catch(() => 0)
+    getCount(ENTITY_CONFIG.npcs),
+    getCount(ENTITY_CONFIG.items),
+    getCount(ENTITY_CONFIG.spells),
+    getCount(ENTITY_CONFIG.attacks),
+    getCount(ENTITY_CONFIG.abilities),
+    getCount(ENTITY_CONFIG.races),
+    repositories.zones.count().catch(() => 0),
+    getCount(ENTITY_CONFIG.commands)
   ]);
 
   res.json({
@@ -269,7 +85,8 @@ router.get('/stats', asyncHandler(async (_req: Request, res: Response) => {
     abilities,
     races,
     zones,
-    total: rooms + npcs + items + spells + attacks + abilities + races + zones
+    commands,
+    total: rooms + npcs + items + spells + attacks + abilities + races + zones + commands
   });
 }));
 
@@ -338,10 +155,8 @@ router.get(
       entities = await roomService.getRooms(filters);
     } else if (type === 'zones') {
       entities = await zoneService.getZones();
-    } else if (type === 'items') {
-      // Use specialized ItemRepository for rich metadata
-      entities = await repositories.items.findAll();
     } else {
+      // Use GenericService for all other entity types
       const service = new GenericService(config);
       entities = await service.getAll(filters);
     }
@@ -371,10 +186,8 @@ router.get(
       entity = await roomService.getRoomById(id);
     } else if (type === 'zones') {
       entity = await zoneService.getZoneById(parseInt(id));
-    } else if (type === 'items') {
-      // Use specialized ItemRepository for rich metadata
-      entity = await repositories.items.findById(id);
     } else {
+      // Use GenericService for all other entity types
       const service = new GenericService(config);
       entity = await service.getById(id);
     }
