@@ -1,0 +1,24 @@
+{
+  "name": "apocalypse-vi-mud-crawler",
+  "version": "1.0.0",
+  "description": "AI-powered MUD crawler and documentation system",
+  "private": true,
+  "workspaces": [
+    "crawler",
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "install-all": "npm install && cd crawler && npm install && cd ../backend && npm install && cd ../frontend && npm install",
+    "dev:crawler": "cd crawler && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\""
+  },
+  "keywords": ["mud", "crawler", "ai", "game-documentation"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
