@@ -5,7 +5,7 @@
   "main": "dist/src/index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "tsx watch src/index.ts",
+    "dev": "node dist/src/index.js",
     "start": "node dist/src/index.js",
     "start:prod": "npm run build && npm run start",
     "seed": "tsx seed.ts",

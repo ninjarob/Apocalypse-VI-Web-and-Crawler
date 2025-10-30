@@ -1,12 +1,15 @@
 import express, { Request, Response } from 'express';
 import { EntityConfig } from '../repositories/BaseRepository';
-import { RepositoryFactory } from '../repositories/GenericRepository';
 import { repositories } from '../repositories';
-import { Room } from '../repositories/RoomRepository';
 import { asyncHandler, validateCreate, validateUpdate } from '../middleware';
-import { BadRequestError, createNotFoundError } from '../errors/CustomErrors';
+import { BadRequestError } from '../errors/CustomErrors';
+import { RoomService, ZoneService, GenericService } from '../services';
 
 console.log('[API ROUTES] Loading api.ts module');
+
+// Initialize services
+const roomService = new RoomService();
+const zoneService = new ZoneService();
 
 const router = express.Router();
 
@@ -259,10 +262,7 @@ router.get('/stats', asyncHandler(async (_req: Request, res: Response) => {
  * GET /rooms/by-name/:name - Get room by name
  */
 router.get('/rooms/by-name/:name', asyncHandler(async (req: Request, res: Response) => {
-  const room = await repositories.rooms.findByName(req.params.name);
-  if (!room) {
-    throw createNotFoundError('Room', req.params.name);
-  }
+  const room = await roomService.getRoomByName(req.params.name);
   res.json(room);
 }));
 
@@ -270,35 +270,8 @@ router.get('/rooms/by-name/:name', asyncHandler(async (req: Request, res: Respon
  * POST /rooms - Create or update a room (with visit tracking)
  */
 router.post('/rooms', validateCreate('rooms'), asyncHandler(async (req: Request, res: Response) => {
-  const existing = await repositories.rooms.findById(req.body.id);
-  
-  if (existing) {
-    // Update visit count for existing room
-    const updated = await repositories.rooms.recordVisit(req.body.id);
-    return res.json(updated);
-  }
-  
-  // Create new room
-  const roomData: Partial<Room> = {
-    id: req.body.id,
-    name: req.body.name,
-    description: req.body.description,
-    exits: req.body.exits,
-    npcs: req.body.npcs,
-    items: req.body.items,
-    coordinates: req.body.coordinates,
-    area: req.body.area,
-    zone_id: req.body.zone_id,
-    vnum: req.body.vnum,
-    terrain: req.body.terrain,
-    flags: req.body.flags,
-    visitCount: req.body.visitCount || 1,
-    firstVisited: req.body.firstVisited || new Date().toISOString(),
-    lastVisited: req.body.lastVisited || new Date().toISOString(),
-    rawText: req.body.rawText
-  };
-  const created = await repositories.rooms.create(roomData);
-  res.status(201).json(created);
+  const room = await roomService.createOrUpdateRoom(req.body);
+  res.status(room.visitCount === 1 ? 201 : 200).json(room);
 }));
 
 // ==================== GENERIC CRUD ENDPOINTS ====================
@@ -324,8 +297,6 @@ router.get(
     
     console.log(`[API] Config found for ${type}:`, { table: config.table, idField: config.idField });
     
-    const repository = RepositoryFactory.getRepository(config);
-    
     // Build filters from query parameters
     const filters: Record<string, any> = {};
     const { category, ability_id, zone_id, id } = req.query;
@@ -337,7 +308,17 @@ router.get(
     
     console.log(`[API] Filters:`, filters);
     
-    const entities = await repository.findWithFilters(filters);
+    // Use appropriate service based on entity type
+    let entities;
+    if (type === 'rooms') {
+      entities = await roomService.getRooms(filters);
+    } else if (type === 'zones') {
+      entities = await zoneService.getZones();
+    } else {
+      const service = new GenericService(config);
+      entities = await service.getAll(filters);
+    }
+    
     console.log(`[API] Found ${entities.length} entities`);
     
     res.json(entities);
@@ -357,11 +338,15 @@ router.get(
       throw new BadRequestError(`Unknown entity type: ${type}`);
     }
     
-    const repository = RepositoryFactory.getRepository(config);
-    const entity = await repository.findById(id);
-    
-    if (!entity) {
-      throw createNotFoundError(type, id);
+    // Use appropriate service based on entity type
+    let entity;
+    if (type === 'rooms') {
+      entity = await roomService.getRoomById(id);
+    } else if (type === 'zones') {
+      entity = await zoneService.getZoneById(parseInt(id));
+    } else {
+      const service = new GenericService(config);
+      entity = await service.getById(id);
     }
     
     res.json(entity);
@@ -396,31 +381,27 @@ router.post(
     }
     
     const entity = req.body;
-    const repository = RepositoryFactory.getRepository(config);
     
-    // For auto-increment tables, always insert
-    if (config.autoIncrement) {
-      const created = await repository.create(entity);
-      return res.status(201).json(created);
-    }
-    
-    // For tables with unique constraints, upsert
-    const uniqueField = config.uniqueField || config.idField;
-    const uniqueValue = entity[uniqueField];
-    
-    if (!uniqueValue) {
-      throw new BadRequestError(`${uniqueField} is required`);
-    }
-    
-    const existing = await repository.findByUnique(uniqueValue);
-    
-    if (existing) {
-      const id = (existing as any)[config.idField];
-      const updated = await repository.update(id, entity);
-      return res.json(updated);
+    // Use appropriate service based on entity type
+    let result;
+    if (type === 'rooms') {
+      result = await roomService.createOrUpdateRoom(entity);
+      return res.status(result.visitCount === 1 ? 201 : 200).json(result);
+    } else if (type === 'zones') {
+      result = await zoneService.createZone(entity);
+      return res.status(201).json(result);
     } else {
-      const created = await repository.create(entity);
-      return res.status(201).json(created);
+      const service = new GenericService(config);
+      
+      // For auto-increment tables, always create
+      if (config.autoIncrement) {
+        result = await service.create(entity);
+        return res.status(201).json(result);
+      }
+      
+      // For tables with unique constraints, upsert
+      result = await service.createOrUpdate(entity);
+      return res.status(201).json(result);
     }
   })
 );
@@ -453,22 +434,17 @@ router.put(
     }
     
     const updates = req.body;
-    const repository = RepositoryFactory.getRepository(config);
     
-    // Try to find by ID first
-    let existing = await repository.findById(identifier);
-    
-    // If not found and there's a unique field, try that
-    if (!existing && config.uniqueField && config.uniqueField !== config.idField) {
-      existing = await repository.findByUnique(identifier);
+    // Use appropriate service based on entity type
+    let updated;
+    if (type === 'rooms') {
+      updated = await roomService.updateRoom(identifier, updates);
+    } else if (type === 'zones') {
+      updated = await zoneService.updateZone(parseInt(identifier), updates);
+    } else {
+      const service = new GenericService(config);
+      updated = await service.update(identifier, updates);
     }
-    
-    if (!existing) {
-      throw createNotFoundError(type, identifier);
-    }
-    
-    const id = (existing as any)[config.idField];
-    const updated = await repository.update(id, updates);
     
     res.json({ success: true, entity: updated });
   })
@@ -487,11 +463,14 @@ router.delete(
       throw new BadRequestError(`Unknown entity type: ${type}`);
     }
     
-    const repository = RepositoryFactory.getRepository(config);
-    const deleted = await repository.delete(id);
-    
-    if (!deleted) {
-      throw createNotFoundError(type, id);
+    // Use appropriate service based on entity type
+    if (type === 'rooms') {
+      await roomService.deleteRoom(id);
+    } else if (type === 'zones') {
+      await zoneService.deleteZone(parseInt(id));
+    } else {
+      const service = new GenericService(config);
+      await service.delete(id);
     }
     
     res.json({ success: true, deleted: id });
