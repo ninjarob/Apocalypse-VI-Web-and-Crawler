@@ -33,7 +33,28 @@ function seedDatabase() {
     'DROP TABLE IF EXISTS room_exits',
     'DROP TABLE IF EXISTS rooms',
     'DROP TABLE IF EXISTS npcs',
+    // Drop item-related tables in correct order (child tables first)
+    'DROP TABLE IF EXISTS item_customizations',
+    'DROP TABLE IF EXISTS item_granted_abilities',
+    'DROP TABLE IF EXISTS item_spell_effects',
+    'DROP TABLE IF EXISTS item_consumables',
+    'DROP TABLE IF EXISTS item_containers',
+    'DROP TABLE IF EXISTS item_lights',
+    'DROP TABLE IF EXISTS item_armor',
+    'DROP TABLE IF EXISTS item_weapons',
+    'DROP TABLE IF EXISTS item_restrictions',
+    'DROP TABLE IF EXISTS item_binding_instances',
+    'DROP TABLE IF EXISTS item_stat_effects',
+    'DROP TABLE IF EXISTS item_wear_locations',
+    'DROP TABLE IF EXISTS item_flag_instances',
     'DROP TABLE IF EXISTS items',
+    'DROP TABLE IF EXISTS item_bindings',
+    'DROP TABLE IF EXISTS stat_types',
+    'DROP TABLE IF EXISTS wear_locations',
+    'DROP TABLE IF EXISTS item_flags',
+    'DROP TABLE IF EXISTS item_sizes',
+    'DROP TABLE IF EXISTS item_materials',
+    'DROP TABLE IF EXISTS item_types',
     'DROP TABLE IF EXISTS spells',
     'DROP TABLE IF EXISTS attacks',
     'DROP TABLE IF EXISTS class_perk_availability',
@@ -61,8 +82,12 @@ function seedDatabase() {
 
   createTables(() => {
     console.log('✓ Tables created');
-    console.log('\n🌱 Seeding data...');
-    seedData();
+    console.log('\n📊 Seeding reference tables...');
+    seedReferenceTables(() => {
+      console.log('✓ Reference tables seeded');
+      console.log('\n🌱 Seeding data...');
+      seedData();
+    });
   });
 }
 
@@ -125,18 +150,210 @@ function createTables(callback: () => void) {
     updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
 
-  // Items table
-  db.run(`CREATE TABLE items (
+  // Item Types (Reference Table)
+  db.run(`CREATE TABLE item_types (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
+    name TEXT UNIQUE NOT NULL,
+    description TEXT
+  )`);
+
+  // Item Materials (Reference Table)
+  db.run(`CREATE TABLE item_materials (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT UNIQUE NOT NULL,
+    description TEXT
+  )`);
+
+  // Item Sizes (Reference Table)
+  db.run(`CREATE TABLE item_sizes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT UNIQUE NOT NULL,
     description TEXT,
-    type TEXT,
+    size_modifier INTEGER
+  )`);
+
+  // Item Flags (Reference Table)
+  db.run(`CREATE TABLE item_flags (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT UNIQUE NOT NULL,
+    description TEXT,
+    flag_type TEXT
+  )`);
+
+  // Wear Locations (Reference Table)
+  db.run(`CREATE TABLE wear_locations (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT UNIQUE NOT NULL,
+    description TEXT,
+    slot_limit INTEGER DEFAULT 1
+  )`);
+
+  // Stat Types (Reference Table)
+  db.run(`CREATE TABLE stat_types (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT UNIQUE NOT NULL,
+    description TEXT,
+    stat_category TEXT
+  )`);
+
+  // Item Bindings (Reference Table)
+  db.run(`CREATE TABLE item_bindings (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT UNIQUE NOT NULL,
+    description TEXT
+  )`);
+
+  // Items (Main Table)
+  db.run(`CREATE TABLE items (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    vnum INTEGER UNIQUE,
+    type_id INTEGER NOT NULL,
+    material_id INTEGER,
+    min_level INTEGER DEFAULT 0,
+    size_id INTEGER,
+    weight INTEGER,
+    value INTEGER,
+    rent INTEGER,
     location TEXT,
-    properties TEXT,
-    stats TEXT,
+    description TEXT,
+    long_description TEXT,
     rawText TEXT,
-    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+    identified INTEGER DEFAULT 0,
+    createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TEXT DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (type_id) REFERENCES item_types(id),
+    FOREIGN KEY (material_id) REFERENCES item_materials(id),
+    FOREIGN KEY (size_id) REFERENCES item_sizes(id)
+  )`);
+
+  // Item Flag Instances (Junction Table)
+  db.run(`CREATE TABLE item_flag_instances (
+    item_id TEXT NOT NULL,
+    flag_id INTEGER NOT NULL,
+    PRIMARY KEY (item_id, flag_id),
+    FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE,
+    FOREIGN KEY (flag_id) REFERENCES item_flags(id)
+  )`);
+
+  // Item Wear Locations (Junction Table)
+  db.run(`CREATE TABLE item_wear_locations (
+    item_id TEXT NOT NULL,
+    location_id INTEGER NOT NULL,
+    PRIMARY KEY (item_id, location_id),
+    FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE,
+    FOREIGN KEY (location_id) REFERENCES wear_locations(id)
+  )`);
+
+  // Item Stat Effects (Junction Table)
+  db.run(`CREATE TABLE item_stat_effects (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    item_id TEXT NOT NULL,
+    stat_type_id INTEGER NOT NULL,
+    modifier INTEGER NOT NULL,
+    FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE,
+    FOREIGN KEY (stat_type_id) REFERENCES stat_types(id)
+  )`);
+
+  // Item Binding Instances
+  db.run(`CREATE TABLE item_binding_instances (
+    item_id TEXT PRIMARY KEY,
+    binding_type_id INTEGER NOT NULL,
+    bound_to_character TEXT,
+    bound_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE,
+    FOREIGN KEY (binding_type_id) REFERENCES item_bindings(id)
+  )`);
+
+  // Item Restrictions (Class/Race)
+  db.run(`CREATE TABLE item_restrictions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    item_id TEXT NOT NULL,
+    restriction_type TEXT NOT NULL,
+    restriction_value TEXT NOT NULL,
+    is_allowed INTEGER DEFAULT 1,
+    FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE
+  )`);
+
+  // Item Weapons (Type-Specific)
+  db.run(`CREATE TABLE item_weapons (
+    item_id TEXT PRIMARY KEY,
+    damage_dice TEXT,
+    average_damage REAL,
+    damage_type TEXT,
+    weapon_skill TEXT,
+    hand_requirement TEXT,
+    FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE
+  )`);
+
+  // Item Armor (Type-Specific)
+  db.run(`CREATE TABLE item_armor (
+    item_id TEXT PRIMARY KEY,
+    armor_points INTEGER,
+    armor_type TEXT,
+    FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE
+  )`);
+
+  // Item Lights (Type-Specific)
+  db.run(`CREATE TABLE item_lights (
+    item_id TEXT PRIMARY KEY,
+    light_intensity INTEGER,
+    hours_remaining INTEGER,
+    max_hours INTEGER,
+    refillable INTEGER DEFAULT 0,
+    FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE
+  )`);
+
+  // Item Containers (Type-Specific)
+  db.run(`CREATE TABLE item_containers (
+    item_id TEXT PRIMARY KEY,
+    max_weight INTEGER,
+    max_items INTEGER,
+    container_flags TEXT,
+    key_vnum INTEGER,
+    FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE
+  )`);
+
+  // Item Consumables (Type-Specific)
+  db.run(`CREATE TABLE item_consumables (
+    item_id TEXT PRIMARY KEY,
+    consumable_type TEXT,
+    hunger_restored INTEGER,
+    thirst_restored INTEGER,
+    duration_hours INTEGER,
+    poisoned INTEGER DEFAULT 0,
+    FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE
+  )`);
+
+  // Item Spell Effects
+  db.run(`CREATE TABLE item_spell_effects (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    item_id TEXT NOT NULL,
+    spell_name TEXT NOT NULL,
+    spell_level INTEGER,
+    charges_current INTEGER,
+    charges_max INTEGER,
+    FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE
+  )`);
+
+  // Item Granted Abilities
+  db.run(`CREATE TABLE item_granted_abilities (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    item_id TEXT NOT NULL,
+    ability_name TEXT NOT NULL,
+    ability_description TEXT,
+    FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE
+  )`);
+
+  // Item Customizations
+  db.run(`CREATE TABLE item_customizations (
+    item_id TEXT PRIMARY KEY,
+    is_customizable INTEGER DEFAULT 1,
+    custom_name TEXT,
+    custom_description TEXT,
+    customized_by TEXT,
+    customized_at TEXT,
+    FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE
   )`);
 
   // Spells table
@@ -418,6 +635,137 @@ function createTables(callback: () => void) {
     FOREIGN KEY (connected_zone_id) REFERENCES zones(id) ON DELETE CASCADE,
     UNIQUE(zone_id, connected_zone_id)
   )`, callback);
+  });
+}
+
+function seedReferenceTables(callback: () => void) {
+  db.serialize(() => {
+    // Seed item_types
+    const itemTypes = [
+      ['WEAPON', 'Melee or ranged weapons'],
+      ['ARMOR', 'Protective equipment'],
+      ['FOOD', 'Consumable food items'],
+      ['DRINK', 'Consumable beverages'],
+      ['LIGHT', 'Light sources'],
+      ['SCROLL', 'Magic scrolls with spell effects'],
+      ['POTION', 'Magic potions with spell effects'],
+      ['WAND', 'Magical wands with charges'],
+      ['STAFF', 'Magical staffs with charges'],
+      ['CONTAINER', 'Bags, chests, containers'],
+      ['KEY', 'Keys for locked doors/containers'],
+      ['TREASURE', 'Valuable items with no use'],
+      ['BOAT', 'Water traversal items'],
+      ['FOUNTAIN', 'Drinkable fountains'],
+      ['OTHER', 'Miscellaneous items']
+    ];
+    const insertType = db.prepare('INSERT INTO item_types (name, description) VALUES (?, ?)');
+    itemTypes.forEach(([name, desc]) => insertType.run(name, desc));
+    insertType.finalize();
+
+    // Seed item_materials
+    const materials = ['gold', 'silver', 'iron', 'steel', 'bronze', 'copper', 'leather', 
+                       'cloth', 'wood', 'stone', 'bone', 'glass', 'paper', 'organic', 
+                       'magical', 'adamantite', 'mithril', 'dragonscale', 'unknown'];
+    const insertMaterial = db.prepare('INSERT INTO item_materials (name) VALUES (?)');
+    materials.forEach(material => insertMaterial.run(material));
+    insertMaterial.finalize();
+
+    // Seed item_sizes
+    const sizes = [
+      ['special', 0],
+      ['tiny', 1],
+      ['small', 2],
+      ['normal', 3],
+      ['medium', 4],
+      ['large', 5],
+      ['huge', 6],
+      ['gigantic', 7]
+    ];
+    const insertSize = db.prepare('INSERT INTO item_sizes (name, size_modifier) VALUES (?, ?)');
+    sizes.forEach(([name, modifier]) => insertSize.run(name, modifier));
+    insertSize.finalize();
+
+    // Seed item_flags
+    const flags = [
+      ['MAGIC', 'Item is magical', 'positive'],
+      ['UNIQUE', 'Only one can exist per player', 'restriction'],
+      ['UNBREAKABLE', 'Cannot be damaged', 'positive'],
+      ['!DONATE', 'Cannot be donated', 'restriction'],
+      ['!SELL', 'Cannot be sold to shops', 'restriction'],
+      ['!DROP', 'Cannot be dropped', 'restriction'],
+      ['CURSED', 'Item is cursed', 'negative'],
+      ['INVISIBLE', 'Item is invisible', 'positive'],
+      ['GLOW', 'Item glows', 'positive'],
+      ['HUM', 'Item hums', 'positive'],
+      ['MAIN_HAND_WPN', 'Main hand weapon only', 'restriction'],
+      ['OFF_HAND_WPN', 'Off hand weapon only', 'restriction'],
+      ['TWO_HAND_WPN', 'Two-handed weapon', 'restriction']
+    ];
+    const insertFlag = db.prepare('INSERT INTO item_flags (name, description, flag_type) VALUES (?, ?, ?)');
+    flags.forEach(([name, desc, type]) => insertFlag.run(name, desc, type));
+    insertFlag.finalize();
+
+    // Seed wear_locations
+    const locations = [
+      ['TAKE', 'Can be picked up', 99],
+      ['FINGER', 'Finger slot (rings)', 2],
+      ['NECK', 'Neck slot (amulets)', 1],
+      ['BODY', 'Body/chest slot', 1],
+      ['HEAD', 'Head slot (helmets)', 1],
+      ['LEGS', 'Leg slot (pants)', 1],
+      ['FEET', 'Feet slot (boots)', 1],
+      ['HANDS', 'Hand slot (gloves)', 1],
+      ['ARMS', 'Arm slot (bracers)', 1],
+      ['SHIELD', 'Shield slot', 1],
+      ['ABOUT', 'About body (cloaks)', 1],
+      ['WAIST', 'Waist slot (belts)', 1],
+      ['WRIST', 'Wrist slot (bracelets)', 2],
+      ['WIELD', 'Wielded weapon slot', 1],
+      ['HOLD', 'Held item slot', 1],
+      ['FACE', 'Face slot (masks)', 1],
+      ['EAR', 'Ear slot (earrings)', 2],
+      ['BACK', 'Back slot', 1]
+    ];
+    const insertLocation = db.prepare('INSERT INTO wear_locations (name, description, slot_limit) VALUES (?, ?, ?)');
+    locations.forEach(([name, desc, limit]) => insertLocation.run(name, desc, limit));
+    insertLocation.finalize();
+
+    // Seed stat_types
+    const stats = [
+      ['MAXHIT', 'Maximum hit points', 'combat'],
+      ['MAXMANA', 'Maximum mana', 'combat'],
+      ['MAXMOVE', 'Maximum movement', 'combat'],
+      ['HITROLL', 'To-hit bonus', 'combat'],
+      ['DAMROLL', 'Damage bonus', 'combat'],
+      ['ARMOR', 'Armor class', 'combat'],
+      ['STR', 'Strength modifier', 'attribute'],
+      ['INT', 'Intelligence modifier', 'attribute'],
+      ['WIS', 'Wisdom modifier', 'attribute'],
+      ['DEX', 'Dexterity modifier', 'attribute'],
+      ['CON', 'Constitution modifier', 'attribute'],
+      ['CHA', 'Charisma modifier', 'attribute'],
+      ['SAVING_PARA', 'Save vs paralysis', 'save'],
+      ['SAVING_ROD', 'Save vs rods', 'save'],
+      ['SAVING_PETRI', 'Save vs petrification', 'save'],
+      ['SAVING_BREATH', 'Save vs breath', 'save'],
+      ['SAVING_SPELL', 'Save vs spell', 'save']
+    ];
+    const insertStat = db.prepare('INSERT INTO stat_types (name, description, stat_category) VALUES (?, ?, ?)');
+    stats.forEach(([name, desc, category]) => insertStat.run(name, desc, category));
+    insertStat.finalize();
+
+    // Seed item_bindings
+    const bindings = [
+      ['NON-BINDING', 'Item can be freely traded'],
+      ['BIND_ON_PICKUP', 'Binds when picked up'],
+      ['BIND_ON_EQUIP', 'Binds when equipped'],
+      ['BOUND', 'Already bound to a character']
+    ];
+    const insertBinding = db.prepare('INSERT INTO item_bindings (name, description) VALUES (?, ?)');
+    bindings.forEach(([name, desc]) => insertBinding.run(name, desc));
+    insertBinding.finalize(() => {
+      callback();
+    });
   });
 }
 
@@ -1869,8 +2217,270 @@ See Also:  EXAMINE READ SCAN`,
 
   insertChaScore.finalize(() => {
     console.log(`  ✓ Seeded ${chaScores.length} ability scores for Charisma`);
-    checkComplete();
+    seedItems();
   });
+}
+
+// Seed sample items with full metadata
+function seedItems() {
+  console.log('\n📦 Seeding Items...');
+
+  // Helper to get IDs from reference tables
+  function getItemTypeId(typeName: string): Promise<number> {
+    return new Promise((resolve, reject) => {
+      db.get('SELECT id FROM item_types WHERE name = ?', [typeName], (_err: any, row: any) => {
+        if (row) resolve(row.id);
+        else reject(new Error(`Type ${typeName} not found`));
+      });
+    });
+  }
+
+  function getMaterialId(materialName: string): Promise<number> {
+    return new Promise((resolve, reject) => {
+      db.get('SELECT id FROM item_materials WHERE name = ?', [materialName], (_err: any, row: any) => {
+        if (row) resolve(row.id);
+        else reject(new Error(`Material ${materialName} not found`));
+      });
+    });
+  }
+
+  function getSizeId(sizeName: string): Promise<number> {
+    return new Promise((resolve, reject) => {
+      db.get('SELECT id FROM item_sizes WHERE name = ?', [sizeName], (_err: any, row: any) => {
+        if (row) resolve(row.id);
+        else reject(new Error(`Size ${sizeName} not found`));
+      });
+    });
+  }
+
+  function getFlagId(flagName: string): Promise<number> {
+    return new Promise((resolve, reject) => {
+      db.get('SELECT id FROM item_flags WHERE name = ?', [flagName], (_err: any, row: any) => {
+        if (row) resolve(row.id);
+        else reject(new Error(`Flag ${flagName} not found`));
+      });
+    });
+  }
+
+  function getWearLocationId(locationName: string): Promise<number> {
+    return new Promise((resolve, reject) => {
+      db.get('SELECT id FROM wear_locations WHERE name = ?', [locationName], (_err: any, row: any) => {
+        if (row) resolve(row.id);
+        else reject(new Error(`Location ${locationName} not found`));
+      });
+    });
+  }
+
+  function getStatTypeId(statName: string): Promise<number> {
+    return new Promise((resolve, reject) => {
+      db.get('SELECT id FROM stat_types WHERE name = ?', [statName], (_err: any, row: any) => {
+        if (row) resolve(row.id);
+        else reject(new Error(`Stat ${statName} not found`));
+      });
+    });
+  }
+
+  function getBindingTypeId(bindingName: string): Promise<number> {
+    return new Promise((resolve, reject) => {
+      db.get('SELECT id FROM item_bindings WHERE name = ?', [bindingName], (_err: any, row: any) => {
+        if (row) resolve(row.id);
+        else reject(new Error(`Binding ${bindingName} not found`));
+      });
+    });
+  }
+
+  // Seed the 6 example items
+  async function seedExampleItems() {
+    try {
+      // 1. Quester's Ring
+      const armorType = await getItemTypeId('ARMOR');
+      const goldMaterial = await getMaterialId('gold');
+      const specialSize = await getSizeId('special');
+
+      db.run(
+        `INSERT INTO items (id, name, type_id, material_id, min_level, size_id, weight, value, rent, identified, rawText)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        ['questers-ring', "Quester's Ring", armorType, goldMaterial, 0, specialSize, 1, 0, 50, 1,
+          "Name: 'Quester's Ring'\\nType: ARMOR, Material: gold\\nMin Level: 0, Size: special, Weight: 1\\nValue: 0, Rent: 50"]
+      );
+
+      // Add wear locations for ring
+      const takeLoc = await getWearLocationId('TAKE');
+      const fingerLoc = await getWearLocationId('FINGER');
+      db.run('INSERT INTO item_wear_locations (item_id, location_id) VALUES (?, ?)', ['questers-ring', takeLoc]);
+      db.run('INSERT INTO item_wear_locations (item_id, location_id) VALUES (?, ?)', ['questers-ring', fingerLoc]);
+
+      // Add flags
+      const noDonateFlag = await getFlagId('!DONATE');
+      const noSellFlag = await getFlagId('!SELL');
+      const uniqueFlag = await getFlagId('UNIQUE');
+      const unbreakableFlag = await getFlagId('UNBREAKABLE');
+      db.run('INSERT INTO item_flag_instances (item_id, flag_id) VALUES (?, ?)', ['questers-ring', noDonateFlag]);
+      db.run('INSERT INTO item_flag_instances (item_id, flag_id) VALUES (?, ?)', ['questers-ring', noSellFlag]);
+      db.run('INSERT INTO item_flag_instances (item_id, flag_id) VALUES (?, ?)', ['questers-ring', uniqueFlag]);
+      db.run('INSERT INTO item_flag_instances (item_id, flag_id) VALUES (?, ?)', ['questers-ring', unbreakableFlag]);
+
+      // Add armor data
+      db.run('INSERT INTO item_armor (item_id, armor_points) VALUES (?, ?)', ['questers-ring', 2]);
+
+      // Add stat effects
+      const maxhitStat = await getStatTypeId('MAXHIT');
+      const hitrollStat = await getStatTypeId('HITROLL');
+      db.run('INSERT INTO item_stat_effects (item_id, stat_type_id, modifier) VALUES (?, ?, ?)', ['questers-ring', maxhitStat, 1]);
+      db.run('INSERT INTO item_stat_effects (item_id, stat_type_id, modifier) VALUES (?, ?, ?)', ['questers-ring', hitrollStat, 1]);
+
+      // Add binding
+      const boundBinding = await getBindingTypeId('BOUND');
+      db.run('INSERT INTO item_binding_instances (item_id, binding_type_id, bound_to_character) VALUES (?, ?, ?)', ['questers-ring', boundBinding, 'pocket(869)']);
+
+      // Add customization info
+      db.run('INSERT INTO item_customizations (item_id, is_customizable) VALUES (?, ?)', ['questers-ring', 0]);
+
+      // 2. Bread (FOOD)
+      const foodType = await getItemTypeId('FOOD');
+      const organicMaterial = await getMaterialId('organic');
+
+      db.run(
+        `INSERT INTO items (id, name, type_id, material_id, min_level, size_id, weight, value, rent, identified, rawText)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        ['bread', 'a bread', foodType, organicMaterial, 0, specialSize, 1, 50, 2, 1,
+          "Name: 'a bread'\\nType: FOOD, Material: organic\\nMin Level: 0, Size: special, Weight: 1\\nValue: 50, Rent: 2"]
+      );
+
+      db.run('INSERT INTO item_wear_locations (item_id, location_id) VALUES (?, ?)', ['bread', takeLoc]);
+      db.run('INSERT INTO item_consumables (item_id, consumable_type, hunger_restored) VALUES (?, ?, ?)', ['bread', 'food', 4]);
+
+      // 3. Silver Cutlass (WEAPON)
+      const weaponType = await getItemTypeId('WEAPON');
+      const silverMaterial = await getMaterialId('silver');
+      const normalSize = await getSizeId('normal');
+
+      db.run(
+        `INSERT INTO items (id, name, type_id, material_id, min_level, size_id, weight, value, rent, identified, rawText)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        ['silver-cutlass', 'a silver cutlass', weaponType, silverMaterial, 0, normalSize, 13, 1450, 125, 1,
+          "Name: 'a silver cutlass'\\nType: WEAPON, Material: silver\\nMin Level: 0, Size: normal, Weight: 13\\nValue: 1450, Rent: 125"]
+      );
+
+      const wieldLoc = await getWearLocationId('WIELD');
+      db.run('INSERT INTO item_wear_locations (item_id, location_id) VALUES (?, ?)', ['silver-cutlass', takeLoc]);
+      db.run('INSERT INTO item_wear_locations (item_id, location_id) VALUES (?, ?)', ['silver-cutlass', wieldLoc]);
+
+      db.run('INSERT INTO item_flag_instances (item_id, flag_id) VALUES (?, ?)', ['silver-cutlass', uniqueFlag]);
+      db.run('INSERT INTO item_flag_instances (item_id, flag_id) VALUES (?, ?)', ['silver-cutlass', unbreakableFlag]);
+      const mainHandFlag = await getFlagId('MAIN_HAND_WPN');
+      db.run('INSERT INTO item_flag_instances (item_id, flag_id) VALUES (?, ?)', ['silver-cutlass', mainHandFlag]);
+
+      db.run(
+        'INSERT INTO item_weapons (item_id, damage_dice, average_damage, damage_type, weapon_skill, hand_requirement) VALUES (?, ?, ?, ?, ?, ?)',
+        ['silver-cutlass', '2D4', 5.0, 'slash', 'slash attack', 'main-hand']
+      );
+
+      db.run('INSERT INTO item_stat_effects (item_id, stat_type_id, modifier) VALUES (?, ?, ?)', ['silver-cutlass', hitrollStat, 1]);
+
+      const nonBindingBinding = await getBindingTypeId('NON-BINDING');
+      db.run('INSERT INTO item_binding_instances (item_id, binding_type_id) VALUES (?, ?)', ['silver-cutlass', nonBindingBinding]);
+      db.run('INSERT INTO item_customizations (item_id, is_customizable) VALUES (?, ?)', ['silver-cutlass', 0]);
+
+      // 4. Lantern (LIGHT)
+      const lightType = await getItemTypeId('LIGHT');
+      const unknownMaterial = await getMaterialId('unknown');
+
+      db.run(
+        `INSERT INTO items (id, name, type_id, material_id, min_level, size_id, weight, value, rent, identified, rawText)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        ['lantern', 'a lantern', lightType, unknownMaterial, 0, specialSize, 1, 50, 1, 1,
+          "Name: 'a lantern'\\nType: LIGHT, Material: unknown\\nMin Level: 0, Size: special, Weight: 1\\nValue: 50, Rent: 1"]
+      );
+
+      // Multiple wear locations for lantern
+      const bodyLoc = await getWearLocationId('BODY');
+      const headLoc = await getWearLocationId('HEAD');
+      const legsLoc = await getWearLocationId('LEGS');
+      const armsLoc = await getWearLocationId('ARMS');
+      const shieldLoc = await getWearLocationId('SHIELD');
+      const aboutLoc = await getWearLocationId('ABOUT');
+      const waistLoc = await getWearLocationId('WAIST');
+      const wristLoc = await getWearLocationId('WRIST');
+
+      db.run('INSERT INTO item_wear_locations (item_id, location_id) VALUES (?, ?)', ['lantern', takeLoc]);
+      db.run('INSERT INTO item_wear_locations (item_id, location_id) VALUES (?, ?)', ['lantern', bodyLoc]);
+      db.run('INSERT INTO item_wear_locations (item_id, location_id) VALUES (?, ?)', ['lantern', headLoc]);
+      db.run('INSERT INTO item_wear_locations (item_id, location_id) VALUES (?, ?)', ['lantern', legsLoc]);
+      db.run('INSERT INTO item_wear_locations (item_id, location_id) VALUES (?, ?)', ['lantern', armsLoc]);
+      db.run('INSERT INTO item_wear_locations (item_id, location_id) VALUES (?, ?)', ['lantern', shieldLoc]);
+      db.run('INSERT INTO item_wear_locations (item_id, location_id) VALUES (?, ?)', ['lantern', aboutLoc]);
+      db.run('INSERT INTO item_wear_locations (item_id, location_id) VALUES (?, ?)', ['lantern', waistLoc]);
+      db.run('INSERT INTO item_wear_locations (item_id, location_id) VALUES (?, ?)', ['lantern', wristLoc]);
+      db.run('INSERT INTO item_wear_locations (item_id, location_id) VALUES (?, ?)', ['lantern', wieldLoc]);
+
+      db.run('INSERT INTO item_lights (item_id, light_intensity, hours_remaining, max_hours) VALUES (?, ?, ?, ?)', ['lantern', 10, 64, 100]);
+      db.run('INSERT INTO item_binding_instances (item_id, binding_type_id) VALUES (?, ?)', ['lantern', nonBindingBinding]);
+      db.run('INSERT INTO item_customizations (item_id, is_customizable) VALUES (?, ?)', ['lantern', 0]);
+
+      // 5. Scroll of Recall (SCROLL)
+      const scrollType = await getItemTypeId('SCROLL');
+      const paperMaterial = await getMaterialId('paper');
+
+      db.run(
+        `INSERT INTO items (id, name, type_id, material_id, min_level, size_id, weight, value, rent, identified, rawText)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        ['scroll-recall', 'a scroll of recall', scrollType, paperMaterial, 0, specialSize, 4, 2800, 25, 1,
+          "Name: 'a scroll of recall'\\nType: SCROLL, Material: paper\\nMin Level: 0, Size: special, Weight: 4\\nValue: 2800, Rent: 25"]
+      );
+
+      const holdLoc = await getWearLocationId('HOLD');
+      db.run('INSERT INTO item_wear_locations (item_id, location_id) VALUES (?, ?)', ['scroll-recall', takeLoc]);
+      db.run('INSERT INTO item_wear_locations (item_id, location_id) VALUES (?, ?)', ['scroll-recall', holdLoc]);
+
+      const magicFlag = await getFlagId('MAGIC');
+      db.run('INSERT INTO item_flag_instances (item_id, flag_id) VALUES (?, ?)', ['scroll-recall', magicFlag]);
+
+      db.run('INSERT INTO item_spell_effects (item_id, spell_name, spell_level) VALUES (?, ?, ?)', ['scroll-recall', 'word of recall', 12]);
+
+      // 6. Quester's Medallion (ARMOR - NECK)
+      db.run(
+        `INSERT INTO items (id, name, type_id, material_id, min_level, size_id, weight, value, rent, identified, rawText)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        ['questers-medallion', "Quester's Medallion", armorType, goldMaterial, 0, specialSize, 3, 0, 50, 1,
+          "Name: 'Quester's Medallion'\\nType: ARMOR, Material: gold\\nMin Level: 0, Size: special, Weight: 3\\nValue: 0, Rent: 50"]
+      );
+
+      const neckLoc = await getWearLocationId('NECK');
+      db.run('INSERT INTO item_wear_locations (item_id, location_id) VALUES (?, ?)', ['questers-medallion', takeLoc]);
+      db.run('INSERT INTO item_wear_locations (item_id, location_id) VALUES (?, ?)', ['questers-medallion', neckLoc]);
+
+      db.run('INSERT INTO item_flag_instances (item_id, flag_id) VALUES (?, ?)', ['questers-medallion', noDonateFlag]);
+      db.run('INSERT INTO item_flag_instances (item_id, flag_id) VALUES (?, ?)', ['questers-medallion', noSellFlag]);
+      db.run('INSERT INTO item_flag_instances (item_id, flag_id) VALUES (?, ?)', ['questers-medallion', unbreakableFlag]);
+
+      db.run('INSERT INTO item_armor (item_id, armor_points) VALUES (?, ?)', ['questers-medallion', 3]);
+
+      db.run('INSERT INTO item_stat_effects (item_id, stat_type_id, modifier) VALUES (?, ?, ?)', ['questers-medallion', maxhitStat, 2]);
+      db.run('INSERT INTO item_stat_effects (item_id, stat_type_id, modifier) VALUES (?, ?, ?)', ['questers-medallion', hitrollStat, 1]);
+
+      db.run('INSERT INTO item_binding_instances (item_id, binding_type_id, bound_to_character) VALUES (?, ?, ?)', ['questers-medallion', boundBinding, 'pocket(869)']);
+      db.run('INSERT INTO item_customizations (item_id, is_customizable) VALUES (?, ?)', ['questers-medallion', 0]);
+
+      console.log('  ✓ Seeded 6 example items with full metadata');
+      
+      // Close database connection
+      db.close((err) => {
+        if (err) {
+          console.error('❌ Error closing database:', err.message);
+          process.exit(1);
+        } else {
+          console.log('\n✅ Database seeding complete!');
+          process.exit(0);
+        }
+      });
+    } catch (error) {
+      console.error('  ❌ Error seeding items:', error);
+      process.exit(1);
+    }
+  }
+
+  seedExampleItems();
 }
 
 // Handle errors

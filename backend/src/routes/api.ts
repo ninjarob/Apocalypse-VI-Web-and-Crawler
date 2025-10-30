@@ -314,6 +314,9 @@ router.get(
       entities = await roomService.getRooms(filters);
     } else if (type === 'zones') {
       entities = await zoneService.getZones();
+    } else if (type === 'items') {
+      // Use specialized ItemRepository for rich metadata
+      entities = await repositories.items.findAll();
     } else {
       const service = new GenericService(config);
       entities = await service.getAll(filters);
@@ -344,6 +347,9 @@ router.get(
       entity = await roomService.getRoomById(id);
     } else if (type === 'zones') {
       entity = await zoneService.getZoneById(parseInt(id));
+    } else if (type === 'items') {
+      // Use specialized ItemRepository for rich metadata
+      entity = await repositories.items.findById(id);
     } else {
       const service = new GenericService(config);
       entity = await service.getById(id);

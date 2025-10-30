@@ -99,18 +99,212 @@ async function createTables() {
       updatedAt TEXT DEFAULT CURRENT_TIMESTAMP
     )`,
 
-    // Items table
+    // ===== ITEM SYSTEM TABLES =====
+    
+    // Item Types (Reference Table)
+    `CREATE TABLE IF NOT EXISTS item_types (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT UNIQUE NOT NULL,
+      description TEXT
+    )`,
+
+    // Item Materials (Reference Table)
+    `CREATE TABLE IF NOT EXISTS item_materials (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT UNIQUE NOT NULL,
+      description TEXT
+    )`,
+
+    // Item Sizes (Reference Table)
+    `CREATE TABLE IF NOT EXISTS item_sizes (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT UNIQUE NOT NULL,
+      description TEXT,
+      size_modifier INTEGER
+    )`,
+
+    // Item Flags (Reference Table)
+    `CREATE TABLE IF NOT EXISTS item_flags (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT UNIQUE NOT NULL,
+      description TEXT,
+      flag_type TEXT
+    )`,
+
+    // Wear Locations (Reference Table)
+    `CREATE TABLE IF NOT EXISTS wear_locations (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT UNIQUE NOT NULL,
+      description TEXT,
+      slot_limit INTEGER DEFAULT 1
+    )`,
+
+    // Stat Types (Reference Table)
+    `CREATE TABLE IF NOT EXISTS stat_types (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT UNIQUE NOT NULL,
+      description TEXT,
+      stat_category TEXT
+    )`,
+
+    // Item Bindings (Reference Table)
+    `CREATE TABLE IF NOT EXISTS item_bindings (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT UNIQUE NOT NULL,
+      description TEXT
+    )`,
+
+    // Items (Main Table)
     `CREATE TABLE IF NOT EXISTS items (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
-      description TEXT,
-      type TEXT,
+      vnum INTEGER UNIQUE,
+      type_id INTEGER NOT NULL,
+      material_id INTEGER,
+      min_level INTEGER DEFAULT 0,
+      size_id INTEGER,
+      weight INTEGER,
+      value INTEGER,
+      rent INTEGER,
       location TEXT,
-      properties TEXT,
-      stats TEXT,
+      description TEXT,
+      long_description TEXT,
       rawText TEXT,
+      identified INTEGER DEFAULT 0,
       createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
-      updatedAt TEXT DEFAULT CURRENT_TIMESTAMP
+      updatedAt TEXT DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (type_id) REFERENCES item_types(id),
+      FOREIGN KEY (material_id) REFERENCES item_materials(id),
+      FOREIGN KEY (size_id) REFERENCES item_sizes(id)
+    )`,
+
+    // Item Flag Instances (Junction Table)
+    `CREATE TABLE IF NOT EXISTS item_flag_instances (
+      item_id TEXT NOT NULL,
+      flag_id INTEGER NOT NULL,
+      PRIMARY KEY (item_id, flag_id),
+      FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE,
+      FOREIGN KEY (flag_id) REFERENCES item_flags(id)
+    )`,
+
+    // Item Wear Locations (Junction Table)
+    `CREATE TABLE IF NOT EXISTS item_wear_locations (
+      item_id TEXT NOT NULL,
+      location_id INTEGER NOT NULL,
+      PRIMARY KEY (item_id, location_id),
+      FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE,
+      FOREIGN KEY (location_id) REFERENCES wear_locations(id)
+    )`,
+
+    // Item Stat Effects (Junction Table)
+    `CREATE TABLE IF NOT EXISTS item_stat_effects (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      item_id TEXT NOT NULL,
+      stat_type_id INTEGER NOT NULL,
+      modifier INTEGER NOT NULL,
+      FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE,
+      FOREIGN KEY (stat_type_id) REFERENCES stat_types(id)
+    )`,
+
+    // Item Binding Instances
+    `CREATE TABLE IF NOT EXISTS item_binding_instances (
+      item_id TEXT PRIMARY KEY,
+      binding_type_id INTEGER NOT NULL,
+      bound_to_character TEXT,
+      bound_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE,
+      FOREIGN KEY (binding_type_id) REFERENCES item_bindings(id)
+    )`,
+
+    // Item Restrictions (Class/Race)
+    `CREATE TABLE IF NOT EXISTS item_restrictions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      item_id TEXT NOT NULL,
+      restriction_type TEXT NOT NULL,
+      restriction_value TEXT NOT NULL,
+      is_allowed INTEGER DEFAULT 1,
+      FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE
+    )`,
+
+    // Item Weapons (Type-Specific)
+    `CREATE TABLE IF NOT EXISTS item_weapons (
+      item_id TEXT PRIMARY KEY,
+      damage_dice TEXT,
+      average_damage REAL,
+      damage_type TEXT,
+      weapon_skill TEXT,
+      hand_requirement TEXT,
+      FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE
+    )`,
+
+    // Item Armor (Type-Specific)
+    `CREATE TABLE IF NOT EXISTS item_armor (
+      item_id TEXT PRIMARY KEY,
+      armor_points INTEGER,
+      armor_type TEXT,
+      FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE
+    )`,
+
+    // Item Lights (Type-Specific)
+    `CREATE TABLE IF NOT EXISTS item_lights (
+      item_id TEXT PRIMARY KEY,
+      light_intensity INTEGER,
+      hours_remaining INTEGER,
+      max_hours INTEGER,
+      refillable INTEGER DEFAULT 0,
+      FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE
+    )`,
+
+    // Item Containers (Type-Specific)
+    `CREATE TABLE IF NOT EXISTS item_containers (
+      item_id TEXT PRIMARY KEY,
+      max_weight INTEGER,
+      max_items INTEGER,
+      container_flags TEXT,
+      key_vnum INTEGER,
+      FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE
+    )`,
+
+    // Item Consumables (Type-Specific)
+    `CREATE TABLE IF NOT EXISTS item_consumables (
+      item_id TEXT PRIMARY KEY,
+      consumable_type TEXT,
+      hunger_restored INTEGER,
+      thirst_restored INTEGER,
+      duration_hours INTEGER,
+      poisoned INTEGER DEFAULT 0,
+      FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE
+    )`,
+
+    // Item Spell Effects
+    `CREATE TABLE IF NOT EXISTS item_spell_effects (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      item_id TEXT NOT NULL,
+      spell_name TEXT NOT NULL,
+      spell_level INTEGER,
+      charges_current INTEGER,
+      charges_max INTEGER,
+      FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE
+    )`,
+
+    // Item Granted Abilities
+    `CREATE TABLE IF NOT EXISTS item_granted_abilities (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      item_id TEXT NOT NULL,
+      ability_name TEXT NOT NULL,
+      ability_description TEXT,
+      FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE
+    )`,
+
+    // Item Customizations
+    `CREATE TABLE IF NOT EXISTS item_customizations (
+      item_id TEXT PRIMARY KEY,
+      is_customizable INTEGER DEFAULT 1,
+      custom_name TEXT,
+      custom_description TEXT,
+      customized_by TEXT,
+      customized_at TEXT,
+      FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE
     )`,
 
     // Spells table
@@ -269,6 +463,186 @@ async function createTables() {
   }
 
   console.log('✓ Database tables created/verified');
+
+  // Seed reference tables with initial data
+  await seedReferenceTablesIfEmpty();
+}
+
+async function seedReferenceTablesIfEmpty(): Promise<void> {
+  if (!db) return;
+
+  const run = (sql: string, params: any[] = []): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      db!.run(sql, params, (err: Error | null) => {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
+  };
+
+  const get = (sql: string, params: any[] = []): Promise<any> => {
+    return new Promise((resolve, reject) => {
+      db!.get(sql, params, (err: Error | null, row: any) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
+    });
+  };
+
+  // Check if reference tables are empty and seed them
+  
+  // Seed item_types
+  const typeCount: any = await get('SELECT COUNT(*) as count FROM item_types');
+  if (typeCount.count === 0) {
+    const itemTypes = [
+      ['WEAPON', 'Melee or ranged weapons'],
+      ['ARMOR', 'Protective equipment'],
+      ['FOOD', 'Consumable food items'],
+      ['DRINK', 'Consumable beverages'],
+      ['LIGHT', 'Light sources'],
+      ['SCROLL', 'Magic scrolls with spell effects'],
+      ['POTION', 'Magic potions with spell effects'],
+      ['WAND', 'Magical wands with charges'],
+      ['STAFF', 'Magical staffs with charges'],
+      ['CONTAINER', 'Bags, chests, containers'],
+      ['KEY', 'Keys for locked doors/containers'],
+      ['TREASURE', 'Valuable items with no use'],
+      ['BOAT', 'Water traversal items'],
+      ['FOUNTAIN', 'Drinkable fountains'],
+      ['OTHER', 'Miscellaneous items']
+    ];
+    for (const [name, desc] of itemTypes) {
+      await run('INSERT INTO item_types (name, description) VALUES (?, ?)', [name, desc]);
+    }
+    console.log('✓ Seeded item_types');
+  }
+
+  // Seed item_materials
+  const materialCount: any = await get('SELECT COUNT(*) as count FROM item_materials');
+  if (materialCount.count === 0) {
+    const materials = ['gold', 'silver', 'iron', 'steel', 'bronze', 'copper', 'leather', 
+                       'cloth', 'wood', 'stone', 'bone', 'glass', 'paper', 'organic', 
+                       'magical', 'adamantite', 'mithril', 'dragonscale', 'unknown'];
+    for (const material of materials) {
+      await run('INSERT INTO item_materials (name) VALUES (?)', [material]);
+    }
+    console.log('✓ Seeded item_materials');
+  }
+
+  // Seed item_sizes
+  const sizeCount: any = await get('SELECT COUNT(*) as count FROM item_sizes');
+  if (sizeCount.count === 0) {
+    const sizes = [
+      ['special', 0],
+      ['tiny', 1],
+      ['small', 2],
+      ['normal', 3],
+      ['medium', 4],
+      ['large', 5],
+      ['huge', 6],
+      ['gigantic', 7]
+    ];
+    for (const [name, modifier] of sizes) {
+      await run('INSERT INTO item_sizes (name, size_modifier) VALUES (?, ?)', [name, modifier]);
+    }
+    console.log('✓ Seeded item_sizes');
+  }
+
+  // Seed item_flags
+  const flagCount: any = await get('SELECT COUNT(*) as count FROM item_flags');
+  if (flagCount.count === 0) {
+    const flags = [
+      ['MAGIC', 'Item is magical', 'positive'],
+      ['UNIQUE', 'Only one can exist per player', 'restriction'],
+      ['UNBREAKABLE', 'Cannot be damaged', 'positive'],
+      ['!DONATE', 'Cannot be donated', 'restriction'],
+      ['!SELL', 'Cannot be sold to shops', 'restriction'],
+      ['!DROP', 'Cannot be dropped', 'restriction'],
+      ['CURSED', 'Item is cursed', 'negative'],
+      ['INVISIBLE', 'Item is invisible', 'positive'],
+      ['GLOW', 'Item glows', 'positive'],
+      ['HUM', 'Item hums', 'positive'],
+      ['MAIN_HAND_WPN', 'Main hand weapon only', 'restriction'],
+      ['OFF_HAND_WPN', 'Off hand weapon only', 'restriction'],
+      ['TWO_HAND_WPN', 'Two-handed weapon', 'restriction']
+    ];
+    for (const [name, desc, type] of flags) {
+      await run('INSERT INTO item_flags (name, description, flag_type) VALUES (?, ?, ?)', [name, desc, type]);
+    }
+    console.log('✓ Seeded item_flags');
+  }
+
+  // Seed wear_locations
+  const locationCount: any = await get('SELECT COUNT(*) as count FROM wear_locations');
+  if (locationCount.count === 0) {
+    const locations = [
+      ['TAKE', 'Can be picked up', 99],
+      ['FINGER', 'Finger slot (rings)', 2],
+      ['NECK', 'Neck slot (amulets)', 1],
+      ['BODY', 'Body/chest slot', 1],
+      ['HEAD', 'Head slot (helmets)', 1],
+      ['LEGS', 'Leg slot (pants)', 1],
+      ['FEET', 'Feet slot (boots)', 1],
+      ['HANDS', 'Hand slot (gloves)', 1],
+      ['ARMS', 'Arm slot (bracers)', 1],
+      ['SHIELD', 'Shield slot', 1],
+      ['ABOUT', 'About body (cloaks)', 1],
+      ['WAIST', 'Waist slot (belts)', 1],
+      ['WRIST', 'Wrist slot (bracelets)', 2],
+      ['WIELD', 'Wielded weapon slot', 1],
+      ['HOLD', 'Held item slot', 1],
+      ['FACE', 'Face slot (masks)', 1],
+      ['EAR', 'Ear slot (earrings)', 2],
+      ['BACK', 'Back slot', 1]
+    ];
+    for (const [name, desc, limit] of locations) {
+      await run('INSERT INTO wear_locations (name, description, slot_limit) VALUES (?, ?, ?)', [name, desc, limit]);
+    }
+    console.log('✓ Seeded wear_locations');
+  }
+
+  // Seed stat_types
+  const statCount: any = await get('SELECT COUNT(*) as count FROM stat_types');
+  if (statCount.count === 0) {
+    const stats = [
+      ['MAXHIT', 'Maximum hit points', 'combat'],
+      ['MAXMANA', 'Maximum mana', 'combat'],
+      ['MAXMOVE', 'Maximum movement', 'combat'],
+      ['HITROLL', 'To-hit bonus', 'combat'],
+      ['DAMROLL', 'Damage bonus', 'combat'],
+      ['ARMOR', 'Armor class', 'combat'],
+      ['STR', 'Strength modifier', 'attribute'],
+      ['INT', 'Intelligence modifier', 'attribute'],
+      ['WIS', 'Wisdom modifier', 'attribute'],
+      ['DEX', 'Dexterity modifier', 'attribute'],
+      ['CON', 'Constitution modifier', 'attribute'],
+      ['CHA', 'Charisma modifier', 'attribute'],
+      ['SAVING_PARA', 'Save vs paralysis', 'save'],
+      ['SAVING_ROD', 'Save vs rods', 'save'],
+      ['SAVING_PETRI', 'Save vs petrification', 'save'],
+      ['SAVING_BREATH', 'Save vs breath', 'save'],
+      ['SAVING_SPELL', 'Save vs spell', 'save']
+    ];
+    for (const [name, desc, category] of stats) {
+      await run('INSERT INTO stat_types (name, description, stat_category) VALUES (?, ?, ?)', [name, desc, category]);
+    }
+    console.log('✓ Seeded stat_types');
+  }
+
+  // Seed item_bindings
+  const bindingCount: any = await get('SELECT COUNT(*) as count FROM item_bindings');
+  if (bindingCount.count === 0) {
+    const bindings = [
+      ['NON-BINDING', 'Item can be freely traded'],
+      ['BIND_ON_PICKUP', 'Binds when picked up'],
+      ['BIND_ON_EQUIP', 'Binds when equipped'],
+      ['BOUND', 'Already bound to a character']
+    ];
+    for (const [name, desc] of bindings) {
+      await run('INSERT INTO item_bindings (name, description) VALUES (?, ?)', [name, desc]);
+    }
+    console.log('✓ Seeded item_bindings');
+  }
 }
 
 export function getDatabase(): sqlite3.Database {

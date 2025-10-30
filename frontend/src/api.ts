@@ -18,10 +18,14 @@ export interface NPC {
   name: string;
   description: string;
   location?: string;
+  dialogue?: string[];
   hostile?: boolean;
   level?: number;
   race?: string;
   class?: string;
+  rawText?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Item {
@@ -29,12 +33,18 @@ export interface Item {
   name: string;
   description: string;
   type?: string;
+  location?: string;
+  properties?: Record<string, any>;
   stats?: {
     damage?: string;
     armor?: number;
     weight?: number;
     value?: number;
+    level?: number;
   };
+  rawText?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Spell {
@@ -44,6 +54,10 @@ export interface Spell {
   manaCost?: number;
   level?: number;
   type?: string;
+  effects?: string[];
+  rawText?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Command {

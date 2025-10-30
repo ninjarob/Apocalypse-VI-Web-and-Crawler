@@ -9,12 +9,14 @@ export * from './RoomRepository';
 export * from './ZoneRepository';
 export * from './PlayerActionRepository';
 export * from './RoomExitRepository';
+export * from './ItemRepository';
 
 // Re-export repository instances for convenience
 import { RoomRepository } from './RoomRepository';
 import { ZoneRepository, ZoneAreaRepository, ZoneConnectionRepository } from './ZoneRepository';
 import { PlayerActionRepository } from './PlayerActionRepository';
 import { RoomExitRepository } from './RoomExitRepository';
+import { ItemRepository } from './ItemRepository';
 
 export const repositories = {
   rooms: new RoomRepository(),
@@ -22,5 +24,6 @@ export const repositories = {
   zoneAreas: new ZoneAreaRepository(),
   zoneConnections: new ZoneConnectionRepository(),
   playerActions: new PlayerActionRepository(),
-  roomExits: new RoomExitRepository()
+  roomExits: new RoomExitRepository(),
+  items: new ItemRepository()
 };

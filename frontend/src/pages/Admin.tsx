@@ -149,6 +149,60 @@ const ENTITY_CONFIGS: EntityConfig[] = [
       { name: 'name', type: 'text', label: 'Name', required: true },
       { name: 'exits', type: 'custom', label: 'Exits', custom: 'room_exits' }
     ]
+  },
+  {
+    name: 'NPCs',
+    endpoint: 'npcs',
+    readOnly: true,
+    clickable: true,
+    fields: [
+      { name: 'id', type: 'number', label: 'ID', hideInTable: true },
+      { name: 'name', type: 'text', label: 'Name', required: true },
+      { name: 'level', type: 'number', label: 'Level' },
+      { name: 'race', type: 'text', label: 'Race' },
+      { name: 'class', type: 'text', label: 'Class' },
+      { name: 'hostile', type: 'number', label: 'Hostile' },
+      { name: 'location', type: 'text', label: 'Location' },
+      { name: 'description', type: 'textarea', label: 'Description', hideInTable: true },
+      { name: 'dialogue', type: 'json', label: 'Dialogue', hideInTable: true },
+      { name: 'rawText', type: 'textarea', label: 'Raw Text', hideInTable: true }
+    ]
+  },
+  {
+    name: 'Items',
+    endpoint: 'items',
+    readOnly: true,
+    clickable: true,
+    fields: [
+      { name: 'id', type: 'text', label: 'ID', hideInTable: true },
+      { name: 'name', type: 'text', label: 'Name', required: true },
+      { name: 'type', type: 'text', label: 'Type' },
+      { name: 'description', type: 'custom', label: 'Description', custom: 'itemDescription' },
+      { name: 'attributes', type: 'custom', label: 'Attributes', custom: 'itemAttributes' },
+      { name: 'material', type: 'text', label: 'Material', hideInTable: true },
+      { name: 'size', type: 'text', label: 'Size', hideInTable: true },
+      { name: 'weight', type: 'number', label: 'Weight', hideInTable: true },
+      { name: 'value', type: 'number', label: 'Value', hideInTable: true },
+      { name: 'stats', type: 'json', label: 'Stats', hideInTable: true },
+      { name: 'properties', type: 'json', label: 'Properties', hideInTable: true },
+      { name: 'rawText', type: 'textarea', label: 'Raw Text', hideInTable: true }
+    ]
+  },
+  {
+    name: 'Spells',
+    endpoint: 'spells',
+    readOnly: true,
+    clickable: true,
+    fields: [
+      { name: 'id', type: 'number', label: 'ID', hideInTable: true },
+      { name: 'name', type: 'text', label: 'Name', required: true },
+      { name: 'type', type: 'text', label: 'Type' },
+      { name: 'level', type: 'number', label: 'Level' },
+      { name: 'manaCost', type: 'number', label: 'Mana Cost' },
+      { name: 'description', type: 'textarea', label: 'Description', hideInTable: true },
+      { name: 'effects', type: 'json', label: 'Effects', hideInTable: true },
+      { name: 'rawText', type: 'textarea', label: 'Raw Text', hideInTable: true }
+    ]
   }
 ];
 
@@ -186,6 +240,9 @@ function Admin() {
   const [roomExits, setRoomExits] = useState<any[]>([]);
   const [selectedRoom, setSelectedRoom] = useState<Entity | null>(null);
   const [selectedAction, setSelectedAction] = useState<Entity | null>(null);
+  const [selectedNPC, setSelectedNPC] = useState<Entity | null>(null);
+  const [selectedItem, setSelectedItem] = useState<Entity | null>(null);
+  const [selectedSpell, setSelectedSpell] = useState<Entity | null>(null);
 
   // Reset all drilled-in states when navigating to /admin
   useEffect(() => {
@@ -193,6 +250,9 @@ function Admin() {
     setSelectedRoom(null);
     setSelectedAction(null);
     setSelectedAbility(null);
+    setSelectedNPC(null);
+    setSelectedItem(null);
+    setSelectedSpell(null);
     setShowScores(false);
     setShowForm(false);
     setEditingEntity(null);
@@ -323,6 +383,30 @@ function Admin() {
     setSelectedAction(null);
   };
 
+  const handleNPCClick = (npc: Entity) => {
+    setSelectedNPC(npc);
+  };
+
+  const handleBackToNPCs = () => {
+    setSelectedNPC(null);
+  };
+
+  const handleItemClick = (item: Entity) => {
+    setSelectedItem(item);
+  };
+
+  const handleBackToItems = () => {
+    setSelectedItem(null);
+  };
+
+  const handleSpellClick = (spell: Entity) => {
+    setSelectedSpell(spell);
+  };
+
+  const handleBackToSpells = () => {
+    setSelectedSpell(null);
+  };
+
   const handleEntityClick = (entity: Entity) => {
     if (selectedEntity.endpoint === 'zones') {
       handleZoneClick(entity);
@@ -330,6 +414,12 @@ function Admin() {
       handleRoomClick(entity);
     } else if (selectedEntity.endpoint === 'player_actions') {
       handleActionClick(entity);
+    } else if (selectedEntity.endpoint === 'npcs') {
+      handleNPCClick(entity);
+    } else if (selectedEntity.endpoint === 'items') {
+      handleItemClick(entity);
+    } else if (selectedEntity.endpoint === 'spells') {
+      handleSpellClick(entity);
     }
   };
 
@@ -404,6 +494,88 @@ function Admin() {
         >
           {zone.name}
         </a>
+      );
+    }
+
+    // Special handling for item description custom field
+    if (field.custom === 'itemDescription') {
+      const parts: string[] = [];
+      
+      // Build a descriptive summary
+      if (entity.material && entity.type) {
+        parts.push(`${entity.material} ${entity.type.toLowerCase()}`);
+      } else if (entity.type) {
+        parts.push(entity.type.toLowerCase());
+      }
+      
+      // Add weapon/armor specifics
+      if (entity.properties && typeof entity.properties === 'object') {
+        const props = entity.properties;
+        if (props.weaponType) {
+          parts.push(`(${props.weaponType})`);
+        }
+        if (props.consumableType) {
+          parts.push(`(${props.consumableType})`);
+        }
+        if (props.lightIntensity) {
+          parts.push(`(${props.lightIntensity} intensity)`);
+        }
+        if (props.spellEffects && Array.isArray(props.spellEffects) && props.spellEffects.length > 0) {
+          const spell = props.spellEffects[0];
+          parts.push(`(${spell.spell})`);
+        }
+      }
+      
+      if (parts.length === 0) {
+        return <em className="text-gray">—</em>;
+      }
+      
+      return parts.join(' ');
+    }
+
+    // Special handling for item attributes custom field
+    if (field.custom === 'itemAttributes') {
+      const attributes: string[] = [];
+      
+      // Add material and size
+      if (entity.material) {
+        attributes.push(entity.material);
+      }
+      if (entity.size && entity.size !== 'special') {
+        attributes.push(entity.size);
+      }
+      
+      // Add key stats
+      if (entity.stats && typeof entity.stats === 'object') {
+        const stats = entity.stats;
+        if (stats.armor) attributes.push(`AP+${stats.armor}`);
+        if (stats.damage) attributes.push(stats.damage);
+        if (stats.averageDamage) attributes.push(`Avg: ${stats.averageDamage}`);
+        if (stats.HITROLL) attributes.push(`HR+${stats.HITROLL}`);
+        if (stats.MAXHIT) attributes.push(`HP+${stats.MAXHIT}`);
+      }
+      
+      // Add important flags
+      if (entity.properties && typeof entity.properties === 'object') {
+        const props = entity.properties;
+        if (props.flags && Array.isArray(props.flags)) {
+          const importantFlags = props.flags.filter((f: string) => 
+            ['MAGIC', 'UNIQUE', 'CURSED', 'UNBREAKABLE'].includes(f)
+          );
+          importantFlags.forEach((flag: string) => attributes.push(flag));
+        }
+      }
+      
+      if (attributes.length === 0) {
+        return <em className="text-gray">—</em>;
+      }
+      
+      return (
+        <div className="item-attributes">
+          {attributes.map((attr, idx) => (
+            <span key={idx} className="tag small">{attr}</span>
+          ))}
+        </div>
       );
     }
 
@@ -820,6 +992,219 @@ function Admin() {
               )}
             </div>
           </div>
+        </div>
+      ) : selectedNPC ? (
+        <div className="detail-view">
+          <div className="detail-header">
+            <button className="btn-back" onClick={handleBackToNPCs}>
+              ← Back to NPCs
+            </button>
+            <h3>{selectedNPC.name}</h3>
+          </div>
+
+          <div className="detail-section">
+            <h4>NPC Information</h4>
+            <div className="detail-grid">
+              {selectedNPC.level && (
+                <div className="detail-item">
+                  <span className="detail-label">Level:</span>
+                  <span className="detail-value">{selectedNPC.level}</span>
+                </div>
+              )}
+              {selectedNPC.race && (
+                <div className="detail-item">
+                  <span className="detail-label">Race:</span>
+                  <span className="detail-value">{selectedNPC.race}</span>
+                </div>
+              )}
+              {selectedNPC.class && (
+                <div className="detail-item">
+                  <span className="detail-label">Class:</span>
+                  <span className="detail-value">{selectedNPC.class}</span>
+                </div>
+              )}
+              <div className="detail-item">
+                <span className="detail-label">Disposition:</span>
+                <span className="detail-value">
+                  <span className={`tag ${selectedNPC.hostile ? 'hostile' : 'friendly'}`}>
+                    {selectedNPC.hostile ? 'Hostile' : 'Friendly'}
+                  </span>
+                </span>
+              </div>
+              {selectedNPC.location && (
+                <div className="detail-item">
+                  <span className="detail-label">Location:</span>
+                  <span className="detail-value">{selectedNPC.location}</span>
+                </div>
+              )}
+            </div>
+
+            {selectedNPC.description && (
+              <div className="detail-item full-width" style={{ marginTop: '15px' }}>
+                <span className="detail-label">Description:</span>
+                <div className="detail-description">{selectedNPC.description}</div>
+              </div>
+            )}
+          </div>
+
+          {selectedNPC.dialogue && Array.isArray(JSON.parse(selectedNPC.dialogue || '[]')) && JSON.parse(selectedNPC.dialogue || '[]').length > 0 && (
+            <div className="detail-section">
+              <h4>Dialogue</h4>
+              <ul style={{ margin: '10px 0', paddingLeft: '20px' }}>
+                {JSON.parse(selectedNPC.dialogue).map((line: string, index: number) => (
+                  <li key={index} style={{ marginBottom: '8px' }}>
+                    {line}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {selectedNPC.rawText && (
+            <div className="detail-section">
+              <h4>Raw MUD Text</h4>
+              <pre className="raw-text">{selectedNPC.rawText}</pre>
+            </div>
+          )}
+        </div>
+      ) : selectedItem ? (
+        <div className="detail-view">
+          <div className="detail-header">
+            <button className="btn-back" onClick={handleBackToItems}>
+              ← Back to Items
+            </button>
+            <h3>{selectedItem.name}</h3>
+          </div>
+
+          <div className="detail-section">
+            <h4>Item Information</h4>
+            <div className="detail-grid">
+              {selectedItem.type && (
+                <div className="detail-item">
+                  <span className="detail-label">Type:</span>
+                  <span className="detail-value">
+                    <span className="tag">{selectedItem.type}</span>
+                  </span>
+                </div>
+              )}
+              {selectedItem.location && (
+                <div className="detail-item">
+                  <span className="detail-label">Location:</span>
+                  <span className="detail-value">{selectedItem.location}</span>
+                </div>
+              )}
+            </div>
+
+            {selectedItem.description && (
+              <div className="detail-item full-width" style={{ marginTop: '15px' }}>
+                <span className="detail-label">Description:</span>
+                <div className="detail-description">{selectedItem.description}</div>
+              </div>
+            )}
+          </div>
+
+          {selectedItem.stats && typeof selectedItem.stats === 'object' && Object.keys(selectedItem.stats).length > 0 && (
+            <div className="detail-section">
+              <h4>Stats</h4>
+              <div className="detail-grid">
+                {Object.entries(selectedItem.stats).map(([key, value]) => (
+                  <div key={key} className="detail-item">
+                    <span className="detail-label">{key}:</span>
+                    <span className="detail-value">{String(value)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {selectedItem.properties && typeof selectedItem.properties === 'object' && Object.keys(selectedItem.properties).length > 0 && (
+            <div className="detail-section">
+              <h4>Properties</h4>
+              <div className="detail-grid">
+                {Object.entries(selectedItem.properties).map(([key, value]) => (
+                  <div key={key} className="detail-item">
+                    <span className="detail-label">{key}:</span>
+                    <span className="detail-value">
+                      {Array.isArray(value) 
+                        ? value.join(', ')
+                        : typeof value === 'object' 
+                          ? JSON.stringify(value, null, 2) 
+                          : String(value)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {selectedItem.rawText && (
+            <div className="detail-section">
+              <h4>Raw MUD Text</h4>
+              <pre className="raw-text">{selectedItem.rawText}</pre>
+            </div>
+          )}
+        </div>
+      ) : selectedSpell ? (
+        <div className="detail-view">
+          <div className="detail-header">
+            <button className="btn-back" onClick={handleBackToSpells}>
+              ← Back to Spells
+            </button>
+            <h3>{selectedSpell.name}</h3>
+          </div>
+
+          <div className="detail-section">
+            <h4>Spell Information</h4>
+            <div className="detail-grid">
+              {selectedSpell.type && (
+                <div className="detail-item">
+                  <span className="detail-label">Type:</span>
+                  <span className="detail-value">
+                    <span className="tag">{selectedSpell.type}</span>
+                  </span>
+                </div>
+              )}
+              {selectedSpell.level !== undefined && (
+                <div className="detail-item">
+                  <span className="detail-label">Level:</span>
+                  <span className="detail-value">{selectedSpell.level}</span>
+                </div>
+              )}
+              {selectedSpell.manaCost !== undefined && (
+                <div className="detail-item">
+                  <span className="detail-label">Mana Cost:</span>
+                  <span className="detail-value">{selectedSpell.manaCost}</span>
+                </div>
+              )}
+            </div>
+
+            {selectedSpell.description && (
+              <div className="detail-item full-width" style={{ marginTop: '15px' }}>
+                <span className="detail-label">Description:</span>
+                <div className="detail-description">{selectedSpell.description}</div>
+              </div>
+            )}
+          </div>
+
+          {selectedSpell.effects && Array.isArray(JSON.parse(selectedSpell.effects || '[]')) && JSON.parse(selectedSpell.effects || '[]').length > 0 && (
+            <div className="detail-section">
+              <h4>Effects</h4>
+              <ul style={{ margin: '10px 0', paddingLeft: '20px' }}>
+                {JSON.parse(selectedSpell.effects).map((effect: string, index: number) => (
+                  <li key={index} style={{ marginBottom: '8px' }}>
+                    {effect}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {selectedSpell.rawText && (
+            <div className="detail-section">
+              <h4>Raw MUD Text</h4>
+              <pre className="raw-text">{selectedSpell.rawText}</pre>
+            </div>
+          )}
         </div>
       ) : selectedZone ? (
         <div className="zone-detail-view">

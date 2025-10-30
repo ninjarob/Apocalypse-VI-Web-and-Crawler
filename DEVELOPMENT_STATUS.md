@@ -58,37 +58,82 @@ Apocalypse VI MUD/
 
 ## ✅ Completed Features
 
-### 1. Complete TypeScript Migration ⭐ NEW!
+### 1. Complete TypeScript Migration ⭐
 **Status**: ✅ COMPLETE (October 30, 2025)
 
 **Backend Fully Migrated**:
 - ✅ All JavaScript files converted to TypeScript
-- ✅ `seed.js` → `seed.ts` (1,883 lines, fully restored from git)
-- ✅ `genericRoutes.js` → `genericRoutes.ts` with proper type annotations
-- ✅ `database.ts`, `routes.ts`, `index.ts` already TypeScript
-- ✅ Build scripts configured in package.json:
-  - `npm run build` - Compiles TypeScript to dist/
-  - `npm run dev` - Runs with tsx watch for hot reload
-  - `npm start` - Runs compiled production build
-  - `npm run seed` - Seeds database with comprehensive data
-  - `npm run db:reset` - Drops DB and re-seeds
+- ✅ `seed.js` → `seed.ts` (2,305 lines, fully restored from git)
+- ✅ Build scripts configured in package.json
 - ✅ TypeScript compilation successful with no errors
 - ✅ All type annotations added for database callbacks
 - ✅ Proper error handling with typed error objects
 
 **Database Path Consistency**:
-- ✅ Unified database location: `mud-data.db` in project root
-- ✅ Both seed.ts and database.ts use `path.resolve(__dirname, '../mud-data.db')`
-- ✅ No more mud_data.db vs mud-data.db confusion
-- ✅ No more backend/ vs root directory conflicts
+- ✅ Unified database location: `data/mud-data.db` (centralized data directory)
+- ✅ Consistent path resolution across all services
+- ✅ data/README.md for documentation
 
-**Migration Benefits**:
-- Better type safety and IDE autocomplete
-- Easier refactoring and maintenance
-- Catches errors at compile time
-- Foundation for future architecture improvements
+### 2. Comprehensive Item System ⭐ NEW! (October 30, 2025)
+**Status**: ✅ COMPLETE - Full implementation from database to frontend
 
-### 2. Comprehensive Database System ⭐ MAJOR UPDATE!
+**21-Table Normalized Schema**:
+- ✅ **7 Reference Tables**: item_types (15 types), item_materials (19 materials), item_sizes (8 sizes), item_flags (13 flags), wear_locations (18 slots), stat_types (17 stats), item_bindings (4 types)
+- ✅ **1 Main Items Table**: With foreign keys to all reference tables
+- ✅ **6 Junction Tables**: item_flag_instances, item_wear_locations, item_stat_effects, item_binding_instances, item_restrictions
+- ✅ **7 Type-Specific Tables**: item_weapons, item_armor, item_lights, item_containers, item_consumables, item_spell_effects, item_granted_abilities, item_customizations
+
+**Reference Data Seeded**:
+- ✅ 15 item types (WEAPON, ARMOR, FOOD, DRINK, LIGHT, SCROLL, POTION, etc.)
+- ✅ 19 materials (gold, silver, iron, steel, leather, cloth, magical, etc.)
+- ✅ 8 sizes (special, tiny, small, normal, medium, large, huge, gigantic)
+- ✅ 13 flags (MAGIC, UNIQUE, UNBREAKABLE, CURSED, !DONATE, !SELL, etc.)
+- ✅ 18 wear locations (TAKE, FINGER×2, NECK, BODY, HEAD, LEGS, FEET, HANDS, ARMS, SHIELD, ABOUT, WAIST, WRIST×2, WIELD, HOLD, FACE, EAR×2, BACK)
+- ✅ 17 stat types (MAXHIT, MAXMANA, MAXMOVE, HITROLL, DAMROLL, ARMOR, STR, INT, WIS, DEX, CON, CHA, SAVING_PARA, SAVING_ROD, SAVING_PETRI, SAVING_BREATH, SAVING_SPELL)
+- ✅ 4 binding types (NON-BINDING, BIND_ON_PICKUP, BIND_ON_EQUIP, BOUND)
+
+**Example Items Seeded** (6 items with full metadata):
+- ✅ **Quester's Ring**: Gold ring, AP+2, MAXHIT+1, HITROLL+1, flags: UNIQUE/UNBREAKABLE/!DONATE/!SELL, worn on FINGER
+- ✅ **Quester's Medallion**: Gold neck armor, AP+3, MAXHIT+2, HITROLL+1, flags: UNBREAKABLE/!DONATE/!SELL, worn on NECK
+- ✅ **Silver Cutlass**: Normal-sized weapon, 2D4 slash damage (avg 5), HITROLL+1, flags: UNIQUE/UNBREAKABLE/MAIN_HAND_WPN
+- ✅ **Bread**: Food item, restores 4 hunger, organic material
+- ✅ **Lantern**: Light source with 10 intensity, 64/100 hours remaining, non-refillable
+- ✅ **Scroll of Recall**: Level 12 "word of recall" spell, paper material, MAGIC flag
+
+**Backend ItemRepository**:
+- ✅ Complex JOIN queries across all 21 tables
+- ✅ Enriched item data with type names, material names, size names
+- ✅ Aggregated stats object (damage, armor, HITROLL, MAXHIT, weight, value)
+- ✅ Aggregated properties object (flags array, wearLocations array, binding, type-specific data)
+- ✅ Handles all item types: weapons (damage, weaponType, skill), armor (armorPoints, armorType), lights (intensity, hours), consumables (hungerRestored, thirstRestored), spell effects, etc.
+
+**Frontend Item Display**:
+- ✅ **Table View**: Shows Name, Type, Description (material + type + specifics), Attributes (material, size, key stats, important flags)
+- ✅ **Description Column**: Auto-generated from item data (e.g., "gold armor", "silver weapon (slash)", "paper scroll (word of recall)")
+- ✅ **Attributes Column**: Tag-based display of material, size, key stats (AP+3, 2D4, HR+1), and important flags (MAGIC, UNIQUE, UNBREAKABLE)
+- ✅ **Detail View**: Full metadata display with Stats section and Properties section
+- ✅ **Stats Section**: Shows all stat modifiers (MAXHIT, HITROLL, DAMROLL, armor, damage, averageDamage, weight, value)
+- ✅ **Properties Section**: Shows flags, wearLocations, binding, and type-specific data (weaponType, armorPoints, lightIntensity, spellEffects, etc.)
+- ✅ **Array Formatting**: Arrays displayed as comma-separated lists (e.g., "TAKE, FINGER" for wear locations)
+- ✅ **Object Formatting**: Nested objects formatted as pretty JSON
+
+**Database Seeding**:
+- ✅ seedReferenceTables() function populates all 7 reference tables
+- ✅ seedItems() function creates 6 example items with full metadata
+- ✅ Helper functions for ID lookups (getItemTypeId, getMaterialId, etc.)
+- ✅ Proper execution flow: createTables → seedReferenceTables → seedData → seedItems
+- ✅ All INSERTs for items, junctions, and type-specific data
+- ✅ Verified with test script showing all metadata correctly stored
+
+**Benefits**:
+- Fully normalized design (no JSON blobs for structured data)
+- Efficient querying with proper indexes and foreign keys
+- Type-safe with referential integrity
+- Supports complex filtering (by type, material, flags, wear location, stats)
+- Easily extensible for new item properties
+- Ready for advanced features (enchantments, sets, socketed items, durability)
+
+### 3. Comprehensive Database System
 
 #### Class System (5 Tables)
 - **class_groups**: 4 groups (Warrior, Priest, Wizard, Rogue)

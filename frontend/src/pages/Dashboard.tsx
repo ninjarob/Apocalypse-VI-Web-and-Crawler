@@ -1,28 +1,24 @@
 import { useState, useEffect } from 'react';
-import { api, Stats, CrawlerStatus } from '../api';
+import { api, Stats } from '../api';
 
 export default function Dashboard() {
   const [stats, setStats] = useState<Stats | null>(null);
-  const [status, setStatus] = useState<CrawlerStatus | null>(null);
   const [loading, setLoading] = useState(true);
-
-  const loadData = async () => {
-    try {
-      const [statsData, statusData] = await Promise.all([api.getStats(), api.getCrawlerStatus()]);
-      setStats(statsData);
-      setStatus(statusData);
-      setLoading(false);
-    } catch (error) {
-      console.error('Failed to load dashboard data:', error);
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     loadData();
-    const interval = setInterval(loadData, 5000); // Refresh every 5 seconds
-    return () => clearInterval(interval);
   }, []);
+
+  const loadData = async () => {
+    try {
+      const statsData = await api.getStats();
+      setStats(statsData);
+      setLoading(false);
+    } catch (error) {
+      console.error('Failed to load stats:', error);
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return <div className="loading">Loading...</div>;
@@ -30,54 +26,72 @@ export default function Dashboard() {
 
   return (
     <div>
-      <h2>Dashboard</h2>
+      <h2>MUD Map</h2>
 
-      {status && (
-        <div className={`crawler-status ${status.status !== 'idle' ? 'active' : ''}`}>
-          <h3>Crawler Status</h3>
-          <p>
-            <strong>Status:</strong> {status.status}
-          </p>
-          <p>
-            <strong>Last Update:</strong> {new Date(status.timestamp).toLocaleString()}
-          </p>
-        </div>
-      )}
+      {/* Map Placeholder */}
+      <div
+        style={{
+          border: '2px dashed #444',
+          borderRadius: '8px',
+          padding: '60px 20px',
+          textAlign: 'center',
+          backgroundColor: '#1a1a1a',
+          marginTop: '20px',
+          minHeight: '500px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+      >
+        <div style={{ fontSize: '48px', marginBottom: '20px', opacity: 0.5 }}>🗺️</div>
+        <h3 style={{ color: '#888', marginBottom: '10px' }}>Interactive MUD Map</h3>
+        <p style={{ color: '#666', maxWidth: '600px', lineHeight: '1.6' }}>
+          This space will display an interactive visualization of the MUD world, showing rooms,
+          connections, zones, and navigation paths discovered by the crawler.
+        </p>
 
-      {stats && (
-        <div className="stats-grid">
-          <div className="stat-card">
-            <h3>Rooms Discovered</h3>
-            <div className="value">{stats.rooms}</div>
+        {/* Quick Stats */}
+        {stats && (
+          <div
+            style={{
+              marginTop: '40px',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+              gap: '15px',
+              width: '100%',
+              maxWidth: '600px'
+            }}
+          >
+            <div className="stat-card" style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '11px', color: '#888', marginBottom: '5px' }}>ROOMS</div>
+              <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#4fc3f7' }}>
+                {stats.rooms}
+              </div>
+            </div>
+            <div className="stat-card" style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '11px', color: '#888', marginBottom: '5px' }}>NPCs</div>
+              <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#81c784' }}>
+                {stats.npcs}
+              </div>
+            </div>
+            <div className="stat-card" style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '11px', color: '#888', marginBottom: '5px' }}>ITEMS</div>
+              <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#ffb74d' }}>
+                {stats.items}
+              </div>
+            </div>
+            <div className="stat-card" style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '11px', color: '#888', marginBottom: '5px' }}>SPELLS</div>
+              <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#ba68c8' }}>
+                {stats.spells}
+              </div>
+            </div>
           </div>
-          <div className="stat-card">
-            <h3>NPCs Found</h3>
-            <div className="value">{stats.npcs}</div>
-          </div>
-          <div className="stat-card">
-            <h3>Items Cataloged</h3>
-            <div className="value">{stats.items}</div>
-          </div>
-          <div className="stat-card">
-            <h3>Spells Documented</h3>
-            <div className="value">{stats.spells}</div>
-          </div>
-          <div className="stat-card">
-            <h3>Attacks Recorded</h3>
-            <div className="value">{stats.attacks}</div>
-          </div>
-          <div className="stat-card">
-            <h3>Total Entities</h3>
-            <div className="value">{stats.total}</div>
-          </div>
-        </div>
-      )}
+        )}
 
-      <div style={{ marginTop: '40px' }}>
-        <h3>Recent Activity</h3>
-        <p style={{ color: '#888' }}>
-          The crawler is systematically exploring the Apocalypse VI MUD and documenting everything
-          it finds. Use the navigation menu to browse discovered rooms, NPCs, items, and more.
+        <p style={{ color: '#555', marginTop: '30px', fontSize: '14px' }}>
+          Use the Admin panel to browse and manage all discovered data.
         </p>
       </div>
     </div>

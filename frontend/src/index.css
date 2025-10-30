@@ -243,6 +243,11 @@ button:focus-visible {
   background-color: #4caf50;
 }
 
+.tag.small {
+  font-size: 0.75em;
+  padding: 2px 6px;
+}
+
 /* Races page specific styles */
 .stats-grid {
   display: grid;
