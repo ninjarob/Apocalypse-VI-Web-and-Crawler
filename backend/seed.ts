@@ -30,7 +30,6 @@ function seedDatabase() {
     'DROP TABLE IF EXISTS crawler_status',
     'DROP TABLE IF EXISTS player_actions',
     'DROP TABLE IF EXISTS socials',
-    'DROP TABLE IF EXISTS commands',
     'DROP TABLE IF EXISTS room_exits',
     'DROP TABLE IF EXISTS rooms',
     'DROP TABLE IF EXISTS npcs',

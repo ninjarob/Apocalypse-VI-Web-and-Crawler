@@ -64,7 +64,7 @@ router.get('/stats', asyncHandler(async (_req: Request, res: Response) => {
     }
   };
 
-  const [rooms, npcs, items, spells, attacks, abilities, races, zones, commands] = await Promise.all([
+  const [rooms, npcs, items, spells, attacks, abilities, races, zones, playerActions] = await Promise.all([
     repositories.rooms.count().catch(() => 0),
     getCount(ENTITY_CONFIG.npcs),
     getCount(ENTITY_CONFIG.items),
@@ -73,7 +73,7 @@ router.get('/stats', asyncHandler(async (_req: Request, res: Response) => {
     getCount(ENTITY_CONFIG.abilities),
     getCount(ENTITY_CONFIG.races),
     repositories.zones.count().catch(() => 0),
-    getCount(ENTITY_CONFIG.commands)
+    getCount(ENTITY_CONFIG.player_actions)
   ]);
 
   res.json({
@@ -85,8 +85,8 @@ router.get('/stats', asyncHandler(async (_req: Request, res: Response) => {
     abilities,
     races,
     zones,
-    commands,
-    total: rooms + npcs + items + spells + attacks + abilities + races + zones + commands
+    playerActions,
+    total: rooms + npcs + items + spells + attacks + abilities + races + zones + playerActions
   });
 }));
 

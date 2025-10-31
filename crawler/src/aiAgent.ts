@@ -67,21 +67,21 @@ export class AIAgent {
   private async chooseFallbackCommand(repeatedCommand: string, state: CrawlerState): Promise<string> {
     const recentCommands = new Set(state.commandHistory.slice(-5));
     
-    // Try to get successful commands from database
+    // Try to get successful player actions from database
     let knownCommands: string[] = [];
     
     if (this.api) {
       try {
-        const commands = await this.api.getAllCommands();
+        const playerActions = await this.api.getAllPlayerActions('command');
         // Filter for commands that have been tested and work
-        knownCommands = commands
-          .filter(cmd => cmd.workingStatus === 'success' || cmd.tested)
-          .map(cmd => cmd.name)
+        knownCommands = playerActions
+          .filter(action => action.successCount > 0)
+          .map(action => action.name)
           .filter(name => !recentCommands.has(name)); // Exclude recently used
         
         logger.debug(`Found ${knownCommands.length} working commands from database`);
       } catch (error) {
-        logger.debug('Could not fetch commands from database, using defaults');
+        logger.debug('Could not fetch player actions from database, using defaults');
       }
     }
     

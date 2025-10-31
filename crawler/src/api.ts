@@ -100,46 +100,44 @@ export class BackendAPI {
     }
   }
 
-  async saveCommand(command: {
+  async savePlayerAction(action: {
     name: string;
+    type: string;
     syntax?: string;
     description?: string;
     category?: string;
-    tested?: boolean;
-    workingStatus?: string;
+    documented?: boolean;
     discovered?: Date;
-    testResults?: Array<{
-      input: string;
-      output: string;
-      timestamp: Date;
-      success: boolean;
-    }>;
+    lastTested?: Date;
+    successCount?: number;
+    failCount?: number;
   }): Promise<void> {
     try {
-      await axios.post(`${this.baseUrl}/commands`, command);
-      logger.info(`Saved command: ${command.name}`);
+      await axios.post(`${this.baseUrl}/player_actions`, action);
+      logger.info(`Saved player action: ${action.name}`);
       this.backendAvailable = true;
     } catch (error) {
-      this.logBackendError('save command', error);
+      this.logBackendError('save player action', error);
     }
   }
 
-  async updateCommand(name: string, updates: any): Promise<void> {
+  async updatePlayerAction(name: string, updates: any): Promise<void> {
     try {
-      await axios.put(`${this.baseUrl}/commands/${encodeURIComponent(name)}`, updates);
+      await axios.put(`${this.baseUrl}/player_actions/${encodeURIComponent(name)}`, updates);
       this.backendAvailable = true;
     } catch (error) {
-      this.logBackendError('update command', error);
+      this.logBackendError('update player action', error);
     }
   }
 
-  async getAllCommands(): Promise<any[]> {
+  async getAllPlayerActions(type?: string): Promise<any[]> {
     try {
-      const response = await axios.get(`${this.baseUrl}/commands`);
+      const url = type ? `${this.baseUrl}/player_actions?type=${type}` : `${this.baseUrl}/player_actions`;
+      const response = await axios.get(url);
       this.backendAvailable = true;
       return response.data;
     } catch (error) {
-      this.logBackendError('get commands', error);
+      this.logBackendError('get player actions', error);
       return [];
     }
   }

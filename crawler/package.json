@@ -7,6 +7,11 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/crawler/src/index.js",
+    "crawl": "tsx src/index.ts",
+    "crawl:document-actions": "tsx src/index.ts -- --task=document-actions",
+    "crawl:document-help": "tsx src/index.ts -- --task=document-help",
+    "crawl:learn-game": "tsx src/index.ts -- --task=learn-game",
+    "crawl:play-game": "tsx src/index.ts -- --task=play-game",
     "learn-commands": "tsx src/commandCrawler.ts",
     "learn-commands:build": "tsc && node dist/commandCrawler.js",
     "discover-races": "tsx src/discoverRaces.ts"

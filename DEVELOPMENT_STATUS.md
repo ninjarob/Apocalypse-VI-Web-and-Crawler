@@ -893,15 +893,45 @@ The database uses SQLite with 21 tables organized into logical groups:
 - ⏳ **More Actions**: Populated by crawler as discovered (200+ commands, 300+ socials)
 - ⏳ **NPCs/Items/Spells**: Populated by crawler during exploration
 
-## ⚠️ Current Issues (In Progress)
-**Problem**: AI sometimes gets stuck repeating same command (e.g., "commands" loop)
-- **Mitigation Applied**:
-  - Aggressive repetition blocking (blocks if used ONCE in last 3 actions)
-  - Context-aware fallback commands
-  - Command cleaning to extract just the command
-  - Warning logs when forced to fallback
-- **Current Status**: Improved significantly, monitoring effectiveness
-- **Next Steps**: May need to tune fallback logic or add cooldown periods
+## 📝 Recent Updates (October 30, 2025 - Continued)
+
+### ✅ Database Migration: Commands → Player Actions - COMPLETE
+**Status**: Legacy `commands` table fully removed, unified `player_actions` table now in use
+
+**Migration Scope**:
+- ✅ Removed `DROP TABLE IF EXISTS commands` from backend/seed.ts
+- ✅ Removed commands entity configuration from shared/entity-config.ts
+- ✅ Updated crawler API methods:
+  - `saveCommand()` → `savePlayerAction()`
+  - `updateCommand()` → `updatePlayerAction()`
+  - `getAllCommands()` → `getAllPlayerActions(type?)`
+- ✅ Updated crawler aiAgent.ts to use `getAllPlayerActions('command')`
+- ✅ Updated backend routes stats endpoint:
+  - Changed `ENTITY_CONFIG.commands` → `ENTITY_CONFIG.player_actions`
+  - Renamed `commands` variable to `playerActions` in response
+- ✅ Database rebuilt with new schema (3 sample player actions seeded)
+
+**Benefits**:
+- Single unified table for all player input types (commands, socials, emotes, spells, skills)
+- Type-based filtering via `type` field
+- Cleaner API: `getAllPlayerActions('command')` vs separate endpoints
+- Better data model: All discoverable actions in one place
+- Ready for comprehensive action documentation system
+
+### ⚙️ Custom Instructions Configuration - COMPLETE
+**Status**: ✅ Workspace-level instructions configured
+
+**Configuration**:
+- Created `.vscode/settings.json` with GitHub Copilot instructions
+- Custom instruction: "After completing each request, update the DEVELOPMENT_STATUS.md file to reflect the changes made, features added, or issues resolved."
+- Applies automatically to all Copilot Chat interactions in this workspace
+- No manual reminder needed in each prompt
+
+**Benefits**:
+- Automatic documentation updates after each work session
+- Consistent development history tracking
+- Better project continuity across sessions
+- Workspace-specific, doesn't affect other projects
 
 ### ✅ RESOLVED: Issue #1: Ollama Model Name Mismatch 
 **Problem**: Code requested `llama3.2` but Ollama has `llama3.2:3b` installed

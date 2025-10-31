@@ -430,4 +430,37 @@ Total Sessions: 1
     this.saveKnowledge(this.knowledge);
     logger.info(`📝 Updated section: ${sectionName}`);
   }
+
+  /**
+   * Add a help topic to the knowledge base
+   */
+  addHelpTopic(topic: string, helpText: string): void {
+    // Create or update a help topics section
+    const formattedEntry = `\n### ${topic}\n${helpText.trim()}\n`;
+    
+    // Check if we have a help topics section
+    if (!this.knowledge.includes('## Help Topics')) {
+      // Add new section before the Lessons Learned section
+      this.knowledge = this.knowledge.replace(
+        '## Lessons Learned',
+        `## Help Topics\n${formattedEntry}\n## Lessons Learned`
+      );
+    } else {
+      // Append to existing help topics section
+      this.knowledge = this.knowledge.replace(
+        '## Lessons Learned',
+        `${formattedEntry}\n## Lessons Learned`
+      );
+    }
+    
+    this.saveKnowledge(this.knowledge);
+    logger.info(`📚 Added help topic: ${topic}`);
+  }
+
+  /**
+   * Force save the current knowledge base
+   */
+  forceSave(): void {
+    this.saveKnowledge(this.knowledge);
+  }
 }

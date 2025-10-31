@@ -112,22 +112,6 @@ export const ENTITY_CONFIG: Record<string, EntityConfig> = {
       description: 'Available player actions'
     }
   },
-  commands: {
-    table: 'commands',
-    idField: 'id',
-    nameField: 'name',
-    autoIncrement: true,
-    uniqueField: 'name',
-    jsonFields: ['examples', 'requirements', 'relatedCommands'],
-    booleanFields: ['documented'],
-    sortBy: 'category, name',
-    display: {
-      name: 'Commands',
-      singular: 'Command',
-      icon: '⌨️',
-      description: 'MUD commands'
-    }
-  },
   races: {
     table: 'races',
     idField: 'id',
