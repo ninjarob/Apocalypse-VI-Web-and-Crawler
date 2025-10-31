@@ -10,6 +10,29 @@ Total Sessions: 1
 - score: View your character stats
 - who: See who else is online
 
+## Help System & Pagination
+The MUD has a comprehensive help system accessible via "help <topic>" commands.
+
+### Pagination Handling
+Many help entries are longer than one screen and will display a pagination prompt:
+```
+[ Return to continue, (q)uit, (r)efresh, (b)ack, or page number (1/2) ]
+```
+
+**IMPORTANT**: When you see this prompt, you MUST send a newline ("\n") to continue reading the full help text. Do NOT send "q" as that will quit the pager and truncate the help information.
+
+**Pagination Detection**: Look for the text "Return to continue" in the response.
+**Action**: Send an empty line ("\n") to get the next page.
+**Repeat**: Continue sending "\n" until the prompt disappears and you have the complete help text.
+
+### Help Command Usage
+- "help" - Shows general help topics
+- "help <command>" - Shows detailed help for a specific command
+- "help <spell>" - Shows spell information
+- "help <skill>" - Shows skill information
+- "help <race>" - Shows race information
+- "help <class>" - Shows class information
+
 ## World Overview
 Apocalypse VI is a rich fantasy MUD with 74+ zones spanning multiple difficulty levels (1-5).
 The world features diverse regions from beginner areas like Midgaard City to epic raid zones.

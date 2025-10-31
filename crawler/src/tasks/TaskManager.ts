@@ -24,6 +24,9 @@ export interface TaskConfig {
   knowledgeManager: KnowledgeManager;
   delayBetweenActions: number;
   maxActions: number;
+  characterName: string;
+  characterClass: string;
+  characterLevel: number;
 }
 
 /**

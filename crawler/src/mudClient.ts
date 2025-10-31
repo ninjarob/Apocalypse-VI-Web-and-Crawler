@@ -67,24 +67,36 @@ export class MUDClient extends EventEmitter {
 
   private async login(): Promise<void> {
     logger.info('Logging in...');
+    logger.info(`Credentials check: username="${this.username}", password="${this.password ? '***' : '(empty)'}"`);
+    logger.info(`Current buffer length: ${this.buffer.length} chars`);
+    logger.info(`Buffer content:\n${this.buffer}`);
     
     // Wait for username prompt
+    logger.info('Waiting for username prompt (name/login/character)...');
     await this.waitFor(['name', 'login', 'character'], 5000);
+    logger.info('Username prompt detected, sending username...');
     await this.send(this.username);
     
     // Wait for password prompt
+    logger.info('Waiting for password prompt...');
     await this.waitFor(['password'], 5000);
+    logger.info('Password prompt detected, sending password...');
     await this.send(this.password);
     
     // Wait a bit for server response
+    logger.info('Waiting 2 seconds for server response...');
     await this.delay(2000);
+    
+    logger.info(`Buffer after password (${this.buffer.length} chars):\n${this.buffer}`);
     
     // Check if we got the "PRESS ENTER" prompt (happens after long logout)
     const lowerBuffer = this.buffer.toLowerCase();
     if (lowerBuffer.includes('press enter')) {
-      logger.info('Detected PRESS ENTER prompt...');
+      logger.info('Detected PRESS ENTER prompt, sending empty line...');
       await this.send(''); // Send empty line (just Enter)
       await this.delay(1000);
+      
+      logger.info(`Buffer after pressing enter (${this.buffer.length} chars):\n${this.buffer}`);
       
       // Check for menu
       if (this.buffer.toLowerCase().includes('make your choice')) {
@@ -95,6 +107,7 @@ export class MUDClient extends EventEmitter {
     }
     
     logger.info('Login complete');
+    logger.info(`Final buffer (${this.buffer.length} chars):\n${this.buffer}`);
     this.emit('ready');
   }
 
@@ -103,7 +116,7 @@ export class MUDClient extends EventEmitter {
       throw new Error('Not connected to MUD');
     }
     
-    logger.info(`📤 SENDING to telnet: "${command}"`);
+    logger.info(`📤 SENDING to telnet: "${command}" (length: ${command.length})`);
     this.buffer = ''; // Clear buffer before sending command
     await this.client.send(command + '\r\n');
   }
@@ -117,12 +130,16 @@ export class MUDClient extends EventEmitter {
         
         for (const pattern of patterns) {
           if (lowerBuffer.includes(pattern.toLowerCase())) {
+            logger.info(`✓ Pattern found: "${pattern}"`);
             const result = this.buffer;
             return resolve(result);
           }
         }
         
-        if (Date.now() - startTime > timeout) {
+        const elapsed = Date.now() - startTime;
+        if (elapsed > timeout) {
+          logger.error(`✗ Timeout after ${elapsed}ms waiting for patterns: ${patterns.join(', ')}`);
+          logger.error(`Current buffer (${this.buffer.length} chars):\n${this.buffer}`);
           return reject(new Error(`Timeout waiting for patterns: ${patterns.join(', ')}`));
         }
         

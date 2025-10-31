@@ -1,30 +1,11 @@
 import { useState } from 'react';
 import { useApi } from '../hooks';
 import { Loading, Badge, StatCard } from '../components';
-import { getCategoryBadgeVariant, getStatusBadgeVariant } from '../utils/helpers';
-
-interface Command {
-  name: string;
-  category: string;
-  description: string;
-  syntax?: string;
-  workingStatus: string;
-  tested: boolean;
-  aliases?: string[];
-  examples?: string[];
-  testResults?: Array<{
-    input: string;
-    output: string;
-    success: boolean;
-    timestamp: Date;
-  }>;
-  usageCount?: number;
-  lastUsed?: Date;
-  createdAt?: Date;
-}
+import { getCategoryBadgeVariant } from '../utils/helpers';
+import type { PlayerAction } from '@shared/types';
 
 export default function Commands() {
-  const { data: commands, loading, reload } = useApi<Command>('/commands');
+  const { data: commands, loading, reload } = useApi<PlayerAction>('/player_actions?type=command');
   const [filter, setFilter] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -50,18 +31,18 @@ export default function Commands() {
         <div className="mt-4 grid grid-cols-4 gap-4 text-sm">
           <StatCard label="Total Commands" value={commands.length} />
           <StatCard 
-            label="Working" 
-            value={commands.filter(c => c.workingStatus === 'working').length}
+            label="Successful" 
+            value={commands.filter(c => c.successCount > 0).length}
             color="#16a34a"
           />
           <StatCard 
-            label="Requires Args" 
-            value={commands.filter(c => c.workingStatus === 'requires-args').length}
+            label="Documented" 
+            value={commands.filter(c => c.documented).length}
             color="#ca8a04"
           />
           <StatCard 
             label="Failed" 
-            value={commands.filter(c => c.workingStatus === 'failed').length}
+            value={commands.filter(c => c.failCount > 0).length}
             color="#dc2626"
           />
         </div>
@@ -111,7 +92,7 @@ export default function Commands() {
                 Status
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Tests
+                Success Rate
               </th>
             </tr>
           </thead>
@@ -123,41 +104,42 @@ export default function Commands() {
                 </td>
               </tr>
             ) : (
-              filteredCommands.map(command => (
-                <tr key={command.name} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="font-mono font-bold">{command.name}</div>
-                    {command.aliases && command.aliases.length > 0 && (
-                      <div className="text-xs text-gray-500">
-                        Aliases: {command.aliases.join(', ')}
+              filteredCommands.map(command => {
+                const totalTests = command.successCount + command.failCount;
+                const successRate = totalTests > 0 ? Math.round((command.successCount / totalTests) * 100) : 0;
+                
+                return (
+                  <tr key={command.name} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="font-mono font-bold">{command.name}</div>
+                      {command.syntax && (
+                        <div className="text-xs font-mono text-gray-500 mt-1">{command.syntax}</div>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <Badge variant={getCategoryBadgeVariant(command.category || 'unknown')}>
+                        {command.category || 'unknown'}
+                      </Badge>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="text-sm text-gray-900">
+                        {command.description || 'No description'}
                       </div>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <Badge variant={getCategoryBadgeVariant(command.category)}>
-                      {command.category || 'unknown'}
-                    </Badge>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="text-sm text-gray-900">
-                      {command.description || 'No description'}
-                    </div>
-                    {command.syntax && (
-                      <div className="text-xs font-mono text-gray-500 mt-1">{command.syntax}</div>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <Badge variant={getStatusBadgeVariant(command.workingStatus)}>
-                      {command.workingStatus || 'unknown'}
-                    </Badge>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {command.testResults ? command.testResults.length : 0} test
-                    {command.testResults?.length !== 1 ? 's' : ''}
-                    {command.usageCount ? ` | Used ${command.usageCount}x` : ''}
-                  </td>
-                </tr>
-              ))
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <Badge variant={command.documented ? 'success' : 'warning'}>
+                        {command.documented ? 'Documented' : 'Undocumented'}
+                      </Badge>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {totalTests > 0 ? `${successRate}% (${command.successCount}/${totalTests})` : 'Not tested'}
+                      {command.timesUsed > 0 && (
+                        <div className="text-xs">Used {command.timesUsed}x</div>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>

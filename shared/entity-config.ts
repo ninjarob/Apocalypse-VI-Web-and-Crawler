@@ -102,7 +102,7 @@ export const ENTITY_CONFIG: Record<string, EntityConfig> = {
     nameField: 'name',
     autoIncrement: true,
     uniqueField: 'name',
-    jsonFields: ['examples', 'requirements', 'relatedActions'],
+    jsonFields: ['examples', 'requirements', 'relatedActions', 'testResults'],
     booleanFields: ['documented'],
     sortBy: 'type, category, name',
     display: {

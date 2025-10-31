@@ -280,23 +280,24 @@
 - Modal/form logic (duplicate modal implementations)
 - Field renderer functions (complex renderFieldValue could be split)
 
-### ✅ Bug Fix: Query Parameter Parsing
-**Status**: Fixed zone_id filter causing 500 errors
+### ✅ Frontend Test Results Display - FIXED
+**Status**: Test results section now appears in player actions detail view
 
-**Problem**: 
-- Query parameters come in as strings from URL (`?zone_id=2`)
-- Service layer expected numbers
-- Error: "zone_id must be a positive integer"
+**Issue Identified**:
+- Test results section code existed in Admin.tsx but wasn't displaying
+- Root cause: `testResults` field missing from Player Actions entity configuration
+- Field wasn't being loaded from API, so `selectedAction.testResults` was undefined
 
 **Fix Applied**:
-- Parse numeric query parameters using `parseInt()` in api.ts
-- Applied to: `zone_id`, `ability_id`, `class_id`
-- Now properly converts strings to numbers before validation
+- ✅ Added `testResults` field to Player Actions entity config in Admin.tsx
+- ✅ Set as JSON type with `hideInTable: true` (only shown in detail view)
+- ✅ Field now properly loaded from backend API
+- ✅ Test results history section displays when testResults array exists
 
 **Result**:
-- Midgaard city now shows its rooms correctly
-- All zone filtering works properly
-- Build successful, no errors
+- Player action detail pages now show test results history when available
+- Displays timestamp, character name, class, and command output for each test
+- Maintains existing functionality for actions without test results
 
 ## Project Overview
 AI-powered MUD (Multi-User Dungeon) crawler that uses Ollama LLM to autonomously explore the game, learn mechanics, and document rooms, NPCs, items, and spells.
@@ -894,6 +895,54 @@ The database uses SQLite with 21 tables organized into logical groups:
 - ⏳ **NPCs/Items/Spells**: Populated by crawler during exploration
 
 ## 📝 Recent Updates (October 30, 2025 - Continued)
+
+### ✅ Crawler Document-Actions Task - WORKING!
+**Status**: Successfully testing and documenting player commands
+
+**Issues Fixed**:
+- ✅ Fixed type mismatches in `raceDiscovery.ts` (discovered: Date → string)
+- ✅ Fixed `.env` path resolution (`../../.env` → `../.env`)
+  - When running with `tsx`, it executes from `src/` directory
+  - `.env` is in `crawler/` directory (one level up)
+- ✅ Added comprehensive debug logging to track connection flow
+- ✅ Credentials now loading correctly from `.env` file
+
+**Successful Execution**:
+- ✅ Connected to apocalypse6.com:6000
+- ✅ Logged in as character "Pocket"
+- ✅ Took over existing session ("You take over your own body, already in use!")
+- ✅ Retrieved command list: **280 commands** discovered
+- ✅ Processing commands sequentially:
+  1. Execute `help <command>` to get documentation
+  2. Execute command to test if it works
+  3. Save to database with type='command', help text, success/fail status
+- ✅ Currently processing: [1/280] affected command
+
+**Next Steps**:
+- Let task complete to document all 280 commands
+- Verify player_actions table population in database
+- Review documented commands in admin panel
+- Test other task modes (document-help, learn-game, play-game)
+
+### 🔧 Crawler Testing & Fixes - COMPLETE
+**Status**: Testing document-actions task, fixing connection issues
+
+**Type System Fixes**:
+- ✅ Fixed `raceDiscovery.ts` type mismatches for `discovered` field (Date → string)
+- ✅ Updated `api.ts` saveRace() and saveClass() methods to accept `discovered` as ISO string
+- ✅ Build successful after type corrections
+
+**Connection Issues Identified**:
+- ⚠️ MUD connection established successfully
+- ⚠️ ASCII art welcome screen received
+- ⚠️ Login flow issue: After sending empty line to bypass ASCII art, connection closes
+- ⚠️ Error: "response not received" from telnet-client
+- 📋 Next step: Debug login sequence timing and prompt detection
+
+**Test Command**: `npm run crawl:document-actions`
+- Task: DocumentActionsTask (discover and document player commands)
+- MUD: apocalypse6.com:6000
+- Credentials: Configured in crawler/.env
 
 ### ✅ Database Migration: Commands → Player Actions - COMPLETE
 **Status**: Legacy `commands` table fully removed, unified `player_actions` table now in use

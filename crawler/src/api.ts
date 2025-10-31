@@ -203,7 +203,7 @@ export class BackendAPI {
     abilities?: string[];
     requirements?: string[];
     helpText?: string;
-    discovered?: Date;
+    discovered?: string;
   }): Promise<void> {
     return this.saveEntity('races', race);
   }
@@ -220,7 +220,7 @@ export class BackendAPI {
     requirements?: string[];
     startingEquipment?: string[];
     helpText?: string;
-    discovered?: Date;
+    discovered?: string;
   }): Promise<void> {
     return this.saveEntity('classes', gameClass);
   }

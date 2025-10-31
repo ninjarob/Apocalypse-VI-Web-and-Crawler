@@ -61,9 +61,8 @@ export class DocumentActionsTask implements CrawlerTask {
           processed++;
           logger.info(`[${processed}/${commands.length}] Processing: ${command}`);
           
-          // Get help text
-          const helpCommand = `help ${command}`;
-          const helpResponse = await this.config.mudClient.sendAndWait(helpCommand, 2000);
+          // Get help text (handle pagination)
+          const helpResponse = await this.getFullHelpText(command);
           
           // Test the command
           logger.info(`  Testing command execution...`);
@@ -101,7 +100,7 @@ export class DocumentActionsTask implements CrawlerTask {
 
       logger.info('');
       logger.info(`✅ Documented ${processed} player actions`);
-      logger.info(`📊 View results at: http://localhost:5173/commands`);
+      logger.info(`📊 View results at: http://localhost:5173/admin (Player Actions section)`);
 
     } catch (error) {
       logger.error('❌ Document actions task failed:', error);
@@ -164,10 +163,16 @@ export class DocumentActionsTask implements CrawlerTask {
         description: analysis.description || helpText.slice(0, 200),
         syntax: this.extractSyntax(helpText),
         documented: true,
-        discovered: new Date(),
-        lastTested: new Date(),
+        discovered: new Date().toISOString(),
+        lastTested: new Date().toISOString(),
         successCount: analysis.success ? 1 : 0,
-        failCount: analysis.success ? 0 : 1
+        failCount: analysis.success ? 0 : 1,
+        testResults: [{
+          command_result: testOutput,
+          tested_by_character: this.config.characterName,
+          tested_at: new Date().toISOString(),
+          character_class: this.config.characterClass
+        }]
       };
 
       // Save to player_actions table using generic entity API
@@ -176,6 +181,38 @@ export class DocumentActionsTask implements CrawlerTask {
     } catch (error) {
       logger.error(`  ⚠️  Could not store to player_actions table:`, error);
     }
+  }
+
+  /**
+   * Get full help text, handling pagination by sending newlines
+   */
+  private async getFullHelpText(command: string): Promise<string> {
+    const helpCommand = `help ${command}`;
+    let fullResponse = '';
+    let pageCount = 0;
+    const maxPages = 10; // Prevent infinite loops
+
+    while (pageCount < maxPages) {
+      const response = pageCount === 0 
+        ? await this.config.mudClient.sendAndWait(helpCommand, 2000)
+        : await this.config.mudClient.sendAndWait('', 2000); // Send newline for next page
+      
+      fullResponse += response;
+      pageCount++;
+
+      // Check if pagination prompt is present
+      if (!response.includes('Return to continue')) {
+        break; // No more pages
+      }
+
+      logger.info(`  Got page ${pageCount}, continuing pagination...`);
+    }
+
+    if (pageCount >= maxPages) {
+      logger.warn(`  ⚠️  Reached max pages (${maxPages}) for help ${command}, may be truncated`);
+    }
+
+    return fullResponse;
   }
 
   /**

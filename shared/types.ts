@@ -81,25 +81,31 @@ export interface Attack {
   rawText?: string;
 }
 
-export interface Command {
+export interface PlayerAction {
   id: number;
   name: string;
-  category: string;
-  description: string;
+  type: 'command' | 'social' | 'emote' | 'spell' | 'skill' | 'other';
+  category?: string;
+  description?: string;
   syntax?: string;
-  workingStatus: string;
-  tested: boolean;
-  aliases?: string[];
-  examples?: string[];
+  examples?: string;
+  requirements?: string;
+  levelRequired?: number;
+  relatedActions?: string;
+  documented: boolean;
+  discovered?: string;
+  lastTested?: string;
+  timesUsed: number;
+  successCount: number;
+  failCount: number;
   testResults?: Array<{
-    input: string;
-    output: string;
-    success: boolean;
-    timestamp: Date;
+    command_result: string;
+    tested_by_character: string;
+    tested_at: string;
+    character_class: string;
   }>;
-  usageCount?: number;
-  lastUsed?: Date;
-  createdAt?: Date;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Abilities {

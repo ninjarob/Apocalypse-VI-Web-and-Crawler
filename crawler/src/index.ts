@@ -8,7 +8,8 @@ import { LogArchiver } from './logArchiver';
 import { KnowledgeManager } from './knowledgeManager';
 import { TaskManager } from './tasks/TaskManager';
 
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+// Load .env from crawler directory (one level up from src/)
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 async function main() {
   const logArchiver = new LogArchiver('logs', 'logs/archive', 60000);
@@ -37,6 +38,12 @@ async function main() {
     const port = parseInt(process.env.MUD_PORT || '6000');
     const username = process.env.MUD_USERNAME || '';
     const password = process.env.MUD_PASSWORD || '';
+    const characterClass = process.env.CHARACTER_CLASS || 'Unknown';
+    const characterLevel = parseInt(process.env.CHARACTER_LEVEL || '1');
+    
+    logger.info(`Credentials: username="${username}", password="${password ? '***' : '(empty)'}"`);
+    logger.info(`Character: class="${characterClass}", level=${characterLevel}`);
+    
     const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
     const ollamaModel = process.env.OLLAMA_MODEL || 'llama3.2:3b';
     const backendUrl = process.env.BACKEND_URL || 'http://localhost:3002/api';
@@ -65,7 +72,10 @@ async function main() {
       api,
       knowledgeManager,
       delayBetweenActions,
-      maxActions
+      maxActions,
+      characterName: username,
+      characterClass,
+      characterLevel
     });
 
     await taskManager.runTask(taskType);

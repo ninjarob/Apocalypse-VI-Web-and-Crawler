@@ -116,12 +116,27 @@ export class RaceDiscovery {
   /**
    * Parse race details from "help <race>" command output
    */
-  private parseRaceDetails(raceName: string, response: string): Race {
-    const race: Race = {
-      id: raceName.toLowerCase().replace(/\s+/g, '-'),
+  private parseRaceDetails(raceName: string, response: string): { 
+    name: string; 
+    helpText?: string; 
+    discovered?: string;
+    description?: string;
+    stats?: Record<string, any>;
+    abilities?: string[];
+    requirements?: string[];
+  } {
+    const race: {
+      name: string;
+      helpText?: string;
+      discovered?: string;
+      description?: string;
+      stats?: Record<string, any>;
+      abilities?: string[];
+      requirements?: string[];
+    } = {
       name: raceName,
       helpText: response,
-      discovered: new Date()
+      discovered: new Date().toISOString()
     };
 
     const lines = response.split(/\r?\n/);

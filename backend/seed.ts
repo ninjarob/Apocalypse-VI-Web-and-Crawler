@@ -1,6 +1,10 @@
 import sqlite3 from 'sqlite3';
 import path from 'path';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Database location: data/mud-data.db at project root
 // When running: backend/seed.ts -> ../data/mud-data.db
@@ -401,6 +405,7 @@ function createTables(callback: () => void) {
     timesUsed INTEGER DEFAULT 0,
     successCount INTEGER DEFAULT 0,
     failCount INTEGER DEFAULT 0,
+    testResults TEXT,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     CHECK(type IN ('command', 'social', 'emote', 'spell', 'skill', 'other'))

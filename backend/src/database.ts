@@ -334,29 +334,6 @@ async function createTables() {
       updatedAt TEXT DEFAULT CURRENT_TIMESTAMP
     )`,
 
-    // Commands table
-    `CREATE TABLE IF NOT EXISTS commands (
-      name TEXT PRIMARY KEY,
-      syntax TEXT,
-      description TEXT,
-      category TEXT,
-      aliases TEXT,
-      examples TEXT,
-      parameters TEXT,
-      successPatterns TEXT,
-      failurePatterns TEXT,
-      requirements TEXT,
-      tested INTEGER DEFAULT 0,
-      workingStatus TEXT,
-      testResults TEXT,
-      usageCount INTEGER DEFAULT 0,
-      lastUsed TEXT,
-      discovered TEXT,
-      rawText TEXT,
-      createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
-      updatedAt TEXT DEFAULT CURRENT_TIMESTAMP
-    )`,
-
     // Crawler status table
     `CREATE TABLE IF NOT EXISTS crawler_status (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
