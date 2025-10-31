@@ -3,9 +3,9 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
-import apiRouter from './routes';
-import { initDatabase, closeDatabase } from './database';
-import { responseTime, errorHandler, notFoundHandler } from './middleware';
+import apiRouter from './routes/index.js';
+import { initDatabase, closeDatabase } from './database.js';
+import { responseTime, errorHandler, notFoundHandler } from './middleware/index.js';
 
 dotenv.config();
 

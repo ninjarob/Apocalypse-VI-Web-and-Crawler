@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 
 // Export validation middleware
-export * from './validation';
+export * from './validation.js';
 
 // Export error handling middleware
-export * from './errorHandler';
+export * from './errorHandler.js';
 
 /**
  * Async route handler wrapper

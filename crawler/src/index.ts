@@ -8,7 +8,7 @@ import { LogArchiver } from './logArchiver';
 import { KnowledgeManager } from './knowledgeManager';
 import { TaskManager } from './tasks/TaskManager';
 
-// Load .env from crawler directory (one level up from src/)
+// Load .env from crawler directory
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 async function main() {

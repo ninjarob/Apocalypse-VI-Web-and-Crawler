@@ -7,10 +7,10 @@
  * - Zone validation
  */
 
-import { BaseService } from './BaseService';
-import { repositories } from '../repositories';
-import { Zone } from '../repositories/ZoneRepository';
-import { createNotFoundError, BadRequestError } from '../errors/CustomErrors';
+import { BaseService } from './BaseService.js';
+import { repositories } from '../repositories/index.js';
+import { Zone } from '../repositories/ZoneRepository.js';
+import { createNotFoundError, BadRequestError } from '../errors/CustomErrors.js';
 
 export class ZoneService extends BaseService {
   /**

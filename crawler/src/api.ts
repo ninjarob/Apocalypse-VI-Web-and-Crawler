@@ -27,7 +27,32 @@ export class BackendAPI {
       this.lastWarningTime = Date.now();
       logger.warn('Backend API not available - continuing without database');
     } else {
-      logger.error(`Failed to ${context}:`, error.message);
+      // Handle Axios errors properly
+      let errorMessage = 'Unknown error';
+      if (error.response) {
+        // Server responded with error status
+        const status = error.response.status;
+        const statusText = error.response.statusText;
+        const data = error.response.data;
+        errorMessage = `HTTP ${status} ${statusText}`;
+        if (data && data.message) {
+          errorMessage += `: ${data.message}`;
+        } else if (data && typeof data === 'string') {
+          errorMessage += `: ${data}`;
+        } else if (data && data.error) {
+          errorMessage += `: ${data.error}`;
+          if (data.details) {
+            errorMessage += ` - Details: ${JSON.stringify(data.details)}`;
+          }
+        }
+      } else if (error.request) {
+        // Request was made but no response received
+        errorMessage = 'No response from server';
+      } else if (error.message) {
+        // Something else happened
+        errorMessage = error.message;
+      }
+      logger.error(`Failed to ${context}: ${errorMessage}`);
     }
   }
 
@@ -133,8 +158,13 @@ export class BackendAPI {
   async getAllPlayerActions(type?: string): Promise<any[]> {
     try {
       const url = type ? `${this.baseUrl}/player_actions?type=${type}` : `${this.baseUrl}/player_actions`;
+      logger.info(`[BackendAPI] Fetching player actions from ${url}`);
       const response = await axios.get(url);
       this.backendAvailable = true;
+      logger.info(`[BackendAPI] Got ${response.data.length} player actions`);
+      if (response.data.length > 0) {
+        logger.info(`[BackendAPI] First action: ${response.data[0].name}`);
+      }
       return response.data;
     } catch (error) {
       this.logBackendError('get player actions', error);

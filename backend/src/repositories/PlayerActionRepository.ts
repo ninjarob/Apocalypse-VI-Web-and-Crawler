@@ -1,4 +1,4 @@
-import { BaseRepository, EntityConfig } from './BaseRepository';
+import { BaseRepository, EntityConfig } from './BaseRepository.js';
 
 export interface PlayerAction {
   id: number;

@@ -156,28 +156,63 @@ export class DocumentActionsTask implements CrawlerTask {
     analysis: any
   ): Promise<void> {
     try {
-      const playerActionData = {
-        name: command,
-        type: 'command',
-        category: analysis.category || 'unknown',
-        description: analysis.description || helpText.slice(0, 200),
-        syntax: this.extractSyntax(helpText),
-        documented: true,
-        discovered: new Date().toISOString(),
-        lastTested: new Date().toISOString(),
-        successCount: analysis.success ? 1 : 0,
-        failCount: analysis.success ? 0 : 1,
-        testResults: [{
-          command_result: testOutput,
-          tested_by_character: this.config.characterName,
-          tested_at: new Date().toISOString(),
-          character_class: this.config.characterClass
-        }]
+      // Check if command already exists
+      const existingActions = await this.config.api.getAllPlayerActions();
+      const existingAction = existingActions.find(action => action.name === command);
+
+      // Extract examples from help text if available
+      const examples = this.extractExamples(helpText);
+      
+      const newTestResult = {
+        command_result: testOutput.trim(),
+        tested_by_character: this.config.characterName,
+        tested_at: new Date().toISOString(),
+        character_class: this.config.characterClass
       };
 
-      // Save to player_actions table using generic entity API
-      await this.config.api.saveEntity('player_actions', playerActionData);
-      logger.info(`  ✓ Saved to player_actions table`);
+      if (existingAction) {
+        // Update existing action - append to testResults array
+        const updatedTestResults = [...(existingAction.testResults || []), newTestResult];
+        
+        const updateData: any = {
+          lastTested: new Date().toISOString(),
+          successCount: (existingAction.successCount || 0) + (analysis.success ? 1 : 0),
+          failCount: (existingAction.failCount || 0) + (analysis.success ? 0 : 1),
+          testResults: updatedTestResults
+        };
+
+        // Update help text and other fields if this is the first time we got help
+        if (!existingAction.description || existingAction.description.trim() === '') {
+          updateData.description = this.cleanHelpText(helpText);
+          updateData.syntax = this.extractSyntax(helpText);
+          updateData.examples = examples;
+          updateData.category = analysis.category || existingAction.category || 'unknown';
+          updateData.documented = true;
+        }
+
+        await this.config.api.updatePlayerAction(command, updateData);
+        logger.info(`  ✓ Updated existing player action: ${command} (${updatedTestResults.length} test results)`);
+      } else {
+        // Create new action
+        const playerActionData = {
+          name: command,
+          type: 'command',
+          category: analysis.category || 'unknown',
+          description: this.cleanHelpText(helpText), // Use help text as description
+          syntax: this.extractSyntax(helpText),
+          examples: examples,
+          documented: true,
+          discovered: new Date().toISOString(),
+          lastTested: new Date().toISOString(),
+          successCount: analysis.success ? 1 : 0,
+          failCount: analysis.success ? 0 : 1,
+          testResults: [newTestResult]
+        };
+
+        // Save to player_actions table using generic entity API
+        await this.config.api.saveEntity('player_actions', playerActionData);
+        logger.info(`  ✓ Created new player action: ${command}`);
+      }
     } catch (error) {
       logger.error(`  ⚠️  Could not store to player_actions table:`, error);
     }
@@ -226,6 +261,40 @@ export class DocumentActionsTask implements CrawlerTask {
       }
     }
     return '';
+  }
+
+  /**
+   * Extract examples from help text
+   */
+  private extractExamples(helpText: string): string {
+    const lines = helpText.split('\n');
+    const examples: string[] = [];
+    
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (trimmed.toLowerCase().includes('example') || 
+          (trimmed.startsWith('>') && trimmed.length > 3)) {
+        // Extract the command part after '>'
+        const example = trimmed.replace(/^>\s*/, '').trim();
+        if (example) {
+          examples.push(example);
+        }
+      }
+    }
+    
+    return examples.join('; ');
+  }
+
+  /**
+   * Clean help text for storage (remove pagination prompts, extra whitespace)
+   */
+  private cleanHelpText(helpText: string): string {
+    return helpText
+      .replace(/\r\n/g, '\n') // Normalize line endings
+      .replace(/\n\s*\[.*?(Return to continue|quit|refresh|back|page number).*?\]\s*$/gm, '') // Remove pagination prompts
+      .replace(/\n\s*\[.*?\]\s*$/gm, '') // Remove any remaining bracketed prompts
+      .replace(/\n{3,}/g, '\n\n') // Reduce multiple blank lines
+      .trim();
   }
 
   private delay(ms: number): Promise<void> {

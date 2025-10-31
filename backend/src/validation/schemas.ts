@@ -224,6 +224,7 @@ export const playerActionSchema = z.object({
   requirements: jsonFieldSchema,
   levelRequired: z.number().int().min(1).max(100).optional().nullable(),
   relatedActions: jsonFieldSchema,
+  testResults: jsonFieldSchema,
   documented: booleanFieldSchema,
   discovered: timestampSchema.nullable(),
   lastTested: timestampSchema.nullable(),
@@ -234,7 +235,26 @@ export const playerActionSchema = z.object({
   updatedAt: timestampSchema
 });
 
-export const playerActionUpdateSchema = playerActionSchema.partial().required({ id: true });
+export const playerActionUpdateSchema = z.object({
+  name: z.string().min(1).max(100).optional(),
+  type: actionTypeEnum.optional(),
+  category: z.string().max(100).optional().nullable(),
+  description: z.string().optional().nullable(),
+  syntax: z.string().max(500).optional().nullable(),
+  examples: jsonFieldSchema,
+  requirements: jsonFieldSchema,
+  levelRequired: z.number().int().min(1).max(100).optional().nullable(),
+  relatedActions: jsonFieldSchema,
+  testResults: jsonFieldSchema,
+  documented: booleanFieldSchema,
+  discovered: timestampSchema.nullable(),
+  lastTested: timestampSchema.nullable(),
+  timesUsed: z.number().int().min(0).optional(),
+  successCount: z.number().int().min(0).optional(),
+  failCount: z.number().int().min(0).optional(),
+  createdAt: timestampSchema,
+  updatedAt: timestampSchema
+});
 
 // ============================================================================
 // Race Schemas

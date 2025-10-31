@@ -6,10 +6,10 @@
  * a consistent service layer interface.
  */
 
-import { BaseService } from './BaseService';
-import { EntityConfig } from '../repositories/BaseRepository';
-import { RepositoryFactory } from '../repositories/GenericRepository';
-import { createNotFoundError, BadRequestError, ConflictError } from '../errors/CustomErrors';
+import { BaseService } from './BaseService.js';
+import { EntityConfig } from '../repositories/BaseRepository.js';
+import { RepositoryFactory } from '../repositories/GenericRepository.js';
+import { createNotFoundError, BadRequestError, ConflictError } from '../errors/CustomErrors.js';
 
 export class GenericService extends BaseService {
   private config: EntityConfig;
@@ -140,12 +140,7 @@ export class GenericService extends BaseService {
   async createOrUpdate(entityData: any): Promise<any> {
     const repository = RepositoryFactory.getRepository(this.config);
 
-    // For auto-increment tables, always create
-    if (this.config.autoIncrement) {
-      return await this.create(entityData);
-    }
-
-    // For tables with unique constraints, try to find existing
+    // For tables with unique constraints, try to find existing first (upsert behavior)
     const uniqueField = this.config.uniqueField || this.config.idField;
     const uniqueValue = entityData[uniqueField];
 

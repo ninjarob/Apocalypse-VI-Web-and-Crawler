@@ -8,10 +8,10 @@
  * - Room-specific validation
  */
 
-import { BaseService } from './BaseService';
-import { repositories } from '../repositories';
-import { Room } from '../repositories/RoomRepository';
-import { createNotFoundError, BadRequestError } from '../errors/CustomErrors';
+import { BaseService } from './BaseService.js';
+import { repositories } from '../repositories/index.js';
+import { Room } from '../repositories/RoomRepository.js';
+import { createNotFoundError, BadRequestError } from '../errors/CustomErrors.js';
 
 export class RoomService extends BaseService {
   /**

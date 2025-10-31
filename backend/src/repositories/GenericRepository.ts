@@ -1,4 +1,4 @@
-import { BaseRepository, EntityConfig } from './BaseRepository';
+import { BaseRepository, EntityConfig } from './BaseRepository.js';
 
 /**
  * Generic repository that can work with any entity type

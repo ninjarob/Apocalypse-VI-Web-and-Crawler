@@ -6,7 +6,7 @@ import {
   isOperationalError,
   ValidationError,
   DatabaseError
-} from '../errors/CustomErrors';
+} from '../errors/CustomErrors.js';
 
 /**
  * Standard error response format

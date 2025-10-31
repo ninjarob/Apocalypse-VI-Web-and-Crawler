@@ -1,5 +1,6 @@
 import { Database } from 'sqlite3';
-import { getDatabase } from '../database';
+import { getDatabase } from '../database.js';
+import { createNotFoundError } from '../errors/CustomErrors.js';
 
 /**
  * Base configuration for entity repositories
@@ -186,7 +187,6 @@ export abstract class BaseRepository<T = any> {
   async findByIdOrThrow(id: string | number, entityName?: string): Promise<T> {
     const entity = await this.findById(id);
     if (!entity) {
-      const { createNotFoundError } = require('../errors/CustomErrors');
       const name = entityName || this.config.table;
       throw createNotFoundError(name, id.toString());
     }
@@ -211,7 +211,6 @@ export abstract class BaseRepository<T = any> {
   async findByUniqueOrThrow(value: string, entityName?: string): Promise<T> {
     const entity = await this.findByUnique(value);
     if (!entity) {
-      const { createNotFoundError } = require('../errors/CustomErrors');
       const name = entityName || this.config.table;
       throw createNotFoundError(name, value);
     }

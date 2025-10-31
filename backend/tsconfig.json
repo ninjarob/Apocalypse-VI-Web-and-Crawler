@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "commonjs",
+    "module": "CommonJS",
     "lib": ["ES2022"],
     "outDir": "./dist",
     "strict": true,
@@ -23,5 +23,5 @@
     }
   },
   "include": ["src/**/*", "seed.ts", "../shared/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.js"]
+  "exclude": ["node_modules", "dist", "**/*.js", "seed.ts"]
 }

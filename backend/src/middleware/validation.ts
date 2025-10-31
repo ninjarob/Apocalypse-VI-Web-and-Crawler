@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { z, ZodError } from 'zod';
-import { CREATE_SCHEMAS, UPDATE_SCHEMAS } from '../validation/schemas';
+import { CREATE_SCHEMAS, UPDATE_SCHEMAS } from '../validation/schemas.js';
 
 /**
  * Validation error response format

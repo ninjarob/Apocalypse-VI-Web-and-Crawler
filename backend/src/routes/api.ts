@@ -1,10 +1,10 @@
 import express, { Request, Response } from 'express';
-import { EntityConfig, ENTITY_CONFIG } from '@shared/entity-config';
-import { RepositoryFactory } from '../repositories/GenericRepository';
-import { repositories } from '../repositories';
-import { asyncHandler, validateCreate, validateUpdate } from '../middleware';
-import { BadRequestError } from '../errors/CustomErrors';
-import { RoomService, ZoneService, GenericService } from '../services';
+import { EntityConfig, ENTITY_CONFIG } from '../../../shared/entity-config.js';
+import { RepositoryFactory } from '../repositories/GenericRepository.js';
+import { repositories } from '../repositories/index.js';
+import { asyncHandler, validateCreate, validateUpdate } from '../middleware/index.js';
+import { BadRequestError } from '../errors/CustomErrors.js';
+import { RoomService, ZoneService, GenericService } from '../services/index.js';
 
 console.log('[API ROUTES] Loading api.ts module');
 
@@ -227,13 +227,19 @@ router.post(
     } else {
       const service = new GenericService(config);
 
-      // For auto-increment tables, always create
+      // For tables with unique constraints, use upsert to handle duplicates
+      if (config.uniqueField) {
+        result = await service.createOrUpdate(entity);
+        return res.status(201).json(result);
+      }
+
+      // For auto-increment tables without unique constraints, always create
       if (config.autoIncrement) {
         result = await service.create(entity);
         return res.status(201).json(result);
       }
 
-      // For tables with unique constraints, upsert
+      // For other tables, use upsert
       result = await service.createOrUpdate(entity);
       return res.status(201).json(result);
     }
@@ -268,7 +274,20 @@ router.put(
       updated = await zoneService.updateZone(parseInt(identifier), updates);
     } else {
       const service = new GenericService(config);
-      updated = await service.update(identifier, updates);
+      
+      // For entities with unique fields, the identifier might be the unique field value
+      if (config.uniqueField) {
+        // First find the entity by unique field to get its ID
+        const existing = await service.getByUnique(identifier);
+        if (!existing) {
+          throw new BadRequestError(`${type} with ${config.uniqueField} "${identifier}" not found`);
+        }
+        const id = (existing as any)[config.idField];
+        updated = await service.update(id, updates);
+      } else {
+        // For entities without unique fields, identifier should be the ID
+        updated = await service.update(identifier, updates);
+      }
     }
 
     res.json({ success: true, entity: updated });

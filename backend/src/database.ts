@@ -334,6 +334,232 @@ async function createTables() {
       updatedAt TEXT DEFAULT CURRENT_TIMESTAMP
     )`,
 
+    // Player Actions table
+    `CREATE TABLE IF NOT EXISTS player_actions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL UNIQUE,
+      type TEXT NOT NULL,
+      category TEXT,
+      description TEXT,
+      syntax TEXT,
+      examples TEXT,
+      requirements TEXT,
+      levelRequired INTEGER,
+      relatedActions TEXT,
+      documented INTEGER DEFAULT 0,
+      discovered TEXT,
+      lastTested TEXT,
+      timesUsed INTEGER DEFAULT 0,
+      successCount INTEGER DEFAULT 0,
+      failCount INTEGER DEFAULT 0,
+      testResults TEXT,
+      createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+      updatedAt TEXT DEFAULT CURRENT_TIMESTAMP
+    )`,
+
+    // Races table
+    `CREATE TABLE IF NOT EXISTS races (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL UNIQUE,
+      description TEXT,
+      stats TEXT,
+      abilities TEXT,
+      requirements TEXT,
+      helpText TEXT,
+      discovered TEXT,
+      createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+      updatedAt TEXT DEFAULT CURRENT_TIMESTAMP
+    )`,
+
+    // Classes table
+    `CREATE TABLE IF NOT EXISTS classes (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL UNIQUE,
+      class_group_id INTEGER,
+      description TEXT,
+      alignment_requirement TEXT,
+      hp_regen INTEGER,
+      mana_regen INTEGER,
+      move_regen INTEGER,
+      special_notes TEXT,
+      createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+      updatedAt TEXT DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (class_group_id) REFERENCES class_groups(id)
+    )`,
+
+    // Class Groups table
+    `CREATE TABLE IF NOT EXISTS class_groups (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL UNIQUE,
+      createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+      updatedAt TEXT DEFAULT CURRENT_TIMESTAMP
+    )`,
+
+    // Class Proficiencies table
+    `CREATE TABLE IF NOT EXISTS class_proficiencies (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      class_id INTEGER NOT NULL,
+      name TEXT NOT NULL,
+      level_required INTEGER NOT NULL,
+      is_skill INTEGER DEFAULT 0,
+      prerequisite_id INTEGER,
+      description TEXT,
+      createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+      updatedAt TEXT DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (class_id) REFERENCES classes(id),
+      FOREIGN KEY (prerequisite_id) REFERENCES class_proficiencies(id)
+    )`,
+
+    // Class Perks table
+    `CREATE TABLE IF NOT EXISTS class_perks (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL UNIQUE,
+      category TEXT NOT NULL,
+      description TEXT,
+      effect TEXT,
+      is_unique INTEGER DEFAULT 0,
+      createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+      updatedAt TEXT DEFAULT CURRENT_TIMESTAMP
+    )`,
+
+    // Class Perk Availability table
+    `CREATE TABLE IF NOT EXISTS class_perk_availability (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      class_id INTEGER NOT NULL,
+      perk_id INTEGER NOT NULL,
+      min_level INTEGER,
+      createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+      updatedAt TEXT DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (class_id) REFERENCES classes(id),
+      FOREIGN KEY (perk_id) REFERENCES class_perks(id)
+    )`,
+
+    // Skills table
+    `CREATE TABLE IF NOT EXISTS skills (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL UNIQUE,
+      description TEXT,
+      type TEXT,
+      requirements TEXT,
+      effects TEXT,
+      manaCost INTEGER,
+      cooldown INTEGER,
+      helpText TEXT,
+      discovered TEXT,
+      createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+      updatedAt TEXT DEFAULT CURRENT_TIMESTAMP
+    )`,
+
+    // Abilities table
+    `CREATE TABLE IF NOT EXISTS abilities (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL UNIQUE,
+      short_name TEXT,
+      description TEXT,
+      createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+      updatedAt TEXT DEFAULT CURRENT_TIMESTAMP
+    )`,
+
+    // Ability Scores table
+    `CREATE TABLE IF NOT EXISTS ability_scores (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      ability_id INTEGER NOT NULL,
+      score INTEGER NOT NULL,
+      effects TEXT,
+      createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+      updatedAt TEXT DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (ability_id) REFERENCES abilities(id)
+    )`,
+
+    // Saving Throws table
+    `CREATE TABLE IF NOT EXISTS saving_throws (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL UNIQUE,
+      description TEXT,
+      createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+      updatedAt TEXT DEFAULT CURRENT_TIMESTAMP
+    )`,
+
+    // Spell Modifiers table
+    `CREATE TABLE IF NOT EXISTS spell_modifiers (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL UNIQUE,
+      description TEXT,
+      createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+      updatedAt TEXT DEFAULT CURRENT_TIMESTAMP
+    )`,
+
+    // Elemental Resistances table
+    `CREATE TABLE IF NOT EXISTS elemental_resistances (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL UNIQUE,
+      description TEXT,
+      createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+      updatedAt TEXT DEFAULT CURRENT_TIMESTAMP
+    )`,
+
+    // Physical Resistances table
+    `CREATE TABLE IF NOT EXISTS physical_resistances (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL UNIQUE,
+      description TEXT,
+      createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+      updatedAt TEXT DEFAULT CURRENT_TIMESTAMP
+    )`,
+
+    // Zones table
+    `CREATE TABLE IF NOT EXISTS zones (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL UNIQUE,
+      description TEXT,
+      author TEXT,
+      difficulty INTEGER,
+      notes TEXT,
+      createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+      updatedAt TEXT DEFAULT CURRENT_TIMESTAMP
+    )`,
+
+    // Zone Areas table
+    `CREATE TABLE IF NOT EXISTS zone_areas (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      zone_id INTEGER NOT NULL,
+      name TEXT NOT NULL,
+      min_level INTEGER,
+      max_level INTEGER,
+      recommended_class TEXT,
+      createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+      updatedAt TEXT DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (zone_id) REFERENCES zones(id)
+    )`,
+
+    // Zone Connections table
+    `CREATE TABLE IF NOT EXISTS zone_connections (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      zone_id INTEGER NOT NULL,
+      connected_zone_id INTEGER NOT NULL,
+      createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+      updatedAt TEXT DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (zone_id) REFERENCES zones(id),
+      FOREIGN KEY (connected_zone_id) REFERENCES zones(id)
+    )`,
+
+    // Room Exits table
+    `CREATE TABLE IF NOT EXISTS room_exits (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      from_room_id TEXT NOT NULL,
+      to_room_id TEXT,
+      direction TEXT NOT NULL,
+      description TEXT,
+      door_name TEXT,
+      is_door INTEGER DEFAULT 0,
+      is_locked INTEGER DEFAULT 0,
+      key_vnum INTEGER,
+      createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+      updatedAt TEXT DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (from_room_id) REFERENCES rooms(id),
+      FOREIGN KEY (to_room_id) REFERENCES rooms(id)
+    )`,
+
     // Crawler status table
     `CREATE TABLE IF NOT EXISTS crawler_status (
       id INTEGER PRIMARY KEY AUTOINCREMENT,

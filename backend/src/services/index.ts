@@ -6,7 +6,7 @@
  * the HTTP layer (routes) and the data layer (repositories).
  */
 
-export { BaseService } from './BaseService';
-export { RoomService } from './RoomService';
-export { ZoneService } from './ZoneService';
-export { GenericService } from './GenericService';
+export { BaseService } from './BaseService.js';
+export { RoomService } from './RoomService.js';
+export { ZoneService } from './ZoneService.js';
+export { GenericService } from './GenericService.js';

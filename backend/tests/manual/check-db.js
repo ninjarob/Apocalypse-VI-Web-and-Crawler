@@ -1,45 +1,45 @@
 const sqlite3 = require('sqlite3');
 const path = require('path');
 
-const dbPath = path.resolve(__dirname, '../data/mud-data.db');
-const db = new sqlite3.Database(dbPath);
+const dbPath = 'c:\\work\\other\\Apocalypse VI MUD\\data\\mud-data.db';
+console.log('Database path:', dbPath);
 
-console.log('\n📊 Class Proficiency Counts:\n');
-db.all(`
-  SELECT c.name as class_name, COUNT(cp.id) as prof_count 
-  FROM classes c 
-  LEFT JOIN class_proficiencies cp ON c.id = cp.class_id 
-  GROUP BY c.id 
-  ORDER BY c.name
-`, (err, rows) => {
+const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
-    console.error('Error:', err);
-  } else {
-    rows.forEach(r => {
-      console.log(`  ${r.class_name.padEnd(15)} ${r.prof_count} proficiencies`);
-    });
-    const total = rows.reduce((sum, r) => sum + r.prof_count, 0);
-    console.log(`\n  Total: ${total} proficiencies`);
-    
-    // Check prerequisites
-    console.log('\n📋 Prerequisites Sample:\n');
-    db.all(`
-      SELECT cp.name, c.name as class_name, prereq.name as prerequisite 
-      FROM class_proficiencies cp 
-      JOIN classes c ON cp.class_id = c.id 
-      LEFT JOIN class_proficiencies prereq ON cp.prerequisite_id = prereq.id 
-      WHERE cp.prerequisite_id IS NOT NULL 
-      LIMIT 15
-    `, (err2, prereqs) => {
-      if (err2) {
-        console.error('Error:', err2);
-      } else {
-        prereqs.forEach(p => {
-          console.log(`  ${p.name} (${p.class_name}) requires ${p.prerequisite}`);
-        });
-        console.log('\n✅ Verification complete!');
-      }
-      db.close();
-    });
+    console.error('Error opening database:', err);
+    return;
   }
+  console.log('✓ Connected to database');
+  
+  // List all tables
+  db.all("SELECT name FROM sqlite_master WHERE type='table'", (err, tables) => {
+    if (err) {
+      console.error('Error listing tables:', err);
+      db.close();
+      return;
+    }
+    
+    console.log('\n📊 Database Tables:');
+    tables.forEach(t => {
+      console.log(`  ${t.name}`);
+    });
+    
+    // Check player_actions
+    if (tables.some(t => t.name === 'player_actions')) {
+      db.all("SELECT id, name FROM player_actions LIMIT 10", (err, actions) => {
+        if (err) {
+          console.error('Error querying player_actions:', err);
+        } else {
+          console.log('\n📋 Player Actions (first 10):');
+          actions.forEach(a => {
+            console.log(`  ${a.id}: ${a.name}`);
+          });
+        }
+        db.close();
+      });
+    } else {
+      console.log('\n❌ player_actions table not found');
+      db.close();
+    }
+  });
 });

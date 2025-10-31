@@ -5,6 +5,8 @@
  * Services encapsulate business logic and coordinate between repositories and external services.
  */
 
+import { BadRequestError } from '../errors/CustomErrors.js';
+
 export abstract class BaseService {
   /**
    * Sanitizes user input by trimming whitespace and removing null bytes
@@ -20,7 +22,6 @@ export abstract class BaseService {
    */
   protected validateNonEmptyString(value: string | undefined | null, fieldName: string): void {
     if (!value || value.trim() === '') {
-      const { BadRequestError } = require('../errors/CustomErrors');
       throw new BadRequestError(`${fieldName} is required`);
     }
   }
