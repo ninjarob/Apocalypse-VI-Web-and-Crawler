@@ -22,67 +22,9 @@ export class DocumentHelpTask implements CrawlerTask {
   private config: TaskConfig;
   private documentedTopics: Set<string> = new Set();
   private existingEntriesCache: Map<string, any> = new Map();
-  
-  private helpTopics: string[] = [
-    'help',
-    'newbie',
-    'getting started',
-    'tutorial',
-    'rules',
-    'combat',
-    'leveling',
-    'classes',
-    'races',
-    'skills',
-    'spells',
-    'equipment',
-    'stats',
-    'attributes',
-    'experience',
-    'death',
-    'commands',
-    'communication',
-    'groups',
-    'guilds',
-    'quests',
-    'shops',
-    'crafting',
-    'magic',
-    'world',
-    'lore',
-    'map',
-    'areas',
-    'alignment',
-    'reputation',
-    'factions',
-    'economy',
-    'housing',
-    'pets',
-    'mounts',
-    'weather',
-    'time',
-    'calendar',
-    'holidays',
-    'pvp',
-    'pk',
-    'death penalty',
-    'resurrection',
-    'corpse',
-    'looting',
-    'stealing',
-    'food',
-    'drink',
-    'hunger',
-    'thirst',
-    'poison',
-    'disease',
-    'healing',
-    'rest',
-    'meditation',
-    'training',
-    'practice',
-    'advancement'
-  ];
+  private existingCommandsCache: Set<string> = new Set();
+  private helpTopicsQueue: string[] = [];
+  private discoveredTopics: Set<string> = new Set();
 
   constructor(config: TaskConfig) {
     this.config = config;
@@ -114,6 +56,88 @@ export class DocumentHelpTask implements CrawlerTask {
   }
 
   /**
+   * Load existing player actions to avoid documenting command help
+   */
+  private async loadExistingCommandsCache(): Promise<void> {
+    try {
+      const existingActions = await this.config.api.getAllPlayerActions();
+      this.existingCommandsCache.clear();
+      
+      for (const action of existingActions) {
+        this.existingCommandsCache.add(action.name.toLowerCase());
+      }
+      
+      logger.info(`✓ Loaded ${this.existingCommandsCache.size} existing commands to skip`);
+    } catch (error) {
+      logger.warn('⚠️  Could not load existing commands cache:', error);
+    }
+  }
+
+  /**
+   * Check if a topic is a command (should be skipped)
+   */
+  private isCommand(topic: string): boolean {
+    return this.existingCommandsCache.has(topic.toLowerCase());
+  }
+
+  /**
+   * Extract help references from help text
+   * Looks for "See also:", "Related topics:", patterns and words in quotes
+   */
+  private extractHelpReferences(helpText: string): string[] {
+    const references: string[] = [];
+    const lines = helpText.split('\n');
+    
+    for (const line of lines) {
+      const trimmed = line.trim();
+      const lowerLine = trimmed.toLowerCase();
+      
+      // Look for reference indicators
+      if (lowerLine.includes('see also:') || 
+          lowerLine.includes('related:') ||
+          lowerLine.includes('related topics:') ||
+          lowerLine.includes('see:') ||
+          lowerLine.includes('more info:') ||
+          lowerLine.includes('type help')) {
+        
+        // Extract the terms after the colon or pattern
+        let termsText = '';
+        
+        if (lowerLine.includes('type help')) {
+          // Pattern like "type help <topic>"
+          const match = trimmed.match(/type\s+help\s+([a-zA-Z0-9_\s-]+)/i);
+          if (match && match[1]) {
+            termsText = match[1];
+          }
+        } else {
+          // Extract after colon
+          const colonIndex = trimmed.indexOf(':');
+          if (colonIndex > -1) {
+            termsText = trimmed.substring(colonIndex + 1).trim();
+          }
+        }
+        
+        // Split on common delimiters
+        const terms = termsText.split(/[,;]/)
+          .map(t => t.trim())
+          .filter(t => t.length > 0 && t.length < 50);
+        references.push(...terms);
+      }
+      
+      // Also look for quoted terms that might be help references
+      const quotedMatches = trimmed.matchAll(/"([^"]+)"/g);
+      for (const match of quotedMatches) {
+        const quoted = match[1].trim();
+        if (quoted.length > 2 && quoted.length < 50 && !quoted.includes(' ')) {
+          references.push(quoted);
+        }
+      }
+    }
+    
+    return [...new Set(references)]; // Remove duplicates
+  }
+
+  /**
    * Check if a help topic is already documented
    */
   private isTopicAlreadyDocumented(topic: string): boolean {
@@ -135,36 +159,91 @@ export class DocumentHelpTask implements CrawlerTask {
       await this.loadExistingEntriesCache();
       logger.info(`✓ Loaded ${this.existingEntriesCache.size} existing help entries`);
 
-      // Step 3: Document help topics
-      logger.info(`Step 3: Documenting help topics...`);
+      // Step 3: Cache existing commands to avoid documenting command help
+      logger.info('Step 3: Loading existing commands cache...');
+      await this.loadExistingCommandsCache();
+      logger.info(`✓ Loaded ${this.existingCommandsCache.size} commands to skip`);
+
+      // Step 4: Start with base "help" to discover initial references
+      logger.info('Step 4: Getting base help to discover references...');
+      const baseHelpResponse = await this.getFullHelpText('help');
+      
+      // Extract references from base help
+      const initialReferences = this.extractHelpReferences(baseHelpResponse);
+      logger.info(`✓ Found ${initialReferences.length} initial help references`);
+      
+      // Add to queue (filtering out commands)
+      for (const ref of initialReferences) {
+        if (!this.isCommand(ref) && !this.discoveredTopics.has(ref.toLowerCase())) {
+          this.helpTopicsQueue.push(ref);
+          this.discoveredTopics.add(ref.toLowerCase());
+        }
+      }
+      
+      // Store the base help itself
+      if (this.isValidHelpText(baseHelpResponse) && !this.isTopicAlreadyDocumented('help')) {
+        await this.storeHelpEntry('help', baseHelpResponse);
+        this.documentedTopics.add('help');
+        logger.info('  ✓ Documented base help topic');
+      }
+
+      // Step 5: Process help topics queue
+      logger.info(`Step 5: Processing discovered help topics...`);
       let processed = 0;
       let skipped = 0;
 
-      for (const topic of this.helpTopics) {
+      while (this.helpTopicsQueue.length > 0) {
+        const topic = this.helpTopicsQueue.shift()!;
+        
         // Skip if already documented
         if (this.isTopicAlreadyDocumented(topic)) {
           skipped++;
-          logger.info(`[${processed + skipped}/${this.helpTopics.length}] Skipping already documented: ${topic}`);
+          logger.info(`[${processed + skipped}/${this.discoveredTopics.size}] Skipping already documented: ${topic}`);
           continue;
         }
 
+        // Skip if it's a command
+        if (this.isCommand(topic)) {
+          skipped++;
+          logger.info(`[${processed + skipped}/${this.discoveredTopics.size}] Skipping command: ${topic}`);
+          continue;
+        }
+
+        // Skip if already processed this session
         if (this.documentedTopics.has(topic)) {
           continue;
         }
 
         try {
           processed++;
-          logger.info(`[${processed + skipped}/${this.helpTopics.length}] Processing: ${topic}`);
+          logger.info(`[${processed + skipped}/${this.discoveredTopics.size}] Processing: ${topic}`);
 
           // Get help text (handle pagination)
           const helpResponse = await this.getFullHelpText(topic);
 
           // Check if we got useful help text
           if (this.isValidHelpText(helpResponse)) {
+            // Extract new references from this help text
+            const newReferences = this.extractHelpReferences(helpResponse);
+            
+            // Add new references to queue (if not already discovered and not commands)
+            let addedRefs = 0;
+            for (const ref of newReferences) {
+              if (!this.isCommand(ref) && !this.discoveredTopics.has(ref.toLowerCase())) {
+                this.helpTopicsQueue.push(ref);
+                this.discoveredTopics.add(ref.toLowerCase());
+                addedRefs++;
+              }
+            }
+            
+            if (addedRefs > 0) {
+              logger.info(`  Found ${addedRefs} new help reference(s) to explore`);
+            }
+            
             // Store in database
             await this.storeHelpEntry(topic, helpResponse);
             this.documentedTopics.add(topic);
-            logger.info(`  ✓ Documented help topic`);
+            logger.info(`  ✓ Documented help topic (${this.helpTopicsQueue.length} remaining in queue)`);
           } else {
             logger.info(`  ⚠️  No help available for this topic`);
           }
@@ -192,7 +271,9 @@ export class DocumentHelpTask implements CrawlerTask {
       }
 
       logger.info('');
-      logger.info(`✅ Documented ${processed} help topics (${skipped} already documented)`);
+      logger.info(`✅ Documented ${processed} help topics (${skipped} skipped)`);
+      logger.info(`📊 Discovered ${this.discoveredTopics.size} total help references`);
+      logger.info(`📊 Queue remaining: ${this.helpTopicsQueue.length} topics`);
       logger.info(`📊 View results at: http://localhost:5173/admin (Help Entries section)`);
 
     } catch (error) {
