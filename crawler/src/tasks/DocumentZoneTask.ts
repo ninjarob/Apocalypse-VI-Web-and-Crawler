@@ -13,6 +13,10 @@ interface ExitData {
   direction: string;
   description: string;
   fromRoomName: string;
+  door_name?: string;
+  door_description?: string;
+  is_door?: boolean;
+  is_locked?: boolean;
 }
 
 /**
@@ -155,6 +159,9 @@ export class DocumentZoneTask implements CrawlerTask {
 
     // Examine room objects
     await this.examineRoomObjects(roomData);
+
+    // Detect hidden doors
+    await this.detectHiddenDoors(roomData, exitDetails);
 
     // Add unvisited exits to queue
     for (const direction of roomData.exits) {
@@ -302,6 +309,91 @@ export class DocumentZoneTask implements CrawlerTask {
   }
 
   /**
+   * Detect hidden doors by trying unlisted directions
+   */
+  private async detectHiddenDoors(roomData: RoomData, knownExits: Array<{ direction: string; description: string }>): Promise<void> {
+    // Get list of known directions
+    const knownDirections = new Set(knownExits.map(exit => exit.direction.toLowerCase()));
+    
+    // All possible directions to try
+    const allDirections = [
+      'north', 'south', 'east', 'west', 'up', 'down',
+      'northeast', 'northwest', 'southeast', 'southwest'
+    ];
+
+    // Try directions not in known exits
+    for (const direction of allDirections) {
+      if (knownDirections.has(direction)) {
+        continue; // Already known
+      }
+
+      if (this.actionsUsed >= this.maxActions) {
+        logger.warn(`⚠️  Reached max actions (${this.maxActions}), stopping hidden door detection`);
+        break;
+      }
+
+      logger.info(`🔍 Checking for hidden door: ${direction}`);
+      await this.delay(500);
+      
+      const moveResponse = await this.config.mudClient.sendAndWait(direction, 2000);
+      this.actionsUsed++;
+
+      // Check if response indicates a door
+      const doorInfo = this.parseDoorResponse(moveResponse);
+      
+      if (doorInfo.isDoor) {
+        logger.info(`🚪 Found hidden door: ${doorInfo.doorName} (${direction})`);
+        
+        // Get door description
+        let doorDescription = '';
+        if (doorInfo.doorName) {
+          await this.delay(500);
+          const lookResponse = await this.config.mudClient.sendAndWait(`look ${doorInfo.doorName}`, 2000);
+          this.actionsUsed++;
+          
+          doorDescription = this.extractDoorDescription(lookResponse);
+          logger.info(`   Door description: ${doorDescription}`);
+        }
+
+        // Add to exit data
+        this.exitData.push({
+          direction,
+          description: doorInfo.doorName || `Hidden door to the ${direction}`,
+          fromRoomName: roomData.name,
+          door_name: doorInfo.doorName,
+          door_description: doorDescription,
+          is_door: true,
+          is_locked: doorInfo.isLocked
+        });
+      } else {
+        // Not a door, but might be a valid exit we missed
+        const roomChange = this.detectRoomChange(moveResponse);
+        if (roomChange && roomChange.roomName) {
+          logger.info(`🗺️  Found unlisted exit: ${direction} -> ${roomChange.roomName}`);
+          
+          this.exitData.push({
+            direction,
+            description: roomChange.roomName,
+            fromRoomName: roomData.name,
+            is_door: false,
+            is_locked: false
+          });
+        }
+      }
+
+      // Go back if we moved
+      if (doorInfo.isDoor || this.detectRoomChange(moveResponse)) {
+        const oppositeDir = this.getOppositeDirection(direction);
+        if (oppositeDir) {
+          await this.delay(500);
+          await this.config.mudClient.sendAndWait(oppositeDir, 2000);
+          this.actionsUsed++;
+        }
+      }
+    }
+  }
+
+  /**
    * Explore the zone by visiting all rooms
    */
   private async exploreZone(): Promise<void> {
@@ -366,6 +458,97 @@ export class DocumentZoneTask implements CrawlerTask {
     };
     
     return opposites[direction.toLowerCase()] || null;
+  }
+
+  /**
+   * Parse response to detect if a door was encountered
+   */
+  private parseDoorResponse(response: string): { isDoor: boolean; doorName?: string; isLocked?: boolean } {
+    const lines = response.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+    
+    // Look for door-related messages
+    for (const line of lines) {
+      // Common door patterns
+      const doorPatterns = [
+        /(?:You see|There is)\s+(?:a|an)\s+(.+?)\s+(?:door|gate|portal|entrance)/i,
+        /(?:The|This)\s+(.+?)\s+(?:is|blocks|bars)\s+(?:the way|your path)/i,
+        /(?:A|An|The)\s+(.+?)\s+(?:door|gate|portal)\s+(?:stands|is)/i
+      ];
+
+      for (const pattern of doorPatterns) {
+        const match = line.match(pattern);
+        if (match) {
+          const doorName = match[1].trim();
+          const isLocked = line.match(/(?:locked|closed|barred)/i) !== null;
+          return { isDoor: true, doorName, isLocked };
+        }
+      }
+    }
+
+    return { isDoor: false };
+  }
+
+  /**
+   * Extract door description from look response
+   */
+  private extractDoorDescription(response: string): string {
+    const lines = response.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+    
+    // Skip the first line (usually the door name) and status lines
+    let descriptionLines: string[] = [];
+    let inDescription = false;
+    
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i];
+      
+      // Skip status lines
+      if (line.match(/^<\s*\d+H\s+\d+M\s+\d+V/)) {
+        continue;
+      }
+      
+      // Skip common game messages
+      if (line.match(/You (?:see|don't see|can't|cannot)/i)) {
+        continue;
+      }
+      
+      // Start collecting description
+      if (line.length > 10 && !line.match(/^\[/) && !line.match(/^You/)) {
+        descriptionLines.push(line);
+        inDescription = true;
+      } else if (inDescription && line.length < 5) {
+        // Short line might be end of description
+        break;
+      }
+    }
+    
+    return descriptionLines.join(' ').trim();
+  }
+
+  /**
+   * Detect if response indicates a room change (successful move)
+   */
+  private detectRoomChange(response: string): { roomName?: string } | null {
+    const lines = response.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+    
+    // Look for room name pattern (usually first line after movement)
+    for (const line of lines) {
+      // Skip movement messages
+      if (line.match(/You (?:walk|move|go|travel|head)/i)) {
+        continue;
+      }
+      
+      // Skip door messages
+      if (line.match(/(?:door|gate|portal)/i)) {
+        continue;
+      }
+      
+      // If line looks like a room name (capitalized, descriptive)
+      if (line.length > 10 && line.match(/^[A-Z]/) && !line.match(/^<\s*\d+H/)) {
+        return { roomName: line };
+      }
+    }
+    
+    return null;
   }
 
   /**
@@ -469,8 +652,10 @@ export class DocumentZoneTask implements CrawlerTask {
           to_room_id: toRoom?.id || null,
           direction: exitData.direction,
           exit_description: exitData.description,
-          is_door: false,
-          is_locked: false
+          door_name: exitData.door_name || null,
+          door_description: exitData.door_description || null,
+          is_door: exitData.is_door || false,
+          is_locked: exitData.is_locked || false
         });
         exitsSaved++;
       } catch (error) {

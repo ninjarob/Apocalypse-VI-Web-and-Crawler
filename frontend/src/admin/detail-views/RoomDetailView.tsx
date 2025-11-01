@@ -106,6 +106,8 @@ export const RoomDetailView: React.FC<RoomDetailViewProps> = ({
                   <th>Destination</th>
                   <th>Description</th>
                   <th>Door</th>
+                  <th>Door Description</th>
+                  <th>Locked</th>
                 </tr>
               </thead>
               <tbody>
@@ -150,8 +152,15 @@ export const RoomDetailView: React.FC<RoomDetailViewProps> = ({
                       {exit.is_door ? (
                         <>
                           {exit.door_name || 'Door'}
-                          {exit.is_locked ? ' (locked)' : ''}
                         </>
+                      ) : (
+                        '—'
+                      )}
+                    </td>
+                    <td>{exit.door_description || '—'}</td>
+                    <td>
+                      {exit.is_door ? (
+                        exit.is_locked ? '🔒 Yes' : '🔓 No'
                       ) : (
                         '—'
                       )}

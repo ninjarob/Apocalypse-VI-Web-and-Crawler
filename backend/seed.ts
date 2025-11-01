@@ -131,6 +131,7 @@ function createTables(callback: () => void) {
     description TEXT,
     exit_description TEXT,
     door_name TEXT,
+    door_description TEXT,
     is_door INTEGER DEFAULT 0,
     is_locked INTEGER DEFAULT 0,
     key_vnum INTEGER,

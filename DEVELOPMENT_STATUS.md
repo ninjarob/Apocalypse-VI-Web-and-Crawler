@@ -917,51 +917,70 @@ AFTER:  "AFK flag is now on."
 
 ---
 
-### ✅ Help Crawler Simplified - COMPLETE ⭐ NEW!
+### ✅ Hidden Door Detection & Frontend Updates - COMPLETE ⭐ NEW!
 
-**Status**: ✅ MASSIVE SUCCESS - Documented 554 help topics from INDEX parsing
+**Status**: ✅ IMPLEMENTED - DocumentZoneTask now detects hidden doors and frontend displays door descriptions
 
-**Results Summary** (November 1, 2025):
-- ✅ **INDEX Parsing**: Successfully parsed 554 topics from INDEX help content
-- ✅ **Complete Documentation**: Processed and documented all 554 help topics
-- ✅ **Zero Errors**: Clean execution with no failures or skipped topics
-- ✅ **Comprehensive Coverage**: Every topic listed in INDEX now has help documentation
-- ✅ **Clean Completion**: Task finished successfully with proper cleanup
+**Changes Made**:
+- ✅ **Database Schema**: Added `door_description` field to `room_exits` table in `backend/seed.ts`
+- ✅ **TypeScript Types**: Updated `RoomExit` interface in `shared/types.ts` to include `door_description?: string`
+- ✅ **Hidden Door Detection**: Added `detectHiddenDoors()` method to `DocumentZoneTask.ts` that:
+  - Tries unlisted directions after getting normal exits
+  - Parses door responses to identify hidden doors
+  - Uses `look <doorname>` to get detailed door descriptions
+  - Stores door information (name, description, locked status) in exit data
+- ✅ **Database Saving**: Updated `saveAllData()` to store `door_name`, `door_description`, `is_door`, and `is_locked` fields
+- ✅ **Frontend Table**: Added "Door Description" column to room exits table in `RoomDetailView.tsx`
+- ✅ **Database Seeded**: Successfully reseeded database with new schema
 
-**Technical Achievements**:
-- ✅ **parseIndexTopics()**: Successfully parses comma-separated topic listings from INDEX
-- ✅ **INDEX Processing**: Gets full INDEX content (5 pages) and extracts all topic names
-- ✅ **Topic Filtering**: Properly filters out commands and invalid topics
-- ✅ **Database Storage**: All 554 topics stored in help_entries table with full text
-- ✅ **Performance**: Efficient processing with proper delays and context resets
+**Hidden Door Detection Algorithm**:
+1. **Exit Collection**: Gets normal exits from "exits" command
+2. **Direction Testing**: Tries all 10 directions (north, south, east, west, up, down, diagonals) not in known exits
+3. **Door Recognition**: Parses responses for door-related messages ("You see a door", "There is a gate", etc.)
+4. **Door Description**: For detected doors, uses "look <doorname>" to get detailed descriptions
+5. **Data Storage**: Saves door information alongside exit data
 
-**Data Quality**:
-- **554 Help Topics**: Complete coverage of all INDEX-listed topics
-- **Full Help Text**: Each topic includes complete help documentation
-- **Variations Extracted**: Alternative names captured where available
-- **Clean Filtering**: Removed artifacts, status messages, and system prompts
-- **Proper Pagination**: Handled multi-page help responses correctly
+### **Frontend Display**
+- **New Column**: "Door Description" added to exits table in admin room detail view
+- **Locked Status**: Separate "Locked" column with visual indicators (🔒 Yes / 🔓 No)
+- **Door Info**: Clean separation of door name, description, and locked status
+- **Clean Layout**: Maintains existing table structure with enhanced information display
 
-**Comparison to Previous**:
-- **Before**: 2 topics (INDEX, COMMANDS) - incomplete and complex logic
-- **After**: 554 topics - comprehensive and simple approach
-- **Improvement**: 277x increase in coverage with simpler, more reliable code
+**Database Schema Update**:
+```sql
+-- Added to room_exits table
+door_description TEXT,  -- Detailed description from "look <doorname>"
+is_locked INTEGER DEFAULT 0,  -- Door locked status (already existed)
+```
 
-**Impact**:
-- **Complete Help Database**: Admin panel now has comprehensive help documentation
-- **User Experience**: Players can access help for virtually any game topic
-- **Development Value**: Rich dataset for AI training and game analysis
-- **Scalability**: Simple approach works for any MUD with INDEX-style help systems
+**Example Door Detection**:
+```
+Movement: north
+Response: "You see a large iron door blocking your path."
+→ Detected door: "large iron door"
+→ Look command: "look large iron door"
+→ Description: "This massive iron door is covered in ancient runes..."
+→ Stored: door_name="large iron door", door_description="...", is_door=true
+```
 
 **Files Modified**:
-- `crawler/src/tasks/DocumentHelpTask.ts` - Simplified to INDEX-based parsing
+- `backend/seed.ts` - Added door_description column to room_exits table
+- `shared/types.ts` - Updated RoomExit interface with door_description field
+- `crawler/src/tasks/DocumentZoneTask.ts` - Added hidden door detection logic
+- `frontend/src/admin/detail-views/RoomDetailView.tsx` - Added Door Description and Locked columns
 
-**Benefits Achieved**:
-1. **Comprehensive Coverage**: All INDEX topics documented
-2. **Simple & Reliable**: No complex discovery loops or reference chasing
-3. **Predictable Results**: Every run processes the complete topic list
-4. **Better Performance**: Direct processing vs recursive discovery
-5. **Easier Maintenance**: Clear, linear logic that's easy to understand and modify
+**Benefits**:
+1. **Complete Room Mapping**: Hidden doors no longer missed during zone exploration
+2. **Rich Door Data**: Door descriptions provide context for locked/blocked paths
+3. **Enhanced Navigation**: Players can understand door purposes and requirements
+4. **Admin Visibility**: Door information clearly displayed in room detail views
+5. **Future Integration**: Door data ready for navigation and quest systems
+
+**Testing Status**:
+- ✅ Database schema updated and seeded successfully
+- ✅ TypeScript compilation successful
+- ✅ Frontend builds without errors
+- ✅ Ready for crawler testing with hidden door detection
 
 ---
 

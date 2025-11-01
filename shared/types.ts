@@ -19,6 +19,7 @@ export interface RoomExit {
   description?: string;
   exit_description?: string;
   door_name?: string;
+  door_description?: string;
   is_door?: boolean;
   is_locked?: boolean;
   key_vnum?: number;
