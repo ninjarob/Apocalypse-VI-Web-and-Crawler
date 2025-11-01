@@ -106,7 +106,7 @@ export const roomSchema = z.object({
   updatedAt: timestampSchema
 });
 
-export const roomUpdateSchema = roomSchema.partial().required({ id: true });
+export const roomUpdateSchema = roomSchema.partial();
 
 // ============================================================================
 // Room Exit Schemas
@@ -115,7 +115,7 @@ export const roomUpdateSchema = roomSchema.partial().required({ id: true });
 const directionEnum = z.enum([
   'north', 'south', 'east', 'west',
   'northeast', 'northwest', 'southeast', 'southwest',
-  'up', 'down'
+  'up', 'down', 'in', 'out', 'enter', 'exit'
 ]);
 
 export const roomExitSchema = z.object({
@@ -126,6 +126,8 @@ export const roomExitSchema = z.object({
   description: z.string().max(500).optional().nullable(),
   exit_description: z.string().max(1000).optional().nullable(),
   door_name: z.string().max(100).optional().nullable(),
+  door_description: z.string().max(1000).optional().nullable(),
+  look_description: z.string().max(2000).optional().nullable(),
   is_door: booleanFieldSchema,
   is_locked: booleanFieldSchema,
   key_vnum: z.number().int().positive().optional().nullable(),
@@ -133,7 +135,7 @@ export const roomExitSchema = z.object({
   updatedAt: timestampSchema
 });
 
-export const roomExitUpdateSchema = roomExitSchema.partial().required({ id: true });
+export const roomExitUpdateSchema = roomExitSchema.partial();
 
 // ============================================================================
 // Room Objects Schemas

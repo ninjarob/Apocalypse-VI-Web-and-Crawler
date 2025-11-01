@@ -25,7 +25,8 @@ const config: EntityConfig = {
   table: 'rooms',
   idField: 'id',
   nameField: 'name',
-  autoIncrement: false,
+  autoIncrement: true,
+  uniqueField: 'name',
   jsonFields: ['exits', 'npcs', 'items', 'coordinates'],
   sortBy: 'lastVisited DESC'
 };

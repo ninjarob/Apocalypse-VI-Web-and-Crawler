@@ -393,41 +393,62 @@ JSON:`;
   }
 
   /**
-   * Extract significant keywords/objects from text that would be worth examining
+   * Extract significant keywords/objects from text that would be most interesting to examine
+   * RETURNS ONLY SINGLE WORDS - no multi-word phrases
    */
-  async extractKeywords(text: string, maxItems: number = 3): Promise<string[]> {
-    const prompt = `You are analyzing a room description from a MUD (text-based RPG) game. Your task is to identify ${maxItems} objects or features in this room that would be most interesting or useful to examine with a "look" command.
+  async extractKeywords(text: string, maxItems: number = 1): Promise<string[]> {
+    const prompt = `You are analyzing a room description from a MUD game. Your task is to identify the SINGLE MOST IMPORTANT object or feature to examine with "look [word]".
 
 Room Description:
 ${text}
 
-Instructions:
-- Focus on tangible objects, architectural features, or interactive elements
-- Prioritize items that might contain information, be valuable, or have special properties
-- Avoid generic words like "room", "area", "place", "ground", "wall", "floor", "ceiling"
-- Return only single words or short phrases (1-3 words max)
-- If there are no interesting objects, return an empty list
-- Be selective - only the most significant items
+CRITICAL REQUIREMENTS:
+- Return ONLY ONE single word (no spaces, no multi-word phrases)
+- Choose the most significant, examinable object in the room
+- Prefer concrete objects like: fountain, altar, statue, sign, board, door, gate, well, chest, throne
+- Avoid: generic words, directions, or multi-word names
+- If no suitable single-word object exists, return nothing
 
-Return your answer as a simple comma-separated list of ${maxItems} items maximum. Example: "fountain, altar, sign"
+Return ONLY the single word, or empty if none found. No explanations, no punctuation.
 
-Items:`;
+Single word:`;
 
     try {
-      const response = await this.getOllamaResponse(prompt, { num_predict: 100 });
+      const response = await this.getOllamaResponse(prompt, { num_predict: 20 }); // Very short response
 
-      // Parse the response - extract comma-separated items
-      const items = response
-        .split(',')
-        .map(item => item.trim().toLowerCase())
-        .filter(item => item.length > 0 && item.length <= 20) // Reasonable length limits
-        .slice(0, maxItems); // Limit to requested number
+      // Clean and validate - ensure it's a single word
+      const word = response.trim().toLowerCase();
 
-      return items;
+      // Must be single word (no spaces), reasonable length, and not generic
+      const genericWords = ['room', 'area', 'place', 'ground', 'wall', 'floor', 'ceiling', 'door', 'gate', 'north', 'south', 'east', 'west', 'up', 'down'];
+
+      if (word &&
+          word.length >= 3 &&
+          word.length <= 15 &&
+          !word.includes(' ') &&
+          !genericWords.includes(word)) {
+        logger.info(`AI selected single keyword: "${word}"`);
+        return [word];
+      } else {
+        logger.info(`AI returned invalid keyword: "${word}" - skipping`);
+        return [];
+      }
 
     } catch (error) {
       logger.error('AI keyword extraction failed:', error);
-      return []; // Return empty array on failure
+      return [];
+    }
+  }
+
+  /**
+   * General AI analysis for custom prompts
+   */
+  async analyzeWithAI(prompt: string, maxTokens: number = 200): Promise<string> {
+    try {
+      return await this.getOllamaResponse(prompt, { num_predict: maxTokens });
+    } catch (error) {
+      logger.error('AI analysis failed:', error);
+      return '';
     }
   }
 

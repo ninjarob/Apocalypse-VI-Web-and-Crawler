@@ -133,7 +133,7 @@ router.get(
 
     // Build filters from query parameters
     const filters: Record<string, any> = {};
-    const { category, ability_id, zone_id, class_id, id } = req.query;
+    const { category, ability_id, zone_id, class_id, id, from_room_id, direction } = req.query;
 
     console.log('[API] Query params:', req.query);
     console.log('[API] Type:', type);
@@ -146,6 +146,8 @@ router.get(
       filters.class_id = parseInt(class_id as string);
     }
     if (id) {filters[config.idField] = id;}
+    if (from_room_id && type === 'room_exits') {filters.from_room_id = parseInt(from_room_id as string);}
+    if (direction && type === 'room_exits') {filters.direction = direction as string;}
 
     console.log('[API] Filters:', filters);
 

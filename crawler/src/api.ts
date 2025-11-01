@@ -197,9 +197,20 @@ export class BackendAPI {
     }
   }
 
-  async getAllEntities(type: string): Promise<any[]> {
+  async getAllEntities(type: string, filters?: Record<string, any>): Promise<any[]> {
     try {
-      const response = await axios.get(`${this.baseUrl}/${type}`);
+      let url = `${this.baseUrl}/${type}`;
+      if (filters && Object.keys(filters).length > 0) {
+        const params = new URLSearchParams();
+        for (const [key, value] of Object.entries(filters)) {
+          if (value !== undefined && value !== null) {
+            params.append(key, value.toString());
+          }
+        }
+        url += `?${params.toString()}`;
+        console.log(`[BackendAPI] getAllEntities: ${url}`);
+      }
+      const response = await axios.get(url);
       this.backendAvailable = true;
       return response.data;
     } catch (error) {
