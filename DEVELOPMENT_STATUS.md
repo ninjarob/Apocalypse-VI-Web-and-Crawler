@@ -56,7 +56,116 @@
 - Admin panel shows command testing history for each player action
 - Full testResults functionality operational end-to-end
 
+### ✅ Command Output Filtering - COMPLETE ⭐ NEW!
+**Status**: ✅ IMPLEMENTED - Crawler now filters unwanted artifacts from command test results
+
+**Issue Resolved**:
+- **Problem**: testResults contained ANSI color codes, status messages, random events, and system prompts
+- **Examples**: `[1;37m<\x1B[0m \x1B[1;31m88H\x1B[0m`, "Nodri nods at you.", "[ Return to continue, (q)uit, (r)efresh, (b)ack ]", "You are hungry."
+- **Impact**: testResults data was polluted with irrelevant MUD output
+
+**Solution Implemented**:
+- ✅ **Added `filterCommandOutput()` method** to `DocumentActionsTask.ts`
+- ✅ **Filters out**:
+  - ANSI color escape sequences (`\x1B[...m`)
+  - Character status lines (`< 88H 134M 143V 5138X 901SP >`)
+  - Hunger/thirst messages (`You are hungry/thirsty`)
+  - Weather/time messages (`The sky darkens...`)
+  - Random NPC/player events (`Nodri nods at you`)
+  - System prompts (`[ Return to continue... ]`)
+  - Generic game messages
+- ✅ **Preserves**: Actual command responses and relevant output
+- ✅ **Fallback**: Returns "Command executed successfully (no output)" for empty results
+
+**Before vs After**:
+```
+BEFORE: "AFK flag is now on.\r\n\r\n\x1B[1;37m<\x1B[0m \x1B[1;31m88H\x1B[0m \x1B[1;32m134M\x1B[0m \x1B[1;33m143V\x1B[0m \x1B[1;36m5138X\x1B[0m \x1B[0;33m901SP\x1B[0m \x1B[1;37m>\x1B[0m \x1B[0m\x1B[0m\r\n\r\nNodri nods at you.\r\n\r\nThe sky darkens...\r\nYou are hungry.\r\nYou are thirsty.\r\n"
+AFTER:  "AFK flag is now on."
+```
+
+**Verification Results**:
+- ✅ **afk command**: "AFK flag is now on." (clean)
+- ✅ **agony command**: "You do not know how!" (clean)
+- ✅ **affected command**: "You are affected by:" (clean)
+- ✅ **All artifacts removed**: No ANSI codes, status messages, or random events
+- ✅ **Data integrity maintained**: Command responses preserved
+
+**Files Modified**:
+- `crawler/src/tasks/DocumentActionsTask.ts` - Added filtering logic and method call
+
+**Impact**:
+- testResults now contain clean, relevant command output only
+- Admin panel displays readable command execution history
+- Database storage is more efficient and meaningful
+- AI analysis can focus on actual command behavior
+
+### ✅ Backend Dev Script - FIXED
+**Status**: ✅ RESOLVED - npm run dev now works correctly in backend
+
+**Issue Identified**:
+- **Root Cause**: package.json scripts pointed to `dist/src/index.js` but compiled files were in `dist/backend/src/index.js`
+- **Error**: "Cannot find module 'C:\work\other\Apocalypse VI MUD\backend\dist\src\index.js'"
+- **Impact**: npm run dev failed to start backend server
+
+**Fix Applied**:
+- ✅ **Updated package.json**: Changed main field and script paths from `dist/src/` to `dist/backend/src/`
+- ✅ **Verified compilation**: TypeScript outputs to correct directory structure
+- ✅ **Tested startup**: Backend now starts successfully with proper logging
+
+**Files Modified**:
+- `backend/package.json` - Fixed main field and dev/start script paths
+
+**Result**:
+- ✅ `npm run dev` starts backend server correctly
+- ✅ Server runs on http://localhost:3002
+- ✅ All API endpoints functional
+- ✅ Database connection established
+
 ## Recent Updates (October 31, 2025)
+
+### ✅ VS Code Settings Updated - COMPLETE
+**Status**: Added instruction to discourage direct Node.js testing snippets
+
+**Change Made**:
+- ✅ **Added to .vscode/settings.json**: New instruction under `github.copilot.chat.codeGeneration.instructions`
+- ✅ **Purpose**: Prevent wasted time on direct Node.js snippets that consistently fail with module/import issues
+- ✅ **Guidance**: Use npm scripts (`npm run crawl:*`) instead for MUD connection testing
+
+**Instruction Added**:
+```
+"Avoid running direct Node.js snippets to test MUD connections. Use the npm scripts (npm run crawl:*) instead, as direct testing snippets consistently fail with module/import issues."
+```
+
+**Impact**:
+- Prevents future attempts at direct Node.js testing that have consistently failed
+- Encourages use of proper npm scripts that work reliably
+- Saves development time by avoiding known problematic approaches
+
+### ✅ Crawler Command Parsing Improvements - IN PROGRESS
+**Status**: Working on fixing combined command parsing issues
+
+**Issue Identified**:
+- **Problem**: Commands like "kickrampage", "shieldrush", "windsell", "thoughtsecond" are being processed as single commands
+- **Root Cause**: MUD's "commands" output has formatting issues where some commands lack proper spacing
+- **Examples**: `assassinateattributes autoassist autoexit autogold` appears as one token instead of separate commands
+
+**Current Approach**:
+- ✅ **Added filtering logic** to detect and skip likely combined words
+- ✅ **Pattern matching** for common command prefixes/suffixes that shouldn't be joined
+- ✅ **Length limits** to filter out obviously invalid long commands
+
+**Next Steps**:
+- Need to analyze raw MUD output to understand exact formatting issues
+- May need more sophisticated parsing to split improperly joined commands
+- Consider using AI analysis to detect valid vs invalid command combinations
+
+**Files Modified**:
+- `crawler/src/tasks/DocumentActionsTask.ts` - Enhanced command filtering logic
+
+**Impact**:
+- Reduces processing of invalid combined commands
+- Improves crawler efficiency by skipping obviously wrong commands
+- Still need to implement proper command splitting for formatting issues
 
 ### ✅ Backend Build Issues - RESOLVED
 **Status**: TypeScript compilation and runtime errors fixed - backend now runs successfully
