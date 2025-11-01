@@ -1069,7 +1069,7 @@ function seedData() {
   });
 
   // Seed class proficiencies from JSON file
-  const profDataPath = path.resolve(__dirname, 'data', 'class-proficiencies.json');
+  const profDataPath = path.resolve(__dirname, '..', 'data', 'class-proficiencies.json');
   const profData = JSON.parse(fs.readFileSync(profDataPath, 'utf-8'));
   
   // Map class names to IDs
@@ -1865,85 +1865,18 @@ function seedData() {
     checkComplete();
   });
 
-  // Seed sample player actions (will be populated by crawler)
-  const sampleActions = [
-    {
-      name: 'who',
-      type: 'command',
-      category: 'information',
-      description: `WHO
-Usage: who [minlev[-maxlev]] [-n sname] [-s] [-o] [-q] [-r] [-z]
+  // Seed sample player actions from JSON file
+  const playerActionsDataPath = path.resolve(__dirname, '..', 'data', 'player_actions.json');
+  const playerActionsData = JSON.parse(fs.readFileSync(playerActionsDataPath, 'utf-8'));
 
-Lists the people currently in the game. Some people may be invisible.
-Command-line options can be used to limit the listing. The parameters
-can be specified on the command-line in any order.
+  const insertAction = db.prepare('INSERT INTO player_actions (name, type, category, description, syntax, examples, requirements, levelRequired, relatedActions, documented, discovered, lastTested, timesUsed, successCount, failCount, testResults, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
 
-minlev, maxlev : list only people whose level is at or above minlev, and
-                 optionally, at or below maxlev
--n : list only people whose names or titles contain names
--s : list names in the short form (4 columns of names, without titles or flags)
--o : list only outlaws (i.e., people with a killer or thief flag)
--q : list only people who are on the Quest
--r : list only people who are in your room
--z : list only people in your zone
-
-Examples:
-
-  > who -c fc -s -l 20
-  List, in short form, fighters and clerics at or above level 20
-
-  > who 15-25 -o -z
-  List all outlaws between levels 15 and 25 who are in your zone.`,
-      syntax: 'who [minlev[-maxlev]] [-n sname] [-s] [-o] [-q] [-r] [-z]',
-      examples: 'who -c fc -s -l 20\nList, in short form, fighters and clerics at or above level 20\n\nwho 15-25 -o -z\nList all outlaws between levels 15 and 25 who are in your zone.',
-      documented: 1
-    },
-    {
-      name: 'look',
-      type: 'command',
-      category: 'information',
-      description: `LOOK
-Usage: look
-       look [in | at] [the] <item>
-       look <direction>
-
-Used for studying your surroundings. (Short usage: l)
-
-Examples:
-
-look (or l)
-look at room  (l room) (check out room description if you are in brief mode)
-
-> look AT the fountain  (l fountain)
-> look IN the bag    (l bag)
-> look to the south  (look south)
-
-Note: If you LOOK AT CORPSE you will not see its inventory. To see what's 
-inside a container (e.i. Corpse) use LOOK IN <OBJECT>, or EXAMINE CORPSE.
-
-See Also:  EXAMINE READ SCAN`,
-      syntax: 'look\nlook [in | at] [the] <item>\nlook <direction>',
-      examples: 'look (or l)\nlook at room\nlook AT the fountain\nlook IN the bag\nlook to the south',
-      documented: 1
-    },
-    {
-      name: 'hug',
-      type: 'social',
-      category: 'social',
-      description: 'A social action that displays a predefined message for hugging another player.',
-      syntax: 'hug [target]',
-      documented: 0
-    }
-  ];
-
-  const insertAction = db.prepare('INSERT INTO player_actions (name, type, category, description, syntax, examples, documented) VALUES (?, ?, ?, ?, ?, ?, ?)');
-
-  sampleActions.forEach(action => {
-    insertAction.run(action.name, action.type, action.category, action.description, action.syntax, action.examples, action.documented);
+  playerActionsData.forEach((action: any) => {
+    insertAction.run(action.name, action.type, action.category, action.description, action.syntax, action.examples, action.requirements, action.levelRequired, action.relatedActions, action.documented, action.discovered, action.lastTested, action.timesUsed, action.successCount, action.failCount, action.testResults ? JSON.stringify(action.testResults) : null, action.createdAt, action.updatedAt);
   });
 
   insertAction.finalize(() => {
-    console.log(`  ✓ Seeded ${sampleActions.length} sample player actions`);
+    console.log(`  ✓ Seeded ${playerActionsData.length} player actions from JSON file`);
     checkComplete();
   });
 
