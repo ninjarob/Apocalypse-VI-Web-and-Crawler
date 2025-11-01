@@ -1,6 +1,7 @@
 ﻿import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { api } from '../api';
+import { SearchBox } from '../components';
 import {
   ENTITY_CONFIGS,
   Entity,
@@ -42,6 +43,7 @@ function Admin() {
   const [selectedSpell, setSelectedSpell] = useState<Entity | null>(null);
   const [selectedClass, setSelectedClass] = useState<Entity | null>(null);
   const [classProficiencies, setClassProficiencies] = useState<any[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Reset all drilled-in states when navigating to /admin
   useEffect(() => {
@@ -56,6 +58,7 @@ function Admin() {
     setShowScores(false);
     setShowForm(false);
     setEditingEntity(null);
+    setSearchTerm(''); // Reset search when navigating
   }, [location.pathname]);
 
   useEffect(() => {
@@ -284,6 +287,29 @@ function Admin() {
     setFormData((prev: any) => ({ ...prev, [fieldName]: value }));
   };
 
+  // Filter entities based on search term
+  const getFilteredEntities = () => {
+    if (!searchTerm.trim()) {
+      return entities;
+    }
+
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    return entities.filter(entity => {
+      // Search through all visible fields
+      return selectedEntity.fields
+        .filter(field => !field.hideInTable)
+        .some(field => {
+          const value = entity[field.name];
+          if (value === null || value === undefined) return false;
+          if (typeof value === 'string') return value.toLowerCase().includes(lowerSearchTerm);
+          if (Array.isArray(value)) return value.some(v => String(v).toLowerCase().includes(lowerSearchTerm));
+          return String(value).toLowerCase().includes(lowerSearchTerm);
+        });
+    });
+  };
+
+  const filteredEntities = getFilteredEntities();
+
   return (
     <div className="page admin-page">
       <h2>Admin Panel</h2>
@@ -378,6 +404,17 @@ function Admin() {
               )}
             </div>
 
+            {/* Search Box - only show for player_actions for now */}
+            {selectedEntity.endpoint === 'player_actions' && (
+              <div className="search-container" style={{ marginBottom: '1rem' }}>
+                <SearchBox
+                  value={searchTerm}
+                  onChange={setSearchTerm}
+                  placeholder={`Search ${selectedEntity.name.toLowerCase()}...`}
+                />
+              </div>
+            )}
+
             {loading ? (
               <div className="loading">Loading...</div>
             ) : (
@@ -394,7 +431,7 @@ function Admin() {
                     </tr>
                   </thead>
                   <tbody>
-                    {entities.length === 0 ? (
+                    {filteredEntities.length === 0 ? (
                       <tr>
                         <td
                           colSpan={
@@ -403,12 +440,14 @@ function Admin() {
                           }
                           className="empty-cell"
                         >
-                          No {selectedEntity.name.toLowerCase()} found. Click "Create New"
-                          to add one.
+                          {entities.length === 0
+                            ? `No ${selectedEntity.name.toLowerCase()} found. Click "Create New" to add one.`
+                            : `No ${selectedEntity.name.toLowerCase()} found matching your search.`
+                          }
                         </td>
                       </tr>
                     ) : (
-                      entities.map(entity => (
+                      filteredEntities.map(entity => (
                         <tr
                           key={entity.id}
                           className={selectedEntity.clickable ? 'clickable-row' : ''}
