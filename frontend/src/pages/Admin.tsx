@@ -13,6 +13,7 @@ import {
   SpellDetailView,
   ClassDetailView,
   ZoneDetailView,
+  HelpEntryDetailView,
   EditFormModal,
   AbilityScoresModal,
   renderFieldValue
@@ -42,6 +43,7 @@ function Admin() {
   const [selectedItem, setSelectedItem] = useState<Entity | null>(null);
   const [selectedSpell, setSelectedSpell] = useState<Entity | null>(null);
   const [selectedClass, setSelectedClass] = useState<Entity | null>(null);
+  const [selectedHelpEntry, setSelectedHelpEntry] = useState<Entity | null>(null);
   const [classProficiencies, setClassProficiencies] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortField, setSortField] = useState<string | null>(null);
@@ -57,6 +59,7 @@ function Admin() {
     setSelectedItem(null);
     setSelectedSpell(null);
     setSelectedClass(null);
+    setSelectedHelpEntry(null);
     setShowScores(false);
     setShowForm(false);
     setEditingEntity(null);
@@ -258,7 +261,17 @@ function Admin() {
       handleSpellClick(entity);
     } else if (selectedEntity.endpoint === 'classes') {
       handleClassClick(entity);
+    } else if (selectedEntity.endpoint === 'help_entries') {
+      handleHelpEntryClick(entity);
     }
+  };
+
+  const handleHelpEntryClick = (helpEntry: Entity) => {
+    setSelectedHelpEntry(helpEntry);
+  };
+
+  const handleBackToHelpEntries = () => {
+    setSelectedHelpEntry(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -425,8 +438,15 @@ function Admin() {
         />
       )}
 
+      {selectedHelpEntry && (
+        <HelpEntryDetailView
+          selectedHelpEntry={selectedHelpEntry}
+          handleBackToHelpEntries={handleBackToHelpEntries}
+        />
+      )}
+
       {/* Main Admin Interface */}
-      {!selectedRoom && !selectedAction && !selectedNPC && !selectedItem && !selectedSpell && !selectedClass && !selectedZone && (
+      {!selectedRoom && !selectedAction && !selectedNPC && !selectedItem && !selectedSpell && !selectedClass && !selectedZone && !selectedHelpEntry && (
         <div className="admin-container">
           {/* Entity Selector */}
           <div className="entity-selector">

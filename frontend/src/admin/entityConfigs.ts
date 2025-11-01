@@ -172,10 +172,12 @@ export const ENTITY_CONFIGS: EntityConfig[] = [
   {
     name: 'Help Entries',
     endpoint: 'help_entries',
+    readOnly: true,
+    clickable: true,
     fields: [
       { name: 'name', type: 'text', label: 'Name', required: true },
-      { name: 'variations', type: 'json', label: 'Variations (JSON Array)' },
-      { name: 'helpText', type: 'textarea', label: 'Help Text', required: true }
+      { name: 'variations', type: 'json', label: 'Variations', hideInTable: true },
+      { name: 'helpText', type: 'textarea', label: 'Help Text', hideInTable: true }
     ]
   }
 ];
