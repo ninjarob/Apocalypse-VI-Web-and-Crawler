@@ -81,60 +81,42 @@ export class DocumentHelpTask implements CrawlerTask {
   }
 
   /**
-   * Extract help references from help text
-   * Looks for "See also:", "Related topics:", patterns and words in quotes
+   * Parse topic names from INDEX help content
+   * INDEX contains comma-separated lists of help topics
    */
-  private extractHelpReferences(helpText: string): string[] {
-    const references: string[] = [];
-    const lines = helpText.split('\n');
+  private parseIndexTopics(indexText: string): string[] {
+    const topics: string[] = [];
+    const lines = indexText.split('\n');
     
     for (const line of lines) {
       const trimmed = line.trim();
-      const lowerLine = trimmed.toLowerCase();
       
-      // Look for reference indicators
-      if (lowerLine.includes('see also:') || 
-          lowerLine.includes('related:') ||
-          lowerLine.includes('related topics:') ||
-          lowerLine.includes('see:') ||
-          lowerLine.includes('more info:') ||
-          lowerLine.includes('type help')) {
-        
-        // Extract the terms after the colon or pattern
-        let termsText = '';
-        
-        if (lowerLine.includes('type help')) {
-          // Pattern like "type help <topic>"
-          const match = trimmed.match(/type\s+help\s+([a-zA-Z0-9_\s-]+)/i);
-          if (match && match[1]) {
-            termsText = match[1];
-          }
-        } else {
-          // Extract after colon
-          const colonIndex = trimmed.indexOf(':');
-          if (colonIndex > -1) {
-            termsText = trimmed.substring(colonIndex + 1).trim();
-          }
-        }
-        
-        // Split on common delimiters
-        const terms = termsText.split(/[,;]/)
-          .map(t => t.trim())
-          .filter(t => t.length > 0 && t.length < 50);
-        references.push(...terms);
+      // Skip header/footer lines
+      if (trimmed.includes('MUD Help INDEX') || 
+          trimmed.includes('===') || 
+          trimmed.includes('[ ') ||
+          trimmed.includes('Return to continue') ||
+          trimmed.length < 3) {
+        continue;
       }
       
-      // Also look for quoted terms that might be help references
-      const quotedMatches = trimmed.matchAll(/"([^"]+)"/g);
-      for (const match of quotedMatches) {
-        const quoted = match[1].trim();
-        if (quoted.length > 2 && quoted.length < 50 && !quoted.includes(' ')) {
-          references.push(quoted);
-        }
-      }
+      // Split on commas and clean up
+      const parts = trimmed.split(',')
+        .map(p => p.trim())
+        .filter(p => p.length > 0 && p.length <= 50)
+        .map(p => p.replace(/[^\w\s-]/g, '').trim()) // Remove special chars
+        .filter(p => p.length >= 2 && p.length <= 25)
+        .filter(p => /^[a-zA-Z][a-zA-Z0-9\s_-]*$/.test(p)); // Valid topic name pattern
+      
+      topics.push(...parts);
     }
     
-    return [...new Set(references)]; // Remove duplicates
+    // Remove duplicates and filter out common non-topic words
+    const filteredTopics = [...new Set(topics)]
+      .filter(topic => !['the', 'and', 'for', 'with', 'from', 'into', 'this', 'that'].includes(topic.toLowerCase()))
+      .filter(topic => !this.isCommand(topic)); // Skip commands
+    
+    return filteredTopics;
   }
 
   /**
@@ -164,31 +146,23 @@ export class DocumentHelpTask implements CrawlerTask {
       await this.loadExistingCommandsCache();
       logger.info(`✓ Loaded ${this.existingCommandsCache.size} commands to skip`);
 
-      // Step 4: Start with base "help" to discover initial references
-      logger.info('Step 4: Getting base help to discover references...');
-      const baseHelpResponse = await this.getFullHelpText('help');
+      // Step 4: Get INDEX help content and parse all topics
+      logger.info('Step 4: Getting INDEX help content and parsing topics...');
+      const indexResponse = await this.getFullHelpText('INDEX');
+      const allTopics = this.parseIndexTopics(indexResponse);
       
-      // Extract references from base help
-      const initialReferences = this.extractHelpReferences(baseHelpResponse);
-      logger.info(`✓ Found ${initialReferences.length} initial help references`);
+      logger.info(`✓ Found ${allTopics.length} topics in INDEX`);
       
-      // Add to queue (filtering out commands)
-      for (const ref of initialReferences) {
-        if (!this.isCommand(ref) && !this.discoveredTopics.has(ref.toLowerCase())) {
-          this.helpTopicsQueue.push(ref);
-          this.discoveredTopics.add(ref.toLowerCase());
+      // Add all topics to the processing queue
+      for (const topic of allTopics) {
+        if (!this.discoveredTopics.has(topic.toLowerCase())) {
+          this.helpTopicsQueue.push(topic);
+          this.discoveredTopics.add(topic.toLowerCase());
         }
       }
-      
-      // Store the base help itself
-      if (this.isValidHelpText(baseHelpResponse) && !this.isTopicAlreadyDocumented('help')) {
-        await this.storeHelpEntry('help', baseHelpResponse);
-        this.documentedTopics.add('help');
-        logger.info('  ✓ Documented base help topic');
-      }
 
-      // Step 5: Process help topics queue
-      logger.info(`Step 5: Processing discovered help topics...`);
+      // Step 5: Process all topics from INDEX
+      logger.info(`Step 5: Processing help topics from INDEX...`);
       let processed = 0;
       let skipped = 0;
 
@@ -223,23 +197,6 @@ export class DocumentHelpTask implements CrawlerTask {
 
           // Check if we got useful help text
           if (this.isValidHelpText(helpResponse)) {
-            // Extract new references from this help text
-            const newReferences = this.extractHelpReferences(helpResponse);
-            
-            // Add new references to queue (if not already discovered and not commands)
-            let addedRefs = 0;
-            for (const ref of newReferences) {
-              if (!this.isCommand(ref) && !this.discoveredTopics.has(ref.toLowerCase())) {
-                this.helpTopicsQueue.push(ref);
-                this.discoveredTopics.add(ref.toLowerCase());
-                addedRefs++;
-              }
-            }
-            
-            if (addedRefs > 0) {
-              logger.info(`  Found ${addedRefs} new help reference(s) to explore`);
-            }
-            
             // Store in database
             await this.storeHelpEntry(topic, helpResponse);
             this.documentedTopics.add(topic);
@@ -272,8 +229,7 @@ export class DocumentHelpTask implements CrawlerTask {
 
       logger.info('');
       logger.info(`✅ Documented ${processed} help topics (${skipped} skipped)`);
-      logger.info(`📊 Discovered ${this.discoveredTopics.size} total help references`);
-      logger.info(`📊 Queue remaining: ${this.helpTopicsQueue.length} topics`);
+      logger.info(`📊 Total topics discovered: ${this.discoveredTopics.size}`);
       logger.info(`📊 View results at: http://localhost:5173/admin (Help Entries section)`);
 
     } catch (error) {

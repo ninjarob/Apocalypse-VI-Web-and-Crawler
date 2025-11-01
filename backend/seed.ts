@@ -787,7 +787,7 @@ function seedReferenceTables(callback: () => void) {
 
 function seedData() {
   let completed = 0;
-  const totalTasks = 22; // abilities + races + strength_scores + int_scores + wis_scores + dex_scores + con_scores + cha_scores + saving_throws + spell_modifiers + elemental_resistances + physical_resistances + class_groups + classes + proficiencies + perks + zones + zone_areas + zone_connections + rooms + room_exits + player_actions
+  const totalTasks = 23; // abilities + races + strength_scores + int_scores + wis_scores + dex_scores + con_scores + cha_scores + saving_throws + spell_modifiers + elemental_resistances + physical_resistances + class_groups + classes + proficiencies + perks + zones + zone_areas + zone_connections + rooms + room_exits + player_actions + help_entries
 
   const checkComplete = () => {
     completed++;
@@ -870,9 +870,14 @@ function seedData() {
       db.get('SELECT COUNT(*) as count FROM player_actions', (err, row: any) => {
         if (!err) {
           console.log(`  - Player Actions: ${row.count}`);
-          db.close(() => {
-            console.log('\n✓ Database connection closed');
-            process.exit(0);
+          db.get('SELECT COUNT(*) as count FROM help_entries', (err, row: any) => {
+            if (!err) {
+              console.log(`  - Help Entries: ${row.count}`);
+              db.close(() => {
+                console.log('\n✓ Database connection closed');
+                process.exit(0);
+              });
+            }
           });
         }
       });
@@ -1888,6 +1893,21 @@ function seedData() {
 
   insertAction.finalize(() => {
     console.log(`  ✓ Seeded ${playerActionsData.length} player actions from JSON file`);
+    checkComplete();
+  });
+
+  // Seed help entries from JSON file
+  const helpEntriesDataPath = path.resolve(__dirname, '..', 'data', 'help_entries.json');
+  const helpEntriesData = JSON.parse(fs.readFileSync(helpEntriesDataPath, 'utf-8'));
+
+  const insertHelpEntry = db.prepare('INSERT INTO help_entries (id, name, variations, helpText, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?)');
+
+  helpEntriesData.forEach((entry: any) => {
+    insertHelpEntry.run(entry.id, entry.name, entry.variations ? JSON.stringify(entry.variations) : null, entry.helpText, entry.createdAt, entry.updatedAt);
+  });
+
+  insertHelpEntry.finalize(() => {
+    console.log(`  ✓ Seeded ${helpEntriesData.length} help entries from JSON file`);
     checkComplete();
   });
 
