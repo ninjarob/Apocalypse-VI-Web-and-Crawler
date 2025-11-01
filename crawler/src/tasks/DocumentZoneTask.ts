@@ -65,11 +65,15 @@ export class DocumentZoneTask implements CrawlerTask {
       
       logger.info(`✓ Current zone: ${this.currentZone}`);
 
-      // Step 2: Get initial room
+      // Step 2: Get initial room data
       logger.info('Step 2: Getting initial room data...');
       await this.delay(1000);
       const lookResponse = await this.config.mudClient.sendAndWait('look', 2000);
+      this.actionsUsed++;
       await this.processCurrentRoom(lookResponse);
+      
+      // Save initial data
+      await this.saveDataIncrementally();
       
       // Step 3: Explore all reachable rooms
       logger.info(`Step 3: Beginning zone exploration (max ${this.maxActions} actions)...`);
@@ -88,6 +92,14 @@ export class DocumentZoneTask implements CrawlerTask {
       
     } catch (error) {
       logger.error('❌ Error during zone documentation:', error);
+      // Still try to save any data we collected
+      logger.info('🔄 Attempting to save collected data despite error...');
+      try {
+        await this.saveAllData();
+        logger.info('✓ Data saved successfully despite error');
+      } catch (saveError) {
+        logger.error('❌ Failed to save data:', saveError);
+      }
       throw error;
     }
   }
@@ -122,6 +134,21 @@ export class DocumentZoneTask implements CrawlerTask {
    * Process current room from "look" output
    */
   private async processCurrentRoom(lookResponse: string): Promise<void> {
+    // Check zone periodically to ensure we're still in the target zone (not every time to save actions)
+    if (this.rooms.size % 5 === 0) {
+      await this.delay(500);
+      const zoneCheck = await this.config.mudClient.sendAndWait('who -z', 2000);
+      this.actionsUsed++;
+      
+      const currentZone = this.extractCurrentZone(zoneCheck);
+      
+      if (currentZone !== this.currentZone) {
+        logger.warn(`⚠️  Zone change detected in processCurrentRoom: moved to "${currentZone}" (expected "${this.currentZone}")`);
+        // This shouldn't happen if we check before moving, but handle it gracefully
+        return;
+      }
+    }
+
     const roomData = this.parseLookOutput(lookResponse);
     
     if (!roomData.name) {
@@ -315,10 +342,11 @@ export class DocumentZoneTask implements CrawlerTask {
     // Get list of known directions
     const knownDirections = new Set(knownExits.map(exit => exit.direction.toLowerCase()));
     
-    // All possible directions to try
+    // All possible directions to try (prioritized list - basic directions first)
     const allDirections = [
       'north', 'south', 'east', 'west', 'up', 'down',
-      'northeast', 'northwest', 'southeast', 'southwest'
+      'northeast', 'northwest', 'southeast', 'southwest',
+      'in', 'out', 'enter', 'exit'
     ];
 
     // Try directions not in known exits
@@ -332,17 +360,54 @@ export class DocumentZoneTask implements CrawlerTask {
         break;
       }
 
-      logger.info(`🔍 Checking for hidden door: ${direction}`);
+      logger.info(`🔍 Checking for hidden exit/door: ${direction}`);
       await this.delay(500);
       
       const moveResponse = await this.config.mudClient.sendAndWait(direction, 2000);
       this.actionsUsed++;
+
+      // Check zone every 3 rooms to reduce action usage
+      if (this.rooms.size % 3 === 0) {
+        // Check zone first - if we moved to a different zone, document it
+        await this.delay(500);
+        const zoneCheck = await this.config.mudClient.sendAndWait('who -z', 2000);
+        this.actionsUsed++;
+        
+        const currentZone = this.extractCurrentZone(zoneCheck);
+        
+        if (currentZone !== this.currentZone) {
+          logger.info(`🌍 Zone change detected: ${direction} leads to "${currentZone}"`);
+          
+          // Document this as a zone boundary exit
+          this.exitData.push({
+            direction,
+            description: `Zone boundary to ${currentZone}`,
+            fromRoomName: roomData.name,
+            is_door: false,
+            is_locked: false
+          });
+
+          // Go back immediately
+          const oppositeDir = this.getOppositeDirection(direction);
+          if (oppositeDir) {
+            await this.delay(500);
+            await this.config.mudClient.sendAndWait(oppositeDir, 2000);
+            this.actionsUsed++;
+          }
+          continue;
+        }
+      }
 
       // Check if response indicates a door
       const doorInfo = this.parseDoorResponse(moveResponse);
       
       if (doorInfo.isDoor) {
         logger.info(`🚪 Found hidden door: ${doorInfo.doorName} (${direction})`);
+        
+        // Add this direction to the room's exits
+        if (!roomData.exits.includes(direction)) {
+          roomData.exits.push(direction);
+        }
         
         // Get door description
         let doorDescription = '';
@@ -370,6 +435,11 @@ export class DocumentZoneTask implements CrawlerTask {
         const roomChange = this.detectRoomChange(moveResponse);
         if (roomChange && roomChange.roomName) {
           logger.info(`🗺️  Found unlisted exit: ${direction} -> ${roomChange.roomName}`);
+          
+          // Add this direction to the room's exits
+          if (!roomData.exits.includes(direction)) {
+            roomData.exits.push(direction);
+          }
           
           this.exitData.push({
             direction,
@@ -433,6 +503,11 @@ export class DocumentZoneTask implements CrawlerTask {
       await this.processCurrentRoom(lookResponse);
 
       logger.info(`   Progress: ${this.rooms.size} rooms, ${this.actionsUsed}/${this.maxActions} actions`);
+      
+      // Save data every 5 rooms to avoid losing progress
+      if (this.rooms.size % 5 === 0) {
+        await this.saveDataIncrementally();
+      }
     }
 
     if (this.actionsUsed >= this.maxActions) {
@@ -454,7 +529,21 @@ export class DocumentZoneTask implements CrawlerTask {
       'northeast': 'southwest',
       'northwest': 'southeast',
       'southeast': 'northwest',
-      'southwest': 'northeast'
+      'southwest': 'northeast',
+      'in': 'out',
+      'out': 'in',
+      'enter': 'exit',
+      'exit': 'enter',
+      'leave': 'enter',
+      'climb': 'climb', // Special case - might need context
+      'jump': 'jump',   // Special case - might need context
+      'crawl': 'crawl', // Special case - might need context
+      'dive': 'surface', // Not perfect but reasonable
+      'swim': 'swim',   // Special case
+      'fly': 'land',    // Not perfect but reasonable
+      'teleport': 'teleport', // Special case
+      'portal': 'portal',     // Special case
+      'gate': 'gate'          // Special case
     };
     
     return opposites[direction.toLowerCase()] || null;
@@ -577,8 +666,19 @@ export class DocumentZoneTask implements CrawlerTask {
   }
 
   /**
-   * Save all data to database
+   * Save data incrementally to avoid losing progress
    */
+  private async saveDataIncrementally(): Promise<void> {
+    if (this.rooms.size === 0) return; // Nothing to save yet
+
+    logger.info(`💾 Saving incremental data (${this.rooms.size} rooms, ${this.exitData.length} exits)...`);
+    try {
+      await this.saveAllData();
+      logger.info('✓ Incremental save completed');
+    } catch (error) {
+      logger.error('❌ Incremental save failed:', error);
+    }
+  }
   private async saveAllData(): Promise<void> {
     let roomsSaved = 0;
     let objectsSaved = 0;

@@ -393,6 +393,45 @@ JSON:`;
   }
 
   /**
+   * Extract significant keywords/objects from text that would be worth examining
+   */
+  async extractKeywords(text: string, maxItems: number = 3): Promise<string[]> {
+    const prompt = `You are analyzing a room description from a MUD (text-based RPG) game. Your task is to identify ${maxItems} objects or features in this room that would be most interesting or useful to examine with a "look" command.
+
+Room Description:
+${text}
+
+Instructions:
+- Focus on tangible objects, architectural features, or interactive elements
+- Prioritize items that might contain information, be valuable, or have special properties
+- Avoid generic words like "room", "area", "place", "ground", "wall", "floor", "ceiling"
+- Return only single words or short phrases (1-3 words max)
+- If there are no interesting objects, return an empty list
+- Be selective - only the most significant items
+
+Return your answer as a simple comma-separated list of ${maxItems} items maximum. Example: "fountain, altar, sign"
+
+Items:`;
+
+    try {
+      const response = await this.getOllamaResponse(prompt, { num_predict: 100 });
+
+      // Parse the response - extract comma-separated items
+      const items = response
+        .split(',')
+        .map(item => item.trim().toLowerCase())
+        .filter(item => item.length > 0 && item.length <= 20) // Reasonable length limits
+        .slice(0, maxItems); // Limit to requested number
+
+      return items;
+
+    } catch (error) {
+      logger.error('AI keyword extraction failed:', error);
+      return []; // Return empty array on failure
+    }
+  }
+
+  /**
    * Ask AI to update the knowledge base with recent discoveries
    */
   async updateKnowledgeBase(currentKnowledge: string, recentDiscoveries: string): Promise<string> {

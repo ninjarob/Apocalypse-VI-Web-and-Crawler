@@ -47,25 +47,19 @@ export class RoomService extends BaseService {
    */
   async createOrUpdateRoom(roomData: Partial<Room>): Promise<Room> {
     // Validate required fields
-    this.validateNonEmptyString(roomData.id, 'Room ID');
     this.validateNonEmptyString(roomData.name, 'Room name');
 
-    // After validation, we know these are defined
-    const id = roomData.id!;
-    const name = roomData.name!;
-
-    // Check if room already exists
-    const existing = await repositories.rooms.findById(id);
+    // Check if room already exists by name (since rooms are identified by name)
+    const existing = await repositories.rooms.findByUnique(roomData.name!);
 
     if (existing) {
       // Room exists - record visit and return updated room
-      return await this.recordVisit(id);
+      return await this.recordVisit(existing.id);
     }
 
     // Room doesn't exist - create new room with visit tracking
     const newRoom: Partial<Room> = {
-      id,
-      name,
+      name: roomData.name!,
       description: roomData.description || undefined,
       exits: roomData.exits || undefined,
       npcs: roomData.npcs || undefined,

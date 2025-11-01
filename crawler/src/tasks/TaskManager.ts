@@ -55,6 +55,7 @@ export class TaskManager {
       'document-actions',
       'document-help',
       'document-zone',
+      'document-room',
       'learn-game',
       'play-game'
     ];
@@ -65,9 +66,10 @@ export class TaskManager {
    */
   static getTaskDescription(taskType: string): string {
     const descriptions: Record<string, string> = {
-      'document-actions': 'Systematically discover and document player actions (commands) with their help text',
+      'document-actions': 'Systematically discover and document player actions (commands) with help text',
       'document-help': 'Document general help topics and non-action game knowledge',
       'document-zone': 'Map all rooms in a zone with objects, exits, and descriptions',
+      'document-room': 'Thoroughly document the current room and its features',
       'learn-game': 'Iteratively improve AI knowledge base through exploration and learning',
       'play-game': 'Play the game autonomously using current AI knowledge'
     };
@@ -124,6 +126,10 @@ export class TaskManager {
       case 'document-zone': {
         const { DocumentZoneTask } = await import('./DocumentZoneTask');
         return new DocumentZoneTask(this.config);
+      }
+      case 'document-room': {
+        const { DocumentRoomTask } = await import('./DocumentRoomTask');
+        return new DocumentRoomTask(this.config);
       }
       case 'learn-game': {
         const { LearnGameTask } = await import('./LearnGameTask');

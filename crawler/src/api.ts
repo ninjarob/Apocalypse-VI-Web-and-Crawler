@@ -56,13 +56,15 @@ export class BackendAPI {
     }
   }
 
-  async saveRoom(room: Partial<Room>): Promise<void> {
+  async saveRoom(room: Partial<Room>): Promise<Room | null> {
     try {
-      await axios.post(`${this.baseUrl}/rooms`, room);
-      logger.info(`Saved room: ${room.name}`);
+      const response = await axios.post(`${this.baseUrl}/rooms`, room);
+      logger.info(`✓ Saved room: ${room.name}`);
       this.backendAvailable = true;
+      return response.data;
     } catch (error) {
       this.logBackendError('save room', error);
+      return null;
     }
   }
 
