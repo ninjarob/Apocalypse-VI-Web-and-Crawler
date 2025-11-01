@@ -1,0 +1,95 @@
+/* Detail view pages (Zone, Room, Action, etc.) */
+
+/* Common Detail View Styles */
+.zone-detail-view,
+.room-detail-view,
+.action-detail-view {
+  padding: var(--spacing-lg);
+}
+
+.zone-detail-view {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Detail Headers */
+.zone-detail-header,
+.room-detail-header,
+.action-detail-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+.zone-detail-header {
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.action-detail-header h3,
+.room-detail-header h3 {
+  margin: 0;
+  color: var(--color-primary);
+}
+
+/* Detail Info Sections */
+.zone-detail-info,
+.room-detail-info,
+.action-detail-info {
+  background-color: var(--bg-secondary);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+.zone-detail-info p,
+.room-detail-info p,
+.action-detail-info p {
+  margin: 10px 0;
+  line-height: 1.6;
+}
+
+.zone-detail-info strong,
+.room-detail-info strong,
+.action-detail-info strong {
+  color: var(--color-primary);
+  margin-right: var(--spacing-sm);
+}
+
+/* Section Headings */
+.zone-rooms-section h4,
+.room-exits-section h4,
+.action-stats-section h4 {
+  margin-bottom: 15px;
+  color: var(--color-primary);
+}
+
+/* Action Detail Specific */
+.action-description,
+.action-syntax,
+.action-examples {
+  margin-top: var(--spacing-lg);
+}
+
+.action-description pre,
+.action-syntax pre,
+.action-examples pre {
+  background-color: var(--bg-primary);
+  padding: 15px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  overflow-x: auto;
+  margin-top: var(--spacing-sm);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  line-height: 1.5;
+}
+
+.action-stats-section {
+  background-color: var(--bg-secondary);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+}

@@ -104,7 +104,7 @@ export const ENTITY_CONFIGS: EntityConfig[] = [
       { name: 'name', type: 'text', label: 'Action', required: true },
       { name: 'type', type: 'text', label: 'Type', required: true },
       { name: 'category', type: 'text', label: 'Category' },
-      { name: 'description', type: 'textarea', label: 'Description' },
+      { name: 'description', type: 'custom', label: 'Description', custom: 'truncatedDescription' },
       { name: 'syntax', type: 'textarea', label: 'Syntax', hideInTable: true },
       { name: 'examples', type: 'textarea', label: 'Examples', hideInTable: true },
       { name: 'requirements', type: 'text', label: 'Requirements', hideInTable: true },
@@ -170,19 +170,12 @@ export const ENTITY_CONFIGS: EntityConfig[] = [
     ]
   },
   {
-    name: 'Spells',
-    endpoint: 'spells',
-    readOnly: true,
-    clickable: true,
+    name: 'Help Entries',
+    endpoint: 'help_entries',
     fields: [
-      { name: 'id', type: 'number', label: 'ID', hideInTable: true },
       { name: 'name', type: 'text', label: 'Name', required: true },
-      { name: 'type', type: 'text', label: 'Type' },
-      { name: 'level', type: 'number', label: 'Level' },
-      { name: 'manaCost', type: 'number', label: 'Mana Cost' },
-      { name: 'description', type: 'textarea', label: 'Description', hideInTable: true },
-      { name: 'effects', type: 'json', label: 'Effects', hideInTable: true },
-      { name: 'rawText', type: 'textarea', label: 'Raw Text', hideInTable: true }
+      { name: 'variations', type: 'json', label: 'Variations (JSON Array)' },
+      { name: 'helpText', type: 'textarea', label: 'Help Text', required: true }
     ]
   }
 ];

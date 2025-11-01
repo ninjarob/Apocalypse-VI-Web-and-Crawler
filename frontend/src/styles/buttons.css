@@ -1,0 +1,92 @@
+/* Reusable button components */
+button {
+  border-radius: var(--radius-lg);
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: var(--bg-secondary);
+  cursor: pointer;
+  transition: border-color var(--transition-medium);
+}
+
+button:hover {
+  border-color: var(--color-primary);
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color var(--transition-fast);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.btn-secondary {
+  background-color: var(--border-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.btn-secondary:hover {
+  background-color: var(--border-color-light);
+}
+
+.btn-back {
+  padding: 8px 16px;
+  background-color: var(--border-color);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.btn-back:hover {
+  background-color: var(--border-color-light);
+}
+
+.btn-small {
+  padding: 6px 12px;
+  margin-right: 6px;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: all var(--transition-fast);
+}
+
+.btn-edit {
+  background-color: var(--color-success);
+  color: white;
+}
+
+.btn-edit:hover {
+  background-color: var(--color-success-hover);
+}
+
+.btn-delete {
+  background-color: var(--color-danger);
+  color: white;
+}
+
+.btn-delete:hover {
+  background-color: var(--color-danger-hover);
+}

@@ -332,5 +332,19 @@ export const ENTITY_CONFIG: Record<string, EntityConfig> = {
       singular: 'Room Exit',
       description: 'Exits connecting rooms'
     }
+  },
+  help_entries: {
+    table: 'help_entries',
+    idField: 'id',
+    nameField: 'name',
+    autoIncrement: true,
+    jsonFields: ['variations'],
+    sortBy: 'name',
+    display: {
+      name: 'Help Entries',
+      singular: 'Help Entry',
+      icon: '📚',
+      description: 'Help files and documentation'
+    }
   }
 };

@@ -98,6 +98,26 @@ export function renderFieldValue(
     return parts.join(' ');
   }
 
+  // Special handling for truncated description (e.g., player actions)
+  if (field.custom === 'truncatedDescription') {
+    if (!value || value === '') {
+      return <em className="text-gray">—</em>;
+    }
+    
+    const text = String(value);
+    const maxLength = 400;
+    
+    if (text.length <= maxLength) {
+      return <span>{text}</span>;
+    }
+    
+    return (
+      <span title={text}>
+        {text.substring(0, maxLength)}...
+      </span>
+    );
+  }
+
   // Special handling for item attributes custom field
   if (field.custom === 'itemAttributes') {
     const attributes: string[] = [];

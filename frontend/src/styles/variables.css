@@ -1,0 +1,50 @@
+/* CSS Variables and Theme */
+:root {
+  /* Colors */
+  --color-primary: #646cff;
+  --color-primary-hover: #535bf2;
+  --color-primary-light: #61dafb;
+  --color-success: #4caf50;
+  --color-success-hover: #45a049;
+  --color-danger: #ff4444;
+  --color-danger-hover: #cc0000;
+  --color-warning: #ff6b35;
+  --color-info: #4a90e2;
+  
+  /* Backgrounds */
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #2a2a2a;
+  --bg-hover: #3a3a3a;
+  
+  /* Borders */
+  --border-color: #333;
+  --border-color-light: #444;
+  
+  /* Text */
+  --text-primary: rgba(255, 255, 255, 0.87);
+  --text-secondary: #ddd;
+  --text-muted: #aaa;
+  --text-disabled: #888;
+  --text-very-muted: #666;
+  
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 20px;
+  --spacing-xl: 30px;
+  
+  /* Border radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  
+  /* Typography */
+  --font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --font-mono: 'Courier New', Courier, monospace;
+  
+  /* Transitions */
+  --transition-fast: 0.2s;
+  --transition-medium: 0.25s;
+}

@@ -480,6 +480,21 @@ export const zoneConnectionSchema = z.object({
 export const zoneConnectionUpdateSchema = zoneConnectionSchema.partial().required({ id: true });
 
 // ============================================================================
+// Help Entry Schemas
+// ============================================================================
+
+export const helpEntrySchema = z.object({
+  id: z.number().int().positive().optional(),
+  name: z.string().min(1).max(255),
+  variations: jsonFieldSchema,
+  helpText: z.string().min(1),
+  createdAt: timestampSchema,
+  updatedAt: timestampSchema
+});
+
+export const helpEntryUpdateSchema = helpEntrySchema.partial().required({ id: true });
+
+// ============================================================================
 // Schema Registry - Maps entity type names to their validation schemas
 // ============================================================================
 
@@ -506,7 +521,8 @@ export const CREATE_SCHEMAS: Record<string, z.ZodSchema> = {
   class_perk_availability: classPerkAvailabilitySchema,
   zones: zoneSchema,
   zone_areas: zoneAreaSchema,
-  zone_connections: zoneConnectionSchema
+  zone_connections: zoneConnectionSchema,
+  help_entries: helpEntrySchema
 };
 
 export const UPDATE_SCHEMAS: Record<string, z.ZodSchema> = {
@@ -532,7 +548,8 @@ export const UPDATE_SCHEMAS: Record<string, z.ZodSchema> = {
   class_perk_availability: classPerkAvailabilityUpdateSchema,
   zones: zoneUpdateSchema,
   zone_areas: zoneAreaUpdateSchema,
-  zone_connections: zoneConnectionUpdateSchema
+  zone_connections: zoneConnectionUpdateSchema,
+  help_entries: helpEntryUpdateSchema
 };
 
 // ============================================================================
@@ -562,3 +579,4 @@ export type ClassPerkAvailability = z.infer<typeof classPerkAvailabilitySchema>;
 export type Zone = z.infer<typeof zoneSchema>;
 export type ZoneArea = z.infer<typeof zoneAreaSchema>;
 export type ZoneConnection = z.infer<typeof zoneConnectionSchema>;
+export type HelpEntry = z.infer<typeof helpEntrySchema>;

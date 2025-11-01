@@ -44,6 +44,8 @@ function Admin() {
   const [selectedClass, setSelectedClass] = useState<Entity | null>(null);
   const [classProficiencies, setClassProficiencies] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [sortField, setSortField] = useState<string | null>(null);
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
   // Reset all drilled-in states when navigating to /admin
   useEffect(() => {
@@ -59,7 +61,15 @@ function Admin() {
     setShowForm(false);
     setEditingEntity(null);
     setSearchTerm(''); // Reset search when navigating
+    setSortField(null); // Reset sort when navigating
+    setSortDirection('asc');
   }, [location.pathname]);
+
+  // Reset sort when changing entity types
+  useEffect(() => {
+    setSortField(null);
+    setSortDirection('asc');
+  }, [selectedEntity]);
 
   useEffect(() => {
     loadEntities();
@@ -287,28 +297,67 @@ function Admin() {
     setFormData((prev: any) => ({ ...prev, [fieldName]: value }));
   };
 
-  // Filter entities based on search term
-  const getFilteredEntities = () => {
-    if (!searchTerm.trim()) {
-      return entities;
+  // Handle column sorting
+  const handleSort = (fieldName: string) => {
+    if (sortField === fieldName) {
+      // Toggle direction if clicking same field
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      // New field, default to ascending
+      setSortField(fieldName);
+      setSortDirection('asc');
     }
-
-    const lowerSearchTerm = searchTerm.toLowerCase();
-    return entities.filter(entity => {
-      // Search through all visible fields
-      return selectedEntity.fields
-        .filter(field => !field.hideInTable)
-        .some(field => {
-          const value = entity[field.name];
-          if (value === null || value === undefined) return false;
-          if (typeof value === 'string') return value.toLowerCase().includes(lowerSearchTerm);
-          if (Array.isArray(value)) return value.some(v => String(v).toLowerCase().includes(lowerSearchTerm));
-          return String(value).toLowerCase().includes(lowerSearchTerm);
-        });
-    });
   };
 
-  const filteredEntities = getFilteredEntities();
+  // Filter and sort entities
+  const getFilteredAndSortedEntities = () => {
+    let filtered = entities;
+
+    // Apply search filter
+    if (searchTerm.trim()) {
+      const lowerSearchTerm = searchTerm.toLowerCase();
+      filtered = entities.filter(entity => {
+        return selectedEntity.fields
+          .filter(field => !field.hideInTable)
+          .some(field => {
+            const value = entity[field.name];
+            if (value === null || value === undefined) return false;
+            if (typeof value === 'string') return value.toLowerCase().includes(lowerSearchTerm);
+            if (Array.isArray(value)) return value.some(v => String(v).toLowerCase().includes(lowerSearchTerm));
+            return String(value).toLowerCase().includes(lowerSearchTerm);
+          });
+      });
+    }
+
+    // Apply sorting
+    if (sortField) {
+      filtered = [...filtered].sort((a, b) => {
+        const aValue = a[sortField];
+        const bValue = b[sortField];
+
+        // Handle null/undefined values
+        if (aValue === null || aValue === undefined) return sortDirection === 'asc' ? 1 : -1;
+        if (bValue === null || bValue === undefined) return sortDirection === 'asc' ? -1 : 1;
+
+        // Handle different types
+        if (typeof aValue === 'number' && typeof bValue === 'number') {
+          return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+        }
+
+        // String comparison (case-insensitive)
+        const aStr = String(aValue).toLowerCase();
+        const bStr = String(bValue).toLowerCase();
+        
+        if (aStr < bStr) return sortDirection === 'asc' ? -1 : 1;
+        if (aStr > bStr) return sortDirection === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
+
+    return filtered;
+  };
+
+  const filteredEntities = getFilteredAndSortedEntities();
 
   return (
     <div className="page admin-page">
@@ -425,7 +474,19 @@ function Admin() {
                       {selectedEntity.fields
                         .filter(f => !f.hideInTable)
                         .map(field => (
-                          <th key={field.name}>{field.label}</th>
+                          <th 
+                            key={field.name} 
+                            onClick={() => handleSort(field.name)}
+                            className="sortable-header"
+                            style={{ cursor: 'pointer', userSelect: 'none' }}
+                          >
+                            {field.label}
+                            {sortField === field.name && (
+                              <span className="sort-indicator">
+                                {sortDirection === 'asc' ? ' ▲' : ' ▼'}
+                              </span>
+                            )}
+                          </th>
                         ))}
                       {!selectedEntity.readOnly && <th>Actions</th>}
                     </tr>

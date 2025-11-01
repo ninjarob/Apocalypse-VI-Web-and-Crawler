@@ -1,0 +1,123 @@
+/* Reusable UI components */
+
+/* Tags/Badges */
+.tag {
+  display: inline-block;
+  padding: 4px 8px;
+  background-color: var(--border-color);
+  border-radius: var(--radius-sm);
+  font-size: 0.8em;
+  margin-right: 5px;
+  margin-top: 5px;
+}
+
+.tag.hostile {
+  background-color: var(--color-danger);
+}
+
+.tag.friendly {
+  background-color: var(--color-success);
+}
+
+.tag.small {
+  font-size: 0.75em;
+  padding: 2px 6px;
+}
+
+.tag.skill {
+  background-color: var(--color-warning);
+}
+
+.tag.spell {
+  background-color: var(--color-info);
+}
+
+/* Action Type Badge */
+.action-type-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-primary);
+  color: white;
+  font-size: 0.9em;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+/* Search Box */
+.search-box {
+  width: 100%;
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  color: white;
+  font-size: 1em;
+}
+
+.search-box:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+/* Loading States */
+.loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.2em;
+  color: var(--text-disabled);
+}
+
+/* Error Messages */
+.error {
+  background-color: var(--color-danger);
+  color: white;
+  padding: 15px;
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-very-muted);
+}
+
+.empty-state .hint {
+  margin-top: 10px;
+  font-size: 0.9em;
+  color: var(--text-disabled);
+}
+
+.empty-cell {
+  text-align: center;
+  color: var(--text-very-muted);
+  padding: 40px;
+}
+
+.empty-message {
+  padding: var(--spacing-lg);
+  text-align: center;
+  color: var(--text-disabled);
+  font-style: italic;
+}
+
+/* Text Utilities */
+.text-gray {
+  color: var(--text-very-muted);
+}
+
+/* JSON Preview */
+.json-preview {
+  font-size: 0.85em;
+  background-color: var(--bg-primary);
+  padding: 2px 6px;
+  border-radius: 3px;
+  max-width: 300px;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

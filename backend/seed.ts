@@ -76,7 +76,8 @@ function seedDatabase() {
     'DROP TABLE IF EXISTS saving_throws',
     'DROP TABLE IF EXISTS spell_modifiers',
     'DROP TABLE IF EXISTS elemental_resistances',
-    'DROP TABLE IF EXISTS physical_resistances'
+    'DROP TABLE IF EXISTS physical_resistances',
+    'DROP TABLE IF EXISTS help_entries'
   ];
 
   dropTables.forEach(sql => db.run(sql));
@@ -603,6 +604,16 @@ function createTables(callback: () => void) {
     FOREIGN KEY (class_id) REFERENCES classes(id) ON DELETE CASCADE,
     FOREIGN KEY (perk_id) REFERENCES class_perks(id) ON DELETE CASCADE,
     UNIQUE(class_id, perk_id)
+  )`);
+
+  // Help Entries table - for storing help files not associated with commands
+  db.run(`CREATE TABLE help_entries (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    variations TEXT,
+    helpText TEXT NOT NULL,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
 
   // Zones table

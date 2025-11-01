@@ -277,6 +277,22 @@ export class BackendAPI {
     return this.getAllEntities('skills');
   }
 
+  async saveHelpEntry(helpEntry: {
+    name: string;
+    variations?: string[];
+    helpText: string;
+  }): Promise<void> {
+    return this.saveEntity('help_entries', helpEntry);
+  }
+
+  async getAllHelpEntries(): Promise<any[]> {
+    return this.getAllEntities('help_entries');
+  }
+
+  async updateHelpEntry(id: number, updates: any): Promise<void> {
+    return this.updateEntity('help_entries', id.toString(), updates);
+  }
+
   // ===== World Entity Methods =====
 
   async saveLore(lore: Partial<Lore>): Promise<void> {

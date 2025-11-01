@@ -337,3 +337,12 @@ export interface Relationship {
   notes?: string[];
   rawText?: string;
 }
+
+export interface HelpEntry {
+  id: number;
+  name: string;
+  variations?: string[];
+  helpText: string;
+  createdAt?: string;
+  updatedAt?: string;
+}

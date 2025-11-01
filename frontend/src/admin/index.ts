@@ -12,6 +12,7 @@ export { ItemDetailView } from './detail-views/ItemDetailView';
 export { SpellDetailView } from './detail-views/SpellDetailView';
 export { ClassDetailView } from './detail-views/ClassDetailView';
 export { ZoneDetailView } from './detail-views/ZoneDetailView';
+export { HelpEntryDetailView } from './detail-views/HelpEntryDetailView';
 
 // Modals
 export { EditFormModal } from './modals/EditFormModal';
