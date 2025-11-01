@@ -35,6 +35,7 @@ export interface TaskConfig {
  * Tasks:
  * - document-actions: Discover and document player actions (commands) with help text
  * - document-help: Document general help topics and game knowledge
+ * - document-zone: Map all rooms in a zone with objects and exits
  * - learn-game: Iteratively improve the AI's game knowledge base
  * - play-game: Play the game using current knowledge
  */
@@ -53,6 +54,7 @@ export class TaskManager {
     return [
       'document-actions',
       'document-help',
+      'document-zone',
       'learn-game',
       'play-game'
     ];
@@ -65,6 +67,7 @@ export class TaskManager {
     const descriptions: Record<string, string> = {
       'document-actions': 'Systematically discover and document player actions (commands) with their help text',
       'document-help': 'Document general help topics and non-action game knowledge',
+      'document-zone': 'Map all rooms in a zone with objects, exits, and descriptions',
       'learn-game': 'Iteratively improve AI knowledge base through exploration and learning',
       'play-game': 'Play the game autonomously using current AI knowledge'
     };
@@ -117,6 +120,10 @@ export class TaskManager {
       case 'document-help': {
         const { DocumentHelpTask } = await import('./DocumentHelpTask');
         return new DocumentHelpTask(this.config);
+      }
+      case 'document-zone': {
+        const { DocumentZoneTask } = await import('./DocumentZoneTask');
+        return new DocumentZoneTask(this.config);
       }
       case 'learn-game': {
         const { LearnGameTask } = await import('./LearnGameTask');

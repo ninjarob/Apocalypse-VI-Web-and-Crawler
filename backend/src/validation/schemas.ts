@@ -124,6 +124,7 @@ export const roomExitSchema = z.object({
   to_room_id: z.number().int().positive().optional().nullable(),
   direction: directionEnum,
   description: z.string().max(500).optional().nullable(),
+  exit_description: z.string().max(1000).optional().nullable(),
   door_name: z.string().max(100).optional().nullable(),
   is_door: booleanFieldSchema,
   is_locked: booleanFieldSchema,
@@ -133,6 +134,23 @@ export const roomExitSchema = z.object({
 });
 
 export const roomExitUpdateSchema = roomExitSchema.partial().required({ id: true });
+
+// ============================================================================
+// Room Objects Schemas
+// ============================================================================
+
+export const roomObjectSchema = z.object({
+  id: z.number().int().positive().optional(),
+  room_id: z.number().int().positive(),
+  name: z.string().min(1).max(255),
+  description: z.string().max(2000).optional().nullable(),
+  keywords: z.string().max(500).optional().nullable(),
+  is_interactive: booleanFieldSchema,
+  createdAt: timestampSchema,
+  updatedAt: timestampSchema
+});
+
+export const roomObjectUpdateSchema = roomObjectSchema.partial().required({ id: true });
 
 // ============================================================================
 // NPC Schemas
@@ -501,6 +519,7 @@ export const helpEntryUpdateSchema = helpEntrySchema.partial().required({ id: tr
 export const CREATE_SCHEMAS: Record<string, z.ZodSchema> = {
   rooms: roomSchema,
   room_exits: roomExitSchema,
+  room_objects: roomObjectSchema,
   npcs: npcSchema,
   items: itemSchema,
   spells: spellSchema,
@@ -528,6 +547,7 @@ export const CREATE_SCHEMAS: Record<string, z.ZodSchema> = {
 export const UPDATE_SCHEMAS: Record<string, z.ZodSchema> = {
   rooms: roomUpdateSchema,
   room_exits: roomExitUpdateSchema,
+  room_objects: roomObjectUpdateSchema,
   npcs: npcUpdateSchema,
   items: itemUpdateSchema,
   spells: spellUpdateSchema,
@@ -558,6 +578,7 @@ export const UPDATE_SCHEMAS: Record<string, z.ZodSchema> = {
 
 export type Room = z.infer<typeof roomSchema>;
 export type RoomExit = z.infer<typeof roomExitSchema>;
+export type RoomObject = z.infer<typeof roomObjectSchema>;
 export type NPC = z.infer<typeof npcSchema>;
 export type Item = z.infer<typeof itemSchema>;
 export type Spell = z.infer<typeof spellSchema>;

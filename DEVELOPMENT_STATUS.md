@@ -4,6 +4,140 @@
 
 ## 🎯 Current Architecture
 
+### ✅ Room Views Consolidation - COMPLETE ⭐ NEW!
+
+**Status**: ✅ IMPLEMENTED - Consolidated room list and detail views for reusability
+
+**Changes Made**:
+- ✅ **RoomsList Component**: Created reusable `RoomsList.tsx` component for displaying room tables
+- ✅ **ZoneDetailView Update**: Now uses shared `RoomsList` component instead of duplicate code
+- ✅ **RoomDetailView Enhancement**: Added `backButtonText` prop for context-aware navigation
+- ✅ **Context Tracking**: Added `roomBackContext` state to track whether viewing rooms from zone or main list
+- ✅ **Navigation Improvements**: Back button text changes based on context (e.g., "← Back to City of Midgaard")
+
+**Code Consolidation**:
+- **Before**: ~80 lines of duplicated room table code between ZoneDetailView and main room list
+- **After**: Single `RoomsList` component used by both views (~70 lines)
+- **Result**: Eliminated duplication, easier maintenance, consistent UI
+
+**Components Affected**:
+- `frontend/src/admin/detail-views/RoomsList.tsx` - NEW shared component
+- `frontend/src/admin/detail-views/ZoneDetailView.tsx` - Now uses RoomsList
+- `frontend/src/admin/detail-views/RoomDetailView.tsx` - Context-aware back button
+- `frontend/src/pages/Admin.tsx` - Added roomBackContext state tracking
+- `frontend/src/admin/index.ts` - Exported RoomsList component
+
+**Benefits**:
+1. **DRY Principle**: Single source of truth for room list rendering
+2. **Consistent UX**: Room tables look and behave identically everywhere
+3. **Easier Maintenance**: Changes to room list only need to be made once
+4. **Context-Aware Navigation**: Back button intelligently shows where you came from
+5. **Cleaner Code**: Removed ~80 lines of duplication
+
+**User Experience Improvements**:
+- When viewing room from zone: "← Back to [Zone Name]"
+- When viewing room from rooms list: "← Back to Rooms"
+- Consistent room table layout across zone view and main rooms view
+- Smooth navigation between zones → rooms → room details
+
+---
+
+### ✅ Document Zone Task - COMPLETE ⭐ NEW!
+
+**Status**: ✅ IMPLEMENTED - New crawler task to map all rooms in a zone
+
+**Changes Made**:
+- ✅ **Database Schema**: Added `room_objects` table for storing room features/objects
+- ✅ **Database Schema**: Added `exit_description` field to `room_exits` table for detailed exit info
+- ✅ **Type Definitions**: Added `RoomObject` and updated `RoomExit` interfaces in shared/types.ts
+- ✅ **Entity Config**: Added `room_objects` to entity configuration
+- ✅ **Validation Schemas**: Added `roomObjectSchema` and updated `roomExitSchema` with exit_description
+- ✅ **DocumentZoneTask**: Created new crawler task in `crawler/src/tasks/DocumentZoneTask.ts`
+- ✅ **Task Registration**: Added `document-zone` to TaskManager with npm script
+- ✅ **Database Seeded**: Applied schema changes and reseeded database
+
+**Task Functionality**:
+1. **Zone Detection**: Uses `who -z` command to determine current zone
+2. **Room Exploration**: Systematically visits all reachable rooms in the zone
+3. **Room Documentation**: Captures name, description, exits, and objects per room
+4. **Exit Details**: Runs `exits` command and stores detailed exit descriptions
+5. **Object Examination**: Uses `look <object>` to get detailed object descriptions
+6. **Room Linking**: Properly links rooms via room_exits table
+7. **Zone Boundary**: Detects zone changes and returns to avoid leaving target zone
+
+**Database Structure**:
+```sql
+-- Room objects (features, not items/NPCs)
+CREATE TABLE room_objects (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  room_id INTEGER NOT NULL,
+  name TEXT NOT NULL,
+  description TEXT,
+  keywords TEXT,
+  is_interactive INTEGER DEFAULT 0,
+  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (room_id) REFERENCES rooms(id) ON DELETE CASCADE
+);
+
+-- Updated room_exits with exit descriptions
+CREATE TABLE room_exits (
+  ...
+  exit_description TEXT,  -- NEW: Detailed exit description from "exits" command
+  ...
+);
+```
+
+**Usage**:
+```bash
+# Make sure character is in a room of the target zone
+npm run crawl:document-zone  # In crawler directory
+```
+
+**Example Output**:
+```
+look
+South Temple Street
+   The newly renovated Temple Street is wide and clean, with light colored
+bricks gleaming from being freshly washed...
+[EXITS: n s ]
+
+exits
+Obvious Exits:
+north     - North Temple Street
+south     - Market Square
+```
+
+**Data Captured**:
+- **Room**: Name, description, raw text
+- **Exits**: Direction and destination room name
+- **Exit Details**: Full exit descriptions from `exits` command
+- **Room Objects**: Non-item/NPC objects like fountains, altars, signs, statues
+- **Object Details**: Descriptions from `look <object>` command
+
+**Files Created/Modified**:
+- `backend/seed.ts` - Added room_objects table, updated room_exits
+- `shared/types.ts` - Added RoomObject and RoomExit interfaces
+- `shared/entity-config.ts` - Added room_objects entity config
+- `backend/src/validation/schemas.ts` - Added schemas for room_objects
+- `crawler/src/tasks/DocumentZoneTask.ts` - New task implementation
+- `crawler/src/tasks/TaskManager.ts` - Added document-zone task
+- `crawler/package.json` - Added npm script
+
+**Benefits**:
+1. **Complete Zone Mapping**: All rooms, exits, and objects in a zone documented
+2. **Proper Room Linking**: Exits properly link rooms together
+3. **Rich Detail**: Objects and exit descriptions add depth to room data
+4. **Zone Awareness**: Task stays within target zone boundaries
+5. **Reusable Data**: Room data can be used for navigation, guides, maps
+
+**Next Steps**:
+- Test task with character in Temple of Midgaard zone
+- Verify room objects and exits are properly captured
+- Use documented rooms for navigation and exploration features
+
+---
+
 ### ✅ Help Entries Seeding Integration - COMPLETE ⭐ NEW!
 
 **Status**: ✅ IMPLEMENTED - Help entries from crawler are now automatically seeded into database

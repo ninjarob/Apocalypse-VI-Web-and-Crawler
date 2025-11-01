@@ -1,5 +1,6 @@
 import React from 'react';
 import { Entity } from '../types';
+import { RoomsList } from './RoomsList';
 
 interface ZoneDetailViewProps {
   selectedZone: Entity;
@@ -51,70 +52,12 @@ export const ZoneDetailView: React.FC<ZoneDetailViewProps> = ({
 
       <div className="zone-rooms-section">
         <h4>Rooms in this Zone ({zoneRooms.length})</h4>
-        {zoneRooms.length === 0 ? (
-          <p className="empty-message">No rooms found in this zone.</p>
-        ) : (
-          <div className="entity-table-container">
-            <table className="entity-table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Exits</th>
-                </tr>
-              </thead>
-              <tbody>
-                {zoneRooms.map(room => {
-                  const exits = roomExits.filter(exit => exit.from_room_id === room.id);
-                  const directionOrder: { [key: string]: number } = {
-                    north: 1,
-                    northeast: 2,
-                    east: 3,
-                    southeast: 4,
-                    south: 5,
-                    southwest: 6,
-                    west: 7,
-                    northwest: 8,
-                    up: 9,
-                    down: 10
-                  };
-                  exits.sort(
-                    (a, b) =>
-                      (directionOrder[a.direction] || 99) - (directionOrder[b.direction] || 99)
-                  );
-
-                  return (
-                    <tr
-                      key={room.id}
-                      className="clickable-row"
-                      onClick={() => handleRoomClick(room)}
-                    >
-                      <td>{room.name}</td>
-                      <td>
-                        {exits.length === 0 ? (
-                          <em className="text-gray">No exits</em>
-                        ) : (
-                          <div className="room-exits">
-                            {exits.map((exit, idx) => {
-                              const toRoom = zoneRooms.find(r => r.id === exit.to_room_id);
-                              const exitText = exit.to_room_id
-                                ? `${exit.direction} → ${toRoom?.name || `Room ${exit.to_room_id}`}`
-                                : `${exit.direction} (unimplemented)`;
-                              return (
-                                <div key={idx} className="exit-item">
-                                  {exitText}
-                                </div>
-                              );
-                            })}
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
+        <RoomsList
+          rooms={zoneRooms}
+          roomExits={roomExits}
+          handleRoomClick={handleRoomClick}
+          emptyMessage="No rooms found in this zone."
+        />
       </div>
     </div>
   );

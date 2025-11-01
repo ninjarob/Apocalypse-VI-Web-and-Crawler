@@ -333,6 +333,19 @@ export const ENTITY_CONFIG: Record<string, EntityConfig> = {
       description: 'Exits connecting rooms'
     }
   },
+  room_objects: {
+    table: 'room_objects',
+    idField: 'id',
+    nameField: 'name',
+    autoIncrement: true,
+    booleanFields: ['is_interactive'],
+    sortBy: 'room_id, name',
+    display: {
+      name: 'Room Objects',
+      singular: 'Room Object',
+      description: 'Objects and features in rooms'
+    }
+  },
   help_entries: {
     table: 'help_entries',
     idField: 'id',

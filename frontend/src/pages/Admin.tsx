@@ -38,6 +38,7 @@ function Admin() {
   const [allRooms, setAllRooms] = useState<Entity[]>([]);
   const [roomExits, setRoomExits] = useState<any[]>([]);
   const [selectedRoom, setSelectedRoom] = useState<Entity | null>(null);
+  const [roomBackContext, setRoomBackContext] = useState<'rooms' | 'zone'>('rooms');
   const [selectedAction, setSelectedAction] = useState<Entity | null>(null);
   const [selectedNPC, setSelectedNPC] = useState<Entity | null>(null);
   const [selectedItem, setSelectedItem] = useState<Entity | null>(null);
@@ -169,6 +170,12 @@ function Admin() {
 
   const handleRoomClick = async (room: Entity) => {
     setSelectedRoom(room);
+    // Set context based on whether we're viewing a zone
+    if (selectedZone) {
+      setRoomBackContext('zone');
+    } else {
+      setRoomBackContext('rooms');
+    }
     // If we don't have exits loaded, load them
     if (roomExits.length === 0) {
       try {
@@ -189,6 +196,7 @@ function Admin() {
 
   const handleBackToRooms = () => {
     setSelectedRoom(null);
+    // Don't reset context here - let it persist for next room click
   };
 
   const handleActionClick = (action: Entity) => {
@@ -389,6 +397,7 @@ function Admin() {
           ENTITY_CONFIGS={ENTITY_CONFIGS}
           setSelectedEntity={setSelectedEntity}
           handleZoneClick={handleZoneClick}
+          backButtonText={roomBackContext === 'zone' ? `← Back to ${selectedZone?.name || 'Zone'}` : '← Back to Rooms'}
         />
       )}
 

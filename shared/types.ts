@@ -1,5 +1,31 @@
 // Shared TypeScript types across all projects
 
+export interface RoomObject {
+  id: number;
+  room_id: number;
+  name: string;
+  description?: string;
+  keywords?: string;
+  is_interactive?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface RoomExit {
+  id: number;
+  from_room_id: number;
+  to_room_id?: number;
+  direction: string;
+  description?: string;
+  exit_description?: string;
+  door_name?: string;
+  is_door?: boolean;
+  is_locked?: boolean;
+  key_vnum?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface Room {
   id: number;  // Changed from string to match database
   name: string;
@@ -7,6 +33,8 @@ export interface Room {
   exits: Exit[];
   npcs: string[];
   items: string[];
+  roomObjects?: RoomObject[];
+  roomExits?: RoomExit[];
   coordinates?: { x: number; y: number; z: number };
   area?: string;
   visitCount: number;

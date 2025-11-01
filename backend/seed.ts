@@ -34,6 +34,7 @@ function seedDatabase() {
     'DROP TABLE IF EXISTS crawler_status',
     'DROP TABLE IF EXISTS player_actions',
     'DROP TABLE IF EXISTS socials',
+    'DROP TABLE IF EXISTS room_objects',
     'DROP TABLE IF EXISTS room_exits',
     'DROP TABLE IF EXISTS rooms',
     'DROP TABLE IF EXISTS npcs',
@@ -128,6 +129,7 @@ function createTables(callback: () => void) {
     to_room_id INTEGER,
     direction TEXT NOT NULL,
     description TEXT,
+    exit_description TEXT,
     door_name TEXT,
     is_door INTEGER DEFAULT 0,
     is_locked INTEGER DEFAULT 0,
@@ -137,6 +139,19 @@ function createTables(callback: () => void) {
     FOREIGN KEY (from_room_id) REFERENCES rooms(id) ON DELETE CASCADE,
     FOREIGN KEY (to_room_id) REFERENCES rooms(id) ON DELETE CASCADE,
     UNIQUE(from_room_id, direction)
+  )`);
+
+  // Room objects table - stores objects/features found in rooms (not items or NPCs)
+  db.run(`CREATE TABLE room_objects (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    room_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    description TEXT,
+    keywords TEXT,
+    is_interactive INTEGER DEFAULT 0,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (room_id) REFERENCES rooms(id) ON DELETE CASCADE
   )`);
 
   // NPCs table
