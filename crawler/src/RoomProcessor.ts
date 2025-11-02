@@ -119,9 +119,13 @@ export class RoomProcessor {
     let exits: string[] = [];
     let objects = new Map<string, string>();
 
-    // First non-empty line is usually the room name
-    if (lines.length > 0) {
-      name = this.filterOutput(lines[0]);
+    // Find the room name - skip filtered lines like "You are hungry/thirsty"
+    for (let i = 0; i < lines.length; i++) {
+      const filteredLine = this.filterOutput(lines[i]);
+      if (filteredLine.length > 0) {
+        name = filteredLine;
+        break;
+      }
     }
 
     // Find description and exits

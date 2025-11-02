@@ -14,6 +14,10 @@ interface RoomLocation {
   roomData: RoomData;
   roomId?: number; // Database ID after saving
   roomKey: string; // Unique identifier based on content
+  explorationState: 'unvisited' | 'partially_explored' | 'fully_explored';
+  knownExits: Set<string>; // All exits discovered from this room
+  exploredExits: Set<string>; // Exits that have been traversed
+  unexploredExits: Set<string>; // Exits that exist but haven't been explored
 }
 
 interface ZoneExitData extends ExitData {
@@ -221,24 +225,102 @@ export class DocumentZoneTask implements CrawlerTask {
   }
 
   /**
-   * Get the nearest unexplored room from current position
+   * Update exploration state for a room after trying a direction
    */
-  private getNearestUnexploredRoom(): string | null {
-    let nearest: string | null = null;
-    let minDistance = Infinity;
+  private updateRoomExplorationState(roomKey: string, direction: string, success: boolean): void {
+    const roomLocation = this.rooms.get(roomKey);
+    if (!roomLocation) return;
 
-    // This is a simplified implementation - in a real system we'd need spatial coordinates
-    // For now, just return the first unexplored room we can find in the graph
-    for (const [roomKey, neighbors] of this.roomGraph) {
-      if (!this.visitedRooms.has(roomKey)) {
-        // Check if we can reach this room
-        const path = this.computePath(this.currentRoomKey, roomKey);
-        if (path && path.length > 0) {
-          return roomKey; // Return first reachable unexplored room
-        }
+    const dir = direction.toLowerCase();
+
+    if (success) {
+      // Successfully moved in this direction
+      roomLocation.exploredExits.add(dir);
+      roomLocation.unexploredExits.delete(dir);
+    } else {
+      // Direction was blocked or led to zone boundary
+      roomLocation.exploredExits.add(dir);
+      roomLocation.unexploredExits.delete(dir);
+    }
+
+    // Update exploration state
+    if (roomLocation.unexploredExits.size === 0 && roomLocation.knownExits.size > 0) {
+      roomLocation.explorationState = 'fully_explored';
+    } else if (roomLocation.exploredExits.size > 0) {
+      roomLocation.explorationState = 'partially_explored';
+    }
+  }
+
+  /**
+   * Find rooms with unexplored exits (prioritize these for efficient exploration)
+   */
+  private findRoomsWithUnexploredExits(): RoomLocation[] {
+    const unexploredRooms: RoomLocation[] = [];
+
+    for (const roomLocation of this.rooms.values()) {
+      if (roomLocation.explorationState !== 'fully_explored' && roomLocation.unexploredExits.size > 0) {
+        unexploredRooms.push(roomLocation);
       }
     }
-    return null;
+
+    return unexploredRooms;
+  }
+
+  /**
+   * Get exploration statistics for logging
+   */
+  private getExplorationStats(): { total: number, fullyExplored: number, partiallyExplored: number, unvisited: number, unexploredEndpoints: number } {
+    let fullyExplored = 0;
+    let partiallyExplored = 0;
+    let unvisited = 0;
+    let unexploredEndpoints = 0;
+
+    for (const roomLocation of this.rooms.values()) {
+      switch (roomLocation.explorationState) {
+        case 'fully_explored':
+          fullyExplored++;
+          break;
+        case 'partially_explored':
+          partiallyExplored++;
+          break;
+        case 'unvisited':
+          unvisited++;
+          break;
+      }
+
+      if (roomLocation.unexploredExits.size > 0) {
+        unexploredEndpoints++;
+      }
+    }
+
+    return {
+      total: this.rooms.size,
+      fullyExplored,
+      partiallyExplored,
+      unvisited,
+      unexploredEndpoints
+    };
+  }
+
+  /**
+   * Find the best room to explore next (prioritize rooms with unexplored exits)
+   */
+  private findBestRoomToExplore(): RoomLocation | null {
+    const unexploredRooms = this.findRoomsWithUnexploredExits();
+
+    if (unexploredRooms.length === 0) {
+      // No rooms with unexplored exits, find any unvisited room
+      for (const roomLocation of this.rooms.values()) {
+        if (roomLocation.explorationState === 'unvisited') {
+          return roomLocation;
+        }
+      }
+      return null; // All rooms explored
+    }
+
+    // Prioritize rooms with unexplored exits, prefer closer ones
+    // For now, return the first one (could be enhanced with distance calculation)
+    return unexploredRooms[0];
   }
 
   /**
@@ -293,7 +375,11 @@ export class DocumentZoneTask implements CrawlerTask {
       name: roomData.name,
       coordinates: { ...coordinates },
       roomData,
-      roomKey
+      roomKey,
+      explorationState: 'partially_explored', // New rooms start as partially explored
+      knownExits: new Set(exitData.map(e => e.direction.toLowerCase())),
+      exploredExits: new Set(), // No exits explored yet from this room
+      unexploredExits: new Set(exitData.map(e => e.direction.toLowerCase()))
     };
     this.rooms.set(roomKey, roomLocation);
     this.visitedRooms.add(roomKey);
@@ -575,14 +661,14 @@ export class DocumentZoneTask implements CrawlerTask {
       const directionToTry = this.findUnexploredDirection(currentExits, currentRoomKey);
 
       if (!directionToTry) {
-        // No unexplored directions from this room - try to jump to nearest unexplored
-        const nearest = this.getNearestUnexploredRoom();
-        if (nearest) {
-          logger.info(`   No local unexplored directions, jumping to nearest unexplored room`);
-          const path = this.computePath(currentRoomKey, nearest);
+        // No unexplored directions from this room - try to jump to best unexplored room
+        const bestRoom = this.findBestRoomToExplore();
+        if (bestRoom) {
+          logger.info(`   No local unexplored directions, jumping to room with unexplored exits: ${bestRoom.name}`);
+          const path = this.computePath(currentRoomKey, bestRoom.roomKey);
           if (path && path.length > 0) {
             await this.navigatePath(path);
-            // Now at nearest room, process it
+            // Now at target room, process it
             const { roomData: jumpedRoomData, exitData: jumpedExitData } = await this.roomProcessor.processRoom();
             this.actionsUsed += this.roomProcessor.getActionsUsed();
             if (!jumpedRoomData.name) {
@@ -600,7 +686,7 @@ export class DocumentZoneTask implements CrawlerTask {
               continue;
             }
           } else {
-            logger.info(`   No path to nearest unexplored, backtracking...`);
+            logger.info(`   No path to target room, backtracking...`);
           }
         } else {
           logger.info(`   No unexplored rooms found, backtracking...`);
@@ -641,6 +727,9 @@ export class DocumentZoneTask implements CrawlerTask {
       }
       this.exploredDirections.get(currentRoomKey)!.add(directionToTry.toLowerCase());
 
+      // Update room exploration state
+      this.updateRoomExplorationState(currentRoomKey, directionToTry, false); // Initially mark as explored (will be updated if successful)
+
       // Check if move was blocked
       if (moveResponse.includes("Alas, you cannot go that way")) {
         logger.info(`   ❌ Direction ${directionToTry} blocked`);
@@ -671,6 +760,9 @@ export class DocumentZoneTask implements CrawlerTask {
           is_door: false,
           is_zone_exit: true
         });
+
+        // Update exploration state for zone boundary
+        this.updateRoomExplorationState(currentRoomKey, directionToTry, false);
 
         // Go back
         const oppositeDir = this.getOppositeDirection(directionToTry);
@@ -703,6 +795,9 @@ export class DocumentZoneTask implements CrawlerTask {
       const newRoomKey = this.getRoomKey(newRoomData);
       await this.processAndSaveRoom(newRoomData, newExitData, newCoordinates);
 
+      // Update exploration state for successful move
+      this.updateRoomExplorationState(currentRoomKey, directionToTry, true);
+
       // Add to exploration stack
       this.explorationStack.push({
         roomKey: newRoomKey,
@@ -710,6 +805,12 @@ export class DocumentZoneTask implements CrawlerTask {
       });
 
       logger.info(`   Progress: ${this.rooms.size} rooms, ${this.actionsUsed}/${this.maxActions} actions`);
+      
+      // Log exploration statistics periodically
+      if (this.actionsUsed % 50 === 0) {
+        const stats = this.getExplorationStats();
+        logger.info(`   📊 Exploration: ${stats.fullyExplored} fully explored, ${stats.partiallyExplored} partial, ${stats.unvisited} unvisited, ${stats.unexploredEndpoints} unexplored endpoints`);
+      }
     }
 
     if (this.actionsUsed >= this.maxActions) {
