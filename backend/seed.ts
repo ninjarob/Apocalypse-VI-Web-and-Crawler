@@ -130,6 +130,7 @@ function createTables(callback: () => void) {
     direction TEXT NOT NULL,
     description TEXT,
     exit_description TEXT,
+    look_description TEXT,
     door_name TEXT,
     door_description TEXT,
     is_door INTEGER DEFAULT 0,
@@ -804,7 +805,7 @@ function seedReferenceTables(callback: () => void) {
 
 function seedData() {
   let completed = 0;
-  const totalTasks = 23; // abilities + races + strength_scores + int_scores + wis_scores + dex_scores + con_scores + cha_scores + saving_throws + spell_modifiers + elemental_resistances + physical_resistances + class_groups + classes + proficiencies + perks + zones + zone_areas + zone_connections + rooms + room_exits + player_actions + help_entries
+  const totalTasks = 21; // abilities + races + strength_scores + int_scores + wis_scores + dex_scores + con_scores + cha_scores + saving_throws + spell_modifiers + elemental_resistances + physical_resistances + class_groups + classes + proficiencies + perks + zones + zone_areas + zone_connections + player_actions + help_entries (REMOVED: rooms + room_exits)
 
   const checkComplete = () => {
     completed++;
@@ -876,13 +877,9 @@ function seedData() {
         if (!err) {console.log(`  - Zone Connections: ${row.count}`);}
       });
 
-      db.get('SELECT COUNT(*) as count FROM rooms', (err, row: any) => {
-        if (!err) {console.log(`  - Rooms: ${row.count}`);}
-      });
-
-      db.get('SELECT COUNT(*) as count FROM room_exits', (err, row: any) => {
-        if (!err) {console.log(`  - Room Exits: ${row.count}`);}
-      });
+      // Rooms are no longer seeded - they will be discovered by the crawler
+      // db.get('SELECT COUNT(*) as count FROM rooms', ...);
+      // db.get('SELECT COUNT(*) as count FROM room_exits', ...);
 
       db.get('SELECT COUNT(*) as count FROM player_actions', (err, row: any) => {
         if (!err) {
@@ -1841,62 +1838,15 @@ function seedData() {
     checkComplete();
   });
 
+  // REMOVED: Room and room exit seeding
+  // Rooms will be discovered and saved by the crawler with coordinates
+  /*
   // Seed sample rooms from Midgaard City
   const sampleRooms = [
-    { id: 1, zone_id: 2, name: 'Market Square', description: 'You are standing on the Market Square, the famous Square of Midgaard. It is said that the North, East, South, and West all meet here. This square is the busiest in the realms for Midgaard is the center of the known civilization. People from all lands can be found wandering here. At the four corners can be found tall poles with magical lanterns, provided by the Mage\'s Guild, that glow with a bright light when it gets dark. A large fountain of an angel pouring water stands in the center of the square. Roads lead in every direction, north to the temple square, south to the bazaar, east and west bound is the main street.', terrain: 'city', flags: null },
-    { id: 2, zone_id: 2, name: 'South Temple Street', description: 'The newly renovated Temple Street is wide and clean, with light colored bricks gleaming from being freshly washed. Nobles, common folk and adventurers alike move about in a steady stream as they make their way through town. The Market Square to the south is a common destination, which locals consider to be the heart of the city.', terrain: 'city', flags: null },
-    { id: 3, zone_id: 2, name: 'North Temple Street', description: 'The historic Temple of Midgaard entrance is to the north and past that, the Grand Gates of Midgaard which controls passage into and out of the main city. To the west is a room housing the Social Boards while to the east is an entrance to the Old Grunting Boar Inn.', terrain: 'city', flags: null },
-    { id: 4, zone_id: 2, name: 'Grand Gates of the Temple of Midgaard', description: 'You stand at the base of the huge mound upon which the Temple of Midgaard is built within the Grand Gates of the Temple. The gates are gargantuan in size and are made of solid gold with ancient designs of Gods, Giants, Warriors, and peasants. Steps hewn from huge marble blocks lead the way up the mound to the actual temple itself while south beyond the gates is what is commonly known as the Temple Square. Braziers of eternal flame built upon the posts of the foundation of the temple wall brightly light up the sky, even in the day.', terrain: 'city', flags: null },
-    { id: 5, zone_id: 2, name: 'The Temple of Midgaard', description: 'Entering the great halls of the Temple of Midgaard is awe-inspiring, as you stand at an ornate entryway spanning nearly thirty feet across. Huge copper braziers at each temple corner bathes the cool, marble walls in a fiery glow. Elaborate tapestries bearing the crests and symbols of nobles who helped established the Temple long ago hang gracefully from the walls and ceilings. A set of large stone steps inside the temple lead up to an altar dedicated to the heroes and patrons of this age. The entire temple is elevated prominently above all the other buildings of Midgaard, reinforcing its position as the pinnacle landmark within the city.', terrain: 'inside', flags: null }
+    { id: 1, zone_id: 2, name: 'Market Square', description: '...', terrain: 'city', flags: null },
+    ...
   ];
-
-  const insertRoom = db.prepare('INSERT INTO rooms (id, zone_id, name, description, terrain, flags) VALUES (?, ?, ?, ?, ?, ?)');
-
-  sampleRooms.forEach(room => {
-    insertRoom.run(room.id, room.zone_id, room.name, room.description, room.terrain, room.flags);
-  });
-
-  insertRoom.finalize(() => {
-    console.log(`  ✓ Seeded ${sampleRooms.length} sample rooms`);
-    checkComplete();
-  });
-
-  // Seed room exits (directional connections between rooms)
-  const roomExits = [
-    // Market Square (1) exits
-    { from_room_id: 1, to_room_id: 2, direction: 'north', description: 'You see the southern temple square.' },
-    { from_room_id: 1, to_room_id: null, direction: 'south', description: 'You see the bazaar.' },
-    { from_room_id: 1, to_room_id: null, direction: 'east', description: 'You see the main street.' },
-    { from_room_id: 1, to_room_id: null, direction: 'west', description: 'You see the main street.' },
-    // South Temple Street (2) exits
-    { from_room_id: 2, to_room_id: 3, direction: 'north', description: null },
-    { from_room_id: 2, to_room_id: 1, direction: 'south', description: null },
-    // North Temple Street (3) exits
-    { from_room_id: 3, to_room_id: 4, direction: 'north', description: null },
-    { from_room_id: 3, to_room_id: 2, direction: 'south', description: null },
-    { from_room_id: 3, to_room_id: null, direction: 'east', description: 'You see the Old Grunting Boar Inn entrance.' },
-    { from_room_id: 3, to_room_id: null, direction: 'west', description: 'You see the Social Boards room.' },
-    // Grand Gates (4) exits
-    { from_room_id: 4, to_room_id: 5, direction: 'north', description: null },
-    { from_room_id: 4, to_room_id: 3, direction: 'south', description: null },
-    // Temple of Midgaard (5) exits
-    { from_room_id: 5, to_room_id: null, direction: 'north', description: null },
-    { from_room_id: 5, to_room_id: null, direction: 'east', description: null },
-    { from_room_id: 5, to_room_id: 4, direction: 'south', description: null },
-    { from_room_id: 5, to_room_id: null, direction: 'west', description: null },
-    { from_room_id: 5, to_room_id: null, direction: 'down', description: null }
-  ];
-
-  const insertRoomExit = db.prepare('INSERT INTO room_exits (from_room_id, to_room_id, direction, description) VALUES (?, ?, ?, ?)');
-
-  roomExits.forEach(exit => {
-    insertRoomExit.run(exit.from_room_id, exit.to_room_id, exit.direction, exit.description);
-  });
-
-  insertRoomExit.finalize(() => {
-    console.log(`  ✓ Seeded ${roomExits.length} room exits`);
-    checkComplete();
-  });
+  */
 
   // Seed sample player actions from JSON file
   const playerActionsDataPath = path.resolve(__dirname, '..', 'data', 'player_actions.json');
