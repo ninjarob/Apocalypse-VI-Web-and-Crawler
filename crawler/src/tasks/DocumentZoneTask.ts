@@ -13,6 +13,7 @@ interface RoomLocation {
   coordinates: Coordinates;
   roomData: RoomData;
   roomId?: number; // Database ID after saving
+  roomKey: string; // Unique identifier based on content
 }
 
 interface ZoneExitData extends ExitData {
@@ -28,7 +29,7 @@ interface ZoneExitData extends ExitData {
  * This task:
  * 1. Verifies character is in the target zone with "who -z"
  * 2. Explores all rooms in the zone systematically
- * 3. Uses coordinates to identify rooms uniquely (handles duplicate names)
+ * 3. Uses room content (name + description) to uniquely identify rooms
  * 4. Saves each room immediately after processing
  * 5. Links rooms together properly with exits
  */
@@ -39,14 +40,19 @@ export class DocumentZoneTask implements CrawlerTask {
   private config: TaskConfig;
   private currentZone: string = '';
   private zoneId: number = 0;
-  private rooms: Map<string, RoomLocation> = new Map(); // Key: "x,y,z" coordinate string
+  private rooms: Map<string, RoomLocation> = new Map(); // Key: room content hash
   private exitData: ZoneExitData[] = [];
-  private visitedCoordinates: Set<string> = new Set(); // Set of "x,y,z" strings
+  private visitedRooms: Set<string> = new Set(); // Set of room content hashes
+  private exploredDirections: Map<string, Set<string>> = new Map(); // roomKey -> set of tried directions
+  private explorationStack: Array<{ roomKey: string, directionTaken: string }> = []; // Path for backtracking
   private currentRoomName: string = '';
+  private currentRoomDescription: string = '';
   private currentCoordinates: Coordinates = { x: 0, y: 0, z: 0 };
+  private currentRoomKey: string = '';
   private actionsUsed: number = 0;
   private maxActions: number;
   private roomProcessor: RoomProcessor;
+  private roomGraph: Map<string, Map<string, string>> = new Map(); // roomKey -> direction -> targetRoomKey
 
   constructor(config: TaskConfig) {
     this.config = config;
@@ -115,6 +121,156 @@ export class DocumentZoneTask implements CrawlerTask {
   }
 
   /**
+   * Generate a unique key for a room based on its content
+   */
+  private getRoomKey(roomData: RoomData): string {
+    const content = `${roomData.name}\n${roomData.description}`.toLowerCase().trim();
+    // Simple hash function for content-based uniqueness
+    let hash = 0;
+    for (let i = 0; i < content.length; i++) {
+      const char = content.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32-bit integer
+    }
+    return hash.toString();
+  }
+
+  /**
+   * Create a minimal RoomData object for key generation
+   */
+  private createMinimalRoomData(name: string, description: string): RoomData {
+    return {
+      name,
+      description,
+      exits: [],
+      objects: new Map(),
+      zone: this.currentZone || ''
+    };
+  }
+
+  /**
+   * Navigate to a specific room by its key (for backtracking)
+   */
+  private async navigateToRoom(targetRoomKey: string): Promise<void> {
+    // For now, assume we're already at the right location due to backtracking
+    // In a more sophisticated implementation, we could calculate a path back
+    // This is a placeholder - the current backtracking logic should keep us in the right place
+    logger.info(`   Navigation to room ${targetRoomKey} assumed to be handled by backtracking`);
+  }
+
+  /**
+   * Update current room information after movement
+   */
+  private async updateCurrentRoomInfo(): Promise<void> {
+    await this.delay(250);
+    const lookResponse = await this.config.mudClient.sendAndWait('look', 1000);
+    this.actionsUsed++;
+
+    const roomData = this.roomProcessor['parseLookOutput'](lookResponse);
+    this.currentRoomName = roomData.name;
+    this.currentRoomDescription = roomData.description;
+    this.currentRoomKey = this.getRoomKey(roomData);
+  }
+
+  /**
+   * Find an unexplored direction from the current room
+   */
+  private findUnexploredDirection(exits: Array<{ direction: string; description: string }>, fromRoomKey: string): string | null {
+    const triedDirections = this.exploredDirections.get(fromRoomKey) || new Set();
+
+    // Try directions in preferred order
+    const preferredOrder = ['north', 'east', 'south', 'west', 'up', 'down'];
+
+    for (const direction of preferredOrder) {
+      const exit = exits.find(e => e.direction.toLowerCase() === direction);
+      if (exit && !triedDirections.has(direction)) {
+        // Check if target room has been visited
+        const targetRoomKey = this.getTargetRoomKey(fromRoomKey, direction);
+        if (!targetRoomKey || !this.visitedRooms.has(targetRoomKey)) {
+          return direction;
+        }
+      }
+    }
+
+    // If no preferred direction, try any unexplored direction
+    for (const exit of exits) {
+      if (!triedDirections.has(exit.direction.toLowerCase())) {
+        const targetRoomKey = this.getTargetRoomKey(fromRoomKey, exit.direction);
+        if (!targetRoomKey || !this.visitedRooms.has(targetRoomKey)) {
+          return exit.direction;
+        }
+      }
+    }
+
+    return null; // No unexplored directions
+  }
+
+  /**
+   * Get the room key for a target direction from a source room
+   */
+  private getTargetRoomKey(fromRoomKey: string, direction: string): string | null {
+    const neighbors = this.roomGraph.get(fromRoomKey);
+    if (neighbors) {
+      for (const [dir, targetKey] of neighbors) {
+        if (dir === direction) {
+          return targetKey;
+        }
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Get the nearest unexplored room from current position
+   */
+  private getNearestUnexploredRoom(): string | null {
+    let nearest: string | null = null;
+    let minDistance = Infinity;
+
+    // This is a simplified implementation - in a real system we'd need spatial coordinates
+    // For now, just return the first unexplored room we can find in the graph
+    for (const [roomKey, neighbors] of this.roomGraph) {
+      if (!this.visitedRooms.has(roomKey)) {
+        // Check if we can reach this room
+        const path = this.computePath(this.currentRoomKey, roomKey);
+        if (path && path.length > 0) {
+          return roomKey; // Return first reachable unexplored room
+        }
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Compute path from one room to another using BFS
+   */
+  private computePath(fromRoomKey: string, toRoomKey: string): string[] | null {
+    if (fromRoomKey === toRoomKey) return [];
+
+    const queue: Array<{ roomKey: string, path: string[] }> = [{ roomKey: fromRoomKey, path: [] }];
+    const visited = new Set<string>();
+    visited.add(fromRoomKey);
+
+    while (queue.length > 0) {
+      const current = queue.shift()!;
+      const neighbors = this.roomGraph.get(current.roomKey);
+      if (neighbors) {
+        for (const [dir, neighborKey] of neighbors) {
+          if (!visited.has(neighborKey)) {
+            visited.add(neighborKey);
+            const newPath = [...current.path, dir];
+            if (neighborKey === toRoomKey) {
+              return newPath;
+            }
+            queue.push({ roomKey: neighborKey, path: newPath });
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  /**
    * Process a room and save it immediately to the database
    */
   private async processAndSaveRoom(
@@ -122,11 +278,11 @@ export class DocumentZoneTask implements CrawlerTask {
     exitData: ExitData[], 
     coordinates: Coordinates
   ): Promise<void> {
-    const coordKey = this.getCoordinateKey(coordinates);
+    const roomKey = this.getRoomKey(roomData);
     
-    // Check if we've already been here
-    if (this.visitedCoordinates.has(coordKey)) {
-      logger.info(`⏭️  Already visited room at (${coordinates.x}, ${coordinates.y}, ${coordinates.z})`);
+    // Check if we've already been to this room (same content)
+    if (this.visitedRooms.has(roomKey)) {
+      logger.info(`⏭️  Already visited room: ${roomData.name}`);
       return;
     }
     
@@ -136,12 +292,14 @@ export class DocumentZoneTask implements CrawlerTask {
     const roomLocation: RoomLocation = {
       name: roomData.name,
       coordinates: { ...coordinates },
-      roomData
+      roomData,
+      roomKey
     };
-    this.rooms.set(coordKey, roomLocation);
-    this.visitedCoordinates.add(coordKey);
+    this.rooms.set(roomKey, roomLocation);
+    this.visitedRooms.add(roomKey);
     this.currentRoomName = roomData.name;
     this.currentCoordinates = { ...coordinates };
+    this.currentRoomKey = roomKey;
     
     // Convert and store exit data with coordinates
     for (const exit of exitData) {
@@ -152,6 +310,13 @@ export class DocumentZoneTask implements CrawlerTask {
         fromCoordinates: { ...coordinates },
         toCoordinates
       });
+
+      // Build room graph for pathfinding (using room keys)
+      if (!this.roomGraph.has(roomKey)) {
+        this.roomGraph.set(roomKey, new Map());
+      }
+      // Note: We can't build the graph yet since we don't know target room keys
+      // This will be updated when we actually move to connected rooms
     }
     
     // Save room and exits to database immediately
@@ -380,74 +545,109 @@ export class DocumentZoneTask implements CrawlerTask {
   }
 
   /**
-   * Explore the zone by visiting all rooms
+   * Explore the zone using depth-first search with proper backtracking
    */
   private async exploreZone(): Promise<void> {
-    const directionOrder = ['north', 'east', 'south', 'west', 'up', 'down'];
+    // Initialize exploration stack with starting position
+    const startRoomData = this.createMinimalRoomData(this.currentRoomName, this.currentRoomDescription);
+    const startRoomKey = this.getRoomKey(startRoomData);
+    this.explorationStack = [{ roomKey: startRoomKey, directionTaken: 'start' }];
 
-    while (this.actionsUsed < this.maxActions) {
+    while (this.actionsUsed < this.maxActions && this.explorationStack.length > 0) {
+      const currentStackItem = this.explorationStack[this.explorationStack.length - 1];
+      const currentRoomKey = currentStackItem.roomKey;
+
+      // Ensure we're at the correct location (in case of backtracking)
+      const currentRoomData = this.createMinimalRoomData(this.currentRoomName, this.currentRoomDescription);
+      const currentRoomKeyActual = this.getRoomKey(currentRoomData);
+      if (currentRoomKeyActual !== currentRoomKey) {
+        await this.navigateToRoom(currentRoomKey);
+      }
+
       // Get current room's available exits
       await this.delay(250);
       const exitsResponse = await this.config.mudClient.sendAndWait('exits', 1000);
       this.actionsUsed++;
 
       const currentExits = this.parseExitsOutput(exitsResponse);
-      
-      // Find an unvisited direction (based on coordinates, not room names)
-      let directionToTry: string | null = null;
-      let targetDescription = '';
 
-      // Try directions in our preferred order
-      for (const preferredDir of directionOrder) {
-        const exit = currentExits.find(e => e.direction.toLowerCase() === preferredDir);
-        if (exit) {
-          const targetCoords = this.moveCoordinates(this.currentCoordinates, exit.direction);
-          const targetCoordKey = this.getCoordinateKey(targetCoords);
-          
-          if (!this.visitedCoordinates.has(targetCoordKey)) {
-            directionToTry = exit.direction;
-            targetDescription = exit.description;
-            break;
+      // Find an unexplored direction from this room
+      const directionToTry = this.findUnexploredDirection(currentExits, currentRoomKey);
+
+      if (!directionToTry) {
+        // No unexplored directions from this room - try to jump to nearest unexplored
+        const nearest = this.getNearestUnexploredRoom();
+        if (nearest) {
+          logger.info(`   No local unexplored directions, jumping to nearest unexplored room`);
+          const path = this.computePath(currentRoomKey, nearest);
+          if (path && path.length > 0) {
+            await this.navigatePath(path);
+            // Now at nearest room, process it
+            const { roomData: jumpedRoomData, exitData: jumpedExitData } = await this.roomProcessor.processRoom();
+            this.actionsUsed += this.roomProcessor.getActionsUsed();
+            if (!jumpedRoomData.name) {
+              logger.warn('⚠️  Could not parse room after jump, backtracking...');
+              // Go back along the path
+              const reversePath = path.map(dir => this.getOppositeDirection(dir)!).reverse();
+              await this.navigatePath(reversePath);
+              // Reset current room info
+              await this.updateCurrentRoomInfo();
+            } else {
+              const jumpedRoomKey = this.getRoomKey(jumpedRoomData);
+              await this.processAndSaveRoom(jumpedRoomData, jumpedExitData, this.currentCoordinates);
+              // Reset exploration stack to continue from here
+              this.explorationStack = [{ roomKey: jumpedRoomKey, directionTaken: 'jump' }];
+              continue;
+            }
+          } else {
+            logger.info(`   No path to nearest unexplored, backtracking...`);
+          }
+        } else {
+          logger.info(`   No unexplored rooms found, backtracking...`);
+        }
+
+        // Backtrack
+        this.explorationStack.pop();
+
+        // If we have a previous room to backtrack to
+        if (this.explorationStack.length > 0) {
+          const previousItem = this.explorationStack[this.explorationStack.length - 1];
+          const backDirection = this.getOppositeDirection(previousItem.directionTaken);
+
+          if (backDirection) {
+            logger.info(`   Backtracking ${backDirection}`);
+            await this.delay(1000);
+            await this.config.mudClient.sendAndWait(backDirection, 2000);
+            this.actionsUsed++;
+            await this.updateCurrentRoomInfo();
           }
         }
+        continue;
       }
 
-      // If no preferred direction leads to unvisited coordinates, try any unvisited direction
-      if (!directionToTry) {
-        for (const exit of currentExits) {
-          const targetCoords = this.moveCoordinates(this.currentCoordinates, exit.direction);
-          const targetCoordKey = this.getCoordinateKey(targetCoords);
-          
-          if (!this.visitedCoordinates.has(targetCoordKey)) {
-            directionToTry = exit.direction;
-            targetDescription = exit.description;
-            break;
-          }
-        }
-      }
+      // Try the unexplored direction
+      const exit = currentExits.find(e => e.direction.toLowerCase() === directionToTry.toLowerCase());
+      if (!exit) continue;
 
-      // If no unvisited directions available, we're done
-      if (!directionToTry) {
-        logger.info(`   All directions from (${this.currentCoordinates.x}, ${this.currentCoordinates.y}, ${this.currentCoordinates.z}) explored`);
-        break;
-      }
-
-      logger.info(`🧭 Moving ${directionToTry} to: ${targetDescription}...`);
+      logger.info(`🧭 Moving ${directionToTry} to: ${exit.description}...`);
       await this.delay(1000);
 
       const moveResponse = await this.config.mudClient.sendAndWait(directionToTry, 2000);
       this.actionsUsed++;
 
-      // Check if move was successful
+      // Mark this direction as explored from current room
+      if (!this.exploredDirections.has(currentRoomKey)) {
+        this.exploredDirections.set(currentRoomKey, new Set());
+      }
+      this.exploredDirections.get(currentRoomKey)!.add(directionToTry.toLowerCase());
+
+      // Check if move was blocked
       if (moveResponse.includes("Alas, you cannot go that way")) {
-        logger.info(`   ❌ Direction ${directionToTry} blocked, marking as visited`);
-        // Mark the target coordinates as visited even though we can't go there
-        const targetCoords = this.moveCoordinates(this.currentCoordinates, directionToTry);
-        this.visitedCoordinates.add(this.getCoordinateKey(targetCoords));
+        logger.info(`   ❌ Direction ${directionToTry} blocked`);
         continue;
       }
 
-      // Calculate new coordinates
+      // Calculate new coordinates (keep for spatial reference)
       const newCoordinates = this.moveCoordinates(this.currentCoordinates, directionToTry);
 
       // Verify we're still in the same zone
@@ -458,7 +658,7 @@ export class DocumentZoneTask implements CrawlerTask {
       const currentZone = this.extractCurrentZone(zoneCheck);
 
       if (currentZone !== this.currentZone) {
-        logger.warn(`⚠️  Moved to different zone (${currentZone}), going back...`);
+        logger.warn(`⚠️  Moved to different zone (${currentZone}), marking as zone exit and backtracking...`);
 
         // Mark as zone boundary
         this.exitData.push({
@@ -479,13 +679,12 @@ export class DocumentZoneTask implements CrawlerTask {
           await this.config.mudClient.sendAndWait(oppositeDir, 2000);
           this.actionsUsed++;
         }
-        
-        // Mark the zone boundary coordinates as visited so we don't try again
-        this.visitedCoordinates.add(this.getCoordinateKey(newCoordinates));
+
+        // Don't mark as visited since we didn't explore the other zone
         continue;
       }
 
-      // Process new room
+      // Successfully moved to new room - process it
       const { roomData: newRoomData, exitData: newExitData } = await this.roomProcessor.processRoom();
       this.actionsUsed += this.roomProcessor.getActionsUsed();
 
@@ -501,13 +700,24 @@ export class DocumentZoneTask implements CrawlerTask {
       }
 
       // Process and save the new room
+      const newRoomKey = this.getRoomKey(newRoomData);
       await this.processAndSaveRoom(newRoomData, newExitData, newCoordinates);
+
+      // Add to exploration stack
+      this.explorationStack.push({
+        roomKey: newRoomKey,
+        directionTaken: directionToTry
+      });
 
       logger.info(`   Progress: ${this.rooms.size} rooms, ${this.actionsUsed}/${this.maxActions} actions`);
     }
 
     if (this.actionsUsed >= this.maxActions) {
       logger.warn(`⚠️  Reached max actions limit (${this.maxActions})`);
+    }
+
+    if (this.explorationStack.length === 0) {
+      logger.info(`✅ Zone exploration complete - all reachable rooms visited`);
     }
   }
 
@@ -608,6 +818,33 @@ export class DocumentZoneTask implements CrawlerTask {
     };
     
     return opposites[direction.toLowerCase()] || null;
+  }
+
+  /**
+   * Navigate back to specific coordinates (used during backtracking)
+   */
+  private async navigateToCoordinates(targetCoords: Coordinates): Promise<void> {
+    // For now, assume we're already at the right location due to backtracking
+    // In a more sophisticated implementation, we could calculate a path back
+    this.currentCoordinates = { ...targetCoords };
+  }
+
+  /**
+   * Navigate along a path of directions
+   */
+  private async navigatePath(path: string[]): Promise<void> {
+    for (const dir of path) {
+      logger.info(`🧭 Navigating ${dir}...`);
+      await this.delay(1000);
+      const response = await this.config.mudClient.sendAndWait(dir, 2000);
+      this.actionsUsed++;
+      if (response.includes("Alas, you cannot go that way")) {
+        logger.error(`❌ Navigation blocked at ${dir}`);
+        throw new Error(`Cannot navigate ${dir}`);
+      }
+      // Update current coordinates
+      this.currentCoordinates = this.moveCoordinates(this.currentCoordinates, dir);
+    }
   }
 
   /**
