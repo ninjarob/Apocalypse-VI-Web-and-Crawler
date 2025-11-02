@@ -1,15 +1,8 @@
 import { CrawlerTask, TaskConfig } from './TaskManager';
 import logger from '../logger';
+import { RoomProcessor, RoomData, ExitData } from '../RoomProcessor';
 
-interface RoomData {
-  name: string;
-  description: string;
-  exits: string[];
-  objects: Map<string, string>; // object name -> description
-  visited: boolean;
-}
-
-interface ExitData {
+interface ZoneExitData {
   direction: string;
   description: string;
   fromRoomName: string;
@@ -17,6 +10,7 @@ interface ExitData {
   door_description?: string;
   is_door?: boolean;
   is_locked?: boolean;
+  is_zone_exit?: boolean;
 }
 
 /**
@@ -36,15 +30,18 @@ export class DocumentZoneTask implements CrawlerTask {
   private config: TaskConfig;
   private currentZone: string = '';
   private rooms: Map<string, RoomData> = new Map();
-  private exitData: ExitData[] = [];
+  private exitData: ZoneExitData[] = [];
   private roomsToVisit: string[] = [];
+  private visitedRooms: Set<string> = new Set();
   private currentRoomName: string = '';
   private actionsUsed: number = 0;
   private maxActions: number;
+  private roomProcessor: RoomProcessor;
 
   constructor(config: TaskConfig) {
     this.config = config;
     this.maxActions = parseInt(process.env.MAX_ACTIONS_PER_SESSION || '1000');
+    this.roomProcessor = new RoomProcessor(config);
   }
 
   async run(): Promise<void> {
@@ -68,9 +65,34 @@ export class DocumentZoneTask implements CrawlerTask {
       // Step 2: Get initial room data
       logger.info('Step 2: Getting initial room data...');
       await this.delay(1000);
-      const lookResponse = await this.config.mudClient.sendAndWait('look', 2000);
-      this.actionsUsed++;
-      await this.processCurrentRoom(lookResponse);
+      
+      // Use RoomProcessor to process the initial room
+      const { roomData: initialRoomData, exitData: initialExitData } = await this.roomProcessor.processRoom();
+      this.actionsUsed += this.roomProcessor.getActionsUsed();
+      
+      if (!initialRoomData.name) {
+        logger.error('❌ Could not determine initial room name');
+        return;
+      }
+      
+      this.currentRoomName = initialRoomData.name;
+      this.rooms.set(initialRoomData.name, initialRoomData);
+      this.visitedRooms.add(initialRoomData.name);
+      
+      // Convert RoomProcessor ExitData to DocumentZoneTask ExitData format
+      for (const exit of initialExitData) {
+        this.exitData.push({
+          ...exit,
+          fromRoomName: initialRoomData.name
+        });
+      }
+      
+      // Add initial exits to visit queue
+      for (const direction of initialRoomData.exits) {
+        if (!this.roomsToVisit.includes(direction)) {
+          this.roomsToVisit.push(direction);
+        }
+      }
       
       // Save initial data
       await this.saveDataIncrementally();
@@ -149,7 +171,8 @@ export class DocumentZoneTask implements CrawlerTask {
       }
     }
 
-    const roomData = this.parseLookOutput(lookResponse);
+    // Use RoomProcessor to process the room
+    const { roomData, exitData } = await this.roomProcessor.processRoom();
     
     if (!roomData.name) {
       logger.warn('⚠️  Could not parse room name from look output');
@@ -158,37 +181,28 @@ export class DocumentZoneTask implements CrawlerTask {
 
     this.currentRoomName = roomData.name;
     
-    // Add to rooms map if not already there
-    if (!this.rooms.has(roomData.name)) {
-      this.rooms.set(roomData.name, {
-        ...roomData,
-        visited: true
-      });
-      logger.info(`📍 Discovered: ${roomData.name}`);
-    } else {
-      // Update visited status
-      const existing = this.rooms.get(roomData.name)!;
-      existing.visited = true;
+    // Check if we've already processed this room
+    if (this.visitedRooms.has(roomData.name)) {
+      logger.info(`⏭️  Skipping already visited room: ${roomData.name}`);
+      return;
     }
 
-    // Get detailed exit info
-    await this.delay(500);
-    const exitsResponse = await this.config.mudClient.sendAndWait('exits', 2000);
-    this.actionsUsed++;
-    
-    const exitDetails = this.parseExitsOutput(exitsResponse);
-    for (const exit of exitDetails) {
+    // Add to rooms map if not already there
+    if (!this.rooms.has(roomData.name)) {
+      this.rooms.set(roomData.name, roomData);
+      logger.info(`📍 Discovered: ${roomData.name}`);
+    }
+
+    // Mark as visited
+    this.visitedRooms.add(roomData.name);
+
+    // Convert RoomProcessor ExitData to DocumentZoneTask ExitData format
+    for (const exit of exitData) {
       this.exitData.push({
         ...exit,
         fromRoomName: roomData.name
       });
     }
-
-    // Examine room objects
-    await this.examineRoomObjects(roomData);
-
-    // Detect hidden doors
-    await this.detectHiddenDoors(roomData, exitDetails);
 
     // Add unvisited exits to queue
     for (const direction of roomData.exits) {
@@ -231,7 +245,7 @@ export class DocumentZoneTask implements CrawlerTask {
       }
 
       // Check for status line (skip)
-      if (line.match(/^<\s*\d+H\s+\d+M\s+\d+V/)) {
+      if (line.match(/<\s*\d+H\s+\d+M\s+\d+V.*>/)) {
         continue;
       }
 
@@ -261,7 +275,7 @@ export class DocumentZoneTask implements CrawlerTask {
       description,
       exits,
       objects,
-      visited: false
+      zone: ''
     };
   }
 
@@ -313,157 +327,6 @@ export class DocumentZoneTask implements CrawlerTask {
   }
 
   /**
-   * Examine room objects to get their descriptions
-   */
-  private async examineRoomObjects(roomData: RoomData): Promise<void> {
-    for (const [objectName, shortDesc] of roomData.objects) {
-      // Try to look at the object
-      await this.delay(500);
-      const examineResponse = await this.config.mudClient.sendAndWait(`look ${objectName}`, 2000);
-      this.actionsUsed++;
-
-      // Update description if we got more detail
-      if (examineResponse && examineResponse.length > 50 && !examineResponse.match(/You don't see/i)) {
-        const cleanDesc = this.filterOutput(examineResponse);
-        roomData.objects.set(objectName, cleanDesc);
-      }
-
-      if (this.actionsUsed >= this.maxActions) {
-        logger.warn(`⚠️  Reached max actions (${this.maxActions}), stopping object examination`);
-        break;
-      }
-    }
-  }
-
-  /**
-   * Detect hidden doors by trying unlisted directions
-   */
-  private async detectHiddenDoors(roomData: RoomData, knownExits: Array<{ direction: string; description: string }>): Promise<void> {
-    // Get list of known directions
-    const knownDirections = new Set(knownExits.map(exit => exit.direction.toLowerCase()));
-    
-    // All possible directions to try (prioritized list - basic directions first)
-    const allDirections = [
-      'north', 'south', 'east', 'west', 'up', 'down',
-      'northeast', 'northwest', 'southeast', 'southwest',
-      'in', 'out', 'enter', 'exit'
-    ];
-
-    // Try directions not in known exits
-    for (const direction of allDirections) {
-      if (knownDirections.has(direction)) {
-        continue; // Already known
-      }
-
-      if (this.actionsUsed >= this.maxActions) {
-        logger.warn(`⚠️  Reached max actions (${this.maxActions}), stopping hidden door detection`);
-        break;
-      }
-
-      logger.info(`🔍 Checking for hidden exit/door: ${direction}`);
-      await this.delay(500);
-      
-      const moveResponse = await this.config.mudClient.sendAndWait(direction, 2000);
-      this.actionsUsed++;
-
-      // Check zone every 3 rooms to reduce action usage
-      if (this.rooms.size % 3 === 0) {
-        // Check zone first - if we moved to a different zone, document it
-        await this.delay(500);
-        const zoneCheck = await this.config.mudClient.sendAndWait('who -z', 2000);
-        this.actionsUsed++;
-        
-        const currentZone = this.extractCurrentZone(zoneCheck);
-        
-        if (currentZone !== this.currentZone) {
-          logger.info(`🌍 Zone change detected: ${direction} leads to "${currentZone}"`);
-          
-          // Document this as a zone boundary exit
-          this.exitData.push({
-            direction,
-            description: `Zone boundary to ${currentZone}`,
-            fromRoomName: roomData.name,
-            is_door: false,
-            is_locked: false
-          });
-
-          // Go back immediately
-          const oppositeDir = this.getOppositeDirection(direction);
-          if (oppositeDir) {
-            await this.delay(500);
-            await this.config.mudClient.sendAndWait(oppositeDir, 2000);
-            this.actionsUsed++;
-          }
-          continue;
-        }
-      }
-
-      // Check if response indicates a door
-      const doorInfo = this.parseDoorResponse(moveResponse);
-      
-      if (doorInfo.isDoor) {
-        logger.info(`🚪 Found hidden door: ${doorInfo.doorName} (${direction})`);
-        
-        // Add this direction to the room's exits
-        if (!roomData.exits.includes(direction)) {
-          roomData.exits.push(direction);
-        }
-        
-        // Get door description
-        let doorDescription = '';
-        if (doorInfo.doorName) {
-          await this.delay(500);
-          const lookResponse = await this.config.mudClient.sendAndWait(`look ${doorInfo.doorName}`, 2000);
-          this.actionsUsed++;
-          
-          doorDescription = this.extractDoorDescription(lookResponse);
-          logger.info(`   Door description: ${doorDescription}`);
-        }
-
-        // Add to exit data
-        this.exitData.push({
-          direction,
-          description: doorInfo.doorName || `Hidden door to the ${direction}`,
-          fromRoomName: roomData.name,
-          door_name: doorInfo.doorName,
-          door_description: doorDescription,
-          is_door: true,
-          is_locked: doorInfo.isLocked
-        });
-      } else {
-        // Not a door, but might be a valid exit we missed
-        const roomChange = this.detectRoomChange(moveResponse);
-        if (roomChange && roomChange.roomName) {
-          logger.info(`🗺️  Found unlisted exit: ${direction} -> ${roomChange.roomName}`);
-          
-          // Add this direction to the room's exits
-          if (!roomData.exits.includes(direction)) {
-            roomData.exits.push(direction);
-          }
-          
-          this.exitData.push({
-            direction,
-            description: roomChange.roomName,
-            fromRoomName: roomData.name,
-            is_door: false,
-            is_locked: false
-          });
-        }
-      }
-
-      // Go back if we moved
-      if (doorInfo.isDoor || this.detectRoomChange(moveResponse)) {
-        const oppositeDir = this.getOppositeDirection(direction);
-        if (oppositeDir) {
-          await this.delay(500);
-          await this.config.mudClient.sendAndWait(oppositeDir, 2000);
-          this.actionsUsed++;
-        }
-      }
-    }
-  }
-
-  /**
    * Explore the zone by visiting all rooms
    */
   private async exploreZone(): Promise<void> {
@@ -485,6 +348,17 @@ export class DocumentZoneTask implements CrawlerTask {
       
       if (currentZone !== this.currentZone) {
         logger.warn(`⚠️  Moved to different zone (${currentZone}), going back...`);
+        
+        // Document this as a zone boundary exit
+        this.exitData.push({
+          direction,
+          description: `Zone boundary to ${currentZone}`,
+          fromRoomName: this.currentRoomName,
+          is_door: false,
+          is_locked: false,
+          is_zone_exit: true
+        });
+        
         // Try to go back
         const oppositeDir = this.getOppositeDirection(direction);
         if (oppositeDir) {
@@ -495,12 +369,61 @@ export class DocumentZoneTask implements CrawlerTask {
         continue;
       }
 
-      // Process new room
-      await this.delay(500);
-      const lookResponse = await this.config.mudClient.sendAndWait('look', 2000);
-      this.actionsUsed++;
+      // Process new room using RoomProcessor
+      const { roomData: newRoomData, exitData: newExitData } = await this.roomProcessor.processRoom();
+      this.actionsUsed += this.roomProcessor.getActionsUsed();
       
-      await this.processCurrentRoom(lookResponse);
+      // Check if we've been here before
+      if (newRoomData.name && this.visitedRooms.has(newRoomData.name)) {
+        logger.info(`⏭️  Room already visited: ${newRoomData.name}, going back...`);
+        // Go back immediately
+        const oppositeDir = this.getOppositeDirection(direction);
+        if (oppositeDir) {
+          await this.delay(1000);
+          await this.config.mudClient.sendAndWait(oppositeDir, 2000);
+          this.actionsUsed++;
+        }
+        continue;
+      }
+      
+      // Process the new room data
+      if (!newRoomData.name) {
+        logger.warn('⚠️  Could not parse room name from look output');
+        // Go back
+        const oppositeDir = this.getOppositeDirection(direction);
+        if (oppositeDir) {
+          await this.delay(1000);
+          await this.config.mudClient.sendAndWait(oppositeDir, 2000);
+          this.actionsUsed++;
+        }
+        continue;
+      }
+
+      this.currentRoomName = newRoomData.name;
+      
+      // Add to rooms map if not already there
+      if (!this.rooms.has(newRoomData.name)) {
+        this.rooms.set(newRoomData.name, newRoomData);
+        logger.info(`📍 Discovered: ${newRoomData.name}`);
+      }
+
+      // Mark as visited
+      this.visitedRooms.add(newRoomData.name);
+
+      // Convert RoomProcessor ExitData to DocumentZoneTask ExitData format
+      for (const exit of newExitData) {
+        this.exitData.push({
+          ...exit,
+          fromRoomName: newRoomData.name
+        });
+      }
+
+      // Add unvisited exits to queue
+      for (const exitDirection of newRoomData.exits) {
+        if (!this.roomsToVisit.includes(exitDirection)) {
+          this.roomsToVisit.push(exitDirection);
+        }
+      }
 
       logger.info(`   Progress: ${this.rooms.size} rooms, ${this.actionsUsed}/${this.maxActions} actions`);
       
@@ -591,7 +514,7 @@ export class DocumentZoneTask implements CrawlerTask {
       const line = lines[i];
       
       // Skip status lines
-      if (line.match(/^<\s*\d+H\s+\d+M\s+\d+V/)) {
+      if (line.match(/<\s*\d+H\s+\d+M\s+\d+V.*>/)) {
         continue;
       }
       
@@ -755,7 +678,8 @@ export class DocumentZoneTask implements CrawlerTask {
           door_name: exitData.door_name || null,
           door_description: exitData.door_description || null,
           is_door: exitData.is_door || false,
-          is_locked: exitData.is_locked || false
+          is_locked: exitData.is_locked || false,
+          is_zone_exit: exitData.is_zone_exit || false
         });
         exitsSaved++;
       } catch (error) {

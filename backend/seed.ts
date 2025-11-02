@@ -134,6 +134,7 @@ function createTables(callback: () => void) {
     door_description TEXT,
     is_door INTEGER DEFAULT 0,
     is_locked INTEGER DEFAULT 0,
+    is_zone_exit INTEGER DEFAULT 0,
     key_vnum INTEGER,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,

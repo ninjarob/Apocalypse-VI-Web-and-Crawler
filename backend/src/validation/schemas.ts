@@ -130,6 +130,7 @@ export const roomExitSchema = z.object({
   look_description: z.string().max(2000).optional().nullable(),
   is_door: booleanFieldSchema,
   is_locked: booleanFieldSchema,
+  is_zone_exit: booleanFieldSchema,
   key_vnum: z.number().int().positive().optional().nullable(),
   createdAt: timestampSchema,
   updatedAt: timestampSchema
