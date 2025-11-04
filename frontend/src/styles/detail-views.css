@@ -114,6 +114,7 @@
 
 /* Section Headings */
 .zone-rooms-section h4,
+.zone-connections-section h4,
 .room-exits-section h4,
 .action-stats-section h4 {
   margin-bottom: 15px;
@@ -147,4 +148,83 @@
   background-color: var(--bg-secondary);
   padding: var(--spacing-lg);
   border-radius: var(--radius-lg);
+}
+
+/* Zone Connections */
+.zone-connections-section {
+  background-color: var(--bg-secondary);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+.connections-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.connection-item {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  transition: box-shadow 0.2s ease;
+}
+
+.connection-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.connection-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+}
+
+.connection-type {
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.connection-type-adjacent {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.connection-type-ocean {
+  background-color: #e1f5fe;
+  color: #0277bd;
+}
+
+.connection-type-mountain_pass {
+  background-color: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.connection-type-portal {
+  background-color: #fff3e0;
+  color: #f57c00;
+}
+
+.connection-type-quest {
+  background-color: #e8f5e8;
+  color: #388e3c;
+}
+
+.connection-description {
+  color: var(--text-color);
+  margin: var(--spacing-xs) 0;
+  font-style: italic;
+}
+
+.connected-zone-description {
+  color: var(--text-muted);
+  margin: var(--spacing-xs) 0 0 0;
+  font-size: 0.9em;
 }

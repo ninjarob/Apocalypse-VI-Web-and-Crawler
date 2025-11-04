@@ -323,6 +323,15 @@ router.delete(
   })
 );
 
+/**
+ * GET /zones/:id/connections - Get zone connections for a specific zone
+ */
+router.get('/zones/:id/connections', asyncHandler(async (req: Request, res: Response) => {
+  const zoneId = parseInt(req.params.id);
+  const connections = await zoneService.getZoneConnections(zoneId);
+  res.json(connections);
+}));
+
 // Catch-all 404 handler has been moved to global error handler in index.ts
 
 console.log('[API ROUTES] All routes registered, exporting router');

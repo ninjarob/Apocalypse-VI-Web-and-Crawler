@@ -28,8 +28,8 @@ export interface ZoneConnection {
   id: number;
   zone_id: number;
   connected_zone_id: number;
-  connection_type?: string;
-  notes?: string;
+  connection_type: string;
+  description: string;
   createdAt?: string;
   updatedAt?: string;
 }

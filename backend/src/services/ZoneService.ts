@@ -109,4 +109,27 @@ export class ZoneService extends BaseService {
   async getZoneCount(): Promise<number> {
     return await repositories.zones.count();
   }
+
+  /**
+   * Get zone connections for a specific zone with detailed information
+   */
+  async getZoneConnections(zoneId: number): Promise<any[]> {
+    this.validatePositiveInteger(zoneId, 'zone_id');
+
+    const connections = await repositories.zoneConnections.findAll({ zone_id: zoneId });
+
+    // Get connected zone details for each connection
+    const connectionsWithDetails = await Promise.all(
+      connections.map(async (connection) => {
+        const connectedZone = await repositories.zones.findByIdOrThrow(connection.connected_zone_id.toString(), 'Zone');
+        return {
+          ...connection,
+          connected_zone_name: connectedZone.name,
+          connected_zone_description: connectedZone.description
+        };
+      })
+    );
+
+    return connectionsWithDetails;
+  }
 }

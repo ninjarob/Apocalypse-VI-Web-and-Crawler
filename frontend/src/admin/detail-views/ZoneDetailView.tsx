@@ -1,6 +1,16 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Entity } from '../types';
 import { RoomsList } from './RoomsList';
+
+interface ZoneConnection {
+  id: number;
+  zone_id: number;
+  connected_zone_id: number;
+  connection_type: string;
+  description: string;
+  connected_zone_name: string;
+  connected_zone_description?: string;
+}
 
 interface ZoneDetailViewProps {
   selectedZone: Entity;
@@ -17,6 +27,26 @@ export const ZoneDetailView: React.FC<ZoneDetailViewProps> = ({
   handleRoomClick,
   onAddRoom
 }) => {
+  const [connections, setConnections] = useState<ZoneConnection[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchConnections = async () => {
+      try {
+        const response = await fetch(`/api/zones/${selectedZone.id}/connections`);
+        if (response.ok) {
+          const data = await response.json();
+          setConnections(data);
+        }
+      } catch (error) {
+        console.error('Error fetching zone connections:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchConnections();
+  }, [selectedZone.id]);
   return (
     <div className="zone-detail-view">
       <div className="zone-detail-header">
@@ -47,6 +77,34 @@ export const ZoneDetailView: React.FC<ZoneDetailViewProps> = ({
           <p>
             <strong>Notes:</strong> {selectedZone.notes}
           </p>
+        )}
+      </div>
+
+      <div className="zone-connections-section">
+        <h4>Zone Connections ({connections.length})</h4>
+        {loading ? (
+          <p>Loading connections...</p>
+        ) : connections.length === 0 ? (
+          <p>No connections found for this zone.</p>
+        ) : (
+          <div className="connections-list">
+            {connections.map((connection) => (
+              <div key={connection.id} className="connection-item">
+                <div className="connection-header">
+                  <span className={`connection-type connection-type-${connection.connection_type.toLowerCase()}`}>
+                    {connection.connection_type.replace('_', ' ').toUpperCase()}
+                  </span>
+                  <strong>{connection.connected_zone_name}</strong>
+                </div>
+                <p className="connection-description">{connection.description}</p>
+                {connection.connected_zone_description && (
+                  <p className="connected-zone-description">
+                    <em>{connection.connected_zone_description}</em>
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
         )}
       </div>
 
