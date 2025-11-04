@@ -12,12 +12,12 @@ interface RoomFormProps {
 interface ExitFormData {
   direction: string;
   description?: string;
-  exit_description?: string;
   door_name?: string;
   door_description?: string;
   look_description?: string;
   is_door?: boolean;
   is_locked?: boolean;
+  is_zone_exit?: boolean;
   to_room_id?: number;
   to_room_name?: string;
 }
@@ -33,12 +33,15 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
     terrain: '',
     portal_key: '',
     greater_binding_key: '',
+    zone_exit: false,
     coordinates: { x: 0, y: 0, z: 0 },
     exits: [],
     npcs: [],
     items: [],
     ...room
   });
+
+  const [selectedFlags, setSelectedFlags] = useState<string[]>([]);
 
   const [exits, setExits] = useState<ExitFormData[]>([]);
   const [zones, setZones] = useState<any[]>([]);
@@ -114,12 +117,12 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
     setExits(prev => [...prev, {
       direction: '',
       description: '',
-      exit_description: '',
       door_name: '',
       door_description: '',
       look_description: '',
       is_door: false,
       is_locked: false,
+      is_zone_exit: false,
       to_room_id: undefined,
       to_room_name: ''
     }]);
@@ -147,6 +150,16 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
     setFilteredZones([]);
   };
 
+  const addFlag = (flagValue: string) => {
+    if (!selectedFlags.includes(flagValue)) {
+      setSelectedFlags(prev => [...prev, flagValue]);
+    }
+  };
+
+  const removeFlag = (flagValue: string) => {
+    setSelectedFlags(prev => prev.filter(f => f !== flagValue));
+  };
+
   useEffect(() => {
     loadZones();
     loadRooms();
@@ -156,17 +169,19 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
       const exitData = room.roomExits.map(exit => ({
         direction: exit.direction || '',
         description: exit.description || '',
-        exit_description: exit.exit_description || '',
         door_name: exit.door_name || '',
         door_description: exit.door_description || '',
         look_description: exit.look_description || '',
         is_door: exit.is_door || false,
         is_locked: exit.is_locked || false,
+        is_zone_exit: exit.is_zone_exit || false,
         to_room_id: exit.to_room_id,
         to_room_name: exit.to_room_id ? getRoomName(exit.to_room_id) : ''
       }));
       setExits(exitData);
     }
+    // Initialize selected flags from room data (always initialize to ensure edit mode works)
+    setSelectedFlags(room?.flags ? room.flags.split(',').map(f => f.trim()).filter(f => f) : []);
   }, [room]);
 
   useEffect(() => {
@@ -180,6 +195,18 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
       setFilteredRooms([]);
     }
   }, [roomSearch, rooms]);
+
+  useEffect(() => {
+    if (zoneSearch.trim()) {
+      const filtered = zones.filter(z =>
+        z.name.toLowerCase().includes(zoneSearch.toLowerCase()) ||
+        z.id.toString().includes(zoneSearch)
+      );
+      setFilteredZones(filtered.slice(0, 10)); // Limit to 10 results
+    } else {
+      setFilteredZones([]);
+    }
+  }, [zoneSearch, zones]);
 
   // Handle ESC key to close modal
   useEffect(() => {
@@ -202,18 +229,19 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
     const roomExits: Partial<RoomExit>[] = exits.map(exit => ({
       direction: exit.direction,
       description: exit.description,
-      exit_description: exit.exit_description,
       door_name: exit.door_name,
       door_description: exit.door_description,
       look_description: exit.look_description,
       is_door: exit.is_door,
       is_locked: exit.is_locked,
+      is_zone_exit: exit.is_zone_exit,
       to_room_id: exit.to_room_id,
       from_room_id: formData.id // Will be set when creating/updating
     }));
 
     const submitData = {
       ...formData,
+      flags: selectedFlags.join(','),
       roomExits
     };
 
@@ -222,7 +250,6 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
 
   const directions = [
     'north', 'south', 'east', 'west',
-    'northeast', 'northwest', 'southeast', 'southwest',
     'up', 'down', 'in', 'out', 'enter', 'exit'
   ];
 
@@ -325,18 +352,53 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
 
               <div className="form-group">
                 <label htmlFor="flags">Flags</label>
+                {selectedFlags.length > 0 && (
+                  <div className="selected-flags">
+                    {selectedFlags.map(flag => (
+                      <div key={flag} className="flag-card">
+                        <span>{flag}</span>
+                        <button
+                          type="button"
+                          className="flag-remove"
+                          onClick={() => removeFlag(flag)}
+                          title={`Remove ${flag} flag`}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 <select
                   id="flags"
-                  value={formData.flags || ''}
-                  onChange={(e) => handleInputChange('flags', e.target.value || undefined)}
+                  value=""
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      addFlag(e.target.value);
+                    }
+                  }}
                 >
-                  <option value="">Select Flag</option>
-                  {roomFlags.map(flag => (
-                    <option key={flag.id} value={flag.value}>
-                      {flag.value}
-                    </option>
-                  ))}
+                  <option value="">Select Flag to Add</option>
+                  {roomFlags
+                    .filter(flag => !selectedFlags.includes(flag.value))
+                    .map(flag => (
+                      <option key={flag.id} value={flag.value}>
+                        {flag.value}
+                      </option>
+                    ))}
                 </select>
+              </div>
+
+              <div className="form-group checkbox-group">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    id="zone_exit"
+                    checked={formData.zone_exit || false}
+                    onChange={(e) => handleInputChange('zone_exit', e.target.checked)}
+                  />
+                  Zone Exit
+                </label>
               </div>
             </div>
 
@@ -474,29 +536,17 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
                     </div>
                   </div>
 
-                  <div className="form-row">
-                    <div className="form-group">
-                      <label>Description</label>
-                      <input
-                        type="text"
-                        value={exit.description || ''}
-                        onChange={(e) => updateExit(index, 'description', e.target.value)}
-                        maxLength={500}
-                      />
-                    </div>
-
-                    <div className="form-group">
-                      <label>Exit Description</label>
-                      <input
-                        type="text"
-                        value={exit.exit_description || ''}
-                        onChange={(e) => updateExit(index, 'exit_description', e.target.value)}
-                        maxLength={1000}
-                      />
-                    </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Description</label>
+                    <input
+                      type="text"
+                      value={exit.description || ''}
+                      onChange={(e) => updateExit(index, 'description', e.target.value)}
+                      maxLength={500}
+                    />
                   </div>
-
-                  <div className="form-row">
+                </div>                  <div className="form-row">
                     <div className="form-group">
                       <label>Door Name</label>
                       <input
@@ -548,6 +598,17 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
                           onChange={(e) => updateExit(index, 'is_locked', e.target.checked)}
                         />
                         Is Locked
+                      </label>
+                    </div>
+
+                    <div className="form-group checkbox-group">
+                      <label className="checkbox-label">
+                        <input
+                          type="checkbox"
+                          checked={exit.is_zone_exit || false}
+                          onChange={(e) => updateExit(index, 'is_zone_exit', e.target.checked)}
+                        />
+                        Zone Exit
                       </label>
                     </div>
                   </div>

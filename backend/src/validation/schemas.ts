@@ -100,6 +100,7 @@ export const roomSchema = z.object({
   terrain: z.string().max(100).optional().nullable(),
   portal_key: z.string().max(100).optional().nullable(),
   greater_binding_key: z.string().max(100).optional().nullable(),
+  zone_exit: booleanFieldSchema,
   visitCount: z.number().int().min(0).optional(),
   firstVisited: timestampSchema.nullable(),
   lastVisited: timestampSchema.nullable(),
@@ -116,7 +117,6 @@ export const roomUpdateSchema = roomSchema.partial();
 
 const directionEnum = z.enum([
   'north', 'south', 'east', 'west',
-  'northeast', 'northwest', 'southeast', 'southwest',
   'up', 'down', 'in', 'out', 'enter', 'exit'
 ]);
 
@@ -126,7 +126,6 @@ export const roomExitSchema = z.object({
   to_room_id: z.number().int().positive().optional().nullable(),
   direction: directionEnum,
   description: z.string().max(500).optional().nullable(),
-  exit_description: z.string().max(1000).optional().nullable(),
   door_name: z.string().max(100).optional().nullable(),
   door_description: z.string().max(1000).optional().nullable(),
   look_description: z.string().max(2000).optional().nullable(),

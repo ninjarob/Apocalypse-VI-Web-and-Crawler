@@ -17,12 +17,12 @@ export interface RoomExit {
   to_room_id?: number;
   direction: string;
   description?: string;
-  exit_description?: string;
   door_name?: string;
   door_description?: string;
   look_description?: string;
   is_door?: boolean;
   is_locked?: boolean;
+  is_zone_exit?: boolean;
   key_vnum?: number;
   createdAt?: string;
   updatedAt?: string;
@@ -43,6 +43,7 @@ export interface Room {
   roomObjects?: RoomObject[];
   roomExits?: Partial<RoomExit>[];
   coordinates?: { x: number; y: number; z: number };
+  zone_exit?: boolean;
   visitCount: number;
   firstVisited?: Date;
   lastVisited?: Date;
