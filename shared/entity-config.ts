@@ -326,7 +326,7 @@ export const ENTITY_CONFIG: Record<string, EntityConfig> = {
     table: 'room_exits',
     idField: 'id',
     autoIncrement: true,
-    booleanFields: ['is_door', 'is_locked'],
+    booleanFields: ['is_door', 'is_locked', 'is_zone_exit'],
     sortBy: 'from_room_id, direction',
     display: {
       name: 'Room Exits',

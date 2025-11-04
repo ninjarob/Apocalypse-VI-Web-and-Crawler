@@ -362,6 +362,8 @@ function Admin() {
       }
       setShowRoomForm(false);
       loadEntities(); // Refresh the rooms list
+      // Also refresh room exits since they may have been updated
+      await loadRoomRelatedData();
     } catch (error) {
       console.error('Failed to save room:', error);
       alert('Failed to save room. Please try again.');
@@ -453,6 +455,7 @@ function Admin() {
           handleZoneClick={handleZoneClick}
           backButtonText={roomBackContext === 'zone' ? `← Back to ${selectedZone?.name || 'Zone'}` : '← Back to Rooms'}
           setSelectedRoom={setSelectedRoom}
+          onRoomExitsChange={loadRoomRelatedData}
         />
       )}
 

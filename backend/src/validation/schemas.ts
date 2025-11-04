@@ -85,6 +85,15 @@ function createUpdateSchema<T extends z.ZodRawShape>(baseSchema: z.ZodObject<T>)
 // Room Schemas
 // ============================================================================
 
+// ============================================================================
+// Room Exit Schemas
+// ============================================================================
+
+const directionEnum = z.enum([
+  'north', 'south', 'east', 'west',
+  'up', 'down', 'in', 'out', 'enter', 'exit'
+]);
+
 export const roomSchema = z.object({
   id: z.number().int().positive().optional(), // Optional for auto-increment
   zone_id: z.number().int().positive().optional().nullable(),
@@ -109,16 +118,20 @@ export const roomSchema = z.object({
   updatedAt: timestampSchema
 });
 
-export const roomUpdateSchema = roomSchema.partial();
-
-// ============================================================================
-// Room Exit Schemas
-// ============================================================================
-
-const directionEnum = z.enum([
-  'north', 'south', 'east', 'west',
-  'up', 'down', 'in', 'out', 'enter', 'exit'
-]);
+export const roomUpdateSchema = roomSchema.partial().extend({
+  roomExits: z.array(z.object({
+    direction: directionEnum,
+    description: z.string().max(500).optional().nullable(),
+    door_name: z.string().max(100).optional().nullable(),
+    door_description: z.string().max(1000).optional().nullable(),
+    look_description: z.string().max(2000).optional().nullable(),
+    is_door: booleanFieldSchema,
+    is_locked: booleanFieldSchema,
+    is_zone_exit: booleanFieldSchema,
+    to_room_id: z.number().int().positive().optional().nullable(),
+    from_room_id: z.number().int().positive().optional()
+  })).optional()
+});
 
 export const roomExitSchema = z.object({
   id: z.number().int().positive().optional(),

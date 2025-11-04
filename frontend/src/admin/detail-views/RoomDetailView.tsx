@@ -15,6 +15,7 @@ interface RoomDetailViewProps {
   handleZoneClick: (zone: Entity) => void;
   backButtonText?: string;
   setSelectedRoom?: React.Dispatch<React.SetStateAction<Entity | null>>;
+  onRoomExitsChange?: () => void;
 }
 
 export const RoomDetailView: React.FC<RoomDetailViewProps> = ({
@@ -29,7 +30,8 @@ export const RoomDetailView: React.FC<RoomDetailViewProps> = ({
   setSelectedEntity,
   handleZoneClick,
   backButtonText = '← Back to Rooms',
-  setSelectedRoom
+  setSelectedRoom,
+  onRoomExitsChange
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editFormData, setEditFormData] = useState<any>({ ...selectedRoom });
@@ -161,6 +163,11 @@ export const RoomDetailView: React.FC<RoomDetailViewProps> = ({
       // Update the local selectedRoom with the edited data
       if (setSelectedRoom) {
         setSelectedRoom({ ...selectedRoom, ...dataToSend });
+      }
+
+      // Notify parent to refresh room exits
+      if (onRoomExitsChange) {
+        onRoomExitsChange();
       }
       
       setIsEditing(false);
@@ -443,153 +450,161 @@ export const RoomDetailView: React.FC<RoomDetailViewProps> = ({
         </div>
 
         {isEditing ? (
-          // Exit editing interface
+          // Exit editing interface - compact inline table
           <div className="exits-edit-container">
-            {editExits.map((exit, index) => (
-              <div key={index} className="exit-item">
-                <div className="exit-header">
-                  <h5>Exit {index + 1}</h5>
-                  <button
-                    type="button"
-                    className="remove-button"
-                    onClick={() => removeExit(index)}
-                  >
-                    Remove
+            {editExits.length === 0 ? (
+              <div className="no-exits">
+                <p>No exits defined.</p>
+                <button type="button" className="add-button" onClick={addExit}>
+                  Add Exit
+                </button>
+              </div>
+            ) : (
+              <div className="entity-table-container">
+                <table className="entity-table exits-edit-table">
+                  <thead>
+                    <tr>
+                      <th>Direction</th>
+                      <th>Destination</th>
+                      <th>Description</th>
+                      <th>Door Info</th>
+                      <th>Properties</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {editExits.map((exit, index) => (
+                      <tr key={index}>
+                        <td>
+                          <select
+                            value={exit.direction}
+                            onChange={(e) => updateExit(index, 'direction', e.target.value)}
+                            className="compact-input"
+                          >
+                            <option value="">Select</option>
+                            {['north', 'south', 'east', 'west', 'up', 'down', 'in', 'out', 'enter', 'exit'].map(dir => (
+                              <option key={dir} value={dir}>{dir}</option>
+                            ))}
+                          </select>
+                        </td>
+                        <td>
+                          <div className="room-lookup compact">
+                            <input
+                              type="text"
+                              value={exit.to_room_name || ''}
+                              onChange={(e) => {
+                                updateExit(index, 'to_room_name', e.target.value);
+                                setRoomSearch(e.target.value);
+                              }}
+                              placeholder="Search rooms..."
+                              className="compact-input"
+                            />
+                            {filteredRooms.length > 0 && (
+                              <div className="room-suggestions compact">
+                                {filteredRooms.map(room => (
+                                  <div
+                                    key={room.id}
+                                    className="room-suggestion"
+                                    onClick={() => selectRoomForExit(index, room)}
+                                  >
+                                    {room.name} (ID: {room.id})
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                        <td>
+                          <div className="exit-description-edit">
+                            <input
+                              type="text"
+                              value={exit.description || ''}
+                              onChange={(e) => updateExit(index, 'description', e.target.value)}
+                              placeholder="Exit description"
+                              className="compact-input"
+                            />
+                            <input
+                              type="text"
+                              value={exit.look_description || ''}
+                              onChange={(e) => updateExit(index, 'look_description', e.target.value)}
+                              placeholder="Look description"
+                              className="compact-input"
+                            />
+                          </div>
+                        </td>
+                        <td>
+                          <div className="door-info-edit">
+                            <input
+                              type="text"
+                              value={exit.door_name || ''}
+                              onChange={(e) => updateExit(index, 'door_name', e.target.value)}
+                              placeholder="Door name"
+                              className="compact-input"
+                              disabled={!exit.is_door}
+                            />
+                            <input
+                              type="text"
+                              value={exit.door_description || ''}
+                              onChange={(e) => updateExit(index, 'door_description', e.target.value)}
+                              placeholder="Door desc"
+                              className="compact-input"
+                              disabled={!exit.is_door}
+                            />
+                          </div>
+                        </td>
+                        <td>
+                          <div className="exit-properties-edit">
+                            <label className="compact-checkbox">
+                              <input
+                                type="checkbox"
+                                checked={exit.is_door || false}
+                                onChange={(e) => updateExit(index, 'is_door', e.target.checked)}
+                              />
+                              Door
+                            </label>
+                            <label className="compact-checkbox">
+                              <input
+                                type="checkbox"
+                                checked={exit.is_locked || false}
+                                onChange={(e) => updateExit(index, 'is_locked', e.target.checked)}
+                                disabled={!exit.is_door}
+                              />
+                              Locked
+                            </label>
+                            <label className="compact-checkbox">
+                              <input
+                                type="checkbox"
+                                checked={exit.is_zone_exit || false}
+                                onChange={(e) => updateExit(index, 'is_zone_exit', e.target.checked)}
+                              />
+                              Zone Exit
+                            </label>
+                          </div>
+                        </td>
+                        <td>
+                          <button
+                            type="button"
+                            className="remove-button compact"
+                            onClick={() => removeExit(index)}
+                            title="Remove exit"
+                          >
+                            ×
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <div className="add-exit-row">
+                  <button type="button" className="add-button" onClick={addExit}>
+                    + Add Exit
                   </button>
                 </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Direction</label>
-                    <select
-                      value={exit.direction}
-                      onChange={(e) => updateExit(index, 'direction', e.target.value)}
-                      className="inline-edit-input"
-                    >
-                      <option value="">Select Direction</option>
-                      {['north', 'south', 'east', 'west', 'up', 'down', 'in', 'out', 'enter', 'exit'].map(dir => (
-                        <option key={dir} value={dir}>{dir}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="form-group">
-                    <label>Connected Room</label>
-                    <div className="room-lookup">
-                      <input
-                        type="text"
-                        value={exit.to_room_name || ''}
-                        onChange={(e) => {
-                          updateExit(index, 'to_room_name', e.target.value);
-                          setRoomSearch(e.target.value);
-                        }}
-                        placeholder="Search rooms..."
-                        className="inline-edit-input"
-                      />
-                      {filteredRooms.length > 0 && (
-                        <div className="room-suggestions">
-                          {filteredRooms.map(room => (
-                            <div
-                              key={room.id}
-                              className="room-suggestion"
-                              onClick={() => selectRoomForExit(index, room)}
-                            >
-                              {room.name} (ID: {room.id})
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Description</label>
-                    <input
-                      type="text"
-                      value={exit.description || ''}
-                      onChange={(e) => updateExit(index, 'description', e.target.value)}
-                      className="inline-edit-input"
-                    />
-                  </div>
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Door Name</label>
-                    <input
-                      type="text"
-                      value={exit.door_name || ''}
-                      onChange={(e) => updateExit(index, 'door_name', e.target.value)}
-                      className="inline-edit-input"
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label>Door Description</label>
-                    <input
-                      type="text"
-                      value={exit.door_description || ''}
-                      onChange={(e) => updateExit(index, 'door_description', e.target.value)}
-                      className="inline-edit-input"
-                    />
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label>Look Description</label>
-                  <textarea
-                    value={exit.look_description || ''}
-                    onChange={(e) => updateExit(index, 'look_description', e.target.value)}
-                    rows={2}
-                    className="inline-edit-textarea"
-                  />
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group checkbox-group">
-                    <label className="checkbox-label">
-                      <input
-                        type="checkbox"
-                        checked={exit.is_door || false}
-                        onChange={(e) => updateExit(index, 'is_door', e.target.checked)}
-                      />
-                      Is Door
-                    </label>
-                  </div>
-
-                  <div className="form-group checkbox-group">
-                    <label className="checkbox-label">
-                      <input
-                        type="checkbox"
-                        checked={exit.is_locked || false}
-                        onChange={(e) => updateExit(index, 'is_locked', e.target.checked)}
-                      />
-                      Is Locked
-                    </label>
-                  </div>
-
-                  <div className="form-group checkbox-group">
-                    <label className="checkbox-label">
-                      <input
-                        type="checkbox"
-                        checked={exit.is_zone_exit || false}
-                        onChange={(e) => updateExit(index, 'is_zone_exit', e.target.checked)}
-                      />
-                      Zone Exit
-                    </label>
-                  </div>
-                </div>
               </div>
-            ))}
-
-            {editExits.length === 0 && (
-              <p className="no-exits">No exits defined. Click "Add Exit" to add one.</p>
             )}
 
             {/* Save button at bottom of exits section for convenience */}
-            <div className="form-actions" style={{ marginTop: '2rem', paddingTop: '1rem', borderTop: '1px solid #ddd' }}>
+            <div className="form-actions" style={{ marginTop: '1rem', paddingTop: '0.5rem', borderTop: '1px solid #ddd' }}>
               <button className="btn-cancel" onClick={handleCancel}>
                 Cancel
               </button>
@@ -605,22 +620,20 @@ export const RoomDetailView: React.FC<RoomDetailViewProps> = ({
               <p className="empty-message">No exits from this room.</p>
             ) : (
               <div className="entity-table-container">
-                <table className="entity-table">
+                <table className="entity-table exits-table">
                   <thead>
                     <tr>
                       <th>Direction</th>
                       <th>Destination</th>
                       <th>Description</th>
-                      <th>Look Description</th>
-                      <th>Door</th>
-                      <th>Door Description</th>
-                      <th>Locked</th>
+                      <th>Door Info</th>
+                      <th>Properties</th>
                     </tr>
                   </thead>
                   <tbody>
                     {exits.map(exit => (
                       <tr key={exit.id}>
-                        <td>{exit.direction}</td>
+                        <td><strong>{exit.direction}</strong></td>
                         <td>
                           {exit.to_room_id ? (
                             <a
@@ -654,30 +667,42 @@ export const RoomDetailView: React.FC<RoomDetailViewProps> = ({
                             <em className="text-gray">Unimplemented</em>
                           )}
                         </td>
-                                          <td>{exit.description || 'No description'}</td>
                         <td>
-                          {exit.look_description ? (
-                            <span className="text-muted">{exit.look_description}</span>
+                          <div className="exit-description">
+                            <div><strong>Exit:</strong> {exit.description || 'No description'}</div>
+                            {exit.look_description && (
+                              <div><strong>Look:</strong> <span className="text-muted">{exit.look_description}</span></div>
+                            )}
+                          </div>
+                        </td>
+                        <td>
+                          {exit.is_door ? (
+                            <div className="door-info">
+                              <div><strong>Name:</strong> {exit.door_name || 'Door'}</div>
+                              {exit.door_description && (
+                                <div><strong>Desc:</strong> {exit.door_description}</div>
+                              )}
+                            </div>
                           ) : (
                             '—'
                           )}
                         </td>
                         <td>
-                          {exit.is_door ? (
-                            <>
-                              {exit.door_name || 'Door'}
-                            </>
-                          ) : (
-                            '—'
-                          )}
-                        </td>
-                        <td>{exit.door_description || '—'}</td>
-                        <td>
-                          {exit.is_door ? (
-                            exit.is_locked ? '🔒 Yes' : '🔓 No'
-                          ) : (
-                            '—'
-                          )}
+                          <div className="exit-properties">
+                            {exit.is_door && (
+                              <div className="property-item">
+                                <span className="property-label">Door:</span> {exit.is_locked ? '🔒 Locked' : '🔓 Unlocked'}
+                              </div>
+                            )}
+                            {exit.is_zone_exit && (
+                              <div className="property-item">
+                                <span className="property-label">Zone Exit:</span> 🏛️ Yes
+                              </div>
+                            )}
+                            {!exit.is_door && !exit.is_zone_exit && (
+                              <span className="text-muted">—</span>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     ))}

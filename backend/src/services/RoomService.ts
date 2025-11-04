@@ -143,6 +143,11 @@ export class RoomService extends BaseService {
     if (!updated) {
       throw new Error(`Failed to update room ${id}`);
     }
+
+    // Populate exits for the updated room
+    const exits = await repositories.roomExits.findAll({ from_room_id: parseInt(id) });
+    updated.roomExits = exits;
+
     return updated;
   }
 
