@@ -13,6 +13,8 @@ export interface Room {
   vnum?: number;
   terrain?: string;
   flags?: string;
+  portal_key?: string;
+  greater_binding_key?: string;
   visitCount?: number;
   firstVisited?: string;
   lastVisited?: string;

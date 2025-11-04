@@ -70,6 +70,7 @@ export class RoomService extends BaseService {
       vnum: roomData.vnum || undefined,
       terrain: roomData.terrain || undefined,
       flags: roomData.flags || undefined,
+      portal_key: roomData.portal_key || undefined,
       visitCount: 1,
       firstVisited: new Date().toISOString(),
       lastVisited: new Date().toISOString(),

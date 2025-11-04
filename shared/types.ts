@@ -32,17 +32,23 @@ export interface Room {
   id: number;  // Changed from string to match database
   name: string;
   description: string;
+  zone_id?: number;
+  vnum?: number;
+  area?: string;
+  flags?: string;
+  terrain?: string;
   exits: Exit[];
   npcs: string[];
   items: string[];
   roomObjects?: RoomObject[];
-  roomExits?: RoomExit[];
+  roomExits?: Partial<RoomExit>[];
   coordinates?: { x: number; y: number; z: number };
-  area?: string;
   visitCount: number;
   firstVisited?: Date;
   lastVisited?: Date;
   rawText?: string;
+  portal_key?: string;
+  greater_binding_key?: string;
 }
 
 export interface Exit {

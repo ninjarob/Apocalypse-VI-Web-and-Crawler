@@ -8,6 +8,7 @@ interface ZoneDetailViewProps {
   zoneRooms: Entity[];
   roomExits: any[];
   handleRoomClick: (room: Entity) => void;
+  onAddRoom?: () => void;
 }
 
 export const ZoneDetailView: React.FC<ZoneDetailViewProps> = ({
@@ -15,7 +16,8 @@ export const ZoneDetailView: React.FC<ZoneDetailViewProps> = ({
   handleBackToZones,
   zoneRooms,
   roomExits,
-  handleRoomClick
+  handleRoomClick,
+  onAddRoom
 }) => {
   return (
     <div className="zone-detail-view">
@@ -51,7 +53,14 @@ export const ZoneDetailView: React.FC<ZoneDetailViewProps> = ({
       </div>
 
       <div className="zone-rooms-section">
-        <h4>Rooms in this Zone ({zoneRooms.length})</h4>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+          <h4>Rooms in this Zone ({zoneRooms.length})</h4>
+          {onAddRoom && (
+            <button className="btn-primary" onClick={onAddRoom}>
+              Add Room
+            </button>
+          )}
+        </div>
         <RoomsList
           rooms={zoneRooms}
           roomExits={roomExits}

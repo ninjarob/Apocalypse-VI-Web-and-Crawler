@@ -168,6 +168,30 @@ function Admin() {
     setZoneRooms([]);
   };
 
+  const handleAddRoomToZone = () => {
+    if (!selectedZone) return;
+    
+    // Set form data with pre-selected zone
+    setFormData({
+      zone_id: selectedZone.id,
+      name: '',
+      description: '',
+      area: '',
+      flags: '',
+      terrain: '',
+      portal_key: '',
+      greater_binding_key: '',
+      coordinates: { x: 0, y: 0, z: 0 },
+      exits: [],
+      npcs: [],
+      items: []
+    });
+    setEditingEntity(null);
+    setShowForm(true);
+    // Switch to rooms entity type so the form uses room fields
+    setSelectedEntity(ENTITY_CONFIGS.find(config => config.endpoint === 'rooms')!);
+  };
+
   const handleRoomClick = async (room: Entity) => {
     setSelectedRoom(room);
     // Set context based on whether we're viewing a zone
@@ -444,6 +468,7 @@ function Admin() {
           roomExits={roomExits}
           handleBackToZones={handleBackToZones}
           handleRoomClick={handleRoomClick}
+          onAddRoom={handleAddRoomToZone}
         />
       )}
 

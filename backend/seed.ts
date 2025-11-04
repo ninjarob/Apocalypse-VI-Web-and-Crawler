@@ -113,6 +113,8 @@ function createTables(callback: () => void) {
     area TEXT,
     flags TEXT,
     terrain TEXT,
+    portal_key TEXT,
+    greater_binding_key TEXT,
     visitCount INTEGER DEFAULT 0,
     firstVisited DATETIME,
     lastVisited DATETIME,

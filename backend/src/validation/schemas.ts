@@ -98,6 +98,8 @@ export const roomSchema = z.object({
   area: z.string().max(255).optional().nullable(),
   flags: z.string().max(255).optional().nullable(),
   terrain: z.string().max(100).optional().nullable(),
+  portal_key: z.string().max(100).optional().nullable(),
+  greater_binding_key: z.string().max(100).optional().nullable(),
   visitCount: z.number().int().min(0).optional(),
   firstVisited: timestampSchema.nullable(),
   lastVisited: timestampSchema.nullable(),

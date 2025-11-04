@@ -370,6 +370,9 @@ export class DocumentZoneTask implements CrawlerTask {
     
     logger.info(`📍 Processing: ${roomData.name} at (${coordinates.x}, ${coordinates.y}, ${coordinates.z})`);
     
+    // Cast 'bind portal minor' spell to get portal key
+    const portalKey = await this.castBindPortalMinor();
+    
     // Store room location
     const roomLocation: RoomLocation = {
       name: roomData.name,
@@ -406,7 +409,7 @@ export class DocumentZoneTask implements CrawlerTask {
     }
     
     // Save room and exits to database immediately
-    await this.saveRoomToDatabase(roomData, coordinates);
+    await this.saveRoomToDatabase(roomData, coordinates, portalKey);
     await this.saveExitsForRoom(roomData, exitData, coordinates);
     
     // Update any exits from previously visited rooms that point to this room
@@ -414,9 +417,43 @@ export class DocumentZoneTask implements CrawlerTask {
   }
 
   /**
+   * Cast 'bind portal minor' spell to get portal key for current room
+   */
+  private async castBindPortalMinor(): Promise<string | null> {
+    try {
+      logger.info(`🔮 Casting 'bind portal minor' spell...`);
+      
+      // Use the long action delay for spell casting
+      await this.delay(parseInt(process.env.DELAY_FOR_LONG_ACTIONS_MS || '1000'));
+      
+      const spellResponse = await this.config.mudClient.sendAndWait('cast \'bind portal minor\'', 
+        parseInt(process.env.DELAY_FOR_LONG_ACTIONS_MS || '1000'));
+      this.actionsUsed++;
+      
+      // Debug: Log the raw response to see what we're getting
+      logger.info(`🔍 Spell response: ${JSON.stringify(spellResponse)}`);
+      
+      // Extract portal key from response (format: "'dehimpqr' briefly appears as a portal shimmers into view and then disappears.")
+      // Make regex more flexible to handle newlines and extra characters
+      const keyMatch = spellResponse.match(/'([a-z]{7})'\s+briefly appears as a portal shimmers into view and then disappears[\s\S]*/);
+      if (keyMatch) {
+        const portalKey = keyMatch[1];
+        logger.info(`✅ Portal key obtained: ${portalKey}`);
+        return portalKey;
+      } else {
+        logger.info(`⚠️  No portal key found in spell response (room may not allow portals)`);
+        return null;
+      }
+    } catch (error) {
+      logger.error(`❌ Failed to cast bind portal minor:`, error);
+      return null;
+    }
+  }
+
+  /**
    * Save a single room to the database
    */
-  private async saveRoomToDatabase(roomData: RoomData, coordinates: Coordinates): Promise<void> {
+  private async saveRoomToDatabase(roomData: RoomData, coordinates: Coordinates, portalKey: string | null = null): Promise<void> {
     try {
       logger.info(`💾 Saving room: ${roomData.name} at (${coordinates.x}, ${coordinates.y}, ${coordinates.z})`);
       
@@ -442,6 +479,7 @@ export class DocumentZoneTask implements CrawlerTask {
         rawText: `${roomData.name}\n${roomData.description}`,
         zone_id: this.zoneId,
         coordinates: JSON.stringify(coordinates),
+        portal_key: portalKey,
         visitCount: 1,
         lastVisited: new Date().toISOString()
       };
