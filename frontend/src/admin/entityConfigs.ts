@@ -179,5 +179,25 @@ export const ENTITY_CONFIGS: EntityConfig[] = [
       { name: 'variations', type: 'json', label: 'Variations', hideInTable: true },
       { name: 'helpText', type: 'textarea', label: 'Help Text', hideInTable: true }
     ]
+  },
+  {
+    name: 'Room Terrains',
+    endpoint: 'room_terrains',
+    readOnly: false,
+    fields: [
+      { name: 'id', type: 'number', label: 'ID', hideInTable: true },
+      { name: 'value', type: 'text', label: 'Value', required: true },
+      { name: 'description', type: 'textarea', label: 'Description' }
+    ]
+  },
+  {
+    name: 'Room Flags',
+    endpoint: 'room_flags',
+    readOnly: false,
+    fields: [
+      { name: 'id', type: 'number', label: 'ID', hideInTable: true },
+      { name: 'value', type: 'text', label: 'Value', required: true },
+      { name: 'description', type: 'textarea', label: 'Description' }
+    ]
   }
 ];

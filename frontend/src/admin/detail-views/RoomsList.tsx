@@ -1,11 +1,15 @@
 import React from 'react';
-import { Entity } from '../types';
+import { Entity, EntityConfig } from '../types';
 
 interface RoomsListProps {
   rooms: Entity[];
-  roomExits: any[];
   handleRoomClick: (room: Entity) => void;
   emptyMessage?: string;
+  allZones?: Entity[];
+  ENTITY_CONFIGS?: EntityConfig[];
+  setSelectedEntity?: (config: EntityConfig) => void;
+  handleZoneClick?: (zone: Entity) => void;
+  showZoneColumn?: boolean;
 }
 
 /**
@@ -14,26 +18,17 @@ interface RoomsListProps {
  */
 export const RoomsList: React.FC<RoomsListProps> = ({
   rooms,
-  roomExits,
   handleRoomClick,
-  emptyMessage = 'No rooms found.'
+  emptyMessage = 'No rooms found.',
+  allZones = [],
+  ENTITY_CONFIGS = [],
+  setSelectedEntity,
+  handleZoneClick,
+  showZoneColumn = true
 }) => {
   if (rooms.length === 0) {
     return <p className="empty-message">{emptyMessage}</p>;
   }
-
-  const directionOrder: { [key: string]: number } = {
-    north: 1,
-    northeast: 2,
-    east: 3,
-    southeast: 4,
-    south: 5,
-    southwest: 6,
-    west: 7,
-    northwest: 8,
-    up: 9,
-    down: 10
-  };
 
   return (
     <div className="entity-table-container">
@@ -41,17 +36,11 @@ export const RoomsList: React.FC<RoomsListProps> = ({
         <thead>
           <tr>
             <th>Name</th>
-            <th>Exits</th>
+            {showZoneColumn && <th>Zone</th>}
           </tr>
         </thead>
         <tbody>
           {rooms.map(room => {
-            const exits = roomExits.filter(exit => exit.from_room_id === room.id);
-            exits.sort(
-              (a, b) =>
-                (directionOrder[a.direction] || 99) - (directionOrder[b.direction] || 99)
-            );
-
             return (
               <tr
                 key={room.id}
@@ -59,25 +48,32 @@ export const RoomsList: React.FC<RoomsListProps> = ({
                 onClick={() => handleRoomClick(room)}
               >
                 <td>{room.name}</td>
-                <td>
-                  {exits.length === 0 ? (
-                    <em className="text-gray">No exits</em>
-                  ) : (
-                    <div className="room-exits">
-                      {exits.map((exit, idx) => {
-                        const toRoom = rooms.find(r => r.id === exit.to_room_id);
-                        const exitText = exit.to_room_id
-                          ? `${exit.direction} → ${toRoom?.name || `Room ${exit.to_room_id}`}`
-                          : `${exit.direction} (unimplemented)`;
-                        return (
-                          <div key={idx} className="exit-item">
-                            {exitText}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </td>
+                {showZoneColumn && (
+                  <td>
+                    {room.zone_id ? (
+                      <a
+                        href="#"
+                        className="zone-link"
+                        onClick={e => {
+                          e.preventDefault();
+                          e.stopPropagation(); // Prevent event bubbling to row click
+                          const zone = allZones.find(z => z.id === room.zone_id);
+                          if (zone && handleZoneClick && setSelectedEntity && ENTITY_CONFIGS) {
+                            const zonesConfig = ENTITY_CONFIGS.find(c => c.endpoint === 'zones');
+                            if (zonesConfig) {
+                              setSelectedEntity(zonesConfig);
+                              setTimeout(() => handleZoneClick(zone), 100);
+                            }
+                          }
+                        }}
+                      >
+                        {allZones.find(z => z.id === room.zone_id)?.name || `Zone ${room.zone_id}`}
+                      </a>
+                    ) : (
+                      <em className="text-gray">No zone</em>
+                    )}
+                  </td>
+                )}
               </tr>
             );
           })}

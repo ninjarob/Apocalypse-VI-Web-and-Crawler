@@ -6,7 +6,6 @@ interface ZoneDetailViewProps {
   selectedZone: Entity;
   handleBackToZones: () => void;
   zoneRooms: Entity[];
-  roomExits: any[];
   handleRoomClick: (room: Entity) => void;
   onAddRoom?: () => void;
 }
@@ -15,7 +14,6 @@ export const ZoneDetailView: React.FC<ZoneDetailViewProps> = ({
   selectedZone,
   handleBackToZones,
   zoneRooms,
-  roomExits,
   handleRoomClick,
   onAddRoom
 }) => {
@@ -63,9 +61,9 @@ export const ZoneDetailView: React.FC<ZoneDetailViewProps> = ({
         </div>
         <RoomsList
           rooms={zoneRooms}
-          roomExits={roomExits}
           handleRoomClick={handleRoomClick}
           emptyMessage="No rooms found in this zone."
+          showZoneColumn={false}
         />
       </div>
     </div>

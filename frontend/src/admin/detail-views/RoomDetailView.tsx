@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Entity, EntityConfig } from '../types';
 import { api } from '../../api';
 
@@ -14,6 +14,7 @@ interface RoomDetailViewProps {
   setSelectedEntity: (config: EntityConfig) => void;
   handleZoneClick: (zone: Entity) => void;
   backButtonText?: string;
+  setSelectedRoom?: React.Dispatch<React.SetStateAction<Entity | null>>;
 }
 
 export const RoomDetailView: React.FC<RoomDetailViewProps> = ({
@@ -27,8 +28,111 @@ export const RoomDetailView: React.FC<RoomDetailViewProps> = ({
   ENTITY_CONFIGS,
   setSelectedEntity,
   handleZoneClick,
-  backButtonText = '← Back to Rooms'
+  backButtonText = '← Back to Rooms',
+  setSelectedRoom
 }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editFormData, setEditFormData] = useState<any>({ ...selectedRoom });
+  const [zones, setZones] = useState<any[]>([]);
+  const [zoneSearch, setZoneSearch] = useState('');
+  const [filteredZones, setFilteredZones] = useState<any[]>([]);
+  const [terrains, setTerrains] = useState<any[]>([]);
+  const [roomFlags, setRoomFlags] = useState<any[]>([]);
+
+  // Load zones for editing
+  React.useEffect(() => {
+    const loadZones = async () => {
+      try {
+        const zonesData = await api.getAll('zones');
+        setZones(zonesData);
+      } catch (error) {
+        console.error('Failed to load zones:', error);
+      }
+    };
+    const loadTerrains = async () => {
+      try {
+        const terrainsData = await api.getAll('room_terrains');
+        setTerrains(terrainsData);
+      } catch (error) {
+        console.error('Failed to load terrains:', error);
+      }
+    };
+    const loadRoomFlags = async () => {
+      try {
+        const flagsData = await api.getAll('room_flags');
+        setRoomFlags(flagsData);
+      } catch (error) {
+        console.error('Failed to load room flags:', error);
+      }
+    };
+    loadZones();
+    loadTerrains();
+    loadRoomFlags();
+  }, []);
+
+  // Update edit form data when selected room changes
+  React.useEffect(() => {
+    setEditFormData({ ...selectedRoom });
+  }, [selectedRoom]);
+
+  // Filter zones based on search
+  React.useEffect(() => {
+    if (zoneSearch.trim()) {
+      const filtered = zones.filter((zone: any) =>
+        zone.name.toLowerCase().includes(zoneSearch.toLowerCase()) ||
+        zone.id.toString().includes(zoneSearch)
+      );
+      setFilteredZones(filtered.slice(0, 10));
+    } else {
+      setFilteredZones([]);
+    }
+  }, [zoneSearch, zones]);
+
+  const handleEditClick = () => {
+    setIsEditing(true);
+    setEditFormData({ ...selectedRoom });
+  };
+
+  const handleSave = async () => {
+    try {
+      // Only send the fields that can be edited
+      const dataToSend = {
+        name: editFormData.name,
+        description: editFormData.description,
+        terrain: editFormData.terrain,
+        flags: editFormData.flags,
+        zone_id: editFormData.zone_id
+      };
+
+      console.log('Sending data:', dataToSend);
+      await api.put(`/rooms/${selectedRoom.id}`, dataToSend);
+      
+      // Update the local selectedRoom with the edited data
+      if (setSelectedRoom) {
+        setSelectedRoom({ ...selectedRoom, ...dataToSend });
+      }
+      
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Failed to save room:', error);
+      alert('Failed to save room. Please try again.');
+    }
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setEditFormData({ ...selectedRoom });
+  };
+
+  const handleFieldChange = (field: string, value: any) => {
+    setEditFormData((prev: any) => ({ ...prev, [field]: value }));
+  };
+
+  const selectZone = (selectedZone: any) => {
+    handleFieldChange('zone_id', selectedZone.id);
+    setZoneSearch(selectedZone.name);
+    setFilteredZones([]);
+  };
   const directionOrder: { [key: string]: number } = {
     north: 1,
     northeast: 2,
@@ -53,44 +157,142 @@ export const RoomDetailView: React.FC<RoomDetailViewProps> = ({
           {backButtonText}
         </button>
         <h3>Room: {selectedRoom.name}</h3>
+        <div className="room-edit-actions">
+          {!isEditing ? (
+            <button className="btn-edit" onClick={handleEditClick}>
+              Edit Room
+            </button>
+          ) : (
+            <>
+              <button className="btn-save" onClick={handleSave}>
+                Save
+              </button>
+              <button className="btn-cancel" onClick={handleCancel}>
+                Cancel
+              </button>
+            </>
+          )}
+        </div>
       </div>
 
       <div className="room-detail-info">
-        <p>
-          <strong>Description:</strong> {selectedRoom.description}
-        </p>
-        {selectedRoom.terrain && (
-          <p>
-            <strong>Terrain:</strong> {selectedRoom.terrain}
-          </p>
-        )}
-        {selectedRoom.flags && (
-          <p>
-            <strong>Flags:</strong> {selectedRoom.flags}
-          </p>
-        )}
-        {selectedRoom.zone_id && (
-          <p>
-            <strong>Zone:</strong>{' '}
-            <a
-              href="#"
-              className="zone-link"
-              onClick={e => {
-                e.preventDefault();
-                const zone = allZones.find(z => z.id === selectedRoom.zone_id);
-                if (zone) {
-                  const zonesConfig = ENTITY_CONFIGS.find(c => c.endpoint === 'zones');
-                  if (zonesConfig) {
-                    setSelectedEntity(zonesConfig);
-                    setTimeout(() => handleZoneClick(zone), 100);
-                  }
-                }
-              }}
-            >
-              {allZones.find(z => z.id === selectedRoom.zone_id)?.name || selectedRoom.zone_id}
-            </a>
-          </p>
-        )}
+        <div className="room-info-row">
+          <div className="room-info-field">
+            <strong>Zone:</strong>
+            {isEditing ? (
+              <div className="zone-lookup">
+                <input
+                  type="text"
+                  value={zoneSearch || (editFormData.zone_id ? zones.find(z => z.id === editFormData.zone_id)?.name || '' : '')}
+                  onChange={(e) => {
+                    setZoneSearch(e.target.value);
+                    if (!e.target.value) {
+                      handleFieldChange('zone_id', undefined);
+                    }
+                  }}
+                  placeholder="Search zones..."
+                  className="inline-edit-input"
+                />
+                {filteredZones.length > 0 && (
+                  <div className="zone-suggestions">
+                    {filteredZones.map(zone => (
+                      <div
+                        key={zone.id}
+                        className="zone-suggestion"
+                        onClick={() => selectZone(zone)}
+                      >
+                        {zone.name} (ID: {zone.id})
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <span>
+                {selectedRoom.zone_id ? (
+                  <a
+                    href="#"
+                    className="zone-link"
+                    onClick={e => {
+                      e.preventDefault();
+                      const zone = allZones.find(z => z.id === selectedRoom.zone_id);
+                      if (zone) {
+                        const zonesConfig = ENTITY_CONFIGS.find(c => c.endpoint === 'zones');
+                        if (zonesConfig) {
+                          setSelectedEntity(zonesConfig);
+                          setSelectedRoom && setSelectedRoom(null); // Clear selected room when navigating to zone
+                          handleZoneClick(zone); // Call immediately instead of setTimeout
+                        }
+                      }
+                    }}
+                  >
+                    {allZones.find(z => z.id === selectedRoom.zone_id)?.name || selectedRoom.zone_id}
+                  </a>
+                ) : (
+                  '—'
+                )}
+              </span>
+            )}
+          </div>
+        </div>
+
+        <div className="room-info-row">
+          <div className="room-info-field">
+            <strong>Description:</strong>
+            {isEditing ? (
+              <textarea
+                value={editFormData.description || ''}
+                onChange={(e) => handleFieldChange('description', e.target.value)}
+                rows={8}
+                className="inline-edit-textarea"
+              />
+            ) : (
+              <span>{selectedRoom.description}</span>
+            )}
+          </div>
+        </div>
+
+        <div className="room-info-row">
+          <div className="room-info-field">
+            <strong>Terrain:</strong>
+            {isEditing ? (
+              <select
+                value={editFormData.terrain || ''}
+                onChange={(e) => handleFieldChange('terrain', e.target.value || undefined)}
+                className="inline-edit-input"
+              >
+                <option value="">Select Terrain</option>
+                {terrains.map(terrain => (
+                  <option key={terrain.id} value={terrain.value}>
+                    {terrain.value}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <span>{selectedRoom.terrain || '—'}</span>
+            )}
+          </div>
+
+          <div className="room-info-field">
+            <strong>Flags:</strong>
+            {isEditing ? (
+              <select
+                value={editFormData.flags || ''}
+                onChange={(e) => handleFieldChange('flags', e.target.value || undefined)}
+                className="inline-edit-input"
+              >
+                <option value="">Select Flag</option>
+                {roomFlags.map(flag => (
+                  <option key={flag.id} value={flag.value}>
+                    {flag.value}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <span>{selectedRoom.flags || '—'}</span>
+            )}
+          </div>
+        </div>
       </div>
 
       <div className="room-exits-section">

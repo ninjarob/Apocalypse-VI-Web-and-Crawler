@@ -37,6 +37,8 @@ function seedDatabase() {
     'DROP TABLE IF EXISTS room_objects',
     'DROP TABLE IF EXISTS room_exits',
     'DROP TABLE IF EXISTS rooms',
+    'DROP TABLE IF EXISTS room_flags',
+    'DROP TABLE IF EXISTS room_terrains',
     'DROP TABLE IF EXISTS npcs',
     // Drop item-related tables in correct order (child tables first)
     'DROP TABLE IF EXISTS item_customizations',
@@ -157,6 +159,26 @@ function createTables(callback: () => void) {
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (room_id) REFERENCES rooms(id) ON DELETE CASCADE
+  )`);
+
+  // Room Terrains table (Reference Table)
+  db.run(`CREATE TABLE room_terrains (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    value TEXT UNIQUE NOT NULL,
+    label TEXT NOT NULL,
+    description TEXT,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+  )`);
+
+  // Room Flags table (Reference Table)
+  db.run(`CREATE TABLE room_flags (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    value TEXT UNIQUE NOT NULL,
+    label TEXT NOT NULL,
+    description TEXT,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
 
   // NPCs table
@@ -802,6 +824,38 @@ function seedReferenceTables(callback: () => void) {
     insertBinding.finalize(() => {
       callback();
     });
+
+    // Seed room terrains
+    const roomTerrains = [
+      ['road', 'Road - Roads, streets, paths, trails (outdoor travel routes)'],
+      ['forest', 'Forest - Forests, woods, jungles, wooded areas'],
+      ['mountain', 'Mountain - Mountains, hills, peaks, rocky terrain'],
+      ['desert', 'Desert - Deserts, sandy areas, arid landscapes'],
+      ['water', 'Water - Rivers, lakes, seas, oceans, beaches, waterfront'],
+      ['field', 'Field - Open plains, grasslands, meadows, farmlands, wilderness']
+    ];
+    const insertTerrain = db.prepare('INSERT INTO room_terrains (value, label, description) VALUES (?, ?, ?)');
+    roomTerrains.forEach(([value, label, description]) => insertTerrain.run(value, label, description));
+    insertTerrain.finalize();
+
+    // Seed room flags
+    const roomFlags = [
+      ['dark', 'Dark - Room is dark, requires light to see'],
+      ['no_mob', 'No Mob - Monsters cannot enter this room'],
+      ['private', 'Private - Room is private/reserved'],
+      ['safe', 'Safe - No fighting allowed in this room'],
+      ['no_recall', 'No Recall - Cannot recall from this room'],
+      ['no_magic', 'No Magic - Magic does not work in this room'],
+      ['indoors', 'Indoors - Room is indoors/protected from weather'],
+      ['no_summon', 'No Summon - Cannot be summoned to/from this room'],
+      ['solitary', 'Solitary - Only one person allowed at a time'],
+      ['no_drop', 'No Drop - Items cannot be dropped here'],
+      ['city', 'City - Urban areas, towns, villages, streets, squares'],
+      ['inside', 'Inside - Interior of buildings, houses, shops, temples, caves']
+    ];
+    const insertRoomFlag = db.prepare('INSERT INTO room_flags (value, label, description) VALUES (?, ?, ?)');
+    roomFlags.forEach(([value, label, description]) => insertRoomFlag.run(value, label, description));
+    insertRoomFlag.finalize();
   });
 }
 

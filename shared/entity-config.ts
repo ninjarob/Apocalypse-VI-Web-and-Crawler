@@ -347,6 +347,34 @@ export const ENTITY_CONFIG: Record<string, EntityConfig> = {
       description: 'Objects and features in rooms'
     }
   },
+  room_terrains: {
+    table: 'room_terrains',
+    idField: 'id',
+    nameField: 'value',
+    autoIncrement: true,
+    uniqueField: 'value',
+    sortBy: 'value',
+    display: {
+      name: 'Room Terrains',
+      singular: 'Room Terrain',
+      icon: '🏞️',
+      description: 'Terrain types for rooms'
+    }
+  },
+  room_flags: {
+    table: 'room_flags',
+    idField: 'id',
+    nameField: 'value',
+    autoIncrement: true,
+    uniqueField: 'value',
+    sortBy: 'value',
+    display: {
+      name: 'Room Flags',
+      singular: 'Room Flag',
+      icon: '🏷️',
+      description: 'Special flags for rooms'
+    }
+  },
   help_entries: {
     table: 'help_entries',
     idField: 'id',

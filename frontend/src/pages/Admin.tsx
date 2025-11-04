@@ -208,6 +208,8 @@ function Admin() {
 
   const handleRoomClick = async (room: Entity) => {
     setSelectedRoom(room);
+    // Clear zone selection when navigating to a room
+    setSelectedZone(null);
     // Set context based on whether we're viewing a zone
     if (selectedZone) {
       setRoomBackContext('zone');
@@ -450,6 +452,7 @@ function Admin() {
           setSelectedEntity={setSelectedEntity}
           handleZoneClick={handleZoneClick}
           backButtonText={roomBackContext === 'zone' ? `← Back to ${selectedZone?.name || 'Zone'}` : '← Back to Rooms'}
+          setSelectedRoom={setSelectedRoom}
         />
       )}
 
@@ -493,7 +496,6 @@ function Admin() {
         <ZoneDetailView
           selectedZone={selectedZone}
           zoneRooms={zoneRooms}
-          roomExits={roomExits}
           handleBackToZones={handleBackToZones}
           handleRoomClick={handleRoomClick}
           onAddRoom={handleAddRoomToZone}
@@ -535,8 +537,8 @@ function Admin() {
               )}
             </div>
 
-            {/* Search Box - only show for player_actions for now */}
-            {selectedEntity.endpoint === 'player_actions' && (
+            {/* Search Box - show for player_actions and help_entries */}
+            {(selectedEntity.endpoint === 'player_actions' || selectedEntity.endpoint === 'help_entries') && (
               <div className="search-container" style={{ marginBottom: '1rem' }}>
                 <SearchBox
                   value={searchTerm}
@@ -551,9 +553,12 @@ function Admin() {
             ) : selectedEntity.endpoint === 'rooms' ? (
               <RoomsList
                 rooms={filteredEntities}
-                roomExits={roomExits}
                 handleRoomClick={handleRoomClick}
                 emptyMessage={`No rooms found. Click "Create New" to add one.`}
+                allZones={allZones}
+                ENTITY_CONFIGS={ENTITY_CONFIGS}
+                setSelectedEntity={setSelectedEntity}
+                handleZoneClick={handleZoneClick}
               />
             ) : (
               <div className="entity-table-container">

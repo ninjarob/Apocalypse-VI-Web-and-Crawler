@@ -47,6 +47,8 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
   const [filteredRooms, setFilteredRooms] = useState<Room[]>([]);
   const [zoneSearch, setZoneSearch] = useState('');
   const [filteredZones, setFilteredZones] = useState<any[]>([]);
+  const [terrains, setTerrains] = useState<any[]>([]);
+  const [roomFlags, setRoomFlags] = useState<any[]>([]);
 
   const loadZones = async () => {
     try {
@@ -63,6 +65,24 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
       setRooms(roomsData);
     } catch (error) {
       console.error('Failed to load rooms:', error);
+    }
+  };
+
+  const loadTerrains = async () => {
+    try {
+      const terrainsData = await api.getAll('room_terrains');
+      setTerrains(terrainsData);
+    } catch (error) {
+      console.error('Failed to load terrains:', error);
+    }
+  };
+
+  const loadRoomFlags = async () => {
+    try {
+      const flagsData = await api.getAll('room_flags');
+      setRoomFlags(flagsData);
+    } catch (error) {
+      console.error('Failed to load room flags:', error);
     }
   };
 
@@ -130,6 +150,8 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
   useEffect(() => {
     loadZones();
     loadRooms();
+    loadTerrains();
+    loadRoomFlags();
     if (room?.roomExits) {
       const exitData = room.roomExits.map(exit => ({
         direction: exit.direction || '',
@@ -158,18 +180,6 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
       setFilteredRooms([]);
     }
   }, [roomSearch, rooms]);
-
-  useEffect(() => {
-    if (zoneSearch.trim()) {
-      const filtered = zones.filter((zone: any) =>
-        zone.name.toLowerCase().includes(zoneSearch.toLowerCase()) ||
-        zone.id.toString().includes(zoneSearch)
-      );
-      setFilteredZones(filtered.slice(0, 10)); // Limit to 10 results
-    } else {
-      setFilteredZones([]);
-    }
-  }, [zoneSearch, zones]);
 
   // Handle ESC key to close modal
   useEffect(() => {
@@ -231,6 +241,37 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
               <h3>Basic Information</h3>
 
               <div className="form-group">
+                <label htmlFor="zone_id">Zone</label>
+                <div className="zone-lookup">
+                  <input
+                    type="text"
+                    id="zone_id"
+                    value={zoneSearch || (formData.zone_id ? zones.find(z => z.id === formData.zone_id)?.name || '' : '')}
+                    onChange={(e) => {
+                      setZoneSearch(e.target.value);
+                      if (!e.target.value) {
+                        handleInputChange('zone_id', undefined);
+                      }
+                    }}
+                    placeholder="Search zones..."
+                  />
+                  {filteredZones.length > 0 && (
+                    <div className="zone-suggestions">
+                      {filteredZones.map(zone => (
+                        <div
+                          key={zone.id}
+                          className="zone-suggestion"
+                          onClick={() => selectZone(zone)}
+                        >
+                          {zone.name} (ID: {zone.id})
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="form-group">
                 <label htmlFor="name">Name *</label>
                 <input
                   type="text"
@@ -255,49 +296,6 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
 
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="zone_id">Zone</label>
-                  <div className="zone-lookup">
-                    <input
-                      type="text"
-                      id="zone_id"
-                      value={zoneSearch || (formData.zone_id ? zones.find(z => z.id === formData.zone_id)?.name || '' : '')}
-                      onChange={(e) => {
-                        setZoneSearch(e.target.value);
-                        if (!e.target.value) {
-                          handleInputChange('zone_id', undefined);
-                        }
-                      }}
-                      placeholder="Search zones..."
-                    />
-                    {filteredZones.length > 0 && (
-                      <div className="zone-suggestions">
-                        {filteredZones.map(zone => (
-                          <div
-                            key={zone.id}
-                            className="zone-suggestion"
-                            onClick={() => selectZone(zone)}
-                          >
-                            {zone.name} (ID: {zone.id})
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="vnum">VNUM</label>
-                  <input
-                    type="number"
-                    id="vnum"
-                    value={formData.vnum || ''}
-                    onChange={(e) => handleInputChange('vnum', e.target.value ? parseInt(e.target.value) : undefined)}
-                  />
-                </div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
                   <label htmlFor="area">Area</label>
                   <input
                     type="text"
@@ -310,25 +308,35 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
 
                 <div className="form-group">
                   <label htmlFor="terrain">Terrain</label>
-                  <input
-                    type="text"
+                  <select
                     id="terrain"
                     value={formData.terrain || ''}
-                    onChange={(e) => handleInputChange('terrain', e.target.value)}
-                    maxLength={100}
-                  />
+                    onChange={(e) => handleInputChange('terrain', e.target.value || undefined)}
+                  >
+                    <option value="">Select Terrain</option>
+                    {terrains.map(terrain => (
+                      <option key={terrain.id} value={terrain.value}>
+                        {terrain.value}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
               <div className="form-group">
                 <label htmlFor="flags">Flags</label>
-                <input
-                  type="text"
+                <select
                   id="flags"
                   value={formData.flags || ''}
-                  onChange={(e) => handleInputChange('flags', e.target.value)}
-                  maxLength={255}
-                />
+                  onChange={(e) => handleInputChange('flags', e.target.value || undefined)}
+                >
+                  <option value="">Select Flag</option>
+                  {roomFlags.map(flag => (
+                    <option key={flag.id} value={flag.value}>
+                      {flag.value}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 

@@ -22,6 +22,61 @@
   margin-bottom: var(--spacing-xl);
 }
 
+.room-detail-header {
+  justify-content: space-between;
+}
+
+.room-detail-header .btn-edit {
+  margin-left: auto;
+}
+
+.room-edit-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+/* Inline Editing Styles */
+.room-info-row {
+  display: flex;
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-lg);
+}
+
+.room-info-field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.room-info-field strong {
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.inline-edit-input,
+.inline-edit-textarea {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-primary);
+  color: var(--text-color);
+  font-family: inherit;
+  font-size: 0.9em;
+}
+
+.inline-edit-input:focus,
+.inline-edit-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.2);
+}
+
+.inline-edit-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
 .zone-detail-header {
   padding-bottom: 10px;
   border-bottom: 2px solid var(--border-color);
