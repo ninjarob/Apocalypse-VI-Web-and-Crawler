@@ -550,14 +550,19 @@ async function createTables() {
       to_room_id TEXT,
       direction TEXT NOT NULL,
       description TEXT,
+      exit_description TEXT,
+      look_description TEXT,
       door_name TEXT,
+      door_description TEXT,
       is_door INTEGER DEFAULT 0,
       is_locked INTEGER DEFAULT 0,
+      is_zone_exit INTEGER DEFAULT 0,
       key_vnum INTEGER,
       createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
       updatedAt TEXT DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (from_room_id) REFERENCES rooms(id),
-      FOREIGN KEY (to_room_id) REFERENCES rooms(id)
+      FOREIGN KEY (from_room_id) REFERENCES rooms(id) ON DELETE CASCADE,
+      FOREIGN KEY (to_room_id) REFERENCES rooms(id) ON DELETE CASCADE,
+      UNIQUE(from_room_id, direction)
     )`,
 
     // Crawler status table

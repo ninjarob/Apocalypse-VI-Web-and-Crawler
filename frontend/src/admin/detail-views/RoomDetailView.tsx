@@ -587,6 +587,16 @@ export const RoomDetailView: React.FC<RoomDetailViewProps> = ({
             {editExits.length === 0 && (
               <p className="no-exits">No exits defined. Click "Add Exit" to add one.</p>
             )}
+
+            {/* Save button at bottom of exits section for convenience */}
+            <div className="form-actions" style={{ marginTop: '2rem', paddingTop: '1rem', borderTop: '1px solid #ddd' }}>
+              <button className="btn-cancel" onClick={handleCancel}>
+                Cancel
+              </button>
+              <button className="btn-save" onClick={handleSave}>
+                Save Changes
+              </button>
+            </div>
           </div>
         ) : (
           // Read-only exits display

@@ -15,12 +15,14 @@ export interface Room {
   flags?: string;
   portal_key?: string;
   greater_binding_key?: string;
+  zone_exit?: boolean;
   visitCount?: number;
   firstVisited?: string;
   lastVisited?: string;
   rawText?: string;
   createdAt?: string;
   updatedAt?: string;
+  roomExits?: any[];
 }
 
 const config: EntityConfig = {

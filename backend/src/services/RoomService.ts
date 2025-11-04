@@ -22,7 +22,17 @@ export class RoomService extends BaseService {
       this.validatePositiveInteger(filters.zone_id, 'zone_id');
     }
 
-    return await repositories.rooms.findAll(filters);
+    const rooms = await repositories.rooms.findAll(filters);
+    
+    // Populate exits for each room
+    for (const room of rooms) {
+      const exits = await repositories.roomExits.findAll({ from_room_id: parseInt(room.id) });
+      room.roomExits = exits;
+      console.log(`Room ${room.id} has ${exits.length} exits`);
+    }
+
+    console.log(`Returning ${rooms.length} rooms with exits populated`);
+    return rooms;
   }
 
   /**
@@ -30,7 +40,13 @@ export class RoomService extends BaseService {
    */
   async getRoomById(id: string): Promise<Room> {
     this.validateNonEmptyString(id, 'Room ID');
-    return await repositories.rooms.findByIdOrThrow(id, 'Room');
+    const room = await repositories.rooms.findByIdOrThrow(id, 'Room');
+    
+    // Populate exits for the room
+    const exits = await repositories.roomExits.findAll({ from_room_id: parseInt(id) });
+    room.roomExits = exits;
+    
+    return room;
   }
 
   /**
@@ -38,7 +54,13 @@ export class RoomService extends BaseService {
    */
   async getRoomByName(name: string): Promise<Room> {
     this.validateNonEmptyString(name, 'Room name');
-    return await repositories.rooms.findByUniqueOrThrow(name, 'Room');
+    const room = await repositories.rooms.findByUniqueOrThrow(name, 'Room');
+    
+    // Populate exits for the room
+    const exits = await repositories.roomExits.findAll({ from_room_id: parseInt(room.id) });
+    room.roomExits = exits;
+    
+    return room;
   }
 
   /**
@@ -111,11 +133,41 @@ export class RoomService extends BaseService {
       }
     }
 
-    const updated = await repositories.rooms.update(id, updates);
+    // Handle room exits separately
+    const { roomExits, ...roomUpdates } = updates;
+    if (roomExits) {
+      await this.updateRoomExits(parseInt(id), roomExits);
+    }
+
+    const updated = await repositories.rooms.update(id, roomUpdates);
     if (!updated) {
       throw new Error(`Failed to update room ${id}`);
     }
     return updated;
+  }
+
+  /**
+   * Update room exits for a room
+   */
+  async updateRoomExits(roomId: number, exits: any[]): Promise<void> {
+    // Delete existing exits for this room
+    await repositories.roomExits.deleteByFilter({ from_room_id: roomId });
+
+    // Create new exits
+    for (const exit of exits) {
+      await repositories.roomExits.create({
+        from_room_id: roomId,
+        to_room_id: exit.to_room_id,
+        direction: exit.direction,
+        description: exit.description,
+        door_name: exit.door_name,
+        door_description: exit.door_description,
+        look_description: exit.look_description,
+        is_door: exit.is_door,
+        is_locked: exit.is_locked,
+        is_zone_exit: exit.is_zone_exit
+      });
+    }
   }
 
   /**
@@ -164,6 +216,14 @@ export class RoomService extends BaseService {
     // Verify zone exists
     await repositories.zones.findByIdOrThrow(zoneId.toString(), 'Zone');
 
-    return await repositories.rooms.findAll({ zone_id: zoneId });
+    const rooms = await repositories.rooms.findAll({ zone_id: zoneId });
+    
+    // Populate exits for each room
+    for (const room of rooms) {
+      const exits = await repositories.roomExits.findAll({ from_room_id: parseInt(room.id) });
+      room.roomExits = exits;
+    }
+
+    return rooms;
   }
 }

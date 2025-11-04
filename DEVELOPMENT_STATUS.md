@@ -39,6 +39,33 @@
 
 ### Recent Active Development
 
+#### ✅ Room Exits Population in API Responses (Latest)
+**Status**: ✅ COMPLETED - Room API endpoints now include room exits data in responses
+- **Issue Identified**: Room API calls were returning empty "exits" arrays despite exits being stored in separate room_exits table
+- **Root Cause**: RoomService methods were only fetching room data without populating the roomExits field
+- **Solution Implemented**: Updated all RoomService methods (getRooms, getRoomById, getRoomByName, getRoomsByZone) to fetch and populate roomExits for each room
+- **Data Flow**: Room exits are now included in API responses as roomExits array, allowing frontend to display exit information without separate API calls
+- **Performance**: Uses efficient database queries to fetch exits for each room
+- **Consistency**: All room retrieval methods now consistently include exit data
+- **Build Verification**: Backend compiles successfully with updated service methods
+
+#### ✅ Database Schema Synchronization (Latest)
+**Status**: ✅ COMPLETED - Synchronized room_exits table schema between database.ts and seed.ts
+- **Schema Mismatch**: database.ts was missing exit_description, look_description, door_description, is_zone_exit fields and UNIQUE constraint
+- **Field Addition**: Added missing fields to match seed.ts schema: exit_description, look_description, door_description, is_zone_exit
+- **Constraint Addition**: Added UNIQUE(from_room_id, direction) constraint to prevent duplicate exits from same room
+- **Foreign Key Updates**: Updated foreign keys to use CASCADE delete for proper data integrity
+- **Build Verification**: Database schema now matches seeding expectations and backend compiles successfully
+
+#### ✅ Exit Editing Save Button Fix (Latest)
+**Status**: ✅ COMPLETED - Added save button at bottom of exits editing section for better UX
+- **Missing Save Button**: Users could add exits and fill fields but had to scroll back up to find the save button at top of page
+- **Convenience Save Button**: Added duplicate Save/Cancel buttons at bottom of exits editing section in RoomDetailView.tsx
+- **Consistent UX**: Matches the save button placement in RoomForm.tsx modal which has buttons at bottom
+- **No Functionality Changes**: Uses existing handleSave and handleCancel functions, just provides easier access
+- **Visual Separation**: Added border and margin above the bottom save buttons for clear section separation
+- **Build Verification**: No lint errors, component compiles successfully
+
 #### ✅ Zone Connection Enhancement (Latest)
 **Status**: ✅ COMPLETED - Enhanced zone connections with detailed relationship types and descriptions
 - **Database Schema**: Added `connection_type` and `description` columns to `zone_connections` table

@@ -6,10 +6,14 @@ export interface RoomExit {
   to_room_id: number;
   direction: string;
   description?: string;
+  exit_description?: string;
+  look_description?: string;
+  door_name?: string;
+  door_description?: string;
   is_door?: boolean;
   is_locked?: boolean;
+  is_zone_exit?: boolean;
   key_vnum?: number;
-  door_name?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -18,7 +22,7 @@ const config: EntityConfig = {
   table: 'room_exits',
   idField: 'id',
   autoIncrement: true,
-  booleanFields: ['is_door', 'is_locked'],
+  booleanFields: ['is_door', 'is_locked', 'is_zone_exit'],
   sortBy: 'from_room_id, direction'
 };
 
@@ -58,6 +62,7 @@ export class RoomExitRepository extends BaseRepository<RoomExit> {
   /**
    * Get opposite direction
    */
+  // @ts-ignore - Method kept for future bidirectional exit functionality
   private getOppositeDirection(direction: string): string | null {
     const opposites: Record<string, string> = {
       'north': 'south',
@@ -75,33 +80,19 @@ export class RoomExitRepository extends BaseRepository<RoomExit> {
   }
 
   /**
-   * Create bidirectional exit
+   * Delete entities by filter
    */
-  async createBidirectional(
-    roomId1: number,
-    roomId2: number,
-    direction: string,
-    properties?: Partial<RoomExit>
-  ): Promise<{ forward: RoomExit; backward: RoomExit }> {
-    const oppositeDir = this.getOppositeDirection(direction);
-    if (!oppositeDir) {
-      throw new Error(`Invalid direction: ${direction}`);
+  async deleteByFilter(filters: Record<string, any>): Promise<number> {
+    const entities = await this.findAll(filters);
+    let deletedCount = 0;
+    
+    for (const entity of entities) {
+      const success = await this.delete(entity.id);
+      if (success) {
+        deletedCount++;
+      }
     }
-
-    const forward = await this.create({
-      from_room_id: roomId1,
-      to_room_id: roomId2,
-      direction,
-      ...properties
-    });
-
-    const backward = await this.create({
-      from_room_id: roomId2,
-      to_room_id: roomId1,
-      direction: oppositeDir,
-      ...properties
-    });
-
-    return { forward, backward };
+    
+    return deletedCount;
   }
 }
