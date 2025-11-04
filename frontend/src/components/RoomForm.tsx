@@ -45,38 +45,8 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
   const [rooms, setRooms] = useState<Room[]>([]);
   const [roomSearch, setRoomSearch] = useState('');
   const [filteredRooms, setFilteredRooms] = useState<Room[]>([]);
-
-  useEffect(() => {
-    loadZones();
-    loadRooms();
-    if (room?.roomExits) {
-      const exitData = room.roomExits.map(exit => ({
-        direction: exit.direction || '',
-        description: exit.description || '',
-        exit_description: exit.exit_description || '',
-        door_name: exit.door_name || '',
-        door_description: exit.door_description || '',
-        look_description: exit.look_description || '',
-        is_door: exit.is_door || false,
-        is_locked: exit.is_locked || false,
-        to_room_id: exit.to_room_id,
-        to_room_name: exit.to_room_id ? getRoomName(exit.to_room_id) : ''
-      }));
-      setExits(exitData);
-    }
-  }, [room]);
-
-  useEffect(() => {
-    if (roomSearch.trim()) {
-      const filtered = rooms.filter(r =>
-        r.name.toLowerCase().includes(roomSearch.toLowerCase()) ||
-        r.id.toString().includes(roomSearch)
-      );
-      setFilteredRooms(filtered.slice(0, 10)); // Limit to 10 results
-    } else {
-      setFilteredRooms([]);
-    }
-  }, [roomSearch, rooms]);
+  const [zoneSearch, setZoneSearch] = useState('');
+  const [filteredZones, setFilteredZones] = useState<any[]>([]);
 
   const loadZones = async () => {
     try {
@@ -151,6 +121,70 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
     setRoomSearch('');
   };
 
+  const selectZone = (selectedZone: any) => {
+    handleInputChange('zone_id', selectedZone.id);
+    setZoneSearch(selectedZone.name);
+    setFilteredZones([]);
+  };
+
+  useEffect(() => {
+    loadZones();
+    loadRooms();
+    if (room?.roomExits) {
+      const exitData = room.roomExits.map(exit => ({
+        direction: exit.direction || '',
+        description: exit.description || '',
+        exit_description: exit.exit_description || '',
+        door_name: exit.door_name || '',
+        door_description: exit.door_description || '',
+        look_description: exit.look_description || '',
+        is_door: exit.is_door || false,
+        is_locked: exit.is_locked || false,
+        to_room_id: exit.to_room_id,
+        to_room_name: exit.to_room_id ? getRoomName(exit.to_room_id) : ''
+      }));
+      setExits(exitData);
+    }
+  }, [room]);
+
+  useEffect(() => {
+    if (roomSearch.trim()) {
+      const filtered = rooms.filter(r =>
+        r.name.toLowerCase().includes(roomSearch.toLowerCase()) ||
+        r.id.toString().includes(roomSearch)
+      );
+      setFilteredRooms(filtered.slice(0, 10)); // Limit to 10 results
+    } else {
+      setFilteredRooms([]);
+    }
+  }, [roomSearch, rooms]);
+
+  useEffect(() => {
+    if (zoneSearch.trim()) {
+      const filtered = zones.filter((zone: any) =>
+        zone.name.toLowerCase().includes(zoneSearch.toLowerCase()) ||
+        zone.id.toString().includes(zoneSearch)
+      );
+      setFilteredZones(filtered.slice(0, 10)); // Limit to 10 results
+    } else {
+      setFilteredZones([]);
+    }
+  }, [zoneSearch, zones]);
+
+  // Handle ESC key to close modal
+  useEffect(() => {
+    const handleKeyDown = (event: any) => {
+      if (event.key === 'Escape') {
+        onCancel();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [onCancel]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -183,7 +217,7 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
   ];
 
   return (
-    <div className="modal-overlay" onClick={onCancel}>
+    <div className="modal-overlay">
       <div className="modal-content room-form-modal" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h2>{room ? 'Edit Room' : 'Add Room'}</h2>
@@ -222,16 +256,33 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
               <div className="form-row">
                 <div className="form-group">
                   <label htmlFor="zone_id">Zone</label>
-                  <select
-                    id="zone_id"
-                    value={formData.zone_id || ''}
-                    onChange={(e) => handleInputChange('zone_id', e.target.value ? parseInt(e.target.value) : undefined)}
-                  >
-                    <option value="">Select Zone</option>
-                    {zones.map(zone => (
-                      <option key={zone.id} value={zone.id}>{zone.name}</option>
-                    ))}
-                  </select>
+                  <div className="zone-lookup">
+                    <input
+                      type="text"
+                      id="zone_id"
+                      value={zoneSearch || (formData.zone_id ? zones.find(z => z.id === formData.zone_id)?.name || '' : '')}
+                      onChange={(e) => {
+                        setZoneSearch(e.target.value);
+                        if (!e.target.value) {
+                          handleInputChange('zone_id', undefined);
+                        }
+                      }}
+                      placeholder="Search zones..."
+                    />
+                    {filteredZones.length > 0 && (
+                      <div className="zone-suggestions">
+                        {filteredZones.map(zone => (
+                          <div
+                            key={zone.id}
+                            className="zone-suggestion"
+                            onClick={() => selectZone(zone)}
+                          >
+                            {zone.name} (ID: {zone.id})
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div className="form-group">
@@ -496,7 +547,7 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
               ))}
 
               {exits.length === 0 && (
-                <p className="no-exits">No exits defined. Click "Add Exit" to add one.</p>
+                <p className="no-exits">No exits defined. Click &quot;Add Exit&quot; to add one.</p>
               )}
             </div>
           </div>

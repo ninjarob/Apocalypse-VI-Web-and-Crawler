@@ -35,36 +35,37 @@ export type {
 export const api = {
   // Generic entity methods
   async getAll<T>(endpoint: string, filters?: Record<string, any>): Promise<T[]> {
-    const params = new URLSearchParams();
+    let url = `${API_BASE}/${endpoint}`;
     if (filters) {
-      Object.entries(filters).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          params.append(key, String(value));
-        }
-      });
+      const queryParams = Object.entries(filters)
+        .filter(([_, value]) => value !== undefined && value !== null)
+        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`)
+        .join('&');
+      if (queryParams) {
+        url += `?${queryParams}`;
+      }
     }
-    const url = `${API_BASE}${endpoint}${params.toString() ? `?${params.toString()}` : ''}`;
     const response = await axios.get<T[]>(url);
     return response.data;
   },
 
   async getById<T>(endpoint: string, id: string | number): Promise<T> {
-    const response = await axios.get<T>(`${API_BASE}${endpoint}/${id}`);
+    const response = await axios.get<T>(`${API_BASE}/${endpoint}/${id}`);
     return response.data;
   },
 
   async create<T>(endpoint: string, data: Partial<T>): Promise<T> {
-    const response = await axios.post<T>(`${API_BASE}${endpoint}`, data);
+    const response = await axios.post<T>(`${API_BASE}/${endpoint}`, data);
     return response.data;
   },
 
   async update<T>(endpoint: string, id: string | number, data: Partial<T>): Promise<T> {
-    const response = await axios.put<T>(`${API_BASE}${endpoint}/${id}`, data);
+    const response = await axios.put<T>(`${API_BASE}/${endpoint}/${id}`, data);
     return response.data;
   },
 
   async delete(endpoint: string, id: string | number): Promise<void> {
-    await axios.delete(`${API_BASE}${endpoint}/${id}`);
+    await axios.delete(`${API_BASE}/${endpoint}/${id}`);
   },
 
   // Legacy generic methods (kept for backwards compatibility)

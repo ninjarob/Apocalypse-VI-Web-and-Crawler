@@ -39,6 +39,17 @@
 
 ### Recent Active Development
 
+#### ✅ Admin Panel Modal Improvements (Latest)
+**Status**: ✅ IMPLEMENTED - Enhanced modal UX for room creation/editing
+- **Close Button Positioning**: Moved modal close "x" button to upper right corner using flexbox layout
+- **Keyboard Navigation**: Added ESC key support to close modal
+- **Click Behavior**: Removed outside-click-to-close to prevent accidental modal dismissal
+- **CSS Styling**: Added proper modal-header and close-button styles for consistent positioning
+- **Zone Selection**: Replaced dropdown with typeahead input for better zone search and selection
+- **Lookup Components**: Added reusable CSS styles for searchable dropdowns with suggestions
+- **API Integration**: Fixed URL construction in api.ts to properly form /api/zones endpoints
+- **Typeahead Functionality**: Zone suggestions now load and display correctly in room creation modal
+
 #### ✅ Admin Panel Room Creation (Latest)
 **Status**: ✅ IMPLEMENTED - Room creation functionality now available in main admin panel
 - **Configuration Update**: Changed rooms entity `readOnly: false`

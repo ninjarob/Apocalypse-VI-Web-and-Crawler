@@ -44,3 +44,37 @@
   gap: 10px;
   margin-top: var(--spacing-xl);
 }
+
+/* Lookup components for searchable dropdowns */
+.room-lookup, .zone-lookup {
+  position: relative;
+}
+
+.room-suggestions, .zone-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-top: none;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.room-suggestion, .zone-suggestion {
+  padding: 8px 10px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color var(--transition-fast);
+}
+
+.room-suggestion:hover, .zone-suggestion:hover {
+  background-color: var(--bg-hover);
+}
+
+.room-suggestion:last-child, .zone-suggestion:last-child {
+  border-bottom: none;
+}
