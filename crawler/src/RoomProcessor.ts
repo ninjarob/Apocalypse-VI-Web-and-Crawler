@@ -57,8 +57,8 @@ export class RoomProcessor {
 
     // Step 1: Look at current room
     logger.info('Step 1: Examining current room...');
-    await this.delay(1000);
-    const lookResponse = await this.config.mudClient.sendAndWait('look', 500);
+    await this.delay(this.config.delayBetweenActions);
+    const lookResponse = await this.config.mudClient.sendAndWait('look', this.config.delayBetweenActions);
     this.actionsUsed++;
 
     const roomData = this.parseLookOutput(lookResponse);
@@ -69,8 +69,8 @@ export class RoomProcessor {
 
     // Step 2: Check visible exits
     logger.info('Step 2: Checking visible exits...');
-    await this.delay(500);
-    const exitsResponse = await this.config.mudClient.sendAndWait('exits', 500);
+    await this.delay(this.config.delayBetweenActions);
+    const exitsResponse = await this.config.mudClient.sendAndWait('exits', this.config.delayBetweenActions);
     this.actionsUsed++;
 
     const visibleExits = this.parseExitsOutput(exitsResponse);
@@ -98,8 +98,8 @@ export class RoomProcessor {
 
     // Step 6: Associate with zone
     logger.info('Step 6: Associating with zone...');
-    await this.delay(500);
-    const zoneResponse = await this.config.mudClient.sendAndWait('who -z', 500);
+    await this.delay(this.config.delayBetweenActions);
+    const zoneResponse = await this.config.mudClient.sendAndWait('who -z', this.config.delayBetweenActions);
     this.actionsUsed++;
 
     roomData.zone = this.extractCurrentZone(zoneResponse);
@@ -235,9 +235,9 @@ export class RoomProcessor {
 
     for (const keyword of aiKeywords) {
       logger.info(`   Examining AI-suggested object: ${keyword}`);
-      await this.delay(500);
+      await this.delay(this.config.delayBetweenActions);
 
-      const examineResponse = await this.config.mudClient.sendAndWait(`look ${keyword}`, 500);
+      const examineResponse = await this.config.mudClient.sendAndWait(`look ${keyword}`, this.config.delayBetweenActions);
       this.actionsUsed++;
 
       // If we get a useful response, store it
@@ -327,8 +327,8 @@ Single word:`;
       // Get a look description (this is our only action - no movement)
       let lookDescription = '';
       try {
-        await this.delay(500);
-        const lookResponse = await this.config.mudClient.sendAndWait(`look ${direction}`, 500);
+        await this.delay(this.config.delayBetweenActions);
+        const lookResponse = await this.config.mudClient.sendAndWait(`look ${direction}`, this.config.delayBetweenActions);
         this.actionsUsed++;
 
         if (!lookResponse.match(/You see nothing special/i) &&
@@ -357,8 +357,8 @@ Single word:`;
           // Get door description if we have a door name
           let doorDescription = '';
           if (blockageInfo.doorName) {
-            await this.delay(500);
-            const lookResponse = await this.config.mudClient.sendAndWait(`look ${blockageInfo.doorName}`, 500);
+            await this.delay(this.config.delayBetweenActions);
+            const lookResponse = await this.config.mudClient.sendAndWait(`look ${blockageInfo.doorName}`, this.config.delayBetweenActions);
             this.actionsUsed++;
             doorDescription = this.extractDoorDescription(lookResponse);
           }
@@ -433,9 +433,9 @@ Single word:`;
       if (shortDesc.length > 100) continue; // Already have detailed description
 
       logger.info(`   Examining object: ${objectName}`);
-      await this.delay(500);
+      await this.delay(this.config.delayBetweenActions);
 
-      const examineResponse = await this.config.mudClient.sendAndWait(`look ${objectName}`, 500);
+      const examineResponse = await this.config.mudClient.sendAndWait(`look ${objectName}`, this.config.delayBetweenActions);
       this.actionsUsed++;
 
       // Update description if we got more detail
@@ -554,8 +554,8 @@ Analysis:`;
 
     try {
       // First, try to open the door
-      await this.delay(500);
-      const openResponse = await this.config.mudClient.sendAndWait(`open ${doorName}`, 500);
+      await this.delay(this.config.delayBetweenActions);
+      const openResponse = await this.config.mudClient.sendAndWait(`open ${doorName}`, this.config.delayBetweenActions);
       this.actionsUsed++;
 
       if (openResponse.match(/(?:opens?|unlocks?|clicks?)/i) && !openResponse.match(/(?:can't|cannot|won't|doesn't)/i)) {
@@ -564,8 +564,8 @@ Analysis:`;
         logger.info(`   ✅ Door opened successfully: ${doorName}`);
 
         // Look in the direction after opening
-        await this.delay(500);
-        const openLookResponse = await this.config.mudClient.sendAndWait(`look ${direction}`, 500);
+        await this.delay(this.config.delayBetweenActions);
+        const openLookResponse = await this.config.mudClient.sendAndWait(`look ${direction}`, this.config.delayBetweenActions);
         this.actionsUsed++;
 
         if (!openLookResponse.match(/You see nothing special/i) &&
@@ -579,8 +579,8 @@ Analysis:`;
         }
 
         // Now try to close the door
-        await this.delay(500);
-        const closeResponse = await this.config.mudClient.sendAndWait(`close ${doorName}`, 500);
+        await this.delay(this.config.delayBetweenActions);
+        const closeResponse = await this.config.mudClient.sendAndWait(`close ${doorName}`, this.config.delayBetweenActions);
         this.actionsUsed++;
 
         if (closeResponse.match(/(?:closes?|shuts?|clicks?)/i) && !closeResponse.match(/(?:can't|cannot|won't|doesn't)/i)) {
@@ -588,8 +588,8 @@ Analysis:`;
           logger.info(`   ✅ Door closed successfully: ${doorName}`);
 
           // Look in the direction after closing
-          await this.delay(500);
-          const closedLookResponse = await this.config.mudClient.sendAndWait(`look ${direction}`, 500);
+          await this.delay(this.config.delayBetweenActions);
+          const closedLookResponse = await this.config.mudClient.sendAndWait(`look ${direction}`, this.config.delayBetweenActions);
           this.actionsUsed++;
 
           if (!closedLookResponse.match(/You see nothing special/i) &&

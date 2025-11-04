@@ -132,8 +132,8 @@ export class DocumentHelpTask implements CrawlerTask {
     try {
       // Step 1: Get initial state
       logger.info('Step 1: Getting initial game state...');
-      await this.delay(2000);
-      await this.config.mudClient.sendAndWait('look', 2000);
+      await this.delay(this.config.delayBetweenActions);
+      await this.config.mudClient.sendAndWait('look', this.config.delayBetweenActions);
       logger.info('✓ Initial state received');
 
       // Step 2: Cache existing help entries to avoid repeated API calls
@@ -211,13 +211,13 @@ export class DocumentHelpTask implements CrawlerTask {
           // Every 10 topics, reset context
           if (processed % 10 === 0) {
             logger.info('  Resetting context...');
-            await this.config.mudClient.sendAndWait('look', 1000);
-            await this.delay(1000);
+            await this.config.mudClient.sendAndWait('look', this.config.delayBetweenActions);
+            await this.delay(this.config.delayBetweenActions);
           }
 
         } catch (error) {
           logger.error(`  Error processing topic "${topic}":`, error);
-          await this.delay(2000);
+          await this.delay(this.config.delayBetweenActions);
         }
 
         // Check max actions limit
@@ -249,8 +249,8 @@ export class DocumentHelpTask implements CrawlerTask {
 
     while (pageCount < maxPages) {
       const response = pageCount === 0 
-        ? await this.config.mudClient.sendAndWait(helpCommand, 2000)
-        : await this.config.mudClient.sendAndWait('', 2000); // Send newline for next page
+        ? await this.config.mudClient.sendAndWait(helpCommand, this.config.delayBetweenActions)
+        : await this.config.mudClient.sendAndWait('', this.config.delayBetweenActions); // Send newline for next page
       
       fullResponse += response;
       pageCount++;

@@ -46,7 +46,7 @@ export class LearnGameTask implements CrawlerTask {
       // Step 1: Get initial state
       logger.info('Step 1: Getting initial game state...');
       await this.delay(2000);
-      const initialResponse = await this.config.mudClient.sendAndWait('look', 2000);
+      const initialResponse = await this.config.mudClient.sendAndWait('look', this.config.delayBetweenActions);
       logger.info('✓ Initial state received');
 
       // Parse initial room

@@ -70,8 +70,8 @@ export class DocumentZoneTask implements CrawlerTask {
     try {
       // Step 1: Determine current zone
       logger.info('Step 1: Determining current zone...');
-      await this.delay(1000);
-      const zoneInfo = await this.config.mudClient.sendAndWait('who -z', 2000);
+      await this.delay(2000);
+      const zoneInfo = await this.config.mudClient.sendAndWait('who -z', this.config.delayBetweenActions);
       this.currentZone = this.extractCurrentZone(zoneInfo);
       
       if (!this.currentZone) {
@@ -166,8 +166,8 @@ export class DocumentZoneTask implements CrawlerTask {
    * Update current room information after movement
    */
   private async updateCurrentRoomInfo(): Promise<void> {
-    await this.delay(250);
-    const lookResponse = await this.config.mudClient.sendAndWait('look', 1000);
+    await this.delay(this.config.delayBetweenActions);
+    const lookResponse = await this.config.mudClient.sendAndWait('look', this.config.delayBetweenActions);
     this.actionsUsed++;
 
     const roomData = this.roomProcessor['parseLookOutput'](lookResponse);
@@ -651,8 +651,8 @@ export class DocumentZoneTask implements CrawlerTask {
       }
 
       // Get current room's available exits
-      await this.delay(250);
-      const exitsResponse = await this.config.mudClient.sendAndWait('exits', 1000);
+      await this.delay(this.config.delayBetweenActions);
+      const exitsResponse = await this.config.mudClient.sendAndWait('exits', this.config.delayBetweenActions);
       this.actionsUsed++;
 
       const currentExits = this.parseExitsOutput(exitsResponse);
@@ -702,8 +702,8 @@ export class DocumentZoneTask implements CrawlerTask {
 
           if (backDirection) {
             logger.info(`   Backtracking ${backDirection}`);
-            await this.delay(1000);
-            await this.config.mudClient.sendAndWait(backDirection, 2000);
+            await this.delay(this.config.delayBetweenActions);
+            await this.config.mudClient.sendAndWait(backDirection, this.config.delayBetweenActions);
             this.actionsUsed++;
             await this.updateCurrentRoomInfo();
           }
@@ -716,9 +716,9 @@ export class DocumentZoneTask implements CrawlerTask {
       if (!exit) continue;
 
       logger.info(`🧭 Moving ${directionToTry} to: ${exit.description}...`);
-      await this.delay(1000);
+      await this.delay(this.config.delayBetweenActions);
 
-      const moveResponse = await this.config.mudClient.sendAndWait(directionToTry, 2000);
+      const moveResponse = await this.config.mudClient.sendAndWait(directionToTry, this.config.delayBetweenActions);
       this.actionsUsed++;
 
       // Mark this direction as explored from current room
@@ -740,8 +740,8 @@ export class DocumentZoneTask implements CrawlerTask {
       const newCoordinates = this.moveCoordinates(this.currentCoordinates, directionToTry);
 
       // Verify we're still in the same zone
-      await this.delay(250);
-      const zoneCheck = await this.config.mudClient.sendAndWait('who -z', 2000);
+      await this.delay(this.config.delayBetweenActions);
+      const zoneCheck = await this.config.mudClient.sendAndWait('who -z', this.config.delayBetweenActions);
       this.actionsUsed++;
 
       const currentZone = this.extractCurrentZone(zoneCheck);
@@ -767,8 +767,8 @@ export class DocumentZoneTask implements CrawlerTask {
         // Go back
         const oppositeDir = this.getOppositeDirection(directionToTry);
         if (oppositeDir) {
-          await this.delay(1000);
-          await this.config.mudClient.sendAndWait(oppositeDir, 2000);
+          await this.delay(this.config.delayBetweenActions);
+          await this.config.mudClient.sendAndWait(oppositeDir, this.config.delayBetweenActions);
           this.actionsUsed++;
         }
 
@@ -784,8 +784,8 @@ export class DocumentZoneTask implements CrawlerTask {
         logger.warn('⚠️  Could not parse room name, going back...');
         const oppositeDir = this.getOppositeDirection(directionToTry);
         if (oppositeDir) {
-          await this.delay(1000);
-          await this.config.mudClient.sendAndWait(oppositeDir, 2000);
+          await this.delay(this.config.delayBetweenActions);
+          await this.config.mudClient.sendAndWait(oppositeDir, this.config.delayBetweenActions);
           this.actionsUsed++;
         }
         continue;
@@ -936,8 +936,8 @@ export class DocumentZoneTask implements CrawlerTask {
   private async navigatePath(path: string[]): Promise<void> {
     for (const dir of path) {
       logger.info(`🧭 Navigating ${dir}...`);
-      await this.delay(1000);
-      const response = await this.config.mudClient.sendAndWait(dir, 2000);
+      await this.delay(this.config.delayBetweenActions);
+      const response = await this.config.mudClient.sendAndWait(dir, this.config.delayBetweenActions);
       this.actionsUsed++;
       if (response.includes("Alas, you cannot go that way")) {
         logger.error(`❌ Navigation blocked at ${dir}`);

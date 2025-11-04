@@ -48,12 +48,12 @@ export class PlayGameTask implements CrawlerTask {
       logger.info('Step 1: Checking character status...');
       await this.delay(2000);
       
-      const scoreResponse = await this.config.mudClient.sendAndWait('score', 2000);
+      const scoreResponse = await this.config.mudClient.sendAndWait('score', this.config.delayBetweenActions);
       logger.info('Character status:');
       logger.info(scoreResponse.slice(0, 300));
       
       await this.delay(1000);
-      const lookResponse = await this.config.mudClient.sendAndWait('look', 2000);
+      const lookResponse = await this.config.mudClient.sendAndWait('look', this.config.delayBetweenActions);
       
       // Parse initial room
       const parsed = this.parser.parse(lookResponse);

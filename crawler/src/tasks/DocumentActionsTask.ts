@@ -66,8 +66,8 @@ export class DocumentActionsTask implements CrawlerTask {
     try {
       // Step 1: Get initial state
       logger.info('Step 1: Getting initial game state...');
-      await this.delay(2000);
-      const lookResponse = await this.config.mudClient.sendAndWait('look', 2000);
+      await this.delay(this.config.delayBetweenActions);
+      const lookResponse = await this.config.mudClient.sendAndWait('look', this.config.delayBetweenActions);
       logger.info('✓ Initial state received');
 
       // Step 2: Cache existing actions to avoid repeated API calls
@@ -77,7 +77,7 @@ export class DocumentActionsTask implements CrawlerTask {
 
       // Step 3: Get list of commands
       logger.info('Step 3: Requesting command list...');
-      const commandsResponse = await this.config.mudClient.sendAndWait('commands', 3000);
+      const commandsResponse = await this.config.mudClient.sendAndWait('commands', this.config.delayBetweenActions);
       logger.info(`✓ Commands list received (${commandsResponse.length} chars)`);
       
       // Parse commands from the response
@@ -127,13 +127,13 @@ export class DocumentActionsTask implements CrawlerTask {
           // Every 10 commands, reset context
           if (processed % 10 === 0) {
             logger.info('  Resetting context...');
-            await this.config.mudClient.sendAndWait('look', 1000);
-            await this.delay(1000);
+            await this.config.mudClient.sendAndWait('look', this.config.delayBetweenActions);
+            await this.delay(this.config.delayBetweenActions);
           }
           
         } catch (error) {
           logger.error(`  Error processing command "${command}":`, error);
-          await this.delay(2000);
+          await this.delay(this.config.delayBetweenActions);
         }
 
         // Check max actions limit
@@ -317,7 +317,7 @@ export class DocumentActionsTask implements CrawlerTask {
     
     // Always test the basic command first
     try {
-      const output = await this.config.mudClient.sendAndWait(command, 2000);
+      const output = await this.config.mudClient.sendAndWait(command, this.config.delayBetweenActions);
       const success = this.determineTestSuccess(output);
       testResults.push({ command, output, success });
     } catch (error) {
@@ -330,8 +330,8 @@ export class DocumentActionsTask implements CrawlerTask {
     
     for (const variation of variations.slice(0, 3)) { // Limit to 3 additional tests
       try {
-        await this.delay(500); // Small delay between tests
-        const output = await this.config.mudClient.sendAndWait(variation, 2000);
+        await this.delay(this.config.delayBetweenActions); // Small delay between tests
+        const output = await this.config.mudClient.sendAndWait(variation, this.config.delayBetweenActions);
         const success = this.determineTestSuccess(output);
         testResults.push({ command: variation, output, success });
       } catch (error) {
@@ -544,8 +544,8 @@ export class DocumentActionsTask implements CrawlerTask {
 
     while (pageCount < maxPages) {
       const response = pageCount === 0 
-        ? await this.config.mudClient.sendAndWait(helpCommand, 2000)
-        : await this.config.mudClient.sendAndWait('', 2000); // Send newline for next page
+        ? await this.config.mudClient.sendAndWait(helpCommand, this.config.delayBetweenActions)
+        : await this.config.mudClient.sendAndWait('', this.config.delayBetweenActions); // Send newline for next page
       
       fullResponse += response;
       pageCount++;
