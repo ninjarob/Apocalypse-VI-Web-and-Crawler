@@ -2,6 +2,7 @@
 import { useLocation } from 'react-router-dom';
 import { api } from '../api';
 import { SearchBox } from '../components';
+import RoomForm from '../components/RoomForm';
 import {
   ENTITY_CONFIGS,
   Entity,
@@ -16,7 +17,8 @@ import {
   HelpEntryDetailView,
   EditFormModal,
   AbilityScoresModal,
-  renderFieldValue
+  renderFieldValue,
+  RoomsList
 } from '../admin';
 
 function Admin() {
@@ -49,6 +51,8 @@ function Admin() {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortField, setSortField] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [showRoomForm, setShowRoomForm] = useState(false);
+  const [editingRoom, setEditingRoom] = useState<Entity | null>(null);
 
   // Reset all drilled-in states when navigating to /admin
   useEffect(() => {
@@ -79,6 +83,12 @@ function Admin() {
     loadEntities();
   }, [selectedEntity]);
 
+  const loadRoomRelatedData = async () => {
+    const [zones, exits] = await Promise.all([api.get('/zones'), api.get('/room_exits')]);
+    setAllZones(zones);
+    setRoomExits(exits);
+  };
+
   const loadEntities = async () => {
     setLoading(true);
     try {
@@ -95,12 +105,10 @@ function Admin() {
         setZoneConnections(connections);
       }
 
-      // If loading rooms, also load zones for zone name lookup
+      // If loading rooms, also load zones and exits for room lookup
       if (selectedEntity.endpoint === 'rooms') {
-        const [zones, exits] = await Promise.all([api.get('/zones'), api.get('/room_exits')]);
-        setAllZones(zones);
+        await loadRoomRelatedData();
         setAllRooms(data);
-        setRoomExits(exits);
       }
     } catch (error) {
       console.error('Error loading entities:', error);
@@ -110,9 +118,16 @@ function Admin() {
   };
 
   const handleCreate = () => {
-    setEditingEntity(null);
-    setFormData({});
-    setShowForm(true);
+    if (selectedEntity.endpoint === 'rooms') {
+      // Use RoomForm for room creation
+      setEditingRoom(null);
+      setShowRoomForm(true);
+    } else {
+      // Use generic form for other entities
+      setEditingEntity(null);
+      setFormData({});
+      setShowForm(true);
+    }
   };
 
   const handleEdit = (entity: Entity) => {
@@ -150,13 +165,14 @@ function Admin() {
   const handleZoneClick = async (zone: Entity) => {
     setSelectedZone(zone);
     try {
-      const [rooms, exits] = await Promise.all([
-        api.get(`/rooms?zone_id=${zone.id}`),
-        api.get('/room_exits')
-      ]);
+      const rooms = await api.get(`/rooms?zone_id=${zone.id}`);
       setZoneRooms(rooms);
       setAllRooms(rooms);
-      setRoomExits(exits);
+      
+      // Load room-related data if not already loaded
+      if (allZones.length === 0 || roomExits.length === 0) {
+        await loadRoomRelatedData();
+      }
     } catch (error) {
       console.error('Error loading zone rooms:', error);
       setZoneRooms([]);
@@ -170,8 +186,8 @@ function Admin() {
 
   const handleAddRoomToZone = () => {
     if (!selectedZone) return;
-    
-    // Set form data with pre-selected zone
+
+    // Use RoomForm for room creation with pre-selected zone
     setFormData({
       zone_id: selectedZone.id,
       name: '',
@@ -186,10 +202,8 @@ function Admin() {
       npcs: [],
       items: []
     });
-    setEditingEntity(null);
-    setShowForm(true);
-    // Switch to rooms entity type so the form uses room fields
-    setSelectedEntity(ENTITY_CONFIGS.find(config => config.endpoint === 'rooms')!);
+    setEditingRoom(null);
+    setShowRoomForm(true);
   };
 
   const handleRoomClick = async (room: Entity) => {
@@ -200,15 +214,12 @@ function Admin() {
     } else {
       setRoomBackContext('rooms');
     }
-    // If we don't have exits loaded, load them
-    if (roomExits.length === 0) {
-      try {
-        const exits = await api.get('/room_exits');
-        setRoomExits(exits);
-      } catch (error) {
-        console.error('Error loading room exits:', error);
-      }
+    
+    // Load room-related data if not already loaded
+    if (allZones.length === 0 || roomExits.length === 0) {
+      await loadRoomRelatedData();
     }
+    
     // Add this room to allRooms if not already there
     setAllRooms(prev => {
       if (!prev.find(r => r.id === room.id)) {
@@ -335,6 +346,23 @@ function Admin() {
     } catch (error) {
       console.error('Error saving entity:', error);
       alert('Failed to save entity');
+    }
+  };
+
+  const handleSaveRoom = async (roomData: any) => {
+    try {
+      if (editingRoom) {
+        // Update existing room
+        await api.put(`/rooms/${editingRoom.id}`, roomData);
+      } else {
+        // Create new room
+        await api.post('/rooms', roomData);
+      }
+      setShowRoomForm(false);
+      loadEntities(); // Refresh the rooms list
+    } catch (error) {
+      console.error('Failed to save room:', error);
+      alert('Failed to save room. Please try again.');
     }
   };
 
@@ -520,6 +548,13 @@ function Admin() {
 
             {loading ? (
               <div className="loading">Loading...</div>
+            ) : selectedEntity.endpoint === 'rooms' ? (
+              <RoomsList
+                rooms={filteredEntities}
+                roomExits={roomExits}
+                handleRoomClick={handleRoomClick}
+                emptyMessage={`No rooms found. Click "Create New" to add one.`}
+              />
             ) : (
               <div className="entity-table-container">
                 <table className="entity-table">
@@ -630,6 +665,14 @@ function Admin() {
         selectedAbility={selectedAbility}
         abilityScores={abilityScores}
       />
+
+      {showRoomForm && (
+        <RoomForm
+          room={editingRoom as any}
+          onSave={handleSaveRoom}
+          onCancel={() => setShowRoomForm(false)}
+        />
+      )}
     </div>
   );
 }

@@ -122,7 +122,7 @@ export const ENTITY_CONFIGS: EntityConfig[] = [
   {
     name: 'Rooms',
     endpoint: 'rooms',
-    readOnly: true,
+    readOnly: false,
     clickable: true,
     fields: [
       { name: 'id', type: 'number', label: 'ID', hideInTable: true },
