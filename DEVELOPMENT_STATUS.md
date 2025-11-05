@@ -12,6 +12,17 @@
 - **Build Verification**: Seed script compiles successfully and will populate database with current 3-room baseline
 - **Crawler Foundation**: Provides proper starting point for coordinate-based zone crawler with verified room connections
 
+#### ✅ Persistent Logging Fix (Latest)
+**Status**: ✅ COMPLETED - Fixed current.log file creation path and verified persistent logging is working
+- **Path Resolution Issue**: Logger was writing to incorrect path `C:\work\other\logs` instead of `crawler/logs/`
+- **Root Cause**: `path.join(__dirname, '../../../logs')` from `crawler/src/` resolved to parent directory instead of crawler logs
+- **Path Fix**: Changed to `path.join(__dirname, '../logs')` to correctly resolve to `crawler/logs/`
+- **Log Creation**: current.log file now properly created in `crawler/logs/` directory
+- **Persistent Logging**: Winston transport configured to keep current.log for analysis (not archived)
+- **Log Archiver**: Correctly excludes current.log from automatic archiving while archiving timestamped logs
+- **Verification**: Crawler runs create current.log with detailed JSON-formatted logs for analysis
+- **Build Verification**: Logger compiles successfully with corrected path resolution
+
 #### ✅ Location Verification Warning Fix (Latest)
 **Status**: ✅ COMPLETED - Improved location verification in coordinate-based crawler to handle minor room name variations
 - **Issue Identified**: Crawler showing location verification warnings despite room names appearing identical (e.g., "South Temple Street" vs "South Teemple Street")

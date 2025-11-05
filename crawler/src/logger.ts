@@ -2,7 +2,7 @@ import winston from 'winston';
 import path from 'path';
 
 // Logs should go to crawler/logs/ regardless of where compiled code is
-const logDir = path.join(__dirname, '../../../logs');
+const logDir = path.join(__dirname, '../logs');
 
 // Create timestamped filenames for each run
 const timestamp = new Date().toISOString().replace(/:/g, '-').replace(/\..+/, '');
