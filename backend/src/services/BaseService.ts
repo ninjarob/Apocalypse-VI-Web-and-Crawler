@@ -12,7 +12,7 @@ export abstract class BaseService {
    * Sanitizes user input by trimming whitespace and removing null bytes
    */
   protected sanitizeString(value: string | null | undefined): string | null {
-    if (!value) {return null;}
+    if (!value || typeof value !== 'string') {return null;}
     return value.trim().replace(/\0/g, '');
   }
 
@@ -21,7 +21,7 @@ export abstract class BaseService {
    * Throws BadRequestError if validation fails
    */
   protected validateNonEmptyString(value: string | undefined | null, fieldName: string): void {
-    if (!value || value.trim() === '') {
+    if (typeof value !== 'string' || !value || value.trim() === '') {
       throw new BadRequestError(`${fieldName} is required`);
     }
   }

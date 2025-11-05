@@ -240,8 +240,16 @@ export class RoomProcessor {
       const examineResponse = await this.config.mudClient.sendAndWait(`look ${keyword}`, this.config.delayBetweenActions);
       this.actionsUsed++;
 
+      // Check if the object actually exists
+      if (examineResponse.match(/You do not see that here/i) ||
+          examineResponse.match(/You don't see/i) ||
+          examineResponse.match(/There is no/i)) {
+        logger.info(`   ❌ Object "${keyword}" does not exist in this room, skipping`);
+        continue;
+      }
+
       // If we get a useful response, store it
-      if (examineResponse && examineResponse.length > 50 && !examineResponse.match(/You don't see/i)) {
+      if (examineResponse && examineResponse.length > 50) {
         const cleanDesc = this.filterOutput(examineResponse);
         roomData.objects.set(keyword, cleanDesc);
         logger.info(`   ✓ Found description for: ${keyword}`);
@@ -253,17 +261,28 @@ export class RoomProcessor {
    * Use AI to identify significant objects in room description worth examining
    */
   private async extractKeywordsWithAI(description: string): Promise<string[]> {
-    const prompt = `You are analyzing a room description from a MUD (text-based RPG) game. Your task is to identify the SINGLE MOST IMPORTANT object or feature to examine with "look [word]".
+    const prompt = `You are analyzing a room description from a MUD (text-based RPG) game. Your task is to identify objects that are EXPLICITLY PRESENT in the room and can be examined with "look [word]".
 
 Room Description:
 ${description}
 
 CRITICAL REQUIREMENTS:
+- ONLY suggest objects that are clearly present and examinable in this room
+- Look for concrete objects like: fountain, altar, statue, sign, board, well, chest, throne, pedestal, pillar, column, arch, bridge
+- The object MUST be mentioned as actually being in the room (not just nearby or in another area)
 - Return ONLY ONE single word (no spaces, no multi-word phrases)
-- Choose the most significant, examinable object in the room
-- Prefer concrete objects like: fountain, altar, statue, sign, board, well, chest, throne
-- Avoid: generic words, directions, or multi-word names like "pipe entrance"
-- If no suitable single-word object exists, return nothing
+- If no suitable object exists that is confirmed to be in this room, return nothing
+
+Examples of VALID objects:
+- "A large fountain sits in the center." → fountain
+- "An ancient altar rests here." → altar
+- "A marble statue stands tall." → statue
+
+Examples of INVALID objects (do not suggest):
+- Objects mentioned as being in other rooms or areas
+- Objects that might be nearby but not in this room
+- Generic words or directions
+- Objects that are not confirmed to exist here
 
 Return ONLY the single word, or empty if none found. No explanations, no punctuation.
 
@@ -272,8 +291,26 @@ Single word:`;
     try {
       const response = await this.config.aiAgent.extractKeywords(description, 1);
 
-      logger.info(`   AI identified object to examine: ${response.join(', ')}`);
-      return response;
+      // Filter out invalid responses and check if the object actually exists
+      const validKeywords: string[] = [];
+      for (const keyword of response) {
+        if (keyword && keyword.trim().length > 0 && keyword.split(' ').length === 1) {
+          // Additional validation: check if the keyword appears in the description
+          if (description.toLowerCase().includes(keyword.toLowerCase())) {
+            validKeywords.push(keyword.trim());
+          } else {
+            logger.info(`   AI suggested "${keyword}" but it's not in the room description, skipping`);
+          }
+        }
+      }
+
+      if (validKeywords.length > 0) {
+        logger.info(`   AI identified object to examine: ${validKeywords.join(', ')}`);
+        return validKeywords;
+      } else {
+        logger.info(`   AI returned no valid objects to examine`);
+        return [];
+      }
 
     } catch (error) {
       logger.warn('AI keyword extraction failed, falling back to basic patterns:', error);
@@ -773,7 +810,8 @@ Analysis:`;
   /**
    * Filter unwanted MUD artifacts
    */
-  private filterOutput(output: string): string {
+  private filterOutput(output: any): string {
+    if (!output || typeof output !== 'string') {return '';}
     let filtered = output;
     filtered = filtered.replace(/\x1B\[[0-9;]*[mGKH]/g, '');
     filtered = filtered.replace(/<\s*\d+H\s+\d+M\s+\d+V[^>]*>/g, '');
@@ -782,6 +820,11 @@ Analysis:`;
     filtered = filtered.replace(/\[.*?Return to continue.*?\]/g, '');
     filtered = filtered.replace(/\r/g, '');
     filtered = filtered.replace(/\n{3,}/g, '\n\n');
+    
+    // Filter out NPC movement messages that can be mistaken for room names
+    filtered = filtered.replace(/^(The|A|An)\s+.+?\s+(leaves?|arrives?|enters?|goes?|walks?|runs?|flies?|crawls?|swims?)\s+(north|south|east|west|up|down|in|out|enter|exit|through)\.?$/gi, '');
+    filtered = filtered.replace(/^(The|A|An)\s+.+?\s+(has (left|arrived|entered)|goes?|walks?|runs?|flies?|crawls?|swims?)\s+(to|from|through)\s+(the\s+)?(north|south|east|west|up|down|in|out|enter|exit)\.?$/gi, '');
+    
     return filtered.trim();
   }
 

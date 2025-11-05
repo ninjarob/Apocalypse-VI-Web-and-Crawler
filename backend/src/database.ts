@@ -67,19 +67,27 @@ async function createTables() {
   const tables = [
     // Rooms table
     `CREATE TABLE IF NOT EXISTS rooms (
-      id TEXT PRIMARY KEY,
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      zone_id INTEGER,
+      vnum INTEGER UNIQUE,
       name TEXT NOT NULL,
       description TEXT NOT NULL,
       exits TEXT,
       npcs TEXT,
       items TEXT,
       area TEXT,
+      flags TEXT,
+      terrain TEXT,
+      portal_key TEXT,
+      greater_binding_key TEXT,
+      zone_exit INTEGER DEFAULT 0,
       visitCount INTEGER DEFAULT 0,
       firstVisited TEXT,
       lastVisited TEXT,
       rawText TEXT,
       createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
-      updatedAt TEXT DEFAULT CURRENT_TIMESTAMP
+      updatedAt TEXT DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (zone_id) REFERENCES zones(id) ON DELETE SET NULL
     )`,
 
     // NPCs table

@@ -143,11 +143,24 @@ export abstract class BaseRepository<T = any> {
       });
     }
 
-    // Convert boolean fields
+    // Convert boolean fields - be more robust about the input type
     if (this.config.booleanFields) {
       this.config.booleanFields.forEach(field => {
         if (field in serialized) {
-          (serialized as any)[field] = (serialized as any)[field] ? 1 : 0;
+          const value = (serialized as any)[field];
+          // Handle various input types safely
+          if (typeof value === 'boolean') {
+            (serialized as any)[field] = value ? 1 : 0;
+          } else if (typeof value === 'number') {
+            (serialized as any)[field] = value ? 1 : 0;
+          } else if (typeof value === 'string') {
+            // Handle string representations of booleans
+            const lowerValue = value.toLowerCase().trim();
+            (serialized as any)[field] = (lowerValue === 'true' || lowerValue === '1') ? 1 : 0;
+          } else {
+            // For any other type (object, array, null, undefined), treat as false
+            (serialized as any)[field] = 0;
+          }
         }
       });
     }

@@ -29,7 +29,7 @@ const config: EntityConfig = {
   idField: 'id',
   nameField: 'name',
   autoIncrement: true,
-  uniqueField: 'name',
+  // Removed uniqueField since rooms are unique by name + zone_id, not just name
   jsonFields: ['exits', 'npcs', 'items'],
   booleanFields: ['zone_exit'],
   sortBy: 'lastVisited DESC'

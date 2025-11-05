@@ -476,7 +476,7 @@ export class DocumentZoneTask implements CrawlerTask {
       const roomToSave = {
         name: roomData.name,
         description: this.filterOutput(roomData.description),
-        rawText: `${roomData.name}\n${roomData.description}`,
+        rawText: `${roomData.name}\n${this.filterOutput(roomData.description)}`,
         zone_id: this.zoneId,
         coordinates: JSON.stringify(coordinates),
         portal_key: portalKey,
@@ -989,7 +989,8 @@ export class DocumentZoneTask implements CrawlerTask {
   /**
    * Filter out unwanted MUD artifacts from output
    */
-  private filterOutput(output: string): string {
+  private filterOutput(output: any): string {
+    if (!output || typeof output !== 'string') {return '';}
     let filtered = output;
     
     filtered = filtered.replace(/\x1B\[[0-9;]*[mGKH]/g, '');

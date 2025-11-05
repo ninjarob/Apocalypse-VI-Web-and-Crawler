@@ -71,17 +71,33 @@ export class RoomService extends BaseService {
     // Validate required fields
     this.validateNonEmptyString(roomData.name, 'Room name');
 
-    // Check if room already exists by name (since rooms are identified by name)
-    const existing = await repositories.rooms.findByUnique(roomData.name!);
+    // Ensure name is a string (defensive programming)
+    const roomName = typeof roomData.name === 'string' ? roomData.name.trim() : '';
+
+    // Check if room already exists by name and zone_id (rooms are unique within zones by name)
+    let existing: Room | null = null;
+    if (roomData.zone_id) {
+      // Find by name and zone_id only - description can vary between crawls
+      // Trim whitespace from names for comparison
+      const rooms = await repositories.rooms.findAll({ 
+        name: roomName,
+        zone_id: roomData.zone_id 
+      });
+      existing = rooms.length > 0 ? rooms[0] : null;
+    } else {
+      // Fallback: find by name only if no zone_id provided (shouldn't happen in normal operation)
+      const rooms = await repositories.rooms.findAll({ name: roomName });
+      existing = rooms.length > 0 ? rooms[0] : null;
+    }
 
     if (existing) {
       // Room exists - record visit and return updated room
-      return await this.recordVisit(existing.id);
+      return await this.recordVisit(existing.id.toString());
     }
 
     // Room doesn't exist - create new room with visit tracking
     const newRoom: Partial<Room> = {
-      name: roomData.name!,
+      name: roomName,
       description: roomData.description || undefined,
       exits: roomData.exits || undefined,
       npcs: roomData.npcs || undefined,

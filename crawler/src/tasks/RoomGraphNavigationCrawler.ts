@@ -5,6 +5,7 @@ import { RoomProcessor } from '../RoomProcessor';
 interface RoomNode {
   id: number;
   name: string;
+  description: string;
   zone_id: number;
   connections: Map<string, number>; // direction -> target room id
   exploredConnections: Set<string>; // directions that have been explored
@@ -124,6 +125,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
         const roomNode: RoomNode = {
           id: room.id,
           name: room.name,
+          description: room.description || '',
           zone_id: room.zone_id,
           connections: new Map(),
           exploredConnections: new Set(),
@@ -177,7 +179,11 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
     this.currentRoomName = roomData.name;
 
     // Find this room in our graph
-    const currentRoom = Array.from(this.roomGraph.values()).find(r => r.name === this.currentRoomName);
+    const currentRoom = Array.from(this.roomGraph.values()).find(r => 
+      r.name.trim() === this.currentRoomName.trim() && 
+      r.description.trim() === this.filterOutput(roomData.description).trim() &&
+      r.zone_id === this.zoneId
+    );
 
     if (currentRoom) {
       this.currentRoomId = currentRoom.id;
@@ -194,6 +200,75 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
    * Add the current room to the graph if it's not already there
    */
   private async addCurrentRoomToGraph(roomData: any): Promise<void> {
+    // Check if room already exists in database by name and zone
+    const existingRooms = await this.config.api.getAllEntities('rooms');
+    const existingRoom = existingRooms.find((r: any) => 
+      r.name.trim() === roomData.name.trim() && 
+      r.zone_id === this.zoneId
+    );
+
+    if (existingRoom) {
+      // Room exists - check if description needs updating
+      const currentDescription = this.filterOutput(roomData.description).trim();
+      const dbDescription = (existingRoom.description || '').trim();
+      
+      if (dbDescription !== currentDescription) {
+        logger.info(`✓ Updating existing room description: ${existingRoom.name} (ID: ${existingRoom.id})`);
+        // Update the room with the correct description
+        const updateData = {
+          description: currentDescription,
+          rawText: `${roomData.name}\n${currentDescription}`,
+          lastVisited: new Date().toISOString()
+        };
+        await this.config.api.updateEntity('rooms', existingRoom.id.toString(), updateData);
+        existingRoom.description = updateData.description;
+        existingRoom.rawText = updateData.rawText;
+        existingRoom.lastVisited = updateData.lastVisited;
+      }
+
+      // Add to graph
+      const roomNode: RoomNode = {
+        id: existingRoom.id,
+        name: existingRoom.name,
+        description: existingRoom.description || '',
+        zone_id: existingRoom.zone_id,
+        connections: new Map(),
+        exploredConnections: new Set(),
+        unexploredConnections: new Set(),
+        visitCount: existingRoom.visitCount || 0,
+        lastVisited: existingRoom.lastVisited ? new Date(existingRoom.lastVisited) : new Date()
+      };
+
+      // Load existing exits for this room
+      const allExits = await this.config.api.getAllEntities('room_exits');
+      const roomExits = allExits.filter((exit: any) => exit.from_room_id === existingRoom.id);
+
+      // Add connections from existing exits
+      for (const exit of roomExits) {
+        roomNode.connections.set(exit.direction.toLowerCase(), exit.to_room_id || 0);
+        if (exit.to_room_id) {
+          // Check if target room exists and has been visited
+          const targetRoom = existingRooms.find((r: any) => r.id === exit.to_room_id);
+          if (targetRoom && targetRoom.visitCount > 0) {
+            roomNode.exploredConnections.add(exit.direction.toLowerCase());
+          } else {
+            roomNode.unexploredConnections.add(exit.direction.toLowerCase());
+          }
+        } else {
+          roomNode.unexploredConnections.add(exit.direction.toLowerCase());
+        }
+      }
+
+      this.roomGraph.set(existingRoom.id, roomNode);
+      this.currentRoomId = existingRoom.id;
+      this.currentRoomName = existingRoom.name;
+      this.navigationPath = [existingRoom.id];
+
+      logger.info(`✓ Using existing room in graph: ${existingRoom.name} (ID: ${existingRoom.id})`);
+      return;
+    }
+
+    // Room doesn't exist, create it
     // Get exits for current room
     await this.delay(this.config.delayBetweenActions);
     const exitsResponse = await this.config.mudClient.sendAndWait('exits', this.config.delayBetweenActions);
@@ -206,7 +281,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
     const roomToSave = {
       name: roomData.name,
       description: this.filterOutput(roomData.description),
-      rawText: `${roomData.name}\n${roomData.description}`,
+      rawText: `${roomData.name}\n${this.filterOutput(roomData.description)}`,
       zone_id: this.zoneId,
       visitCount: 1,
       lastVisited: new Date().toISOString()
@@ -223,6 +298,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
     const roomNode: RoomNode = {
       id: savedRoom.id,
       name: roomData.name,
+      description: this.filterOutput(roomData.description),
       zone_id: this.zoneId,
       connections: new Map(),
       exploredConnections: new Set(),
@@ -247,6 +323,9 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
    */
   private async exploreSystematically(): Promise<void> {
     while (this.actionsUsed < this.maxActions) {
+      // Sync current position to ensure we're tracking correctly
+      await this.syncCurrentPosition();
+
       // Find the nearest room with unexplored connections
       const targetRoom = this.findNearestRoomWithUnexploredConnections();
 
@@ -278,8 +357,43 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
   }
 
   /**
-   * Find the nearest room with unexplored connections
+   * Sync current position by checking actual location
    */
+  private async syncCurrentPosition(): Promise<void> {
+    try {
+      // Get current room information
+      await this.delay(this.config.delayBetweenActions);
+      const lookResponse = await this.config.mudClient.sendAndWait('look', this.config.delayBetweenActions);
+      this.actionsUsed++;
+
+      const roomData = this.roomProcessor['parseLookOutput'](lookResponse);
+      const actualRoomName = roomData.name.trim();
+
+      // Check if we're where we think we are
+      if (actualRoomName !== this.currentRoomName.trim()) {
+        logger.warn(`⚠️  Position desync detected. Expected: "${this.currentRoomName}", Actual: "${actualRoomName}"`);
+
+        // Find the actual room in our graph
+        const actualRoom = Array.from(this.roomGraph.values()).find(r =>
+          r.name.trim() === actualRoomName &&
+          r.zone_id === this.zoneId
+        );
+
+        if (actualRoom) {
+          logger.info(`✓ Resynced position to: ${actualRoom.name} (ID: ${actualRoom.id})`);
+          this.currentRoomId = actualRoom.id;
+          this.currentRoomName = actualRoom.name;
+          this.navigationPath = [actualRoom.id]; // Reset navigation path
+        } else {
+          logger.warn(`⚠️  Current room "${actualRoomName}" not found in graph - may need to add it`);
+          // Try to add the current room to graph
+          await this.addCurrentRoomToGraph(roomData);
+        }
+      }
+    } catch (error) {
+      logger.error('❌ Failed to sync current position:', error);
+    }
+  }
   private findNearestRoomWithUnexploredConnections(): RoomNode | null {
     // First check current room
     const currentRoom = this.roomGraph.get(this.currentRoomId);
@@ -390,14 +504,39 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
         return;
       }
 
+      // Get the expected room from graph
+      const toRoom = this.roomGraph.get(toRoomId);
+      if (!toRoom) {
+        logger.error(`❌ Target room ${toRoomId} not found in graph`);
+        return;
+      }
+
+      // Verify we're actually in the expected room
+      await this.delay(this.config.delayBetweenActions);
+      const verificationLook = await this.config.mudClient.sendAndWait('look', this.config.delayBetweenActions);
+      this.actionsUsed++;
+
+      const roomData = this.roomProcessor['parseLookOutput'](verificationLook);
+      const expectedName = toRoom.name.toLowerCase().trim();
+      const actualName = roomData.name.toLowerCase().trim();
+
+      const namesMatch = expectedName === actualName ||
+                        expectedName.includes(actualName) ||
+                        actualName.includes(expectedName) ||
+                        this.calculateSimilarity(expectedName, actualName) > 0.8;
+
+      if (!namesMatch) {
+        logger.warn(`⚠️  Location verification failed. Expected: "${toRoom.name}", Got: "${roomData.name}"`);
+        // Resync position since we ended up somewhere unexpected
+        await this.syncCurrentPosition();
+        return;
+      }
+
       // Update current position
       this.currentRoomId = toRoomId;
-      const toRoom = this.roomGraph.get(toRoomId);
-      if (toRoom) {
-        this.currentRoomName = toRoom.name;
-        toRoom.visitCount++;
-        toRoom.lastVisited = new Date();
-      }
+      this.currentRoomName = toRoom.name;
+      toRoom.visitCount++;
+      toRoom.lastVisited = new Date();
 
       // Add to navigation path
       this.navigationPath.push(toRoomId);
@@ -451,8 +590,19 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
     const roomData = this.roomProcessor['parseLookOutput'](lookResponse);
     const newRoomName = roomData.name;
 
+    // Check if the move actually changed the room
+    if (newRoomName.trim() === this.currentRoomName.trim()) {
+      logger.info(`   ❌ Direction ${direction} didn't change room - marking as explored`);
+      room.exploredConnections.add(direction);
+      room.unexploredConnections.delete(direction);
+      return;
+    }
+
     // Look for existing room in graph
-    let existingRoom = Array.from(this.roomGraph.values()).find(r => r.name === newRoomName);
+    let existingRoom = Array.from(this.roomGraph.values()).find(r => 
+      r.name.trim() === newRoomName.trim() && 
+      r.zone_id === this.zoneId
+    );
 
     if (existingRoom) {
       logger.info(`   ✓ Already know about room: ${existingRoom.name} (ID: ${existingRoom.id})`);
@@ -461,6 +611,9 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       room.connections.set(direction, existingRoom.id);
       room.exploredConnections.add(direction);
       room.unexploredConnections.delete(direction);
+
+      // Update the exit in database to set the destination
+      await this.updateExitDestination(room.id, direction, existingRoom.id);
 
       // Update current position
       this.currentRoomId = existingRoom.id;
@@ -496,6 +649,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       const newRoomNode: RoomNode = {
         id: savedRoom.id,
         name: newRoomData.name,
+        description: this.filterOutput(newRoomData.description),
         zone_id: this.zoneId,
         connections: new Map(),
         exploredConnections: new Set(),
@@ -516,6 +670,9 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       room.exploredConnections.add(direction);
       room.unexploredConnections.delete(direction);
 
+      // Update the exit in database to set the destination
+      await this.updateExitDestination(room.id, direction, savedRoom.id);
+
       // Update current position
       this.currentRoomId = savedRoom.id;
       this.currentRoomName = newRoomData.name;
@@ -534,11 +691,11 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
   private async verifyReturnConnection(fromRoom: RoomNode, directionMoved: string, expectedTargetRoom: RoomNode): Promise<void> {
     const returnDirection = this.getOppositeDirection(directionMoved);
     if (!returnDirection) {
-      logger.warn(`   ⚠️  Cannot determine return direction from ${directionMoved}`);
+      logger.info(`   ⚠️  Cannot determine return direction from ${directionMoved} - one-way connection possible`);
       return;
     }
 
-    logger.info(`   🔄 Verifying return path: ${returnDirection} from ${fromRoom.name} to ${expectedTargetRoom.name}`);
+    logger.info(`   🔄 Verifying return path: ${returnDirection} from ${fromRoom.name} should lead back to ${expectedTargetRoom.name}`);
 
     // Try to move back
     await this.delay(this.config.delayBetweenActions);
@@ -546,7 +703,26 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
     this.actionsUsed++;
 
     if (returnResponse.includes("Alas, you cannot go that way")) {
-      logger.info(`   ❌ Return path ${returnDirection} blocked - one-way connection`);
+      logger.info(`   ❌ Return path ${returnDirection} blocked - one-way connection confirmed`);
+      // This is actually valid - one-way connections exist in MUDs
+      return;
+    }
+
+    // Check if we're back in the expected zone first
+    await this.delay(this.config.delayBetweenActions);
+    const zoneCheck = await this.config.mudClient.sendAndWait('who -z', this.config.delayBetweenActions);
+    this.actionsUsed++;
+
+    const currentZone = this.extractCurrentZone(zoneCheck);
+    if (currentZone !== this.currentZone) {
+      logger.info(`   🏞️  Return path led to different zone: ${currentZone} - possible teleporter or zone exit`);
+      // Go back to original zone if possible
+      const backDirection = this.getOppositeDirection(returnDirection);
+      if (backDirection) {
+        await this.delay(this.config.delayBetweenActions);
+        await this.config.mudClient.sendAndWait(backDirection, this.config.delayBetweenActions);
+        this.actionsUsed++;
+      }
       return;
     }
 
@@ -573,10 +749,32 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       expectedTargetRoom.exploredConnections.add(directionMoved);
       expectedTargetRoom.unexploredConnections.delete(directionMoved);
 
+      // Update exit destinations in database
+      await this.updateExitDestination(fromRoom.id, returnDirection, expectedTargetRoom.id);
+      await this.updateExitDestination(expectedTargetRoom.id, directionMoved, fromRoom.id);
+
       logger.info(`   ✅ Return path verified - bidirectional connection confirmed`);
     } else {
-      logger.warn(`   ⚠️  Return path led to unexpected room: ${roomData.name} (expected ${expectedTargetRoom.name})`);
-      // Don't mark as explored - might be a teleporter
+      // Check if this might be a valid connection to a different known room
+      let alternativeRoom = Array.from(this.roomGraph.values()).find(r =>
+        r.name.toLowerCase().trim() === actualName &&
+        r.zone_id === this.zoneId
+      );
+
+      if (alternativeRoom) {
+        logger.info(`   🔄 Return path led to different known room: ${alternativeRoom.name} - updating connection`);
+        // Update the connection to point to the actual room we ended up in
+        fromRoom.connections.set(returnDirection, alternativeRoom.id);
+        fromRoom.exploredConnections.add(returnDirection);
+        fromRoom.unexploredConnections.delete(returnDirection);
+
+        // Update exit destination in database
+        await this.updateExitDestination(fromRoom.id, returnDirection, alternativeRoom.id);
+      } else {
+        logger.info(`   ⚠️  Return path led to unknown room: ${roomData.name} - may be teleporter or complex connection`);
+        // Don't mark as explored - this might be a special connection
+        // In MUDs, some connections are not bidirectional or have special behavior
+      }
     }
   }
 
@@ -587,7 +785,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
     const roomToSave = {
       name: roomData.name,
       description: this.filterOutput(roomData.description),
-      rawText: `${roomData.name}\n${roomData.description}`,
+      rawText: `${roomData.name}\n${this.filterOutput(roomData.description)}`,
       zone_id: this.zoneId,
       visitCount: 1,
       lastVisited: new Date().toISOString()
@@ -609,17 +807,72 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
    */
   private async saveExitsForRoom(roomId: number, exitDirections: string[]): Promise<void> {
     for (const direction of exitDirections) {
-      const exitToSave: any = {
-        from_room_id: roomId,
-        to_room_id: null, // Will be updated when target is discovered
-        direction: direction,
-        description: `${direction} exit`,
-        is_door: false,
-        is_locked: false,
-        is_zone_exit: false
+      try {
+        // Check if exit already exists
+        const existingExit = await this.config.api.getAllEntities('room_exits', {
+          from_room_id: roomId,
+          direction: direction
+        });
+
+        if (existingExit.length > 0) {
+          // Exit already exists, skip saving
+          continue;
+        }
+
+        const exitToSave: any = {
+          from_room_id: roomId,
+          to_room_id: null, // Will be updated when target is discovered
+          direction: direction,
+          description: `${direction} exit`,
+          is_door: false,
+          is_locked: false,
+          is_zone_exit: false,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        };
+
+        await this.config.api.saveEntity('room_exits', exitToSave);
+      } catch (error: any) {
+        // Check if this is a unique constraint violation (exit already exists)
+        if (error.message && error.message.includes('UNIQUE constraint failed')) {
+          logger.info(`Exit ${direction} for room ${roomId} already exists, skipping`);
+          continue;
+        }
+        // Log other errors but continue with other exits
+        logger.error(`Failed to save exit ${direction} for room ${roomId}:`, error);
+      }
+    }
+  }
+
+  /**
+   * Update an exit's destination room ID
+   */
+  private async updateExitDestination(fromRoomId: number, direction: string, toRoomId: number): Promise<void> {
+    try {
+      // Find the exit record
+      const existingExits = await this.config.api.getAllEntities('room_exits', {
+        from_room_id: fromRoomId,
+        direction: direction
+      });
+
+      if (existingExits.length === 0) {
+        logger.warn(`Could not find exit ${direction} from room ${fromRoomId} to update destination`);
+        return;
+      }
+
+      const exitToUpdate = existingExits[0];
+
+      // Update the to_room_id
+      const updatedExit = {
+        to_room_id: toRoomId,
+        updatedAt: new Date().toISOString()
       };
 
-      await this.config.api.saveEntity('room_exits', exitToSave);
+      await this.config.api.updateEntity('room_exits', exitToUpdate.id.toString(), updatedExit);
+      logger.info(`Updated exit ${direction} from room ${fromRoomId} to point to room ${toRoomId}`);
+
+    } catch (error) {
+      logger.error(`Failed to update exit destination for ${direction} from room ${fromRoomId}:`, error);
     }
   }
 
@@ -711,7 +964,8 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
   /**
    * Filter unwanted MUD artifacts from output
    */
-  private filterOutput(output: string): string {
+  private filterOutput(output: any): string {
+    if (!output || typeof output !== 'string') {return '';}
     let filtered = output;
 
     filtered = filtered.replace(/\x1B\[[0-9;]*[mGKH]/g, '');
