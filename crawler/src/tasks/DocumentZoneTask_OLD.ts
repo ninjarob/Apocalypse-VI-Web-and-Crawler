@@ -170,7 +170,7 @@ export class DocumentZoneTask implements CrawlerTask {
     const lookResponse = await this.config.mudClient.sendAndWait('look', this.config.delayBetweenActions);
     this.actionsUsed++;
 
-    const roomData = this.roomProcessor['parseLookOutput'](lookResponse);
+    const roomData = await this.roomProcessor['parseLookOutput'](lookResponse);
     this.currentRoomName = roomData.name;
     this.currentRoomDescription = roomData.description;
     this.currentRoomKey = this.getRoomKey(roomData);

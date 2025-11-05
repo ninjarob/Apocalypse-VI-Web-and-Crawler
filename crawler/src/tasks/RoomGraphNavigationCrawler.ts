@@ -7,6 +7,7 @@ interface RoomNode {
   name: string;
   description: string;
   zone_id: number;
+  portal_key?: string | null; // Unique portal binding key
   connections: Map<string, number>; // direction -> target room id
   exploredConnections: Set<string>; // directions that have been explored
   unexploredConnections: Set<string>; // directions that exist but haven't been explored
@@ -127,6 +128,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
           name: room.name,
           description: room.description || '',
           zone_id: room.zone_id,
+          portal_key: room.portal_key || null,
           connections: new Map(),
           exploredConnections: new Set(),
           unexploredConnections: new Set(),
@@ -175,15 +177,39 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
     const lookResponse = await this.config.mudClient.sendAndWait('look', this.config.delayBetweenActions);
     this.actionsUsed++;
 
-    const roomData = this.roomProcessor['parseLookOutput'](lookResponse);
+    const roomData = await this.roomProcessor['parseLookOutput'](lookResponse);
     this.currentRoomName = roomData.name;
 
+    // Try to get portal key for unique identification
+    const portalKey = await this.roomProcessor.getPortalKey();
+    if (portalKey) {
+      roomData.portal_key = portalKey;
+    }
+
     // Find this room in our graph
-    const currentRoom = Array.from(this.roomGraph.values()).find(r => 
-      r.name.trim() === this.currentRoomName.trim() && 
-      r.description.trim() === this.filterOutput(roomData.description).trim() &&
-      r.zone_id === this.zoneId
-    );
+    // Priority 1: Match by portal key (most reliable)
+    // Priority 2: Match by name + description + zone (for rooms without portal binding)
+    let currentRoom = null;
+    
+    if (portalKey) {
+      currentRoom = Array.from(this.roomGraph.values()).find(r => 
+        r.portal_key === portalKey
+      );
+      if (currentRoom) {
+        logger.info(`✓ Matched room by portal key: ${currentRoom.name} (ID: ${currentRoom.id})`);
+      }
+    }
+    
+    if (!currentRoom) {
+      currentRoom = Array.from(this.roomGraph.values()).find(r => 
+        r.name.trim() === this.currentRoomName.trim() && 
+        r.description.trim() === this.filterOutput(roomData.description).trim() &&
+        r.zone_id === this.zoneId
+      );
+      if (currentRoom) {
+        logger.info(`✓ Matched room by name+description: ${currentRoom.name} (ID: ${currentRoom.id})`);
+      }
+    }
 
     if (currentRoom) {
       this.currentRoomId = currentRoom.id;
@@ -200,29 +226,61 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
    * Add the current room to the graph if it's not already there
    */
   private async addCurrentRoomToGraph(roomData: any): Promise<void> {
-    // Check if room already exists in database by name and zone
+    // Check if room already exists in database
+    // Priority 1: Match by portal key (most reliable)
+    // Priority 2: Match by name + description + zone (for rooms without portal binding)
     const existingRooms = await this.config.api.getAllEntities('rooms');
-    const existingRoom = existingRooms.find((r: any) => 
-      r.name.trim() === roomData.name.trim() && 
-      r.zone_id === this.zoneId
-    );
+    const currentDescription = this.filterOutput(roomData.description).trim();
+    
+    let existingRoom = null;
+    
+    // Try matching by portal key first
+    if (roomData.portal_key) {
+      existingRoom = existingRooms.find((r: any) => 
+        r.portal_key === roomData.portal_key
+      );
+      if (existingRoom) {
+        logger.info(`✓ Found existing room by portal key: ${existingRoom.name} (ID: ${existingRoom.id})`);
+      }
+    }
+    
+    // Fallback to name + description + zone matching
+    if (!existingRoom) {
+      existingRoom = existingRooms.find((r: any) => 
+        r.name.trim() === roomData.name.trim() && 
+        (r.description || '').trim() === currentDescription &&
+        r.zone_id === this.zoneId
+      );
+      if (existingRoom) {
+        logger.info(`✓ Found existing room by name+description: ${existingRoom.name} (ID: ${existingRoom.id})`);
+      }
+    }
 
     if (existingRoom) {
-      // Room exists - check if description needs updating
-      const currentDescription = this.filterOutput(roomData.description).trim();
-      const dbDescription = (existingRoom.description || '').trim();
+      // Room exists - update portal key if we have one and it's missing
+      const needsPortalKeyUpdate = roomData.portal_key && !existingRoom.portal_key;
+      const needsDescriptionUpdate = (existingRoom.description || '').trim() !== currentDescription;
       
-      if (dbDescription !== currentDescription) {
-        logger.info(`✓ Updating existing room description: ${existingRoom.name} (ID: ${existingRoom.id})`);
-        // Update the room with the correct description
-        const updateData = {
-          description: currentDescription,
-          rawText: `${roomData.name}\n${currentDescription}`,
+      if (needsPortalKeyUpdate || needsDescriptionUpdate) {
+        const updateData: any = {
           lastVisited: new Date().toISOString()
         };
+        
+        if (needsPortalKeyUpdate) {
+          updateData.portal_key = roomData.portal_key;
+          logger.info(`✓ Adding portal key to existing room: ${existingRoom.name} (${roomData.portal_key})`);
+        }
+        
+        if (needsDescriptionUpdate) {
+          updateData.description = currentDescription;
+          updateData.rawText = `${roomData.name}\n${currentDescription}`;
+          logger.info(`✓ Updating existing room description: ${existingRoom.name}`);
+        }
+        
         await this.config.api.updateEntity('rooms', existingRoom.id.toString(), updateData);
-        existingRoom.description = updateData.description;
-        existingRoom.rawText = updateData.rawText;
+        existingRoom.description = updateData.description || existingRoom.description;
+        existingRoom.portal_key = updateData.portal_key || existingRoom.portal_key;
+        existingRoom.rawText = updateData.rawText || existingRoom.rawText;
         existingRoom.lastVisited = updateData.lastVisited;
       }
 
@@ -232,6 +290,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
         name: existingRoom.name,
         description: existingRoom.description || '',
         zone_id: existingRoom.zone_id,
+        portal_key: existingRoom.portal_key || null,
         connections: new Map(),
         exploredConnections: new Set(),
         unexploredConnections: new Set(),
@@ -277,8 +336,8 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
     const exits = this.parseExitsOutput(exitsResponse);
     const exitDirections = exits.map(e => e.direction.toLowerCase());
 
-    // Save room to database
-    const roomToSave = {
+    // Save room to database (with portal key if available)
+    const roomToSave: any = {
       name: roomData.name,
       description: this.filterOutput(roomData.description),
       rawText: `${roomData.name}\n${this.filterOutput(roomData.description)}`,
@@ -286,6 +345,11 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       visitCount: 1,
       lastVisited: new Date().toISOString()
     };
+    
+    if (roomData.portal_key) {
+      roomToSave.portal_key = roomData.portal_key;
+      logger.info(`   💠 Saving room with portal key: ${roomData.portal_key}`);
+    }
 
     const savedRoom = await this.config.api.saveRoom(roomToSave as any);
     if (!savedRoom) {
@@ -300,6 +364,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       name: roomData.name,
       description: this.filterOutput(roomData.description),
       zone_id: this.zoneId,
+      portal_key: roomData.portal_key || null,
       connections: new Map(),
       exploredConnections: new Set(),
       unexploredConnections: new Set(exitDirections),
@@ -366,7 +431,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       const lookResponse = await this.config.mudClient.sendAndWait('look', this.config.delayBetweenActions);
       this.actionsUsed++;
 
-      const roomData = this.roomProcessor['parseLookOutput'](lookResponse);
+      const roomData = await this.roomProcessor['parseLookOutput'](lookResponse);
       const actualRoomName = roomData.name.trim();
 
       // Check if we're where we think we are
@@ -376,6 +441,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
         // Find the actual room in our graph
         const actualRoom = Array.from(this.roomGraph.values()).find(r =>
           r.name.trim() === actualRoomName &&
+          r.description.trim() === this.filterOutput(roomData.description).trim() &&
           r.zone_id === this.zoneId
         );
 
@@ -516,16 +582,21 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       const verificationLook = await this.config.mudClient.sendAndWait('look', this.config.delayBetweenActions);
       this.actionsUsed++;
 
-      const roomData = this.roomProcessor['parseLookOutput'](verificationLook);
+      const roomData = await this.roomProcessor['parseLookOutput'](verificationLook);
       const expectedName = toRoom.name.toLowerCase().trim();
+      const expectedDescription = toRoom.description.toLowerCase().trim();
       const actualName = roomData.name.toLowerCase().trim();
+      const actualDescription = this.filterOutput(roomData.description).toLowerCase().trim();
 
       const namesMatch = expectedName === actualName ||
                         expectedName.includes(actualName) ||
                         actualName.includes(expectedName) ||
                         this.calculateSimilarity(expectedName, actualName) > 0.8;
+      
+      const descriptionsMatch = expectedDescription === actualDescription ||
+                               this.calculateSimilarity(expectedDescription, actualDescription) > 0.8;
 
-      if (!namesMatch) {
+      if (!namesMatch || !descriptionsMatch) {
         logger.warn(`⚠️  Location verification failed. Expected: "${toRoom.name}", Got: "${roomData.name}"`);
         // Resync position since we ended up somewhere unexpected
         await this.syncCurrentPosition();
@@ -587,11 +658,15 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
     const lookResponse = await this.config.mudClient.sendAndWait('look', this.config.delayBetweenActions);
     this.actionsUsed++;
 
-    const roomData = this.roomProcessor['parseLookOutput'](lookResponse);
+    const roomData = await this.roomProcessor['parseLookOutput'](lookResponse);
     const newRoomName = roomData.name;
 
-    // Check if the move actually changed the room
-    if (newRoomName.trim() === this.currentRoomName.trim()) {
+    // Check if the move actually changed the room (by comparing name AND description)
+    const currentDescription = this.filterOutput(roomData.description).trim();
+    const currentRoomNode = this.roomGraph.get(this.currentRoomId);
+    const currentRoomDescription = currentRoomNode ? currentRoomNode.description.trim() : '';
+
+    if (newRoomName.trim() === this.currentRoomName.trim() && currentDescription === currentRoomDescription) {
       logger.info(`   ❌ Direction ${direction} didn't change room - marking as explored`);
       room.exploredConnections.add(direction);
       room.unexploredConnections.delete(direction);
@@ -599,8 +674,10 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
     }
 
     // Look for existing room in graph
+    const newRoomDescription = this.filterOutput(roomData.description).trim();
     let existingRoom = Array.from(this.roomGraph.values()).find(r => 
       r.name.trim() === newRoomName.trim() && 
+      r.description.trim() === newRoomDescription &&
       r.zone_id === this.zoneId
     );
 
@@ -731,16 +808,21 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
     const lookResponse = await this.config.mudClient.sendAndWait('look', this.config.delayBetweenActions);
     this.actionsUsed++;
 
-    const roomData = this.roomProcessor['parseLookOutput'](lookResponse);
+    const roomData = await this.roomProcessor['parseLookOutput'](lookResponse);
     const expectedName = expectedTargetRoom.name.toLowerCase().trim();
+    const expectedDescription = expectedTargetRoom.description.toLowerCase().trim();
     const actualName = roomData.name.toLowerCase().trim();
+    const actualDescription = this.filterOutput(roomData.description).toLowerCase().trim();
 
     const namesMatch = expectedName === actualName ||
                       expectedName.includes(actualName) ||
                       actualName.includes(expectedName) ||
                       this.calculateSimilarity(expectedName, actualName) > 0.8;
+    
+    const descriptionsMatch = expectedDescription === actualDescription ||
+                             this.calculateSimilarity(expectedDescription, actualDescription) > 0.8;
 
-    if (namesMatch) {
+    if (namesMatch && descriptionsMatch) {
       // Success! Update connections in both rooms
       fromRoom.connections.set(returnDirection, expectedTargetRoom.id);
       fromRoom.exploredConnections.add(returnDirection);
@@ -758,6 +840,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       // Check if this might be a valid connection to a different known room
       let alternativeRoom = Array.from(this.roomGraph.values()).find(r =>
         r.name.toLowerCase().trim() === actualName &&
+        r.description.toLowerCase().trim() === actualDescription &&
         r.zone_id === this.zoneId
       );
 
@@ -856,7 +939,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       });
 
       if (existingExits.length === 0) {
-        logger.warn(`Could not find exit ${direction} from room ${fromRoomId} to update destination`);
+        logger.info(`Exit ${direction} from room ${fromRoomId} doesn't exist yet (will be created on next visit)`);
         return;
       }
 

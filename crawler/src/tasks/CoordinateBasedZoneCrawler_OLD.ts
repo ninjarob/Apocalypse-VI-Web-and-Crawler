@@ -158,7 +158,7 @@ export class CoordinateBasedZoneCrawler implements CrawlerTask {
     const lookResponse = await this.config.mudClient.sendAndWait('look', this.config.delayBetweenActions);
     this.actionsUsed++;
 
-    const roomData = this.roomProcessor['parseLookOutput'](lookResponse);
+    const roomData = await this.roomProcessor['parseLookOutput'](lookResponse);
     this.currentRoomName = roomData.name;
 
     // Check if current room exists in our database
@@ -336,7 +336,7 @@ export class CoordinateBasedZoneCrawler implements CrawlerTask {
     const lookResponse = await this.config.mudClient.sendAndWait('look', this.config.delayBetweenActions);
     this.actionsUsed++;
 
-    const roomData = this.roomProcessor['parseLookOutput'](lookResponse);
+    const roomData = await this.roomProcessor['parseLookOutput'](lookResponse);
     this.currentRoomName = roomData.name;
 
     // More flexible room name matching - allow for minor variations
@@ -491,7 +491,7 @@ export class CoordinateBasedZoneCrawler implements CrawlerTask {
     const lookResponse = await this.config.mudClient.sendAndWait('look', this.config.delayBetweenActions);
     this.actionsUsed++;
 
-    const roomData = this.roomProcessor['parseLookOutput'](lookResponse);
+    const roomData = await this.roomProcessor['parseLookOutput'](lookResponse);
     const expectedName = expectedSourceRoom.name.toLowerCase().trim();
     const actualName = roomData.name.toLowerCase().trim();
 
@@ -548,7 +548,7 @@ export class CoordinateBasedZoneCrawler implements CrawlerTask {
     const lookResponse = await this.config.mudClient.sendAndWait('look', this.config.delayBetweenActions);
     this.actionsUsed++;
 
-    const roomData = this.roomProcessor['parseLookOutput'](lookResponse);
+    const roomData = await this.roomProcessor['parseLookOutput'](lookResponse);
     const expectedName = sourceRoom.name.toLowerCase().trim();
     const actualName = roomData.name.toLowerCase().trim();
 

@@ -7,6 +7,7 @@ export interface RoomData {
   exits: string[];
   objects: Map<string, string>; // object name -> description
   zone: string;
+  portal_key?: string | null; // Unique portal binding key for room identification
 }
 
 export interface ExitData {
@@ -61,7 +62,7 @@ export class RoomProcessor {
     const lookResponse = await this.config.mudClient.sendAndWait('look', this.config.delayBetweenActions);
     this.actionsUsed++;
 
-    const roomData = this.parseLookOutput(lookResponse);
+    const roomData = await this.parseLookOutput(lookResponse);
     if (currentRoomName && roomData.name !== currentRoomName) {
       logger.warn(`Room name mismatch: expected "${currentRoomName}", got "${roomData.name}"`);
     }
@@ -109,23 +110,117 @@ export class RoomProcessor {
   }
 
   /**
+   * Get the portal key for the current room (unique identifier)
+   * Tries bind portal minor up to 6 times (concentration can fail)
+   * Returns null if binding is not allowed in this room
+   */
+  async getPortalKey(): Promise<string | null> {
+    try {
+      // Try bind portal minor (with retries for concentration failures)
+      let attempts = 0;
+      const maxAttempts = 6;
+      
+      while (attempts < maxAttempts) {
+        await this.delay(this.config.delayBetweenActions);
+        const minorResponse = await this.config.mudClient.sendAndWait("cast 'bind portal minor'", this.config.delayBetweenActions);
+        this.actionsUsed++;
+        attempts++;
+
+        // Look for the portal key pattern: 'xxxxxxxx' appears
+        const minorMatch = minorResponse.match(/'([a-z]+)'\s+briefly\s+appears/i);
+        if (minorMatch) {
+          const portalKey = minorMatch[1];
+          logger.info(`   ✓ Portal key: ${portalKey} (attempt ${attempts})`);
+          return portalKey;
+        }
+
+        // Check if binding is permanently not allowed in this room
+        if (minorResponse.match(/You cannot bind a portal here/i) || 
+            minorResponse.match(/You do not have enough mana/i) ||
+            minorResponse.match(/You don't know that spell/i)) {
+          logger.info(`   ⚠️  Portal binding not available (not allowed or insufficient mana)`);
+          return null;
+        }
+
+        // If concentration failed, retry
+        if (minorResponse.match(/You lost your concentration/i)) {
+          logger.info(`   ⚠️  Concentration failed (attempt ${attempts}/${maxAttempts}), retrying...`);
+          continue;
+        }
+
+        // Unknown response
+        logger.warn(`   ⚠️  Unexpected portal response: ${minorResponse.substring(0, 100)}`);
+        break;
+      }
+
+      logger.info(`   ⚠️  Could not extract portal key after ${maxAttempts} attempts`);
+      return null;
+
+    } catch (error) {
+      logger.warn('Failed to get portal key:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Extract room title based on ANSI color codes
+   * Room titles are ALWAYS bold cyan: ESC[1m ESC[36m or ESC[1;36m
+   */
+  private extractRoomTitleByColor(output: string): string | null {
+    const lines = output.split('\n');
+    
+    for (const line of lines) {
+      // Skip empty lines
+      if (!line.trim()) continue;
+      
+      // Skip status lines
+      if (line.match(/<\s*\d+H\s+\d+M\s+\d+V/)) continue;
+      
+      // Look for BOLD CYAN specifically: ESC[1m ESC[36m or ESC[1;36m
+      // This is the unique color for room titles
+      const boldCyanMatch = line.match(/\x1B\[1m\x1B\[36m([^\x1B\r\n]+)|\x1B\[1;36m([^\x1B\r\n]+)/);
+      
+      if (boldCyanMatch) {
+        const text = (boldCyanMatch[1] || boldCyanMatch[2]).trim();
+        
+        // Skip if empty
+        if (!text) continue;
+        
+        // Skip system messages
+        if (text.match(/^\[/)) continue;
+        
+        logger.info(`   ✅ Found room title by bold cyan color: "${text}"`);
+        return text;
+      }
+    }
+    
+    return null;
+  }
+
+  /**
    * Parse "look" command output
    */
-  private parseLookOutput(output: string): RoomData {
-    const lines = output.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-
+  private async parseLookOutput(output: string): Promise<RoomData> {
     let name = '';
     let description = '';
     let exits: string[] = [];
     let objects = new Map<string, string>();
 
-    // Find the room name - skip filtered lines like "You are hungry/thirsty"
-    for (let i = 0; i < lines.length; i++) {
-      const filteredLine = this.filterOutput(lines[i]);
-      if (filteredLine.length > 0) {
-        name = filteredLine;
-        break;
-      }
+    // Try to extract room title by color code BEFORE filtering
+    const colorBasedTitle = this.extractRoomTitleByColor(output);
+    if (colorBasedTitle) {
+      name = colorBasedTitle;
+      logger.info(`   📍 Using color-detected room title: "${name}"`);
+    }
+
+    // Now filter ANSI codes for description parsing
+    const cleanOutput = this.filterOutput(output);
+    const lines = cleanOutput.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+
+    // If we didn't get a name from color detection, fall back to first line
+    if (!name && lines.length > 0) {
+      name = lines[0];
+      logger.info(`   📍 Using first line as room title: "${name}"`);
     }
 
     // Find description and exits
@@ -547,10 +642,20 @@ Analysis:`;
       const analysisText = await this.config.aiAgent.analyzeWithAI(prompt, 200);
       logger.info(`   🔍 AI analysis for ${direction}: "${analysisText}"`);
 
-      // Clean up the response - remove any extra text before/after JSON
-      const jsonMatch = analysisText.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        const analysis = JSON.parse(jsonMatch[0]);
+      // Clean up the response - extract JSON and fix common malformations
+      let jsonText = analysisText.match(/\{[^}]*\}/)?.[0];
+      
+      if (!jsonText) {
+        // Try to find JSON with nested braces
+        const match = analysisText.match(/\{[\s\S]*?\}(?=\s*$|[^}])/);
+        jsonText = match?.[0];
+      }
+      
+      if (jsonText) {
+        // Remove any extra closing braces at the end
+        jsonText = jsonText.replace(/\}+$/, '}');
+        
+        const analysis = JSON.parse(jsonText);
         logger.info(`   📋 Parsed AI result: isDoor=${analysis.isDoor}, doorName="${analysis.doorName}", description="${analysis.description}"`);
         return {
           isDoor: analysis.isDoor || false,
@@ -824,6 +929,10 @@ Analysis:`;
     // Filter out NPC movement messages that can be mistaken for room names
     filtered = filtered.replace(/^(The|A|An)\s+.+?\s+(leaves?|arrives?|enters?|goes?|walks?|runs?|flies?|crawls?|swims?)\s+(north|south|east|west|up|down|in|out|enter|exit|through)\.?$/gi, '');
     filtered = filtered.replace(/^(The|A|An)\s+.+?\s+(has (left|arrived|entered)|goes?|walks?|runs?|flies?|crawls?|swims?)\s+(to|from|through)\s+(the\s+)?(north|south|east|west|up|down|in|out|enter|exit)\.?$/gi, '');
+    
+    // Filter out NPC speech messages that can be mistaken for room names
+    filtered = filtered.replace(/^(The|A|An)\s+.+?\s+(says?|tells?|whispers?|yells?|shouts?|asks?|exclaims?|cries?|murmurs?|mutters?|growls?|hisses?|roars?|screams?|laughs?|sings?|chants?|prays?|utters?|recites?)\s*[:,]?\s*['"'].*?['"']\s*\.?$/gi, '');
+    filtered = filtered.replace(/^(The|A|An)\s+.+?\s+(says?|tells?|whispers?|yells?|shouts?|asks?|exclaims?|cries?|murmurs?|mutters?|growls?|hisses?|roars?|screams?|laughs?|sings?|chants?|prays?|utters?|recites?)\s*[:,]?\s*.+?\s*\.?$/gi, '');
     
     return filtered.trim();
   }
