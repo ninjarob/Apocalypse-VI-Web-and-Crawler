@@ -30,6 +30,28 @@ AFTER:  Fresh database with complete Midgaard: City zone mapping (4 rooms, 9 con
 - Frontend admin panel has fresh data for room/exit management
 - Foundation established for comprehensive MUD world mapping
 
+#### ✅ Zone Exit Flagging Fix (Latest)
+**Status**: ✅ COMPLETED - Fixed crawler to automatically mark zone boundary rooms as zone exits during cross-zone discovery
+- **Issue Identified**: Zone boundary rooms like "Rear exit of the Temple" and "Outside the City Walls" weren't being marked as zone exits despite being at zone boundaries
+- **Root Cause**: RoomGraphNavigationCrawler only saved cross-zone rooms to database but didn't update zone_exit flags for boundary rooms
+- **Zone Exit Logic**: Modified exploreNextUnexploredConnection() to set zone_exit: true for both source and destination rooms when cross-zone movement detected
+- **Database Updates**: Added API call to update source room with zone_exit: true when zone boundary crossed
+- **Circular Connection Prevention**: Fixed "North Temple Street" south exit circular connection by ensuring proper zone boundary handling
+- **Cross-Zone Room Saving**: Cross-zone rooms saved to database but not added to exploration graph (maintaining zone isolation)
+- **Build Verification**: Crawler compiles successfully with automatic zone exit flagging
+- **Testing**: Zone boundary rooms now properly marked as zone exits during exploration, preventing self-referencing exits and circular connections
+
+#### ✅ Circular Connection Fix (Latest)
+**Status**: ✅ COMPLETED - Fixed crawler to prevent incorrect connections when return path verification fails
+- **Issue Identified**: "North Temple Street" south exit was incorrectly connected to "Grand Gates of the Temple of Midgaard" instead of "South Temple Street" due to teleporter/special connection
+- **Root Cause**: Crawler assumed all movements create direct bidirectional connections, but MUDs have teleporters and special connections that don't follow this rule
+- **Return Path Verification**: Modified verifyReturnConnection() to return boolean indicating success/failure
+- **Connection Removal Logic**: When return path verification fails, crawler now removes the direct connection and treats it as a special connection (teleporter, one-way passage)
+- **Database Integrity**: Exit destinations reset to null for special connections, preventing circular references and wrong connections
+- **Bidirectional Verification**: Only bidirectional connections that can be verified in both directions are kept in the navigation graph
+- **Build Verification**: Crawler compiles successfully with improved connection logic
+- **Testing**: Special connections like teleporters will no longer create incorrect direct connections in the navigation graph
+
 #### ✅ Zone Alias Display Implementation (Latest)
 **Status**: ✅ COMPLETED - Added zone aliases to frontend zone details display using existing alias field
 - **Database Schema**: Utilized existing alias TEXT field in zones table for storing zone aliases
@@ -116,7 +138,34 @@ AFTER:  Fresh database with complete Midgaard: City zone mapping (4 rooms, 9 con
 - **UI Location**: Added to room info row next to Zone Exit field
 - **Purpose**: Allows users to see unique portal binding keys discovered by crawler
 
-#### ✅ Zone Boundary Loop Fix Verification (Latest)
+#### ✅ Cross-Zone Exit Connection Fix (Latest)
+**Status**: ✅ COMPLETED - Fixed crawler exit connections at zone boundaries to properly link to cross-zone destination rooms
+- **Issue Identified**: "Rear exit of the Temple" north exit was self-referencing instead of pointing to "Outside the City Walls" cross-zone room
+- **Root Cause**: When crawler encountered zone boundaries, it updated database exit destinations but NOT graph connections, leaving graph connections pointing to 0 (unknown target)
+- **Graph Connection Fix**: Added `room.connections.set(direction, savedRoom.id)` to update graph connections when saving cross-zone rooms
+- **Navigation Logic**: Graph connections now properly point to cross-zone room IDs, allowing pathfinding to work correctly across zone boundaries
+- **Database Consistency**: Both graph and database now maintain correct exit destinations for cross-zone connections
+- **Zone Boundary Handling**: Cross-zone rooms are saved to database but not added to exploration graph (maintaining zone isolation)
+- **Build Verification**: Crawler compiles successfully with proper cross-zone exit connection logic
+- **Testing**: Zone boundary navigation should now correctly link exits to cross-zone destination rooms instead of creating self-references
+**Status**: ✅ COMPLETED - Fixed crawler infinite loop when lost in different zones
+- **Issue Identified**: Crawler getting stuck in infinite loop at zone boundaries, repeatedly trying to sync position in "Outside the City Walls" (Astyll Hills) without finding way back to Midgaard City
+- **Root Cause**: `syncCurrentPosition` method marked crawler as lost when in different zone but didn't attempt to navigate back, causing repeated sync attempts in same cross-zone room
+- **Solution Implemented**: Enhanced cross-zone recovery logic to actively find return paths back to original zone before giving up
+- **Recovery Strategy**: When lost in different zone, crawler now tries each available exit to find path back to original zone, only marking as lost after exhausting all options
+- **Cross-Zone Room Saving**: If no return path found, saves the cross-zone room to database (like in exploration) and marks as permanently lost to prevent infinite loops
+- **Zone Boundary Handling**: Prevents crawler from getting permanently stuck at zone exits by either returning to exploration zone or properly handling cross-zone discovery
+- **Build Verification**: Crawler compiles successfully with enhanced zone recovery logic
+- **Testing**: Zone boundary exploration should now either return to original zone for continued exploration or properly save cross-zone rooms without infinite loops
+**Status**: ✅ COMPLETED - Fixed crawler to save rooms from new zones to database (but not exploration graph)
+- **Issue Identified**: When crawler encountered rooms in different zones during exploration, it would mark the direction as explored and go back without saving the room data to database
+- **Root Cause**: `exploreNextUnexploredConnection` method only processed rooms within the same zone, ignoring valuable discovery data from cross-zone rooms
+- **Solution Implemented**: Modified zone boundary handling to parse room data, get correct zone ID, and save cross-zone rooms to database with proper zone assignment
+- **Database Enrichment**: Rooms from new zones are now discovered and stored even when not part of current zone's exploration graph
+- **Zone Isolation Maintained**: Cross-zone rooms are not added to current zone's exploration graph, preventing navigation confusion
+- **Action Efficiency**: Minimal additional actions used (exits command + portal key attempt) to gather room data before returning
+- **Build Verification**: Crawler compiles successfully with enhanced cross-zone room discovery
+- **Testing**: Cross-zone rooms will now be saved to database during zone boundary exploration, enriching the overall MUD map data
 **Status**: ✅ COMPLETED - Successfully verified zone boundary infinite loop fix through crawler testing
 - **Test Execution**: Ran crawler with 'document-zone-new' task to test zone boundary handling
 - **Zone Boundary Detection**: Properly detected zone changes and marked boundary connections as explored
@@ -834,11 +883,11 @@ cd crawler && npm run dev    # Terminal 3
 - **Refactor**: Code structure improvements without functionality changes
 - **Docs**: Documentation updates and improvements
 
-#### Testing Approach
-- **Integration Testing**: API endpoints and database operations
-- **Component Testing**: React components with proper mocking
-- **E2E Testing**: Full crawler runs with MUD server simulation
-- **Manual Testing**: UI workflows and user experience validation
+#### Database Access
+- **Avoid Direct SQLite Calls**: Do not use `sqlite3` commands directly in terminal - they frequently fail due to path/escaping issues
+- **Use Existing Scripts**: Leverage `backend/query-db.js` or create temporary Node.js scripts in `backend/` directory for database queries
+- **API Endpoints**: Prefer using the backend API endpoints for data access when possible
+- **Temporary Scripts**: For one-off queries, create temporary `.js` files in `backend/` that use the existing database connection patterns
 
 ---
 

@@ -147,11 +147,11 @@ netstat -ano | findstr :3002
 # Database created automatically at backend/mud-data.db
 ```
 
-### Frontend Shows No Data
-1. Check backend is running (http://localhost:3002/api/stats)
-2. Check browser console (F12)
-3. Verify crawler has saved data
-4. Clear browser cache
+### Database Access Issues
+- **Avoid Direct SQLite Commands**: Do not use `sqlite3` commands directly in terminal - they frequently fail due to path/escaping issues
+- **Use Existing Scripts**: Leverage `backend/query-db.js` or create temporary Node.js scripts in `backend/` directory for database queries
+- **API Endpoints**: Prefer using the backend API endpoints for data access when possible
+- **Temporary Scripts**: For one-off queries, create temporary `.js` files in `backend/` that use the existing database connection patterns
 
 ### AI Errors / Ollama Issues
 1. Verify Ollama is running: `ollama list`

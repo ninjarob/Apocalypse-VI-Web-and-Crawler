@@ -174,7 +174,8 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
    * Determine starting position in the graph
    */
   private async determineStartingPosition(): Promise<void> {
-    // Get current room information
+    // Get current room information - we can skip the initial "look" since we just connected
+    // and the connection response should contain room data, but let's be safe and get it
     await this.delay(this.config.delayBetweenActions);
     const lookResponse = await this.config.mudClient.sendAndWait('look', this.config.delayBetweenActions);
     this.actionsUsed++;
@@ -570,11 +571,127 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
               roomData.portal_key = portalKey;
             }
 
-            // Get current zone
+            // Get current zone - CRITICAL: Check if we're still in our target zone
             await this.delay(this.config.delayBetweenActions);
             const zoneCheck = await this.config.mudClient.sendAndWait('who -z', this.config.delayBetweenActions);
             this.actionsUsed++;
             const actualZone = this.extractCurrentZone(zoneCheck);
+            
+            // If we're in a different zone, try to get back to our zone or save the cross-zone room
+            if (actualZone !== this.currentZone) {
+              logger.warn(`⚠️  Current room "${actualRoomName}" is in different zone "${actualZone}" - attempting to return to ${this.currentZone}`);
+              
+              // Try to find a way back to our original zone
+              // Look at exits and see if any lead back to our zone
+              const exits = this.parseExitsOutput(exitsResponse);
+              const exitDirections = exits.map(e => e.direction.toLowerCase());
+              
+              // Try each exit to see if it leads back to our zone
+              let foundReturnPath = false;
+              for (const direction of exitDirections) {
+                logger.info(`   🔄 Trying ${direction} to return to ${this.currentZone}...`);
+                
+                await this.delay(this.config.delayBetweenActions);
+                const testMove = await this.config.mudClient.sendAndWait(direction, this.config.delayBetweenActions);
+                this.actionsUsed++;
+                
+                if (testMove.includes("Alas, you cannot go that way")) {
+                  logger.info(`   ❌ ${direction} blocked`);
+                  continue;
+                }
+                
+                // Check if we're back in our zone
+                await this.delay(this.config.delayBetweenActions);
+                const returnZoneCheck = await this.config.mudClient.sendAndWait('who -z', this.config.delayBetweenActions);
+                this.actionsUsed++;
+                
+                const returnZone = this.extractCurrentZone(returnZoneCheck);
+                if (returnZone === this.currentZone) {
+                  logger.info(`   ✅ ${direction} led back to ${this.currentZone} - returning to exploration`);
+                  foundReturnPath = true;
+                  
+                  // Parse the room we ended up in and sync position
+                  const returnRoomData = await this.roomProcessor['parseLookOutput'](testMove);
+                  const returnRoomMatch = this.findMatchingRoom(returnRoomData, undefined, true);
+                  
+                  if (returnRoomMatch) {
+                    this.currentRoomId = returnRoomMatch.id;
+                    this.currentRoomName = returnRoomMatch.name;
+                    logger.info(`   ✓ Resynced position to: ${returnRoomMatch.name} (ID: ${returnRoomMatch.id})`);
+                  } else {
+                    // Save this room as unknown in our zone
+                    const zoneId = await this.getZoneId(returnZone);
+                    const roomToSave: any = {
+                      name: returnRoomData.name,
+                      description: this.filterOutput(returnRoomData.description),
+                      rawText: `${returnRoomData.name}\n${this.filterOutput(returnRoomData.description)}`,
+                      zone_id: zoneId,
+                      visitCount: 1,
+                      lastVisited: new Date().toISOString()
+                    };
+                    
+                    const savedRoom = await this.config.api.saveRoom(roomToSave);
+                    if (savedRoom) {
+                      this.currentRoomId = savedRoom.id;
+                      this.currentRoomName = returnRoomData.name;
+                      logger.info(`   ✓ Saved and synced to unknown room: ${returnRoomData.name} (ID: ${savedRoom.id})`);
+                    }
+                  }
+                  break;
+                } else {
+                  // Still in wrong zone, go back
+                  const backDirection = this.getOppositeDirection(direction);
+                  if (backDirection) {
+                    await this.delay(this.config.delayBetweenActions);
+                    await this.config.mudClient.sendAndWait(backDirection, this.config.delayBetweenActions);
+                    this.actionsUsed++;
+                  }
+                }
+              }
+              
+              if (!foundReturnPath) {
+                // Couldn't find a way back - save the cross-zone room to database and mark as lost
+                logger.warn(`   ❌ Could not find path back to ${this.currentZone} - saving cross-zone room and marking as lost`);
+                
+                // Try to get portal key
+                const portalKey = await this.roomProcessor.getPortalKey(roomData);
+                if (portalKey) {
+                  roomData.portal_key = portalKey;
+                }
+                
+                // Get the correct zone ID for the new zone
+                const newZoneId = await this.getZoneId(actualZone);
+                
+                // Save the room to database (but NOT to exploration graph)
+                const roomToSave: any = {
+                  name: actualRoomName,
+                  description: this.filterOutput(roomData.description),
+                  rawText: `${actualRoomName}\n${this.filterOutput(roomData.description)}`,
+                  zone_id: newZoneId,
+                  visitCount: 1,
+                  lastVisited: new Date().toISOString()
+                };
+                
+                if (roomData.portal_key) {
+                  roomToSave.portal_key = roomData.portal_key;
+                  logger.info(`   💠 Saving cross-zone room with portal key: ${roomData.portal_key}`);
+                }
+                
+                const savedRoom = await this.config.api.saveRoom(roomToSave);
+                if (savedRoom) {
+                  await this.saveExitsForRoom(savedRoom.id, exitDirections);
+                  logger.info(`   ✓ Saved cross-zone room: ${actualRoomName} (ID: ${savedRoom.id}) in zone ${actualZone}`);
+                }
+                
+                // Mark as lost but don't keep trying to sync
+                this.currentRoomId = -1;
+                this.currentRoomName = "LOST_IN_DIFFERENT_ZONE";
+                return;
+              }
+              
+              return; // Successfully returned to our zone
+            }
+            
             const zoneId = await this.getZoneId(actualZone);
 
             // Save new room
@@ -765,12 +882,8 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
         return;
       }
 
-      // Verify we're actually in the expected room
-      await this.delay(this.config.delayBetweenActions);
-      const verificationLook = await this.config.mudClient.sendAndWait('look', this.config.delayBetweenActions);
-      this.actionsUsed++;
-
-      const roomData = await this.roomProcessor['parseLookOutput'](verificationLook);
+      // Parse room data from movement response (no need for separate "look" command)
+      const roomData = await this.roomProcessor['parseLookOutput'](response);
       const expectedName = toRoom.name.toLowerCase().trim();
       const expectedDescription = toRoom.description.toLowerCase().trim();
       const actualName = roomData.name.toLowerCase().trim();
@@ -811,7 +924,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
 
     logger.info(`🧭 Exploring ${direction} from ${room.name}...`);
 
-    // Try to move
+    // Try to move - the movement response already contains room description, no need for "look"
     await this.delay(this.config.delayBetweenActions);
     const moveResponse = await this.config.mudClient.sendAndWait(direction, this.config.delayBetweenActions);
     this.actionsUsed++;
@@ -823,7 +936,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       return;
     }
 
-    // Check if we're still in the same zone
+    // Check if we're still in the same zone FIRST
     await this.delay(this.config.delayBetweenActions);
     const zoneCheck = await this.config.mudClient.sendAndWait('who -z', this.config.delayBetweenActions);
     this.actionsUsed++;
@@ -831,28 +944,92 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
     const currentZone = this.extractCurrentZone(zoneCheck);
     if (currentZone !== this.currentZone) {
       logger.info(`   🏞️  Moved to different zone: ${currentZone}`);
+      
+      // Parse the room data from the movement response
+      const roomData = await this.roomProcessor['parseLookOutput'](moveResponse);
+      const newRoomName = roomData.name;
+      const newRoomDescription = this.filterOutput(roomData.description).trim();
+      
+      logger.info(`   🆕 Discovered room in different zone: ${newRoomName} (${currentZone})`);
+      
+      // Get exits for the room in the other zone
+      await this.delay(this.config.delayBetweenActions);
+      const exitsResponse = await this.config.mudClient.sendAndWait('exits', this.config.delayBetweenActions);
+      this.actionsUsed++;
+      
+      const exits = this.parseExitsOutput(exitsResponse);
+      const exitDirections = exits.map(e => e.direction.toLowerCase());
+      
+      // Try to get portal key
+      const portalKey = await this.roomProcessor.getPortalKey(roomData);
+      if (portalKey) {
+        roomData.portal_key = portalKey;
+      }
+      
+      // Get the correct zone ID for the new zone
+      const newZoneId = await this.getZoneId(currentZone);
+      
+      // Save the room to database (but NOT to exploration graph)
+      const roomToSave: any = {
+        name: newRoomName,
+        description: newRoomDescription,
+        rawText: `${newRoomName}\n${newRoomDescription}`,
+        zone_id: newZoneId, // Use the correct zone ID for the new zone
+        zone_exit: true, // Mark as zone exit since it's at a zone boundary
+        visitCount: 1,
+        lastVisited: new Date().toISOString()
+      };
+      
+      if (roomData.portal_key) {
+        roomToSave.portal_key = roomData.portal_key;
+        logger.info(`   💠 Saving cross-zone room with portal key: ${roomData.portal_key}`);
+      }
+      
+      const savedRoom = await this.config.api.saveRoom(roomToSave);
+      if (savedRoom) {
+        // Save exits for the room in the other zone
+        await this.saveExitsForRoom(savedRoom.id, exitDirections);
+        
+        // Update the connection from source room to point to the cross-zone room
+        room.connections.set(direction, savedRoom.id);
+        
+        // Update the exit in database to set the destination
+        await this.updateExitDestination(room.id, direction, savedRoom.id);
+        
+        logger.info(`   ✓ Saved cross-zone room: ${newRoomName} (ID: ${savedRoom.id}) in zone ${currentZone}`);
+      } else {
+        logger.error(`   ❌ Failed to save cross-zone room: ${newRoomName}`);
+      }
+      
+      // Mark the source room as a zone exit as well
+      try {
+        await this.config.api.updateEntity('rooms', room.id.toString(), {
+          zone_exit: true,
+          lastVisited: new Date().toISOString()
+        });
+        logger.info(`   🏞️  Marked source room ${room.name} (ID: ${room.id}) as zone exit`);
+      } catch (error) {
+        logger.error(`   ❌ Failed to mark source room ${room.name} as zone exit:`, error);
+      }
+      
       // Mark as explored to prevent infinite loop
       logger.info(`   ✓ Marking ${direction} as explored (zone boundary)`);
       room.exploredConnections.add(direction);
       room.unexploredConnections.delete(direction);
-      // Go back
+      
+      // Go back immediately to original zone
       const oppositeDir = this.getOppositeDirection(direction);
       if (oppositeDir) {
         await this.delay(this.config.delayBetweenActions);
         await this.config.mudClient.sendAndWait(oppositeDir, this.config.delayBetweenActions);
         this.actionsUsed++;
-        // Sync position after going back
-        await this.syncCurrentPosition();
+        // Don't sync position - we know we're back in the original zone
       }
       return;
     }
 
-    // Check if we know about this room
-    await this.delay(this.config.delayBetweenActions);
-    const lookResponse = await this.config.mudClient.sendAndWait('look', this.config.delayBetweenActions);
-    this.actionsUsed++;
-
-    const roomData = await this.roomProcessor['parseLookOutput'](lookResponse);
+    // We're still in the same zone, parse the room from the movement response
+    const roomData = await this.roomProcessor['parseLookOutput'](moveResponse);
     const newRoomName = roomData.name;
 
     // Check if the move actually changed the room (by comparing name AND description)
@@ -914,19 +1091,12 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
         roomData.portal_key = portalKey;
       }
 
-      // Determine the correct zone for this room (check current zone)
-      await this.delay(this.config.delayBetweenActions);
-      const zoneCheck = await this.config.mudClient.sendAndWait('who -z', this.config.delayBetweenActions);
-      this.actionsUsed++;
-      const actualZone = this.extractCurrentZone(zoneCheck);
-      const zoneId = await this.getZoneId(actualZone);
-
-      // Save new room with minimal data
+      // Save new room with minimal data (we already confirmed we're in the correct zone)
       const roomToSave: any = {
         name: newRoomName,
         description: newRoomDescription,
         rawText: `${newRoomName}\n${newRoomDescription}`,
-        zone_id: zoneId,
+        zone_id: this.zoneId, // Use the current zone ID since we already verified we're in the right zone
         visitCount: 1,
         lastVisited: new Date().toISOString()
       };
@@ -949,7 +1119,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
         id: savedRoom.id,
         name: newRoomName,
         description: newRoomDescription,
-        zone_id: zoneId,
+        zone_id: this.zoneId,
         portal_key: roomData.portal_key || null,
         connections: new Map(),
         exploredConnections: new Set(),
@@ -970,7 +1140,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       room.connections.set(direction, savedRoom.id);
       room.exploredConnections.add(direction);
       room.unexploredConnections.delete(direction);
-
+      
       // Update the exit in database to set the destination
       await this.updateExitDestination(room.id, direction, savedRoom.id);
 
@@ -981,19 +1151,34 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
 
       logger.info(`✓ Added new room: ${newRoomName} (ID: ${savedRoom.id})`);
 
-      // Verify return connection
-      await this.verifyReturnConnection(newRoomNode, direction, room);
+      // Verify return connection - CRITICAL: Only keep the connection if return path works
+      const returnVerified = await this.verifyReturnConnection(newRoomNode, direction, room);
+      if (!returnVerified) {
+        // Return path verification failed - this suggests a special connection
+        // Remove the connection we just created since it's not a direct bidirectional link
+        logger.warn(`   ⚠️  Return path verification failed - removing direct connection and treating as special connection`);
+        room.connections.set(direction, 0); // Reset to unknown
+        room.exploredConnections.delete(direction);
+        room.unexploredConnections.add(direction);
+        
+        // Reset the exit destination in database
+        await this.updateExitDestination(room.id, direction, null);
+        
+        // Mark as explored but don't create the connection
+        room.exploredConnections.add(direction);
+        room.unexploredConnections.delete(direction);
+      }
     }
   }
 
   /**
    * Verify that the return connection works
    */
-  private async verifyReturnConnection(fromRoom: RoomNode, directionMoved: string, expectedTargetRoom: RoomNode): Promise<void> {
+  private async verifyReturnConnection(fromRoom: RoomNode, directionMoved: string, expectedTargetRoom: RoomNode): Promise<boolean> {
     const returnDirection = this.getOppositeDirection(directionMoved);
     if (!returnDirection) {
       logger.info(`   ⚠️  Cannot determine return direction from ${directionMoved} - one-way connection possible`);
-      return;
+      return false;
     }
 
     logger.info(`   🔄 Verifying return path: ${returnDirection} from ${fromRoom.name} should lead back to ${expectedTargetRoom.name}`);
@@ -1006,7 +1191,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
     if (returnResponse.includes("Alas, you cannot go that way")) {
       logger.info(`   ❌ Return path ${returnDirection} blocked - one-way connection confirmed`);
       // This is actually valid - one-way connections exist in MUDs
-      return;
+      return false;
     }
 
     // Check if we're back in the expected zone first
@@ -1024,7 +1209,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
         await this.config.mudClient.sendAndWait(backDirection, this.config.delayBetweenActions);
         this.actionsUsed++;
       }
-      return;
+      return false;
     }
 
     // Verify we're at the expected room
@@ -1064,6 +1249,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       this.currentRoomName = expectedTargetRoom.name;
 
       logger.info(`   ✅ Return path verified - bidirectional connection confirmed`);
+      return true;
     } else {
       // CRITICAL: If return path doesn't work as expected, this suggests the original
       // movement may have been a special connection (teleporter, one-way, etc.)
@@ -1095,6 +1281,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
         }
       }
     }
+    return false;
   }
 
   /**
@@ -1172,7 +1359,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
   /**
    * Update an exit's destination room ID
    */
-  private async updateExitDestination(fromRoomId: number, direction: string, toRoomId: number): Promise<void> {
+  private async updateExitDestination(fromRoomId: number, direction: string, toRoomId: number | null): Promise<void> {
     try {
       // Find the exit record
       const existingExits = await this.config.api.getAllEntities('room_exits', {
