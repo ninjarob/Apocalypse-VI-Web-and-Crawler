@@ -2,6 +2,33 @@
 
 **File Condensed**: This file has been condensed from 1726 lines to focus on current AI agent project context. All historical implementation details have been moved to [CHANGELOG.md](CHANGELOG.md) for reference.
 
+#### ✅ Portal Key Display in Room Details (Latest)
+**Status**: ✅ COMPLETED - Added portal key field to room detail view
+- **Feature Added**: Portal key now displays in room details page alongside zone exit flag
+- **Display Format**: Shows portal key in monospace font (e.g., 'dehimpqr') or '—' if not set
+- **UI Location**: Added to room info row next to Zone Exit field
+- **Purpose**: Allows users to see unique portal binding keys discovered by crawler
+
+#### 🔧 Zone Exit Infinite Loop Fix (Latest)
+**Status**: 🔧 IN PROGRESS - Fixed zone boundary exploration causing infinite loop
+- **Issue Identified**: Crawler getting stuck in infinite loop when hitting zone boundaries
+- **Root Cause 1**: When crawler moved to different zone, it would go back but NOT mark the connection as explored, causing it to try the same exit repeatedly
+- **Root Cause 2**: Position desync where internal state thought it was in one room but was actually in another
+- **Specific Example**: "Outside the City Walls" → north → "Grasslands" (different zone) → go back → repeat infinitely
+- **Fix Applied**: Added code to mark zone boundary connections as explored when zone change detected
+- **Testing**: Currently running test crawl to verify zone exploration completes without getting stuck
+- **Exit Behavior Note**: Empty exits on newly created rooms are expected - exits are saved incrementally as crawler explores each direction
+
+#### ✅ Successful Zone Crawl (Latest)
+**Status**: ✅ COMPLETED - Successfully crawled Midgaard City zone discovering 14 rooms with 28 explored connections before hitting zone exit infinite loop issue
+- **Rooms Discovered**: Market Square, South Temple Street, North Temple Street, The Temple of Midgaard, Main Street East, Main Street West, Northern Bazaar, several shops and temples
+- **Color Detection**: Successfully used ANSI color codes to detect room titles consistently
+- **Portal Keys**: Attempted portal binding (blocked in some rooms like Market Square)
+- **Exit Descriptions**: Gathered detailed exit descriptions and door information
+- **Progress**: 28 explored connections across 900+ actions before encountering zone boundary loop
+- **Zone Boundary**: Discovered "Outside the City Walls" as zone exit to Astyll Hills
+- **Performance**: Crawler worked well until hitting the zone exit infinite loop bug
+
 #### ✅ Color-Based Room Title Detection (Latest)
 **Status**: ✅ COMPLETED - Implemented ANSI color code-based room title extraction for reliable room name detection
 - **Problem**: AI validation was inconsistent and slow - sometimes accepting then rejecting the same room titles like "Market Square" and "Main Street East"

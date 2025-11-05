@@ -643,6 +643,10 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
     const currentZone = this.extractCurrentZone(zoneCheck);
     if (currentZone !== this.currentZone) {
       logger.info(`   🏞️  Moved to different zone: ${currentZone}`);
+      // Mark as explored to prevent infinite loop
+      logger.info(`   ✓ Marking ${direction} as explored (zone boundary)`);
+      room.exploredConnections.add(direction);
+      room.unexploredConnections.delete(direction);
       // Go back
       const oppositeDir = this.getOppositeDirection(direction);
       if (oppositeDir) {

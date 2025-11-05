@@ -496,6 +496,11 @@ export const RoomDetailView: React.FC<RoomDetailViewProps> = ({
               <span>{selectedRoom.zone_exit ? 'Yes' : 'No'}</span>
             )}
           </div>
+
+          <div className="room-info-field">
+            <strong>Portal Key:</strong>
+            <span className="code">{selectedRoom.portal_key || '—'}</span>
+          </div>
         </div>
       </div>
 
