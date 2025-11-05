@@ -8,6 +8,8 @@ const logDir = path.join(__dirname, '../../../logs');
 const timestamp = new Date().toISOString().replace(/:/g, '-').replace(/\..+/, '');
 const errorLogFile = path.join(logDir, `error-${timestamp}.log`);
 const combinedLogFile = path.join(logDir, `combined-${timestamp}.log`);
+// Also create a persistent current.log that won't be archived
+const currentLogFile = path.join(logDir, 'current.log');
 
 // Filter out verbose backend connection errors
 const filterBackendErrors = winston.format((info) => {
@@ -38,6 +40,11 @@ const logger = winston.createLogger({
     }),
     new winston.transports.File({ 
       filename: combinedLogFile 
+    }),
+    new winston.transports.File({ 
+      filename: currentLogFile,
+      maxsize: 10 * 1024 * 1024, // 10MB max size
+      maxFiles: 1 // Keep only 1 current.log file
     }),
   ],
 });

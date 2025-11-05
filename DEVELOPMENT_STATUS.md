@@ -2,6 +2,65 @@
 
 **File Condensed**: This file has been condensed from 1726 lines to focus on current AI agent project context. All historical implementation details have been moved to [CHANGELOG.md](CHANGELOG.md) for reference.
 
+#### ✅ Database Seed Script Update with Current Rooms (Latest)
+**Status**: ✅ COMPLETED - Added current 3 rooms (Market Square, South Temple Street, Outside the City Walls) and their exits to seed.ts
+- **Room Data**: Seeded Market Square (zone 2, coordinates 0,0,0), South Temple Street (zone 2, coordinates 0,1,0), and Outside the City Walls (zone 9, coordinates 0,0,0)
+- **Exit Connections**: Added bidirectional exits between Market Square ↔ South Temple Street, plus directional exits for exploration
+- **Database Schema**: Updated seed.ts to include rooms and room_exits seeding with proper coordinates and zone assignments
+- **Task Count Update**: Increased totalTasks from 21 to 23 to account for rooms and room_exits seeding tasks
+- **Data Accuracy**: Room descriptions, coordinates, and exit connections match current database state exactly
+- **Build Verification**: Seed script compiles successfully and will populate database with current 3-room baseline
+- **Crawler Foundation**: Provides proper starting point for coordinate-based zone crawler with verified room connections
+
+#### ✅ Location Verification Warning Fix (Latest)
+**Status**: ✅ COMPLETED - Improved location verification in coordinate-based crawler to handle minor room name variations
+- **Issue Identified**: Crawler showing location verification warnings despite room names appearing identical (e.g., "South Temple Street" vs "South Teemple Street")
+- **Root Cause**: Strict string comparison failing due to minor typos, extra spaces, or parsing artifacts in MUD output
+- **Flexible Matching**: Implemented similarity-based room name matching using Levenshtein distance algorithm
+- **Similarity Threshold**: Room names considered matching if similarity score > 0.8 (allowing for minor variations)
+- **Fallback Logic**: If similarity matching fails, crawler attempts to find room by name in database and updates coordinates accordingly
+- **Warning Reduction**: Eliminates false positive warnings while maintaining accurate location tracking
+- **Build Verification**: Crawler compiles successfully with enhanced verification logic
+
+#### ✅ Connection Verification Logic Fix (Latest)
+**Status**: ✅ COMPLETED - Implemented proper bidirectional connection verification to prevent false assumptions about MUD exit connectivity
+- **Issue Identified**: Crawler assumed all exits were bidirectional without verification, leading to incorrect exit mappings
+- **Root Cause**: Logic marked return paths as "mapped" without actually testing if the reverse direction worked
+- **Verification Implementation**: Added `verifyReturnPath()` and `verifyConnection()` methods that actually traverse exits to confirm they work both ways
+- **Connection States**: Exits now start as "unmapped" and only become "mapped" after successful bidirectional verification
+- **One-way Detection**: Properly handles one-way connections, teleporters, and blocked return paths
+- **Database Accuracy**: Prevents incorrect exit connections in the database by only saving verified bidirectional links
+- **Build Verification**: Crawler compiles successfully with new connection verification logic
+
+#### ✅ Exit Connection Zone Boundary Fix (Latest)
+**Status**: ✅ COMPLETED - Fixed crawler exit connections to respect zone boundaries and corrected existing incorrect connections
+- **Issue Identified**: Coordinate-based crawler was connecting rooms across different zones due to searching all rooms in database without zone filtering
+- **Root Cause**: `saveExitsForRoom` method searched all rooms globally, causing Northern Bazaar north exit to connect to "Outside City Walls" in zone 9 instead of Market Square in zone 2
+- **Crawler Fix**: Added zone filtering (`r.zone_id !== this.zoneId`) to target room search, ensuring exits only connect within same zone
+- **Database Corrections**: Fixed existing incorrect connections: Northern Bazaar north → Market Square, Market Square south → Northern Bazaar, Market Square north → South Temple Street
+- **Prevention**: Future crawls will respect zone boundaries, preventing cross-zone exit connections
+- **Build Verification**: Crawler compiles successfully with zone-aware exit connection logic
+
+#### ✅ Rooms List Delete Button Implementation (Latest)
+**Status**: ✅ COMPLETED - Added delete button to rooms list view in admin panel
+- **RoomsList Component**: Modified `RoomsList.tsx` to include optional Actions column with delete button
+- **Conditional Display**: Actions column only appears when `handleDelete` prop is provided
+- **Event Handling**: Delete button prevents row click propagation and calls `handleDelete(room.id)`
+- **Admin Integration**: Updated `Admin.tsx` to pass `handleDelete` function to RoomsList component
+- **Confirmation Dialog**: Uses existing `handleDelete` function with confirmation prompt before deletion
+- **Styling**: Leverages existing `.btn-small.btn-delete` CSS classes for consistent appearance
+- **Build Verification**: Frontend compiles successfully with delete functionality
+
+#### ✅ Coordinate-Based Zone Crawler Starting Room Fix (Latest)
+**Status**: ✅ COMPLETED - Fixed crawler re-processing already mapped starting rooms
+- **Issue Identified**: New coordinate-based crawler was re-processing Market Square (starting room) even though it was already mapped in database
+- **Root Cause**: `exploreNextUnmappedExit` method was calling `roomProcessor.processRoom()` on already mapped rooms instead of just exploring unmapped exits
+- **Logic Update**: Renamed method to `exploreNextUnmappedExitFromMappedRoom` and updated logic to skip room processing for already known rooms
+- **Exit-Only Exploration**: For mapped rooms, crawler now only explores unmapped exits without re-processing the room data
+- **New Room Discovery**: Only calls `roomProcessor.processRoom()` when discovering completely new rooms at unexplored coordinates
+- **Efficiency Improvement**: Eliminates redundant processing of known rooms, focusing only on discovering new areas
+- **Build Verification**: Crawler compiles successfully with updated exploration logic
+
 #### ✅ File Restructuring (Latest)
 **Status**: ✅ COMPLETED - DEVELOPMENT_STATUS.md condensed from 1726 lines to 156 lines
 - **Historical Content**: Moved all detailed implementation history to CHANGELOG.md
@@ -12,6 +71,19 @@
 # Development Status - Apocalypse VI MUD
 
 **File Condensed**: This file has been condensed from 1726 lines to focus on current AI agent project context. All historical implementation details have been moved to [CHANGELOG.md](CHANGELOG.md) for reference.
+
+#### ✅ New Coordinate-Based Zone Crawler Implementation (Latest)
+**Status**: ✅ COMPLETED - Created new systematic zone exploration system starting from 0,0,0 with exit tracking
+- **CoordinateBasedZoneCrawler**: New task class implementing systematic zone exploration
+- **Starting Logic**: Begins at coordinates 0,0,0 or current room location if it exists in database
+- **Zone Detection**: Automatically determines current zone and loads existing rooms for that zone
+- **Exit Tracking**: Maintains separate sets of mapped vs unmapped exits for each room
+- **Systematic Exploration**: Iteratively finds rooms with unmapped exits and explores them one by one
+- **Room Navigation**: Implements pathfinding and navigation between rooms with location verification
+- **Database Integration**: Saves new rooms and connections as they are discovered
+- **Task Registration**: Added 'document-zone-new' task type to TaskManager with proper descriptions
+- **Backwards Compatibility**: Original DocumentZoneTask preserved as DocumentZoneTask_OLD.ts
+- **Build Verification**: Crawler compiles successfully with new coordinate-based exploration system
 
 #### ✅ Interactive MUD Map Implementation (Latest)
 **Status**: ✅ COMPLETED - Grid-based zone map visualization with room connections and z-level support

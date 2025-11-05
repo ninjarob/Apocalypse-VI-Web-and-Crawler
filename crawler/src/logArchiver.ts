@@ -72,8 +72,8 @@ export class LogArchiver {
           continue;
         }
 
-        // Skip non-log files
-        if (!file.endsWith('.log')) {
+        // Skip non-log files and current.log (keep it for analysis)
+        if (!file.endsWith('.log') || file === 'current.log') {
           continue;
         }
 

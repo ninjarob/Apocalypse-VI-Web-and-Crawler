@@ -189,6 +189,28 @@ SINGLE_TASK_MODE=true   # AI makes 1 decision then exits
 SINGLE_TASK_MODE=false  # Normal continuous exploration
 ```
 
+### Run Specific Tasks
+```powershell
+# Available tasks
+npm run dev -- --task=document-actions    # Discover player commands
+npm run dev -- --task=document-help       # Document help topics  
+npm run dev -- --task=document-zone       # OLD zone mapping method
+npm run dev -- --task=document-zone-new   # NEW coordinate-based zone mapping
+npm run dev -- --task=document-room       # Document current room
+npm run dev -- --task=learn-game          # AI learning session
+npm run dev -- --task=play-game           # Autonomous gameplay
+```
+
+### New Coordinate-Based Zone Crawler
+The new `document-zone-new` task:
+- Starts at coordinates 0,0,0 or current room location
+- Loads existing rooms for the current zone
+- Tracks mapped vs unmapped exits for each room
+- Systematically explores all unmapped exits
+- Creates new rooms and connections as discovered
+- Navigates between rooms and verifies location
+- More efficient and systematic than the old method
+
 ### AI Provider (Ollama - No API Keys!)
 Ollama runs locally, completely free:
 ```powershell

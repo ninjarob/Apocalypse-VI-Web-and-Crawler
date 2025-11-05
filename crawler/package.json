@@ -11,6 +11,7 @@
     "crawl:document-actions": "tsx src/index.ts -- --task=document-actions",
     "crawl:document-help": "tsx src/index.ts -- --task=document-help",
     "crawl:document-zone": "tsx src/index.ts -- --task=document-zone",
+    "crawl:document-zone-new": "tsx src/index.ts -- --task=document-zone-new",
     "crawl:document-room": "tsx src/index.ts -- --task=document-room",
     "crawl:learn-game": "tsx src/index.ts -- --task=learn-game",
     "crawl:play-game": "tsx src/index.ts -- --task=play-game",

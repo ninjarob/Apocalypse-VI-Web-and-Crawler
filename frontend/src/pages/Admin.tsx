@@ -568,6 +568,7 @@ function Admin() {
                 ENTITY_CONFIGS={ENTITY_CONFIGS}
                 setSelectedEntity={setSelectedEntity}
                 handleZoneClick={handleZoneClick}
+                handleDelete={handleDelete}
               />
             ) : (
               <div className="entity-table-container">

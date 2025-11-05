@@ -55,6 +55,7 @@ export class TaskManager {
       'document-actions',
       'document-help',
       'document-zone',
+      'document-zone-new',
       'document-room',
       'learn-game',
       'play-game'
@@ -68,7 +69,8 @@ export class TaskManager {
     const descriptions: Record<string, string> = {
       'document-actions': 'Systematically discover and document player actions (commands) with help text',
       'document-help': 'Document general help topics and non-action game knowledge',
-      'document-zone': 'Map all rooms in a zone with objects, exits, and descriptions',
+      'document-zone': 'Map all rooms in a zone with objects, exits, and descriptions (old method)',
+      'document-zone-new': 'New coordinate-based zone exploration starting from 0,0,0 with exit tracking',
       'document-room': 'Thoroughly document the current room and its features',
       'learn-game': 'Iteratively improve AI knowledge base through exploration and learning',
       'play-game': 'Play the game autonomously using current AI knowledge'
@@ -124,8 +126,12 @@ export class TaskManager {
         return new DocumentHelpTask(this.config);
       }
       case 'document-zone': {
-        const { DocumentZoneTask } = await import('./DocumentZoneTask');
+        const { DocumentZoneTask } = await import('./DocumentZoneTask_OLD');
         return new DocumentZoneTask(this.config);
+      }
+      case 'document-zone-new': {
+        const { CoordinateBasedZoneCrawler } = await import('./CoordinateBasedZoneCrawler');
+        return new CoordinateBasedZoneCrawler(this.config);
       }
       case 'document-room': {
         const { DocumentRoomTask } = await import('./DocumentRoomTask');

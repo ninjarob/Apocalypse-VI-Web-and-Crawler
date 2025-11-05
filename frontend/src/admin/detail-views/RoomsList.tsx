@@ -10,6 +10,7 @@ interface RoomsListProps {
   setSelectedEntity?: (config: EntityConfig) => void;
   handleZoneClick?: (zone: Entity) => void;
   showZoneColumn?: boolean;
+  handleDelete?: (id: number) => void;
 }
 
 /**
@@ -24,7 +25,8 @@ export const RoomsList: React.FC<RoomsListProps> = ({
   ENTITY_CONFIGS = [],
   setSelectedEntity,
   handleZoneClick,
-  showZoneColumn = true
+  showZoneColumn = true,
+  handleDelete
 }) => {
   if (rooms.length === 0) {
     return <p className="empty-message">{emptyMessage}</p>;
@@ -37,6 +39,7 @@ export const RoomsList: React.FC<RoomsListProps> = ({
           <tr>
             <th>Name</th>
             {showZoneColumn && <th>Zone</th>}
+            {handleDelete && <th>Actions</th>}
           </tr>
         </thead>
         <tbody>
@@ -72,6 +75,16 @@ export const RoomsList: React.FC<RoomsListProps> = ({
                     ) : (
                       <em className="text-gray">No zone</em>
                     )}
+                  </td>
+                )}
+                {handleDelete && (
+                  <td className="actions-cell" onClick={e => e.stopPropagation()}>
+                    <button
+                      className="btn-small btn-delete"
+                      onClick={() => handleDelete(room.id)}
+                    >
+                      Delete
+                    </button>
                   </td>
                 )}
               </tr>
