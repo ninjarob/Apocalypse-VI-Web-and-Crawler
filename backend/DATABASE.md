@@ -105,7 +105,7 @@ Connections between zones
 
 #### `rooms`
 Discovered game locations (populated by crawler)
-- Fields: `id`, `zone_id`, `vnum`, `name`, `description`, `exits` (JSON), `npcs` (JSON), `items` (JSON), `coordinates` (JSON), `area`, `flags`, `terrain`, `visitCount`, `firstVisited`, `lastVisited`, `rawText`, `createdAt`, `updatedAt`
+- Fields: `id`, `zone_id`, `vnum`, `name`, `description`, `exits` (JSON), `npcs` (JSON), `items` (JSON), `area`, `flags`, `terrain`, `visitCount`, `firstVisited`, `lastVisited`, `rawText`, `createdAt`, `updatedAt`
 
 #### `room_exits`
 Detailed exit information between rooms

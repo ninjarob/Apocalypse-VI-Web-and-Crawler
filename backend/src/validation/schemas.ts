@@ -103,7 +103,6 @@ export const roomSchema = z.object({
   exits: jsonFieldSchema,
   npcs: jsonFieldSchema,
   items: jsonFieldSchema,
-  coordinates: jsonFieldSchema,
   area: z.string().max(255).optional().nullable(),
   flags: z.string().max(255).optional().nullable(),
   terrain: z.string().max(100).optional().nullable(),

@@ -86,7 +86,6 @@ export class RoomService extends BaseService {
       exits: roomData.exits || undefined,
       npcs: roomData.npcs || undefined,
       items: roomData.items || undefined,
-      coordinates: roomData.coordinates || undefined,
       area: roomData.area || undefined,
       zone_id: roomData.zone_id || undefined,
       vnum: roomData.vnum || undefined,

@@ -2,15 +2,42 @@
 
 **File Condensed**: This file has been condensed from 1726 lines to focus on current AI agent project context. All historical implementation details have been moved to [CHANGELOG.md](CHANGELOG.md) for reference.
 
-#### ✅ Database Seed Script Update with Current Rooms (Latest)
-**Status**: ✅ COMPLETED - Added current 3 rooms (Market Square, South Temple Street, Outside the City Walls) and their exits to seed.ts
-- **Room Data**: Seeded Market Square (zone 2, coordinates 0,0,0), South Temple Street (zone 2, coordinates 0,1,0), and Outside the City Walls (zone 9, coordinates 0,0,0)
-- **Exit Connections**: Added bidirectional exits between Market Square ↔ South Temple Street, plus directional exits for exploration
-- **Database Schema**: Updated seed.ts to include rooms and room_exits seeding with proper coordinates and zone assignments
-- **Task Count Update**: Increased totalTasks from 21 to 23 to account for rooms and room_exits seeding tasks
-- **Data Accuracy**: Room descriptions, coordinates, and exit connections match current database state exactly
-- **Build Verification**: Seed script compiles successfully and will populate database with current 3-room baseline
-- **Crawler Foundation**: Provides proper starting point for coordinate-based zone crawler with verified room connections
+#### ✅ Backend Coordinate System Removal (Latest)
+**Status**: ✅ COMPLETED - Extended coordinate system removal to backend infrastructure for complete elimination
+- **Database Schema Cleanup**: Removed `coordinates` column from rooms table in both `database.ts` and `seed.ts`
+- **Repository Updates**: Updated `RoomRepository.ts` to remove coordinates from interface and jsonFields array
+- **Validation Schema Updates**: Removed coordinates field from `roomSchema` in `validation/schemas.ts`
+- **Service Layer Updates**: Modified `RoomService.ts` to exclude coordinates from room creation and updates
+- **Shared Types Cleanup**: Removed coordinates field from Room interface in `shared/types.ts`
+- **Documentation Updates**: Updated `DATABASE.md` to remove coordinates from rooms table field list
+- **Build Verification**: Backend compiles successfully with coordinate-free room management
+- **Data Integrity**: Existing room data remains intact while preventing future coordinate storage
+- **API Compatibility**: Room endpoints continue to function without coordinate data handling
+
+#### ✅ Force-Directed Graph ZoneMap Visualization (Latest)
+**Status**: ✅ COMPLETED - Replaced coordinate-based grid layout with D3.js force-directed graph for natural room clustering
+- **Coordinate System Removal**: Eliminated arbitrary coordinate system entirely - coordinates were meaningless labels, not real MUD positions
+- **D3.js Integration**: Installed D3.js library and implemented force simulation for natural room positioning based on actual exit connections
+- **Graph-Based Layout**: Rooms positioned dynamically based on exit connections rather than arbitrary x,y,z coordinates
+- **Interactive Features**: Draggable room nodes, hover effects, click-to-view room details, and smooth animations
+- **Zone Filtering**: Maintained zone selection dropdown for focused exploration
+- **Connection Visualization**: SVG-based links with directional arrows showing room interconnections
+- **Responsive Design**: Auto-scaling viewport that adapts to zone size and complexity
+- **Performance Optimization**: Efficient force simulation with collision detection and link distance constraints
+- **User Experience**: Natural room clustering reveals actual MUD geography and exploration patterns
+- **Clean Interface**: Removed z-level selectors and coordinate displays - all rooms in a zone shown in single organic layout
+- **Build Verification**: Frontend compiles successfully with coordinate-free force-directed visualization system
+
+#### ✅ Room Repository Boolean Fields Fix (Latest)
+**Status**: ✅ COMPLETED - Fixed "value.trim is not a function" error in room saving by properly configuring boolean fields
+- **Issue Identified**: Crawler failing to save rooms with HTTP 500 error "value.trim is not a function" when processing zone_exit field
+- **Root Cause**: RoomRepository config missing `booleanFields: ['zone_exit']` causing BaseRepository to treat zone_exit as string instead of boolean
+- **Field Type Mismatch**: Database stores zone_exit as INTEGER (0/1) but repository wasn't converting to boolean, leading to trim() call on number
+- **Configuration Fix**: Added `booleanFields: ['zone_exit']` to RoomRepository config to enable proper boolean serialization/deserialization
+- **BaseRepository Logic**: Boolean fields now properly converted from database INTEGER to boolean and back during save operations
+- **Data Flow**: Room saving now works correctly with zone_exit field properly handled as boolean throughout the application
+- **Build Verification**: Backend compiles successfully with proper boolean field handling
+- **Crawler Functionality**: Room saving operations now complete successfully, allowing crawler to continue exploration
 
 #### ✅ Persistent Logging Fix (Latest)
 **Status**: ✅ COMPLETED - Fixed current.log file creation path and verified persistent logging is working

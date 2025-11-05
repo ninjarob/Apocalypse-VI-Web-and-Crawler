@@ -111,7 +111,6 @@ function createTables(callback: () => void) {
     exits TEXT,
     npcs TEXT,
     items TEXT,
-    coordinates TEXT,
     area TEXT,
     flags TEXT,
     terrain TEXT,
@@ -1905,7 +1904,6 @@ function seedData() {
       vnum: 3001,
       name: 'Market Square',
       description: 'Test description',
-      coordinates: '{"x":0,"y":0,"z":0}',
       terrain: 'city',
       flags: null,
       area: 'Midgaard City',
@@ -1919,7 +1917,6 @@ function seedData() {
       vnum: 3002,
       name: ' South Temple Street',
       description: '   The newly renovated Temple Street is wide and clean, with light colored bricks gleaming from being freshly washed. Nobles, common folk and adventurers alike move about in a steady stream as they make their way through town. The Market Square to the south is a common destination, which locals consider to be the heart of the city.',
-      coordinates: '{"x":0,"y":1,"z":0}',
       terrain: 'city',
       flags: null,
       area: 'Midgaard City',
@@ -1933,7 +1930,6 @@ function seedData() {
       vnum: 9001,
       name: 'Outside the City Walls',
       description: '   The stout walls of the City of Midgaard are to the south.  The wall here has been carefully constructed to hide a door into the back of the temple.  A plain covered in tall grass is to the north.  The blowing wind ripples the tall grass in a peaceful manner.',
-      coordinates: '{"x":0,"y":0,"z":0}',
       terrain: 'field',
       flags: null,
       area: 'Hills of Astyll',
@@ -1943,10 +1939,10 @@ function seedData() {
     }
   ];
 
-  const insertRoom = db.prepare('INSERT INTO rooms (id, zone_id, vnum, name, description, coordinates, terrain, flags, area, visitCount, firstVisited, lastVisited) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+  const insertRoom = db.prepare('INSERT INTO rooms (id, zone_id, vnum, name, description, terrain, flags, area, visitCount, firstVisited, lastVisited) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
 
   sampleRooms.forEach(room => {
-    insertRoom.run(room.id, room.zone_id, room.vnum, room.name, room.description, room.coordinates, room.terrain, room.flags, room.area, room.visitCount, room.firstVisited, room.lastVisited);
+    insertRoom.run(room.id, room.zone_id, room.vnum, room.name, room.description, room.terrain, room.flags, room.area, room.visitCount, room.firstVisited, room.lastVisited);
   });
 
   insertRoom.finalize(() => {

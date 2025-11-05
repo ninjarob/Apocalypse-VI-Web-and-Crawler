@@ -21,7 +21,6 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
     portal_key: '',
     greater_binding_key: '',
     zone_exit: false,
-    coordinates: { x: 0, y: 0, z: 0 },
     exits: [],
     npcs: [],
     items: [],
@@ -67,18 +66,6 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
     setFormData(prev => ({
       ...prev,
       [field]: value
-    }));
-  };
-
-  const handleCoordinateChange = (axis: 'x' | 'y' | 'z', value: number) => {
-    setFormData(prev => ({
-      ...prev,
-      coordinates: {
-        x: prev.coordinates?.x ?? 0,
-        y: prev.coordinates?.y ?? 0,
-        z: prev.coordinates?.z ?? 0,
-        [axis]: value
-      }
     }));
   };
 
@@ -318,43 +305,6 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
                     onChange={(e) => handleInputChange('greater_binding_key', e.target.value)}
                     maxLength={100}
                     placeholder="Key from 'bind portal greater' spell"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Coordinates */}
-            <div className="form-section">
-              <h3>Coordinates</h3>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="coord_x">X</label>
-                  <input
-                    type="number"
-                    id="coord_x"
-                    value={formData.coordinates?.x || 0}
-                    onChange={(e) => handleCoordinateChange('x', parseInt(e.target.value) || 0)}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="coord_y">Y</label>
-                  <input
-                    type="number"
-                    id="coord_y"
-                    value={formData.coordinates?.y || 0}
-                    onChange={(e) => handleCoordinateChange('y', parseInt(e.target.value) || 0)}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="coord_z">Z</label>
-                  <input
-                    type="number"
-                    id="coord_z"
-                    value={formData.coordinates?.z || 0}
-                    onChange={(e) => handleCoordinateChange('z', parseInt(e.target.value) || 0)}
                   />
                 </div>
               </div>

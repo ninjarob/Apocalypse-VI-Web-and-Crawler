@@ -7,7 +7,6 @@ export interface Room {
   exits?: any;
   npcs?: any;
   items?: any;
-  coordinates?: any;
   area?: string;
   zone_id?: number;
   vnum?: number;
@@ -31,7 +30,8 @@ const config: EntityConfig = {
   nameField: 'name',
   autoIncrement: true,
   uniqueField: 'name',
-  jsonFields: ['exits', 'npcs', 'items', 'coordinates'],
+  jsonFields: ['exits', 'npcs', 'items'],
+  booleanFields: ['zone_exit'],
   sortBy: 'lastVisited DESC'
 };
 

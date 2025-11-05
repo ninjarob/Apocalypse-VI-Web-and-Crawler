@@ -73,7 +73,6 @@ async function createTables() {
       exits TEXT,
       npcs TEXT,
       items TEXT,
-      coordinates TEXT,
       area TEXT,
       visitCount INTEGER DEFAULT 0,
       firstVisited TEXT,
