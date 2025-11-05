@@ -84,9 +84,14 @@ function Admin() {
   }, [selectedEntity]);
 
   const loadRoomRelatedData = async () => {
-    const [zones, exits] = await Promise.all([api.get('/zones'), api.get('/room_exits')]);
+    const [zones, exits, connections] = await Promise.all([
+      api.get('/zones'), 
+      api.get('/room_exits'),
+      api.get('/zone_connections')
+    ]);
     setAllZones(zones);
     setRoomExits(exits);
+    setZoneConnections(connections);
   };
 
   const loadEntities = async () => {

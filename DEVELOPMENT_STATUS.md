@@ -9,6 +9,17 @@
 - **Reference Links**: Added links to QUICK_REFERENCE.md, FRONTEND_REFACTORING.md, and CHANGELOG.md
 - **Maintainability**: Improved file organization for better accessibility to current development information
 
+#### ✅ Zone Connections Loading Fix (Latest)
+**Status**: ✅ COMPLETED - Fixed zone connections not loading when viewing room details, preventing zone exit filtering from working
+- **Issue Identified**: Zone exit rooms from connected zones weren't appearing in exit destination filtering despite correct zone connections and boolean conversion
+- **Root Cause**: `loadRoomRelatedData()` function only loaded zones and room_exits, but not zone_connections, leaving zoneConnections array empty in RoomDetailView
+- **Missing Data**: Zone connections required for filtering logic `connectedZoneIds.has(room.zone_id)` were not available when viewing room details
+- **Function Update**: Modified `loadRoomRelatedData()` in Admin.tsx to also load zone connections: `const [zones, exits, connections] = await Promise.all([api.get('/zones'), api.get('/room_exits'), api.get('/zone_connections')])`
+- **Data Flow**: Zone connections now properly loaded when viewing room details, enabling filtering logic to work correctly
+- **Zone Exit Filtering**: "Outside City Walls" room (zone 9, zone_exit: true) now appears in Midgaard City (zone 2) exit destination filtering since zones are connected
+- **Build Verification**: Frontend compiles successfully with updated data loading
+- **Testing**: Zone exit rooms from connected zones now appear in exit destination filtering as expected
+
 #### ✅ Zone Exit Room Filtering Fix (Latest)
 **Status**: ✅ COMPLETED - Fixed zone exit rooms from connected zones not appearing in exit destination filtering
 - **Issue Identified**: Zone exit rooms from connected zones weren't showing in exit destination typeahead despite correct zone connections
