@@ -130,8 +130,8 @@ export class TaskManager {
         return new DocumentZoneTask(this.config);
       }
       case 'document-zone-new': {
-        const { CoordinateBasedZoneCrawler } = await import('./CoordinateBasedZoneCrawler');
-        return new CoordinateBasedZoneCrawler(this.config);
+        const { RoomGraphNavigationCrawler } = await import('./RoomGraphNavigationCrawler');
+        return new RoomGraphNavigationCrawler(this.config);
       }
       case 'document-room': {
         const { DocumentRoomTask } = await import('./DocumentRoomTask');
