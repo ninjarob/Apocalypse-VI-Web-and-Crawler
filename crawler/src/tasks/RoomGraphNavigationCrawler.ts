@@ -481,6 +481,53 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
     try {
       logger.info(`🔄 Attempting to recover from lost position...`);
 
+      // First try portal teleport to get back to a known location
+      const portalKeys = await this.getAvailablePortalKeys();
+      for (const portalKey of portalKeys) {
+        try {
+          logger.info(`🔄 Trying portal teleport with key: ${portalKey}`);
+          await this.delay(this.config.delayBetweenActions);
+          const teleportCommand = `enter ${portalKey}`;
+          const teleportResponse = await this.config.mudClient.sendAndWait(teleportCommand, this.config.delayBetweenActions);
+          this.actionsUsed++;
+
+          if (teleportResponse.includes("You step through the portal") || 
+              teleportResponse.includes("shimmering blue portal")) {
+            
+            // Check if we're back in our zone
+            await this.delay(this.config.delayBetweenActions);
+            const zoneCheck = await this.config.mudClient.sendAndWait('who -z', this.config.delayBetweenActions);
+            this.actionsUsed++;
+            
+            const currentZone = this.extractCurrentZone(zoneCheck);
+            if (currentZone === this.currentZone) {
+              logger.info(`✅ Successfully teleported back to ${this.currentZone}`);
+              
+              // Parse current room and sync position
+              await this.delay(this.config.delayBetweenActions);
+              const lookResponse = await this.config.mudClient.sendAndWait('look', this.config.delayBetweenActions);
+              this.actionsUsed++;
+              
+              const roomData = await this.roomProcessor['parseLookOutput'](lookResponse);
+              const roomMatch = this.findMatchingRoom(roomData, undefined, true);
+              
+              if (roomMatch) {
+                this.currentRoomId = roomMatch.id;
+                this.currentRoomName = roomMatch.name;
+                this.navigationPath = [roomMatch.id];
+                logger.info(`✓ Recovered position to: ${roomMatch.name} (ID: ${roomMatch.id})`);
+                return;
+              }
+            }
+          }
+        } catch (error) {
+          logger.error(`Failed to use portal key ${portalKey}:`, error);
+        }
+      }
+
+      // Portal teleport failed - try the old method
+      logger.info(`🔄 Portal teleport failed - trying exploration-based recovery...`);
+
       // Get current room data
       await this.delay(this.config.delayBetweenActions);
       const lookResponse = await this.config.mudClient.sendAndWait('look', this.config.delayBetweenActions);
@@ -650,42 +697,127 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
               }
               
               if (!foundReturnPath) {
-                // Couldn't find a way back - save the cross-zone room to database and mark as lost
-                logger.warn(`   ❌ Could not find path back to ${this.currentZone} - saving cross-zone room and marking as lost`);
+                // Couldn't find a way back - try using portal keys first, then mark as lost
+                logger.warn(`   ❌ Could not find path back to ${this.currentZone} - trying portal teleport first`);
                 
-                // Try to get portal key
-                const portalKey = await this.roomProcessor.getPortalKey(roomData);
-                if (portalKey) {
-                  roomData.portal_key = portalKey;
+                // Try to use a portal key to get back to our zone
+                const portalKeys = await this.getAvailablePortalKeys();
+                let teleportedBack = false;
+                
+                for (const portalKey of portalKeys) {
+                  try {
+                    logger.info(`   🔄 Trying to teleport back using portal key: ${portalKey}`);
+                    await this.delay(this.config.delayBetweenActions);
+                    const teleportCommand = `enter ${portalKey}`;
+                    const teleportResponse = await this.config.mudClient.sendAndWait(teleportCommand, this.config.delayBetweenActions);
+                    this.actionsUsed++;
+                    
+                    if (teleportResponse.includes("You step through the portal") || 
+                        teleportResponse.includes("shimmering blue portal")) {
+                      
+                      // Check if we're back in our zone
+                      await this.delay(this.config.delayBetweenActions);
+                      const zoneCheck = await this.config.mudClient.sendAndWait('who -z', this.config.delayBetweenActions);
+                      this.actionsUsed++;
+                      
+                      const currentZone = this.extractCurrentZone(zoneCheck);
+                      if (currentZone === this.currentZone) {
+                        logger.info(`   ✅ Successfully teleported back to ${this.currentZone} using portal key ${portalKey}`);
+                        teleportedBack = true;
+                        
+                        // Parse current room and sync position
+                        await this.delay(this.config.delayBetweenActions);
+                        const lookResponse = await this.config.mudClient.sendAndWait('look', this.config.delayBetweenActions);
+                        this.actionsUsed++;
+                        
+                        const roomData = await this.roomProcessor['parseLookOutput'](lookResponse);
+                        const roomMatch = this.findMatchingRoom(roomData, undefined, true);
+                        
+                        if (roomMatch) {
+                          this.currentRoomId = roomMatch.id;
+                          this.currentRoomName = roomMatch.name;
+                          logger.info(`   ✓ Resynced position to: ${roomMatch.name} (ID: ${roomMatch.id})`);
+                        } else {
+                          // Save as new room if not found
+                          const exitsResponse = await this.config.mudClient.sendAndWait('exits', this.config.delayBetweenActions);
+                          this.actionsUsed++;
+                          const exits = this.parseExitsOutput(exitsResponse);
+                          const exitDirections = exits.map(e => e.direction.toLowerCase());
+                          
+                          const portalKeyForRoom = await this.roomProcessor.getPortalKey(roomData);
+                          if (portalKeyForRoom) {
+                            roomData.portal_key = portalKeyForRoom;
+                          }
+                          
+                          const roomToSave: any = {
+                            name: roomData.name,
+                            description: this.filterOutput(roomData.description),
+                            rawText: `${roomData.name}\n${this.filterOutput(roomData.description)}`,
+                            zone_id: this.zoneId,
+                            visitCount: 1,
+                            lastVisited: new Date().toISOString()
+                          };
+                          
+                          if (roomData.portal_key) {
+                            roomToSave.portal_key = roomData.portal_key;
+                          }
+                          
+                          const savedRoom = await this.config.api.saveRoom(roomToSave);
+                          if (savedRoom) {
+                            await this.saveExitsForRoom(savedRoom.id, exitDirections);
+                            this.currentRoomId = savedRoom.id;
+                            this.currentRoomName = roomData.name;
+                            logger.info(`   ✓ Saved and synced to teleported room: ${roomData.name} (ID: ${savedRoom.id})`);
+                          }
+                        }
+                        break;
+                      } else {
+                        logger.info(`   ❌ Portal key ${portalKey} led to ${currentZone} instead of ${this.currentZone}`);
+                      }
+                    }
+                  } catch (error) {
+                    logger.error(`   ❌ Failed to use portal key ${portalKey}:`, error);
+                  }
                 }
                 
-                // Get the correct zone ID for the new zone
-                const newZoneId = await this.getZoneId(actualZone);
-                
-                // Save the room to database (but NOT to exploration graph)
-                const roomToSave: any = {
-                  name: actualRoomName,
-                  description: this.filterOutput(roomData.description),
-                  rawText: `${actualRoomName}\n${this.filterOutput(roomData.description)}`,
-                  zone_id: newZoneId,
-                  visitCount: 1,
-                  lastVisited: new Date().toISOString()
-                };
-                
-                if (roomData.portal_key) {
-                  roomToSave.portal_key = roomData.portal_key;
-                  logger.info(`   💠 Saving cross-zone room with portal key: ${roomData.portal_key}`);
+                if (!teleportedBack) {
+                  // Portal teleport failed - save the cross-zone room and mark as lost
+                  logger.warn(`   ❌ Portal teleport failed - saving cross-zone room and marking as lost`);
+                  
+                  // Try to get portal key
+                  const portalKey = await this.roomProcessor.getPortalKey(roomData);
+                  if (portalKey) {
+                    roomData.portal_key = portalKey;
+                  }
+                  
+                  // Get the correct zone ID for the new zone
+                  const newZoneId = await this.getZoneId(actualZone);
+                  
+                  // Save the room to database (but NOT to exploration graph)
+                  const roomToSave: any = {
+                    name: actualRoomName,
+                    description: this.filterOutput(roomData.description),
+                    rawText: `${actualRoomName}\n${this.filterOutput(roomData.description)}`,
+                    zone_id: newZoneId,
+                    visitCount: 1,
+                    lastVisited: new Date().toISOString()
+                  };
+                  
+                  if (roomData.portal_key) {
+                    roomToSave.portal_key = roomData.portal_key;
+                    logger.info(`   💠 Saving cross-zone room with portal key: ${roomData.portal_key}`);
+                  }
+                  
+                  const savedRoom = await this.config.api.saveRoom(roomToSave);
+                  if (savedRoom) {
+                    await this.saveExitsForRoom(savedRoom.id, exitDirections);
+                    logger.info(`   ✓ Saved cross-zone room: ${actualRoomName} (ID: ${savedRoom.id}) in zone ${actualZone}`);
+                  }
+                  
+                  // Mark as lost but don't keep trying to sync
+                  this.currentRoomId = -1;
+                  this.currentRoomName = "LOST_IN_DIFFERENT_ZONE";
                 }
-                
-                const savedRoom = await this.config.api.saveRoom(roomToSave);
-                if (savedRoom) {
-                  await this.saveExitsForRoom(savedRoom.id, exitDirections);
-                  logger.info(`   ✓ Saved cross-zone room: ${actualRoomName} (ID: ${savedRoom.id}) in zone ${actualZone}`);
-                }
-                
-                // Mark as lost but don't keep trying to sync
-                this.currentRoomId = -1;
-                this.currentRoomName = "LOST_IN_DIFFERENT_ZONE";
                 return;
               }
               
@@ -919,6 +1051,19 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
    * Explore the next unexplored connection from a room
    */
   private async exploreNextUnexploredConnection(room: RoomNode): Promise<void> {
+    // CRITICAL: Ensure we're actually in the expected room before exploring
+    // Position desync can occur after return path verification
+    if (this.currentRoomId !== room.id) {
+      logger.info(`🔄 Position desync detected - navigating to ${room.name} before exploring`);
+      const path = this.findPathToRoom(this.currentRoomId, room.id);
+      if (path && path.length > 1) {
+        await this.navigateAlongPath(path);
+      } else {
+        logger.error(`❌ Cannot navigate to ${room.name} for exploration`);
+        return;
+      }
+    }
+
     const direction = Array.from(room.unexploredConnections)[0];
     if (!direction) return;
 
@@ -995,6 +1140,12 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
         
         // Update the exit in database to set the destination
         await this.updateExitDestination(room.id, direction, savedRoom.id);
+        
+        // Update the reverse exit from cross-zone room back to source room
+        const reverseDirection = this.getOppositeDirection(direction);
+        if (reverseDirection) {
+          await this.updateExitDestination(savedRoom.id, reverseDirection, room.id);
+        }
         
         logger.info(`   ✓ Saved cross-zone room: ${newRoomName} (ID: ${savedRoom.id}) in zone ${currentZone}`);
       } else {
@@ -1714,5 +1865,37 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
     logger.info('✓ Room graph navigation crawler cleanup complete');
     const stats = this.getExplorationStats();
     logger.info(`📊 Final stats: ${stats.totalRooms} rooms, ${stats.exploredConnections} explored connections, ${stats.unexploredConnections} unexplored connections`);
+  }
+
+  /**
+   * Get all available portal keys from rooms in our target zone
+   */
+  private async getAvailablePortalKeys(): Promise<string[]> {
+    try {
+      const portalKeys: string[] = [];
+      
+      // Get all rooms in our target zone that have portal keys
+      for (const room of this.roomGraph.values()) {
+        if (room.zone_id === this.zoneId && room.portal_key) {
+          portalKeys.push(room.portal_key);
+        }
+      }
+      
+      // Also check database for any portal keys we might not have in graph yet
+      const allRooms = await this.config.api.getAllEntities('rooms');
+      const zoneRooms = allRooms.filter((r: any) => r.zone_id === this.zoneId && r.portal_key);
+      
+      for (const room of zoneRooms) {
+        if (!portalKeys.includes(room.portal_key)) {
+          portalKeys.push(room.portal_key);
+        }
+      }
+      
+      logger.info(`Found ${portalKeys.length} available portal keys: ${portalKeys.join(', ')}`);
+      return portalKeys;
+    } catch (error) {
+      logger.error('Failed to get available portal keys:', error);
+      return [];
+    }
   }
 }
