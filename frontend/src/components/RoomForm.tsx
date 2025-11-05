@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Room, RoomExit } from '../../../shared/types';
+import { Room } from '../../../shared/types';
 import { api } from '../api';
 
 interface RoomFormProps {
@@ -7,19 +7,6 @@ interface RoomFormProps {
   onSave: (room: Partial<Room>) => void;
   onCancel: () => void;
   isLoading?: boolean;
-}
-
-interface ExitFormData {
-  direction: string;
-  description?: string;
-  door_name?: string;
-  door_description?: string;
-  look_description?: string;
-  is_door?: boolean;
-  is_locked?: boolean;
-  is_zone_exit?: boolean;
-  to_room_id?: number;
-  to_room_name?: string;
 }
 
 export default function RoomForm({ room, onSave, onCancel, isLoading = false }: RoomFormProps) {
@@ -43,11 +30,7 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
 
   const [selectedFlags, setSelectedFlags] = useState<string[]>([]);
 
-  const [exits, setExits] = useState<ExitFormData[]>([]);
   const [zones, setZones] = useState<any[]>([]);
-  const [rooms, setRooms] = useState<Room[]>([]);
-  const [roomSearch, setRoomSearch] = useState('');
-  const [filteredRooms, setFilteredRooms] = useState<Room[]>([]);
   const [zoneSearch, setZoneSearch] = useState('');
   const [filteredZones, setFilteredZones] = useState<any[]>([]);
   const [terrains, setTerrains] = useState<any[]>([]);
@@ -59,15 +42,6 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
       setZones(zonesData);
     } catch (error) {
       console.error('Failed to load zones:', error);
-    }
-  };
-
-  const loadRooms = async () => {
-    try {
-      const roomsData = await api.getAll<Room>('rooms');
-      setRooms(roomsData);
-    } catch (error) {
-      console.error('Failed to load rooms:', error);
     }
   };
 
@@ -89,11 +63,6 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
     }
   };
 
-  const getRoomName = (roomId: number): string => {
-    const foundRoom = rooms.find(r => r.id === roomId);
-    return foundRoom ? foundRoom.name : `Room ${roomId}`;
-  };
-
   const handleInputChange = (field: string, value: any) => {
     setFormData(prev => ({
       ...prev,
@@ -111,37 +80,6 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
         [axis]: value
       }
     }));
-  };
-
-  const addExit = () => {
-    setExits(prev => [...prev, {
-      direction: '',
-      description: '',
-      door_name: '',
-      door_description: '',
-      look_description: '',
-      is_door: false,
-      is_locked: false,
-      is_zone_exit: false,
-      to_room_id: undefined,
-      to_room_name: ''
-    }]);
-  };
-
-  const updateExit = (index: number, field: string, value: any) => {
-    setExits(prev => prev.map((exit, i) =>
-      i === index ? { ...exit, [field]: value } : exit
-    ));
-  };
-
-  const removeExit = (index: number) => {
-    setExits(prev => prev.filter((_, i) => i !== index));
-  };
-
-  const selectRoomForExit = (exitIndex: number, selectedRoom: Room) => {
-    updateExit(exitIndex, 'to_room_id', selectedRoom.id);
-    updateExit(exitIndex, 'to_room_name', selectedRoom.name);
-    setRoomSearch('');
   };
 
   const selectZone = (selectedZone: any) => {
@@ -162,39 +100,11 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
 
   useEffect(() => {
     loadZones();
-    loadRooms();
     loadTerrains();
     loadRoomFlags();
-    if (room?.roomExits) {
-      const exitData = room.roomExits.map(exit => ({
-        direction: exit.direction || '',
-        description: exit.description || '',
-        door_name: exit.door_name || '',
-        door_description: exit.door_description || '',
-        look_description: exit.look_description || '',
-        is_door: exit.is_door || false,
-        is_locked: exit.is_locked || false,
-        is_zone_exit: exit.is_zone_exit || false,
-        to_room_id: exit.to_room_id,
-        to_room_name: exit.to_room_id ? getRoomName(exit.to_room_id) : ''
-      }));
-      setExits(exitData);
-    }
     // Initialize selected flags from room data (always initialize to ensure edit mode works)
     setSelectedFlags(room?.flags ? room.flags.split(',').map(f => f.trim()).filter(f => f) : []);
   }, [room]);
-
-  useEffect(() => {
-    if (roomSearch.trim()) {
-      const filtered = rooms.filter(r =>
-        r.name.toLowerCase().includes(roomSearch.toLowerCase()) ||
-        r.id.toString().includes(roomSearch)
-      );
-      setFilteredRooms(filtered.slice(0, 10)); // Limit to 10 results
-    } else {
-      setFilteredRooms([]);
-    }
-  }, [roomSearch, rooms]);
 
   useEffect(() => {
     if (zoneSearch.trim()) {
@@ -225,33 +135,13 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Convert exits to the format expected by the API
-    const roomExits: Partial<RoomExit>[] = exits.map(exit => ({
-      direction: exit.direction,
-      description: exit.description,
-      door_name: exit.door_name,
-      door_description: exit.door_description,
-      look_description: exit.look_description,
-      is_door: exit.is_door,
-      is_locked: exit.is_locked,
-      is_zone_exit: exit.is_zone_exit,
-      to_room_id: exit.to_room_id,
-      from_room_id: formData.id // Will be set when creating/updating
-    }));
-
     const submitData = {
       ...formData,
-      flags: selectedFlags.join(','),
-      roomExits
+      flags: selectedFlags.join(',')
     };
 
     onSave(submitData);
   };
-
-  const directions = [
-    'north', 'south', 'east', 'west',
-    'up', 'down', 'in', 'out', 'enter', 'exit'
-  ];
 
   return (
     <div className="modal-overlay">
@@ -468,156 +358,6 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
                   />
                 </div>
               </div>
-            </div>
-
-            {/* Exits */}
-            <div className="form-section">
-              <div className="section-header">
-                <h3>Exits</h3>
-                <button type="button" className="add-button" onClick={addExit}>
-                  Add Exit
-                </button>
-              </div>
-
-              {exits.map((exit, index) => (
-                <div key={index} className="exit-item">
-                  <div className="exit-header">
-                    <h4>Exit {index + 1}</h4>
-                    <button
-                      type="button"
-                      className="remove-button"
-                      onClick={() => removeExit(index)}
-                    >
-                      Remove
-                    </button>
-                  </div>
-
-                  <div className="form-row">
-                    <div className="form-group">
-                      <label>Direction</label>
-                      <select
-                        value={exit.direction}
-                        onChange={(e) => updateExit(index, 'direction', e.target.value)}
-                        required
-                      >
-                        <option value="">Select Direction</option>
-                        {directions.map(dir => (
-                          <option key={dir} value={dir}>{dir}</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="form-group">
-                      <label>Connected Room</label>
-                      <div className="room-lookup">
-                        <input
-                          type="text"
-                          value={exit.to_room_name || ''}
-                          onChange={(e) => {
-                            updateExit(index, 'to_room_name', e.target.value);
-                            setRoomSearch(e.target.value);
-                          }}
-                          placeholder="Search rooms..."
-                        />
-                        {filteredRooms.length > 0 && (
-                          <div className="room-suggestions">
-                            {filteredRooms.map(room => (
-                              <div
-                                key={room.id}
-                                className="room-suggestion"
-                                onClick={() => selectRoomForExit(index, room)}
-                              >
-                                {room.name} (ID: {room.id})
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Description</label>
-                    <input
-                      type="text"
-                      value={exit.description || ''}
-                      onChange={(e) => updateExit(index, 'description', e.target.value)}
-                      maxLength={500}
-                    />
-                  </div>
-                </div>                  <div className="form-row">
-                    <div className="form-group">
-                      <label>Door Name</label>
-                      <input
-                        type="text"
-                        value={exit.door_name || ''}
-                        onChange={(e) => updateExit(index, 'door_name', e.target.value)}
-                        maxLength={100}
-                      />
-                    </div>
-
-                    <div className="form-group">
-                      <label>Door Description</label>
-                      <input
-                        type="text"
-                        value={exit.door_description || ''}
-                        onChange={(e) => updateExit(index, 'door_description', e.target.value)}
-                        maxLength={1000}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="form-group">
-                    <label>Look Description</label>
-                    <textarea
-                      value={exit.look_description || ''}
-                      onChange={(e) => updateExit(index, 'look_description', e.target.value)}
-                      rows={2}
-                      maxLength={2000}
-                    />
-                  </div>
-
-                  <div className="form-row">
-                    <div className="form-group checkbox-group">
-                      <label className="checkbox-label">
-                        <input
-                          type="checkbox"
-                          checked={exit.is_door || false}
-                          onChange={(e) => updateExit(index, 'is_door', e.target.checked)}
-                        />
-                        Is Door
-                      </label>
-                    </div>
-
-                    <div className="form-group checkbox-group">
-                      <label className="checkbox-label">
-                        <input
-                          type="checkbox"
-                          checked={exit.is_locked || false}
-                          onChange={(e) => updateExit(index, 'is_locked', e.target.checked)}
-                        />
-                        Is Locked
-                      </label>
-                    </div>
-
-                    <div className="form-group checkbox-group">
-                      <label className="checkbox-label">
-                        <input
-                          type="checkbox"
-                          checked={exit.is_zone_exit || false}
-                          onChange={(e) => updateExit(index, 'is_zone_exit', e.target.checked)}
-                        />
-                        Zone Exit
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              ))}
-
-              {exits.length === 0 && (
-                <p className="no-exits">No exits defined. Click &quot;Add Exit&quot; to add one.</p>
-              )}
             </div>
           </div>
 

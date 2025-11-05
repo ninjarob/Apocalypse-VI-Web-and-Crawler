@@ -16,6 +16,7 @@ interface RoomDetailViewProps {
   backButtonText?: string;
   setSelectedRoom?: React.Dispatch<React.SetStateAction<Entity | null>>;
   onRoomExitsChange?: () => void;
+  zoneConnections?: any[];
 }
 
 export const RoomDetailView: React.FC<RoomDetailViewProps> = ({
@@ -31,7 +32,8 @@ export const RoomDetailView: React.FC<RoomDetailViewProps> = ({
   handleZoneClick,
   backButtonText = '← Back to Rooms',
   setSelectedRoom,
-  onRoomExitsChange
+  onRoomExitsChange,
+  zoneConnections = []
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editFormData, setEditFormData] = useState<any>({ ...selectedRoom });
@@ -42,8 +44,8 @@ export const RoomDetailView: React.FC<RoomDetailViewProps> = ({
   const [roomFlags, setRoomFlags] = useState<any[]>([]);
   const [selectedFlags, setSelectedFlags] = useState<string[]>([]);
   const [editExits, setEditExits] = useState<any[]>([]);
-  const [roomSearch, setRoomSearch] = useState('');
-  const [filteredRooms, setFilteredRooms] = useState<any[]>([]);
+  const [exitRoomSearches, setExitRoomSearches] = useState<{[key: number]: string}>({});
+  const [exitFilteredRooms, setExitFilteredRooms] = useState<{[key: number]: any[]}>({});
 
   // Load zones for editing
   React.useEffect(() => {
@@ -81,6 +83,9 @@ export const RoomDetailView: React.FC<RoomDetailViewProps> = ({
     setEditFormData({ ...selectedRoom });
     // Initialize selected flags from room data
     setSelectedFlags(selectedRoom.flags ? (selectedRoom.flags as string).split(',').map((f: string) => f.trim()).filter((f: string) => f) : []);
+    // Clear exit room searches when switching rooms
+    setExitRoomSearches({});
+    setExitFilteredRooms({});
   }, [selectedRoom]);
 
   // Filter zones based on search
@@ -96,18 +101,68 @@ export const RoomDetailView: React.FC<RoomDetailViewProps> = ({
     }
   }, [zoneSearch, zones]);
 
-  // Filter rooms based on search
+  // Filter rooms based on search for each exit
   React.useEffect(() => {
-    if (roomSearch.trim()) {
-      const filtered = allRooms.filter((room: any) =>
-        room.name.toLowerCase().includes(roomSearch.toLowerCase()) ||
-        room.id.toString().includes(roomSearch)
-      );
-      setFilteredRooms(filtered.slice(0, 10));
-    } else {
-      setFilteredRooms([]);
-    }
-  }, [roomSearch, allRooms]);
+    const newFilteredRooms: {[key: number]: any[]} = {};
+    
+    Object.entries(exitRoomSearches).forEach(([exitIndexStr, searchTerm]) => {
+      const exitIndex = parseInt(exitIndexStr);
+      if (searchTerm.trim()) {
+        // First filter by search term
+        let filtered = allRooms.filter((room: any) =>
+          room.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          room.id.toString().includes(searchTerm)
+        );
+        
+        // Then apply zone restrictions
+        const currentRoomZoneId = selectedRoom.zone_id;
+        
+        if (!currentRoomZoneId) {
+          // If current room has no zone, no exits allowed
+          filtered = [];
+        } else {
+          // Get zones that connect to the current room's zone
+          const connectedZoneIds = new Set<number>();
+          
+          // Add the current zone
+          connectedZoneIds.add(currentRoomZoneId);
+          
+          // Add zones that connect to the current zone
+          zoneConnections.forEach((connection: any) => {
+            if (connection.zone_id === currentRoomZoneId) {
+              connectedZoneIds.add(connection.connected_zone_id);
+            } else if (connection.connected_zone_id === currentRoomZoneId) {
+              connectedZoneIds.add(connection.zone_id);
+            }
+          });
+          
+          // Filter rooms to only include:
+          // 1. Rooms in the same zone as the current room
+          // 2. Rooms that are zone exits from connected zones
+          filtered = filtered.filter((room: any) => {
+            if (room.zone_id === currentRoomZoneId) {
+              // Same zone - always allowed
+              return true;
+            }
+            
+            if (room.zone_exit && connectedZoneIds.has(room.zone_id)) {
+              // Zone exit from a connected zone - allowed
+              return true;
+            }
+            
+            // Everything else - not allowed
+            return false;
+          });
+        }
+        
+        newFilteredRooms[exitIndex] = filtered.slice(0, 10);
+      } else {
+        newFilteredRooms[exitIndex] = [];
+      }
+    });
+    
+    setExitFilteredRooms(newFilteredRooms);
+  }, [exitRoomSearches, allRooms, selectedRoom.zone_id, zoneConnections]);
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -180,6 +235,8 @@ export const RoomDetailView: React.FC<RoomDetailViewProps> = ({
   const handleCancel = () => {
     setIsEditing(false);
     setEditFormData({ ...selectedRoom });
+    setExitRoomSearches({});
+    setExitFilteredRooms({});
   };
 
   const handleFieldChange = (field: string, value: any) => {
@@ -230,7 +287,10 @@ export const RoomDetailView: React.FC<RoomDetailViewProps> = ({
   const selectRoomForExit = (exitIndex: number, selectedRoom: any) => {
     updateExit(exitIndex, 'to_room_id', selectedRoom.id);
     updateExit(exitIndex, 'to_room_name', selectedRoom.name);
-    setRoomSearch('');
+    setExitRoomSearches(prev => ({
+      ...prev,
+      [exitIndex]: ''
+    }));
   };
   const directionOrder: { [key: string]: number } = {
     north: 1,
@@ -494,14 +554,17 @@ export const RoomDetailView: React.FC<RoomDetailViewProps> = ({
                               value={exit.to_room_name || ''}
                               onChange={(e) => {
                                 updateExit(index, 'to_room_name', e.target.value);
-                                setRoomSearch(e.target.value);
+                                setExitRoomSearches(prev => ({
+                                  ...prev,
+                                  [index]: e.target.value
+                                }));
                               }}
                               placeholder="Search rooms..."
                               className="compact-input"
                             />
-                            {filteredRooms.length > 0 && (
+                            {exitFilteredRooms[index] && exitFilteredRooms[index].length > 0 && (
                               <div className="room-suggestions compact">
-                                {filteredRooms.map(room => (
+                                {exitFilteredRooms[index].map(room => (
                                   <div
                                     key={room.id}
                                     className="room-suggestion"

@@ -9,19 +9,28 @@
 - **Reference Links**: Added links to QUICK_REFERENCE.md, FRONTEND_REFACTORING.md, and CHANGELOG.md
 - **Maintainability**: Improved file organization for better accessibility to current development information
 
-#### ✅ Room Exits UI Improvements (Latest)
-**Status**: ✅ COMPLETED - Redesigned room exits interface for better usability and space efficiency
-- **Issue Identified**: Exit editing interface took up excessive vertical space with large form fields, and read-only table was missing key information like zone exit status
-- **Read-Only Display**: Redesigned table to show all exit information in 5 compact columns (Direction, Destination, Description, Door Info, Properties) with multi-line descriptions and property badges
-- **Edit Mode**: Converted from large form sections to compact inline table editing with smaller input fields, checkboxes, and dropdowns all in table rows
-- **Space Efficiency**: Reduced vertical space usage by ~70% in edit mode while maintaining all functionality
-- **Information Density**: Read-only view now displays exit descriptions, look descriptions, door information, and all properties (locked status, zone exit) in organized layout
-- **User Experience**: Inline editing feels more like spreadsheet editing with compact controls and immediate visual feedback
-- **CSS Architecture**: Added comprehensive styling for compact inputs, checkboxes, property badges, and table layouts in detail-views.css
-- **Responsive Design**: Compact interface works well on different screen sizes while maintaining readability
-- **Property Labels Fix**: Added clear labels for "Door", "Locked", and "Zone Exit" properties in read-only view with proper styling
-- **Boolean Conversion Fix**: Fixed `is_zone_exit` field not being converted to boolean in API responses by adding it to booleanFields in shared entity config
-- **Build Verification**: Both frontend and backend compile successfully with new compact exit editing interface and property labels
+#### ✅ Zone Exit Room Filtering Fix (Latest)
+**Status**: ✅ COMPLETED - Fixed zone exit rooms from connected zones not appearing in exit destination filtering
+- **Issue Identified**: Zone exit rooms from connected zones weren't showing in exit destination typeahead despite correct zone connections
+- **Root Cause**: `zone_exit` field was stored as INTEGER in database but not converted to boolean in API responses
+- **Missing Boolean Conversion**: `rooms` entity config was missing `booleanFields: ['zone_exit']` causing integer values (0/1) instead of boolean (true/false)
+- **Filtering Logic**: `room.zone_exit && connectedZoneIds.has(room.zone_id)` condition failed because `0` is falsy even when room is a zone exit
+- **Configuration Fix**: Added `booleanFields: ['zone_exit']` to rooms entity config in `shared/entity-config.ts`
+- **Data Flow**: Backend now properly converts `zone_exit` INTEGER values to boolean in API responses
+- **Zone Connectivity**: Verified Midgaard City (ID: 2) ↔ Hills of Astyll (ID: 9) connection allows Hills zone exit rooms to appear in Midgaard exit destinations
+- **Build Verification**: Frontend and backend compile successfully with proper boolean conversion
+- **Testing**: Zone exit rooms from connected zones now appear in exit destination filtering as expected
+
+#### ✅ Zone Connection Cards Styling Fix (Latest)
+**Status**: ✅ COMPLETED - Restored proper styling for zone connection display cards
+- **Issue Identified**: Zone connection cards in ZoneDetailView were displaying without proper formatting
+- **Missing Styles**: CSS classes for `connections-list`, `connection-item`, `connection-header`, `connection-type` were undefined
+- **Card Layout**: Implemented responsive grid layout with hover effects and proper spacing
+- **Connection Types**: Added color-coded badges for different connection types (adjacent, ocean, mountain_pass, portal, quest)
+- **Visual Hierarchy**: Structured layout with connection type badges, zone names, descriptions, and zone details
+- **Responsive Design**: Cards adapt to different screen sizes with auto-fill grid
+- **Interactive Elements**: Added subtle hover animations and visual feedback
+- **Build Verification**: Frontend compiles successfully with properly styled zone connection cards
 
 ## 🎯 Current AI Agent Context
 

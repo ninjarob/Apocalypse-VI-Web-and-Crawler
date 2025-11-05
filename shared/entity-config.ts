@@ -32,6 +32,7 @@ export const ENTITY_CONFIG: Record<string, EntityConfig> = {
     autoIncrement: true,
     uniqueField: 'name',
     jsonFields: ['exits', 'npcs', 'items', 'coordinates'],
+    booleanFields: ['zone_exit'],
     sortBy: 'lastVisited DESC',
     display: {
       name: 'Rooms',

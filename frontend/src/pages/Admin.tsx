@@ -456,6 +456,7 @@ function Admin() {
           backButtonText={roomBackContext === 'zone' ? `← Back to ${selectedZone?.name || 'Zone'}` : '← Back to Rooms'}
           setSelectedRoom={setSelectedRoom}
           onRoomExitsChange={loadRoomRelatedData}
+          zoneConnections={zoneConnections}
         />
       )}
 
