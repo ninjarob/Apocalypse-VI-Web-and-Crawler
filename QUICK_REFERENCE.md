@@ -167,6 +167,13 @@ netstat -ano | findstr :3002
 
 ## 🎯 Quick Tasks
 
+### 🚨 IMPORTANT: Default Crawler Command
+**Always use this command to start the crawler:**
+```powershell
+npm run crawl:document-zone-new
+```
+This runs the NEW coordinate-based zone mapping crawler. Do NOT use `npm start` or other variations.
+
 ### Change Exploration Speed
 Edit `crawler\.env`:
 ```env

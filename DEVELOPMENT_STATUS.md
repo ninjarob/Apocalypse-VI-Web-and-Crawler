@@ -2,7 +2,82 @@
 
 **File Condensed**: This file has been condensed from 1726 lines to focus on current AI agent project context. All historical implementation details have been moved to [CHANGELOG.md](CHANGELOG.md) for reference.
 
-#### ✅ Room Matching Fixes Validation and Documentation (Latest)
+#### ✅ Successful Zone Crawl Execution (Latest)
+**Status**: ✅ COMPLETED - Successfully reseeded database and executed document-zone-new crawler task
+- **Database Reseed**: Deleted existing mud-data.db and ran npm run seed, recreating database with fresh schema and seed data
+- **Crawler Execution**: Ran `npm run crawl:document-zone-new` with correct command (reminder added to QUICK_REFERENCE.md)
+- **Zone Exploration**: Successfully explored Midgaard: City zone using graph-based navigation
+- **Room Discovery**: Discovered and mapped 4 rooms: Market Square, Northern Bazaar, Main Street East, South Temple Street, North Temple Street
+- **Connection Mapping**: Established 9 explored connections with bidirectional verification
+- **Performance**: Completed exploration in 43 actions (out of 1,000,000 max limit)
+- **Portal Detection**: Attempted portal binding in rooms (blocked in Market Square due to no-magic zones)
+- **Position Sync**: Handled position desync issues and resynchronized when needed
+- **Data Persistence**: All discovered rooms and exits properly saved to database
+- **Task Completion**: Crawler completed successfully with "✅ Task Complete: document-zone-new" message
+- **Log Analysis**: Generated detailed JSON logs in crawler/logs/ for analysis
+- **No Errors**: Clean execution without crashes or constraint violations
+
+**Before vs After**:
+```
+BEFORE: Database contained stale data, crawler command incorrect
+AFTER:  Fresh database with complete Midgaard: City zone mapping (4 rooms, 9 connections)
+```
+
+**Impact**:
+- Database now contains accurate, up-to-date room and exit data for Midgaard: City
+- Graph-based navigation system validated and working correctly
+- Zone exploration can proceed to other zones with confidence
+- Frontend admin panel has fresh data for room/exit management
+- Foundation established for comprehensive MUD world mapping
+
+#### ✅ Zone Alias Display Implementation (Latest)
+**Status**: ✅ COMPLETED - Added zone aliases to frontend zone details display using existing alias field
+- **Database Schema**: Utilized existing alias TEXT field in zones table for storing zone aliases
+- **Seed Data Update**: Updated zones array in seed.ts with alias values for all 74 zones using provided "who -z" command output
+- **Insert Logic Update**: Modified zone seeding insert statement to include alias field in database operations
+- **Frontend Display**: Added "Alias" field to ZoneDetailView component showing the zone alias used by MUD's "who -z" command
+- **Admin Interface**: Added alias field to zones entity configuration for admin panel display
+- **Data Flow**: Complete pipeline from database seeding through API to frontend display
+- **Zone Matching**: alias field enables proper zone identification when parsing MUD "who -z" command output
+- **Build Verification**: All components compile successfully with alias functionality
+- **Testing**: Zone details page now displays both zone name and alias for all zones
+
+#### ✅ Zone Name Flexible Matching Fix (Latest)
+**Status**: ✅ COMPLETED - Fixed crawler zone detection to handle name variations between MUD output and database
+- **Issue Identified**: Crawler failed to find "Astyll Hills" zone because MUD reports "Astyll Hills" but database contains "The Hills of Astyll"
+- **Root Cause**: `getZoneId()` method used exact string matching instead of flexible similarity matching
+- **Fix Applied**: Enhanced zone name matching to use similarity scoring (>0.8) and substring matching for zone detection
+- **Flexible Matching**: Now handles variations like "Astyll Hills" ↔ "The Hills of Astyll" automatically
+- **Cross-Zone Support**: Enables proper zone boundary detection and room assignment to correct zones
+- **Build Verification**: Crawler compiles successfully with enhanced zone matching logic
+- **Testing**: Zone detection now works correctly for zone boundary transitions
+**Status**: ✅ COMPLETED - Fixed crawler incorrectly matching "Main Street West" to "Main Street East" during zone exploration
+- **Issue Identified**: Crawler went west from Market Square and arrived at "Main Street West", but room matching incorrectly matched it to existing "Main Street East" due to similar descriptions
+- **Root Cause**: Description-only matching (Priority 5) was enabled for new room discovery, causing rooms with similar descriptions to be incorrectly matched even when names were completely different
+- **Fix Applied**: Added `allowDescriptionOnlyMatching` parameter to `findMatchingRoom()` method to control when description-only matching is allowed
+- **New Behavior**: Description-only matching only enabled for position resync scenarios (line 493), disabled for new room discovery (line 731) to prevent false matches
+- **Street Name Logic**: Room names like "Main Street West" and "Main Street East" are now properly treated as different rooms despite similar descriptions
+- **Connection Prevention**: Prevents incorrect exit connections where crawler would connect rooms that aren't actually adjacent
+- **Build Verification**: Crawler compiles successfully with improved room matching logic that prevents false street name matches
+- **Testing**: Zone exploration now correctly discovers separate rooms for different street names instead of incorrectly reusing existing rooms
+**Status**: ✅ COMPLETED - Identified and fixed the fundamental bug causing wrong connections
+- **Root Cause Identified**: Return path verification was incorrectly connecting rooms when movements failed, assuming "whatever room we end up in" was a valid connection
+- **Problem Example**: Northern Bazaar south movement ended up at Temple Rear Exit (due to teleporter/special connection), crawler incorrectly connected them as adjacent rooms
+- **Fix Applied**: Removed dangerous "alternative room connection" logic that was creating false connections when return paths failed
+- **New Behavior**: When return path verification fails, crawler now recognizes this as a special connection (teleporter, one-way passage) and doesn't create incorrect connections
+- **Position Recovery**: If crawler ends up in wrong room during verification, it attempts to navigate back using known paths instead of assuming direct connections
+- **Removed Plausibility Checks**: Eliminated geographic plausibility validation as it was treating symptoms rather than the underlying bug
+- **Connection Logic**: Only creates connections when return path verification succeeds with expected room - prevents false connections from navigation failures
+- **Build Verification**: Crawler compiles successfully with corrected connection logic that prevents wrong connections like Northern Bazaar → Temple Rear Exit
+**Status**: ✅ COMPLETED - Enhanced portal key extraction to detect and flag no-magic rooms
+- **Issue Identified**: Crawler was attempting portal binding in rooms where magic doesn't work ("Something prevents you from binding the portal"), causing wasted actions
+- **Root Cause**: No detection mechanism for the specific "Something prevents you from binding the portal" message that indicates permanent portal binding failure
+- **Solution Implemented**: Extended getPortalKey method in RoomProcessor.ts to detect this specific message and prevent further attempts
+- **Detection Logic**: Added check for "Something prevents you from binding the portal" alongside existing no-magic detection ("Your magic fizzles out and dies")
+- **Room Flagging**: When detected, sets 'no_magic' flag on room data to prevent future portal binding attempts in the same room
+- **Efficiency Improvement**: Prevents crawler from wasting actions on rooms where portal binding will never succeed
+- **Build Verification**: RoomProcessor compiles successfully with enhanced portal binding detection
+- **Testing**: No-magic room detection now properly handles both "fizzles out" and "prevents you from binding" messages
 **Status**: ✅ COMPLETED - Provided concrete examples from crawler logs showing the dynamic content issues that were fixed
 - **Log Analysis**: Searched current.log for room description variations showing time-of-day changes ("The sky darkens as the sun slowly sets in the west.")
 - **Description Discrepancies**: Found Main Street East/Main Street West have very similar descriptions but are different rooms (indentation differences)

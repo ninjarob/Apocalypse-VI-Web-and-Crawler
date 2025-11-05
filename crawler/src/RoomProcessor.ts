@@ -138,7 +138,8 @@ export class RoomProcessor {
         // Check if binding is permanently not allowed in this room
         if (minorResponse.match(/You cannot bind a portal here/i) || 
             minorResponse.match(/You do not have enough mana/i) ||
-            minorResponse.match(/You don't know that spell/i)) {
+            minorResponse.match(/You don't know that spell/i) ||
+            minorResponse.match(/Something prevents you from binding the portal/i)) {
           logger.info(`   ⚠️  Portal binding not available (not allowed or insufficient mana)`);
           return null;
         }

@@ -3,6 +3,7 @@ import { BaseRepository, EntityConfig } from './BaseRepository.js';
 export interface Zone {
   id: number;
   name: string;
+  alias?: string;
   description?: string;
   author?: string;
   difficulty?: string;

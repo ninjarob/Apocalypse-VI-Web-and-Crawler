@@ -518,6 +518,7 @@ async function createTables() {
     `CREATE TABLE IF NOT EXISTS zones (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL UNIQUE,
+      alias TEXT,
       description TEXT,
       author TEXT,
       difficulty INTEGER,
@@ -682,6 +683,8 @@ async function createTables() {
   // Seed reference tables with initial data
   await seedReferenceTablesIfEmpty();
 }
+
+
 
 async function seedReferenceTablesIfEmpty(): Promise<void> {
   if (!db) return;

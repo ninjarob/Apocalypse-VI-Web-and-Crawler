@@ -89,6 +89,7 @@ export const ENTITY_CONFIGS: EntityConfig[] = [
     fields: [
       { name: 'id', type: 'number', label: 'Zone #' },
       { name: 'name', type: 'text', label: 'Name', required: true },
+      { name: 'alias', type: 'text', label: 'Alias' },
       { name: 'description', type: 'textarea', label: 'Description' },
       { name: 'zone_info_combined', type: 'custom', label: 'Zone Info' },
       { name: 'notes', type: 'textarea', label: 'Notes' }

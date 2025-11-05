@@ -62,6 +62,11 @@ export const ZoneDetailView: React.FC<ZoneDetailViewProps> = ({
         <p>
           <strong>Description:</strong> {selectedZone.description}
         </p>
+        {selectedZone.alias && (
+          <p>
+            <strong>Alias:</strong> {selectedZone.alias}
+          </p>
+        )}
         {selectedZone.author && (
           <p>
             <strong>Author:</strong> {selectedZone.author}
