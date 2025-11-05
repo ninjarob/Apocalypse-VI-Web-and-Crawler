@@ -6,6 +6,7 @@ export { DetailSection, DetailItem, DetailGrid } from './DetailView';
 export { Badge } from './Badge';
 export { StatCard } from './StatCard';
 export { GenericEntityPage } from './GenericEntityPage';
+export { ZoneMap } from './ZoneMap';
 export type { ColumnConfig, GenericEntityPageProps } from './GenericEntityPage';
 
 // Detail views
