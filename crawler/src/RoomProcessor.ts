@@ -8,6 +8,7 @@ export interface RoomData {
   objects: Map<string, string>; // object name -> description
   zone: string;
   portal_key?: string | null; // Unique portal binding key for room identification
+  flags?: string[]; // Room flags like 'no_magic', 'dark', etc.
 }
 
 export interface ExitData {
@@ -114,7 +115,7 @@ export class RoomProcessor {
    * Tries bind portal minor up to 6 times (concentration can fail)
    * Returns null if binding is not allowed in this room
    */
-  async getPortalKey(): Promise<string | null> {
+  async getPortalKey(roomData: RoomData): Promise<string | null> {
     try {
       // Try bind portal minor (with retries for concentration failures)
       let attempts = 0;
@@ -139,6 +140,16 @@ export class RoomProcessor {
             minorResponse.match(/You do not have enough mana/i) ||
             minorResponse.match(/You don't know that spell/i)) {
           logger.info(`   ⚠️  Portal binding not available (not allowed or insufficient mana)`);
+          return null;
+        }
+
+        // Check for no magic rooms
+        if (minorResponse.match(/Your magic fizzles out and dies/i)) {
+          logger.info(`   ⚠️  No magic room detected - adding no_magic flag`);
+          if (!roomData.flags) roomData.flags = [];
+          if (!roomData.flags.includes('no_magic')) {
+            roomData.flags.push('no_magic');
+          }
           return null;
         }
 

@@ -13,6 +13,7 @@ interface RoomNode {
   unexploredConnections: Set<string>; // directions that exist but haven't been explored
   visitCount: number;
   lastVisited: Date;
+  flags?: string[]; // Room flags like 'no_magic', 'dark', etc.
 }
 
 interface GraphEdge {
@@ -133,7 +134,8 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
           exploredConnections: new Set(),
           unexploredConnections: new Set(),
           visitCount: room.visitCount || 0,
-          lastVisited: room.lastVisited ? new Date(room.lastVisited) : new Date()
+          lastVisited: room.lastVisited ? new Date(room.lastVisited) : new Date(),
+          flags: room.flags || []
         };
 
         this.roomGraph.set(room.id, roomNode);
@@ -181,7 +183,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
     this.currentRoomName = roomData.name;
 
     // Try to get portal key for unique identification
-    const portalKey = await this.roomProcessor.getPortalKey();
+    const portalKey = await this.roomProcessor.getPortalKey(roomData);
     if (portalKey) {
       roomData.portal_key = portalKey;
     }
@@ -295,26 +297,65 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
         exploredConnections: new Set(),
         unexploredConnections: new Set(),
         visitCount: existingRoom.visitCount || 0,
-        lastVisited: existingRoom.lastVisited ? new Date(existingRoom.lastVisited) : new Date()
+        lastVisited: existingRoom.lastVisited ? new Date(existingRoom.lastVisited) : new Date(),
+        flags: existingRoom.flags || []
       };
 
       // Load existing exits for this room
       const allExits = await this.config.api.getAllEntities('room_exits');
       const roomExits = allExits.filter((exit: any) => exit.from_room_id === existingRoom.id);
 
-      // Add connections from existing exits
-      for (const exit of roomExits) {
-        roomNode.connections.set(exit.direction.toLowerCase(), exit.to_room_id || 0);
-        if (exit.to_room_id) {
-          // Check if target room exists and has been visited
-          const targetRoom = existingRooms.find((r: any) => r.id === exit.to_room_id);
-          if (targetRoom && targetRoom.visitCount > 0) {
-            roomNode.exploredConnections.add(exit.direction.toLowerCase());
+      // If this existing room has no exits saved, process them now
+      if (roomExits.length === 0) {
+        logger.info(`✓ Existing room ${existingRoom.name} has no exits saved - processing exits now`);
+        
+        // Get exits for current room
+        await this.delay(this.config.delayBetweenActions);
+        const exitsResponse = await this.config.mudClient.sendAndWait('exits', this.config.delayBetweenActions);
+        this.actionsUsed++;
+
+        const exits = this.parseExitsOutput(exitsResponse);
+        const exitDirections = exits.map(e => e.direction.toLowerCase());
+
+        // Save exits for this existing room
+        await this.saveExitsForRoom(existingRoom.id, exitDirections);
+
+        // Reload exits after saving
+        const updatedAllExits = await this.config.api.getAllEntities('room_exits');
+        const updatedRoomExits = updatedAllExits.filter((exit: any) => exit.from_room_id === existingRoom.id);
+        
+        // Use the updated exits list
+        for (const exit of updatedRoomExits) {
+          roomNode.connections.set(exit.direction.toLowerCase(), exit.to_room_id || 0);
+          if (exit.to_room_id) {
+            // Check if target room exists and has been visited
+            const targetRoom = existingRooms.find((r: any) => r.id === exit.to_room_id);
+            if (targetRoom && targetRoom.visitCount > 0) {
+              roomNode.exploredConnections.add(exit.direction.toLowerCase());
+            } else {
+              roomNode.unexploredConnections.add(exit.direction.toLowerCase());
+            }
           } else {
             roomNode.unexploredConnections.add(exit.direction.toLowerCase());
           }
-        } else {
-          roomNode.unexploredConnections.add(exit.direction.toLowerCase());
+        }
+
+        logger.info(`✓ Processed ${exitDirections.length} exits for existing room: ${existingRoom.name}`);
+      } else {
+        // Add connections from existing exits
+        for (const exit of roomExits) {
+          roomNode.connections.set(exit.direction.toLowerCase(), exit.to_room_id || 0);
+          if (exit.to_room_id) {
+            // Check if target room exists and has been visited
+            const targetRoom = existingRooms.find((r: any) => r.id === exit.to_room_id);
+            if (targetRoom && targetRoom.visitCount > 0) {
+              roomNode.exploredConnections.add(exit.direction.toLowerCase());
+            } else {
+              roomNode.unexploredConnections.add(exit.direction.toLowerCase());
+            }
+          } else {
+            roomNode.unexploredConnections.add(exit.direction.toLowerCase());
+          }
         }
       }
 
@@ -358,6 +399,9 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
 
     this.currentRoomId = savedRoom.id;
 
+    // Save exits for the new room
+    await this.saveExitsForRoom(savedRoom.id, exitDirections);
+
     // Create room node
     const roomNode: RoomNode = {
       id: savedRoom.id,
@@ -369,7 +413,8 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       exploredConnections: new Set(),
       unexploredConnections: new Set(exitDirections),
       visitCount: 1,
-      lastVisited: new Date()
+      lastVisited: new Date(),
+      flags: roomData.flags || []
     };
 
     // Add connections (all unexplored initially)
@@ -653,6 +698,8 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
         await this.delay(this.config.delayBetweenActions);
         await this.config.mudClient.sendAndWait(oppositeDir, this.config.delayBetweenActions);
         this.actionsUsed++;
+        // Sync position after going back
+        await this.syncCurrentPosition();
       }
       return;
     }
@@ -722,6 +769,12 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
         return;
       }
 
+      // Try to get portal key for unique identification
+      const portalKey = await this.roomProcessor.getPortalKey(newRoomData);
+      if (portalKey) {
+        newRoomData.portal_key = portalKey;
+      }
+
       // Save new room
       const exitDirections = newExitData.map(e => e.direction.toLowerCase());
       const savedRoom = await this.saveNewRoomToDatabase(newRoomData, exitDirections);
@@ -736,7 +789,8 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
         exploredConnections: new Set(),
         unexploredConnections: new Set(exitDirections),
         visitCount: 1,
-        lastVisited: new Date()
+        lastVisited: new Date(),
+        flags: newRoomData.flags || []
       };
 
       // Add connections
@@ -869,7 +923,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
    * Save a new room to the database
    */
   private async saveNewRoomToDatabase(roomData: any, exitDirections: string[]): Promise<any> {
-    const roomToSave = {
+    const roomToSave: any = {
       name: roomData.name,
       description: this.filterOutput(roomData.description),
       rawText: `${roomData.name}\n${this.filterOutput(roomData.description)}`,
@@ -878,7 +932,13 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       lastVisited: new Date().toISOString()
     };
 
-    const savedRoom = await this.config.api.saveRoom(roomToSave as any);
+    // Include portal key if available
+    if (roomData.portal_key) {
+      roomToSave.portal_key = roomData.portal_key;
+      logger.info(`   💠 Saving room with portal key: ${roomData.portal_key}`);
+    }
+
+    const savedRoom = await this.config.api.saveRoom(roomToSave);
     if (!savedRoom) {
       throw new Error('Failed to save room to database');
     }
