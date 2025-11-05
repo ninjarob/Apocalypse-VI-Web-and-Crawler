@@ -483,12 +483,14 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       if (actualRoomName !== this.currentRoomName.trim()) {
         logger.warn(`⚠️  Position desync detected. Expected: "${this.currentRoomName}", Actual: "${actualRoomName}"`);
 
-        // Find the actual room in our graph
-        const actualRoom = Array.from(this.roomGraph.values()).find(r =>
-          r.name.trim() === actualRoomName &&
-          r.description.trim() === this.filterOutput(roomData.description).trim() &&
-          r.zone_id === this.zoneId
-        );
+        // Try to get portal key for better matching
+        const portalKey = await this.roomProcessor.getPortalKey(roomData);
+        if (portalKey) {
+          roomData.portal_key = portalKey;
+        }
+
+        // Find the actual room in our graph using improved matching
+        const actualRoom = this.findMatchingRoom(roomData);
 
         if (actualRoom) {
           logger.info(`✓ Resynced position to: ${actualRoom.name} (ID: ${actualRoom.id})`);
@@ -636,10 +638,10 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       const namesMatch = expectedName === actualName ||
                         expectedName.includes(actualName) ||
                         actualName.includes(expectedName) ||
-                        this.calculateSimilarity(expectedName, actualName) > 0.8;
+                        this.calculateRoomSimilarity(expectedName, actualName) > 0.8;
       
       const descriptionsMatch = expectedDescription === actualDescription ||
-                               this.calculateSimilarity(expectedDescription, actualDescription) > 0.8;
+                               this.calculateRoomSimilarity(expectedDescription, actualDescription) > 0.8;
 
       if (!namesMatch || !descriptionsMatch) {
         logger.warn(`⚠️  Location verification failed. Expected: "${toRoom.name}", Got: "${roomData.name}"`);
@@ -726,11 +728,11 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
 
     // Look for existing room in graph
     const newRoomDescription = this.filterOutput(roomData.description).trim();
-    let existingRoom = Array.from(this.roomGraph.values()).find(r => 
-      r.name.trim() === newRoomName.trim() && 
-      r.description.trim() === newRoomDescription &&
-      r.zone_id === this.zoneId
-    );
+    let existingRoom = this.findMatchingRoom({
+      name: newRoomName,
+      description: newRoomDescription,
+      portal_key: roomData.portal_key
+    });
 
     if (existingRoom) {
       logger.info(`   ✓ Already know about room: ${existingRoom.name} (ID: ${existingRoom.id})`);
@@ -754,43 +756,59 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       await this.verifyReturnConnection(existingRoom, direction, room);
 
     } else {
-      // New room discovered
-      const { roomData: newRoomData, exitData: newExitData } = await this.roomProcessor.processRoom();
-      this.actionsUsed += this.roomProcessor.getActionsUsed();
+      // New room discovered - use minimal processing to save actions
+      logger.info(`   🆕 Discovered new room: ${newRoomName}`);
 
-      if (!newRoomData.name) {
-        logger.warn('⚠️  Could not parse new room, going back...');
-        const oppositeDir = this.getOppositeDirection(direction);
-        if (oppositeDir) {
-          await this.delay(this.config.delayBetweenActions);
-          await this.config.mudClient.sendAndWait(oppositeDir, this.config.delayBetweenActions);
-          this.actionsUsed++;
-        }
-        return;
-      }
+      // Get exits only (don't do full room processing with object examination)
+      await this.delay(this.config.delayBetweenActions);
+      const exitsResponse = await this.config.mudClient.sendAndWait('exits', this.config.delayBetweenActions);
+      this.actionsUsed++;
+
+      const exits = this.parseExitsOutput(exitsResponse);
+      const exitDirections = exits.map(e => e.direction.toLowerCase());
 
       // Try to get portal key for unique identification
-      const portalKey = await this.roomProcessor.getPortalKey(newRoomData);
+      const portalKey = await this.roomProcessor.getPortalKey(roomData);
       if (portalKey) {
-        newRoomData.portal_key = portalKey;
+        roomData.portal_key = portalKey;
       }
 
-      // Save new room
-      const exitDirections = newExitData.map(e => e.direction.toLowerCase());
-      const savedRoom = await this.saveNewRoomToDatabase(newRoomData, exitDirections);
+      // Save new room with minimal data
+      const roomToSave: any = {
+        name: newRoomName,
+        description: newRoomDescription,
+        rawText: `${newRoomName}\n${newRoomDescription}`,
+        zone_id: this.zoneId,
+        visitCount: 1,
+        lastVisited: new Date().toISOString()
+      };
+
+      if (roomData.portal_key) {
+        roomToSave.portal_key = roomData.portal_key;
+        logger.info(`   💠 Saving room with portal key: ${roomData.portal_key}`);
+      }
+
+      const savedRoom = await this.config.api.saveRoom(roomToSave);
+      if (!savedRoom) {
+        throw new Error('Failed to save room to database');
+      }
+
+      // Save exits
+      await this.saveExitsForRoom(savedRoom.id, exitDirections);
 
       // Create room node and add to graph
       const newRoomNode: RoomNode = {
         id: savedRoom.id,
-        name: newRoomData.name,
-        description: this.filterOutput(newRoomData.description),
+        name: newRoomName,
+        description: newRoomDescription,
         zone_id: this.zoneId,
+        portal_key: roomData.portal_key || null,
         connections: new Map(),
         exploredConnections: new Set(),
         unexploredConnections: new Set(exitDirections),
         visitCount: 1,
         lastVisited: new Date(),
-        flags: newRoomData.flags || []
+        flags: roomData.flags || []
       };
 
       // Add connections
@@ -810,10 +828,10 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
 
       // Update current position
       this.currentRoomId = savedRoom.id;
-      this.currentRoomName = newRoomData.name;
+      this.currentRoomName = newRoomName;
       this.navigationPath.push(savedRoom.id);
 
-      logger.info(`✓ Discovered new room: ${newRoomData.name} (ID: ${savedRoom.id})`);
+      logger.info(`✓ Added new room: ${newRoomName} (ID: ${savedRoom.id})`);
 
       // Verify return connection
       await this.verifyReturnConnection(newRoomNode, direction, room);
@@ -875,10 +893,10 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
     const namesMatch = expectedName === actualName ||
                       expectedName.includes(actualName) ||
                       actualName.includes(expectedName) ||
-                      this.calculateSimilarity(expectedName, actualName) > 0.8;
+                      this.calculateRoomSimilarity(expectedName, actualName) > 0.8;
     
     const descriptionsMatch = expectedDescription === actualDescription ||
-                             this.calculateSimilarity(expectedDescription, actualDescription) > 0.8;
+                             this.calculateRoomSimilarity(expectedDescription, actualDescription) > 0.8;
 
     if (namesMatch && descriptionsMatch) {
       // Success! Update connections in both rooms
@@ -896,11 +914,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       logger.info(`   ✅ Return path verified - bidirectional connection confirmed`);
     } else {
       // Check if this might be a valid connection to a different known room
-      let alternativeRoom = Array.from(this.roomGraph.values()).find(r =>
-        r.name.toLowerCase().trim() === actualName &&
-        r.description.toLowerCase().trim() === actualDescription &&
-        r.zone_id === this.zoneId
-      );
+      let alternativeRoom = this.findMatchingRoom(roomData);
 
       if (alternativeRoom) {
         logger.info(`   🔄 Return path led to different known room: ${alternativeRoom.name} - updating connection`);
@@ -1132,6 +1146,128 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
   }
 
   /**
+   * Improved room matching that handles dynamic content and portal keys
+   */
+  private findMatchingRoom(roomData: any, zoneId?: number): RoomNode | null {
+    const targetZoneId = zoneId || this.zoneId;
+    const roomName = roomData.name?.toLowerCase().trim();
+    const roomDescription = this.filterOutput(roomData.description).toLowerCase().trim();
+    const portalKey = roomData.portal_key;
+
+    // Priority 1: Match by portal key (most reliable)
+    if (portalKey) {
+      const portalMatch = Array.from(this.roomGraph.values()).find(r => 
+        r.portal_key === portalKey
+      );
+      if (portalMatch) {
+        logger.info(`✓ Matched room by portal key: ${portalMatch.name}`);
+        return portalMatch;
+      }
+    }
+
+    // Priority 2: Match by name + portal key if available
+    if (portalKey) {
+      const nameAndPortalMatch = Array.from(this.roomGraph.values()).find(r =>
+        r.name.toLowerCase().trim() === roomName &&
+        r.portal_key === portalKey
+      );
+      if (nameAndPortalMatch) {
+        logger.info(`✓ Matched room by name + portal key: ${nameAndPortalMatch.name}`);
+        return nameAndPortalMatch;
+      }
+    }
+
+    // Priority 3: Flexible name matching with description similarity
+    const candidates = Array.from(this.roomGraph.values()).filter(r =>
+      r.zone_id === targetZoneId &&
+      this.roomNamesMatch(r.name, roomName)
+    );
+
+    if (candidates.length === 1) {
+      logger.info(`✓ Matched room by name: ${candidates[0].name}`);
+      return candidates[0];
+    }
+
+    // Priority 4: Find best description match among name candidates
+    if (candidates.length > 1) {
+      let bestMatch = null;
+      let bestSimilarity = 0;
+
+      for (const candidate of candidates) {
+        const similarity = this.calculateRoomSimilarity(candidate.description, roomDescription);
+        if (similarity > bestSimilarity && similarity > 0.6) { // Lower threshold for better matching
+          bestMatch = candidate;
+          bestSimilarity = similarity;
+        }
+      }
+
+      if (bestMatch) {
+        logger.info(`✓ Matched room by name + description similarity (${bestSimilarity.toFixed(2)}): ${bestMatch.name}`);
+        return bestMatch;
+      }
+    }
+
+    // Priority 5: Fallback to description-only matching (less reliable)
+    const descriptionMatch = Array.from(this.roomGraph.values()).find(r =>
+      r.zone_id === targetZoneId &&
+      this.calculateRoomSimilarity(r.description, roomDescription) > 0.8
+    );
+
+    if (descriptionMatch) {
+      logger.info(`✓ Matched room by description similarity: ${descriptionMatch.name}`);
+      return descriptionMatch;
+    }
+
+    return null;
+  }
+
+  /**
+   * Check if two room names match (flexible matching)
+   */
+  private roomNamesMatch(name1: string, name2: string): boolean {
+    const n1 = name1.toLowerCase().trim();
+    const n2 = name2.toLowerCase().trim();
+
+    // Exact match
+    if (n1 === n2) return true;
+
+    // One contains the other
+    if (n1.includes(n2) || n2.includes(n1)) return true;
+
+    // High similarity
+    if (this.calculateRoomSimilarity(n1, n2) > 0.85) return true;
+
+    return false;
+  }
+
+  /**
+   * Calculate similarity between room descriptions, accounting for dynamic content
+   */
+  private calculateRoomSimilarity(desc1: string, desc2: string): number {
+    // Remove common dynamic elements that change
+    const normalizeDescription = (desc: string): string => {
+      return desc
+        .toLowerCase()
+        .replace(/\b(the sky is|it is)\s+(bright|dark|cloudy|sunny|night|day|dawn|dusk)\b/g, '')
+        .replace(/\b(weather|clouds|stars|moon|sun)\b.*?(?=\.|\n|$)/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    };
+
+    const normalized1 = normalizeDescription(desc1);
+    const normalized2 = normalizeDescription(desc2);
+
+    // If both are very short after normalization, require higher similarity
+    if (normalized1.length < 20 || normalized2.length < 20) {
+      return this.calculateSimilarity(normalized1, normalized2);
+    }
+
+    // For longer descriptions, be more flexible
+    const similarity = this.calculateSimilarity(normalized1, normalized2);
+    return similarity > 0.7 ? similarity : 0; // Minimum threshold
+  }
+
+  /**
    * Calculate string similarity using Levenshtein distance
    */
   private calculateSimilarity(str1: string, str2: string): number {
@@ -1143,10 +1279,6 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
     const distance = this.levenshteinDistance(longer, shorter);
     return (longer.length - distance) / longer.length;
   }
-
-  /**
-   * Calculate Levenshtein distance between two strings
-   */
   private levenshteinDistance(str1: string, str2: string): number {
     const matrix = [];
 
