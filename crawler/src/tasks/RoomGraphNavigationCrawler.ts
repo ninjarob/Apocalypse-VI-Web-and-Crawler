@@ -1,6 +1,7 @@
 import { CrawlerTask, TaskConfig } from './TaskManager';
 import logger from '../logger';
 import { RoomProcessor } from '../RoomProcessor';
+import { CharacterMaintenance } from '../CharacterMaintenance';
 
 interface RoomNode {
   id: number;
@@ -51,11 +52,21 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
   private maxRecoveryAttempts: number = 3;
   private roomProcessor: RoomProcessor;
   private navigationPath: number[] = []; // Stack of room IDs for backtracking
+  private maintenance: CharacterMaintenance; // Character maintenance (mana, hunger, thirst)
+  private marketSquareRoomId: number = -1; // ID of Market Square room for navigation
 
   constructor(config: TaskConfig) {
     this.config = config;
     this.maxActions = parseInt(process.env.MAX_ACTIONS_PER_SESSION || '1000');
     this.roomProcessor = new RoomProcessor(config);
+    this.maintenance = new CharacterMaintenance(config.mudClient, {
+      minManaForRest: 20,
+      targetManaAfterRest: 150,
+      hungerThreshold: 50,
+      marketSquareRoomName: 'Market Square',
+      breadItemName: 'bread',
+      bladderItemName: 'bladder'
+    });
   }
 
   async run(): Promise<void> {
@@ -186,8 +197,8 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
     const roomData = await this.roomProcessor['parseLookOutput'](lookResponse);
     this.currentRoomName = roomData.name;
 
-    // Try to get portal key for unique identification
-    const portalKey = await this.roomProcessor.getPortalKey(roomData);
+    // Try to get portal key for unique identification (cached)
+    const portalKey = await this.getCachedPortalKey(roomData);
     if (portalKey) {
       roomData.portal_key = portalKey;
     }
@@ -436,7 +447,28 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
    * Main systematic exploration loop
    */
   private async exploreSystematically(): Promise<void> {
+    let stuckCounter = 0;
+    const maxStuckAttempts = 5;
+    
     while (this.actionsUsed < this.maxActions) {
+      // Update stats from recent response
+      const buffer = this.config.mudClient.getBuffer();
+      this.maintenance.parseStats(buffer);
+
+      // Check and handle maintenance needs (rest, eat, drink)
+      const currentRoom = this.roomGraph.get(this.currentRoomId);
+      if (currentRoom) {
+        const maintenancePerformed = await this.maintenance.checkAndMaintain(
+          currentRoom.name,
+          async () => this.navigateToMarketSquare()
+        );
+        
+        if (maintenancePerformed) {
+          // Re-sync position after maintenance
+          await this.syncCurrentPosition();
+        }
+      }
+
       // Sync current position to ensure we're tracking correctly
       await this.syncCurrentPosition();
 
@@ -459,7 +491,18 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       if (targetRoom.id !== this.currentRoomId) {
         const path = this.findPathToRoom(this.currentRoomId, targetRoom.id);
         if (!path || path.length === 0) {
-          logger.warn(`⚠️  Cannot find path to room ${targetRoom.name} (ID: ${targetRoom.id})`);
+          logger.warn(`⚠️  Cannot find path to room ${targetRoom.name} (ID: ${targetRoom.id}) - marking as unreachable`);
+          // Mark all unexplored connections of this room as explored to avoid infinite loop
+          targetRoom.unexploredConnections.forEach(dir => {
+            targetRoom.exploredConnections.add(dir);
+          });
+          targetRoom.unexploredConnections.clear();
+          stuckCounter++;
+          
+          if (stuckCounter >= maxStuckAttempts) {
+            logger.warn(`⚠️  Stuck ${stuckCounter} times - stopping exploration`);
+            break;
+          }
           continue;
         }
 
@@ -468,12 +511,58 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
 
       // Explore one unexplored connection from this room
       await this.exploreNextUnexploredConnection(targetRoom);
+      
+      // Reset stuck counter on successful exploration
+      stuckCounter = 0;
 
       logger.info(`   Progress: ${this.getExplorationStats().exploredConnections} explored connections, ${this.actionsUsed}/${this.maxActions} actions`);
     }
 
     if (this.actionsUsed >= this.maxActions) {
       logger.warn(`⚠️  Reached max actions limit (${this.maxActions})`);
+    }
+  }
+
+  /**
+   * Navigate to Market Square for food/water maintenance
+   * @returns true if successfully navigated, false otherwise
+   */
+  private async navigateToMarketSquare(): Promise<boolean> {
+    // Find Market Square in our graph
+    if (this.marketSquareRoomId === -1) {
+      for (const [id, room] of this.roomGraph.entries()) {
+        if (room.name === 'Market Square') {
+          this.marketSquareRoomId = id;
+          break;
+        }
+      }
+    }
+
+    if (this.marketSquareRoomId === -1) {
+      logger.warn('⚠️  Market Square not found in graph - cannot navigate for maintenance');
+      return false;
+    }
+
+    // Find path from current room to Market Square
+    const path = this.findPathToRoom(this.currentRoomId, this.marketSquareRoomId);
+    
+    if (!path || path.length === 0) {
+      logger.warn('⚠️  Cannot find path to Market Square');
+      return false;
+    }
+
+    logger.info(`🚶 Navigating to Market Square (${path.length} steps)`);
+    
+    // Navigate along the path
+    await this.navigateAlongPath(path);
+    
+    // Verify we made it
+    if (this.currentRoomId === this.marketSquareRoomId) {
+      logger.info('✅ Arrived at Market Square');
+      return true;
+    } else {
+      logger.warn('⚠️  Navigation to Market Square failed');
+      return false;
     }
   }
 
@@ -577,8 +666,8 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       const exits = this.parseExitsOutput(exitsResponse);
       const exitDirections = exits.map(e => e.direction.toLowerCase());
 
-      // Try to get portal key
-      const portalKey = await this.roomProcessor.getPortalKey(roomData);
+      // Try to get portal key (cached)
+      const portalKey = await this.getCachedPortalKey(roomData);
       if (portalKey) {
         roomData.portal_key = portalKey;
       }
@@ -759,8 +848,8 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       if (actualRoomName !== this.currentRoomName.trim()) {
         logger.warn(`⚠️  Position desync detected. Expected: "${this.currentRoomName}", Actual: "${actualRoomName}"`);
 
-        // Try to get portal key for better matching
-        const portalKey = await this.roomProcessor.getPortalKey(roomData);
+        // Try to get portal key for better matching (cached)
+        const portalKey = await this.getCachedPortalKey(roomData);
         if (portalKey) {
           roomData.portal_key = portalKey;
         }
@@ -788,8 +877,8 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
             const exits = this.parseExitsOutput(exitsResponse);
             const exitDirections = exits.map(e => e.direction.toLowerCase());
 
-            // Try to get portal key
-            const portalKey = await this.roomProcessor.getPortalKey(roomData);
+            // Try to get portal key (cached)
+            const portalKey = await this.getCachedPortalKey(roomData);
             if (portalKey) {
               roomData.portal_key = portalKey;
             }
@@ -922,7 +1011,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
                           const exits = this.parseExitsOutput(exitsResponse);
                           const exitDirections = exits.map(e => e.direction.toLowerCase());
                           
-                          const portalKeyForRoom = await this.roomProcessor.getPortalKey(roomData);
+                          const portalKeyForRoom = await this.getCachedPortalKey(roomData);
                           if (portalKeyForRoom) {
                             roomData.portal_key = portalKeyForRoom;
                           }
@@ -962,8 +1051,8 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
                   // Portal teleport failed - save the cross-zone room and mark as lost
                   logger.warn(`   ❌ Portal teleport failed - saving cross-zone room and marking as lost`);
                   
-                  // Try to get portal key
-                  const portalKey = await this.roomProcessor.getPortalKey(roomData);
+                  // Try to get portal key (cached)
+                  const portalKey = await this.getCachedPortalKey(roomData);
                   if (portalKey) {
                     roomData.portal_key = portalKey;
                   }
@@ -1127,25 +1216,25 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       if (!room) continue;
 
       // Check all connections
-      for (const [direction, targetId] of room.connections) {
-        if (targetId === 0) continue; // Unknown target
+      for (const [direction, connectedRoomId] of room.connections) {
+        if (connectedRoomId === 0) continue; // Unknown target
 
-        if (targetId === targetId) {
-          return [...path, targetId];
+        if (connectedRoomId === targetId) {
+          return [...path, connectedRoomId];
         }
 
-        if (!visited.has(targetId)) {
+        if (!visited.has(connectedRoomId)) {
           // If cross-zone navigation is not allowed, check if target is in same zone
           if (!allowCrossZone) {
-            const targetRoom = this.roomGraph.get(targetId);
+            const targetRoom = this.roomGraph.get(connectedRoomId);
             if (targetRoom && targetRoom.zone_id !== this.zoneId) {
               continue; // Skip cross-zone connections unless explicitly allowed
             }
           }
 
           queue.push({
-            roomId: targetId,
-            path: [...path, targetId]
+            roomId: connectedRoomId,
+            path: [...path, connectedRoomId]
           });
         }
       }
@@ -1207,6 +1296,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       const actualName = roomData.name.toLowerCase().trim();
       const actualDescription = this.filterOutput(roomData.description).toLowerCase().trim();
 
+      // For rooms with same name, require description match too
       const namesMatch = expectedName === actualName ||
                         expectedName.includes(actualName) ||
                         actualName.includes(expectedName) ||
@@ -1215,9 +1305,18 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       const descriptionsMatch = expectedDescription === actualDescription ||
                                this.calculateRoomSimilarity(expectedDescription, actualDescription) > 0.8;
 
-      if (!namesMatch || !descriptionsMatch) {
-        logger.warn(`⚠️  Location verification failed. Expected: "${toRoom.name}", Got: "${roomData.name}"`);
+      if (!namesMatch) {
+        logger.warn(`⚠️  Location verification failed - name mismatch. Expected: "${toRoom.name}", Got: "${roomData.name}"`);
         // Resync position since we ended up somewhere unexpected
+        await this.syncCurrentPosition();
+        return;
+      }
+      
+      // If names match but descriptions don't, we're at a different room with the same name
+      if (namesMatch && !descriptionsMatch) {
+        logger.warn(`⚠️  Arrived at different "${actualName}" room (description mismatch) - treating as navigation failure`);
+        // This is a navigation failure - the connection we thought existed doesn't lead where we expected
+        // Resync to figure out where we actually are
         await this.syncCurrentPosition();
         return;
       }
@@ -1237,20 +1336,17 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
    * Explore the next unexplored connection from a room
    */
   private async exploreNextUnexploredConnection(room: RoomNode): Promise<void> {
-    // CRITICAL: Verify we're actually in the expected room before exploring
-    // Position desync can occur after return path verification or navigation
-    await this.verifyAndSyncPosition(room);
-
     const direction = Array.from(room.unexploredConnections)[0];
     if (!direction) return;
 
     logger.info(`🧭 Exploring ${direction} from ${room.name}...`);
 
-    // Try to move - the movement response already contains room description, no need for "look"
+    // Try to move
     await this.delay(this.config.delayBetweenActions);
     const moveResponse = await this.config.mudClient.sendAndWait(direction, this.config.delayBetweenActions);
     this.actionsUsed++;
 
+    // Check for various blocking messages
     if (moveResponse.includes("Alas, you cannot go that way")) {
       logger.info(`   ❌ Direction ${direction} blocked`);
       room.exploredConnections.add(direction);
@@ -1258,7 +1354,71 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       return;
     }
 
-    // Check if we're still in the same zone FIRST
+    // Check for class restrictions (e.g., "Only Clerics may enter")
+    if (moveResponse.includes("may enter") || moveResponse.includes("may not enter") || 
+        moveResponse.includes("not allowed") || moveResponse.includes("members only")) {
+      logger.info(`   🚫 Direction ${direction} restricted (class/membership requirement)`);
+      room.exploredConnections.add(direction);
+      room.unexploredConnections.delete(direction);
+      return;
+    }
+
+    // Parse the room data from movement response - do this once at the top
+    let roomData = await this.roomProcessor['parseLookOutput'](moveResponse);
+    let newRoomName = roomData.name.trim();
+    let isConfirmedNewRoom = false; // Flag to track if we've confirmed this is a new room
+
+    // If room name is the same, check portal key to verify if we actually moved
+    // (handles duplicate room names like multiple "Main Street East" rooms)
+    if (newRoomName.toLowerCase() === room.name.toLowerCase().trim()) {
+      // Get exits to determine if this is the same room or a different room with same name
+      await this.delay(this.config.delayBetweenActions);
+      const exitsResponse = await this.config.mudClient.sendAndWait('exits', this.config.delayBetweenActions);
+      this.actionsUsed++;
+      
+      const exits = this.parseExitsOutput(exitsResponse);
+      const exitDirections = exits.map(e => e.direction.toLowerCase());
+      
+      // Try to get portal key for definitive identification (FORCE NEW - we're in a potentially different room)
+      const newPortalKey = await this.getCachedPortalKey(roomData, true);
+      if (newPortalKey && room.portal_key && newPortalKey === room.portal_key) {
+        // Same portal key = same room = blocked
+        logger.info(`   🚫 Direction ${direction} blocked - still in ${room.name} (portal key match)`);
+        room.exploredConnections.add(direction);
+        room.unexploredConnections.delete(direction);
+        return;
+      }
+      
+      if (newPortalKey && room.portal_key && newPortalKey !== room.portal_key) {
+        // Different portal keys = definitely different rooms - don't try to match it later!
+        logger.info(`   ✓ Moved to different room with same name: ${newRoomName} (different portal keys)`);
+        roomData.portal_key = newPortalKey;
+        roomData.exits = exitDirections;
+        isConfirmedNewRoom = true; // Set flag to skip matching later
+      } else {
+        // No portal keys available or only one has a key - compare exits
+        const exitSet1 = new Set(exitDirections.map(e => e.toLowerCase()));
+        const exitSet2 = new Set(Array.from(room.connections.keys()).map(k => k.toLowerCase()));
+        
+        const exitsMatch = exitSet1.size === exitSet2.size && 
+          [...exitSet1].every(exit => exitSet2.has(exit));
+        
+        if (exitsMatch) {
+          // Same exits - likely the same room, direction is blocked
+          logger.info(`   🚫 Direction ${direction} blocked - still in ${room.name} (exits match)`);
+          room.exploredConnections.add(direction);
+          room.unexploredConnections.delete(direction);
+          return;
+        } else {
+          // Different room with same name - continue processing as a move
+          logger.info(`   ✓ Moved to different room with same name: ${newRoomName} (exits differ)`);
+          roomData.exits = exitDirections; // Store exits for matching
+          isConfirmedNewRoom = true;
+        }
+      }
+    }
+
+    // Check if we're still in the same zone
     await this.delay(this.config.delayBetweenActions);
     const zoneCheck = await this.config.mudClient.sendAndWait('who -z', this.config.delayBetweenActions);
     this.actionsUsed++;
@@ -1267,9 +1427,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
     if (currentZone !== this.currentZone) {
       logger.info(`   🏞️  Moved to different zone: ${currentZone}`);
       
-      // Parse the room data from the movement response
-      const roomData = await this.roomProcessor['parseLookOutput'](moveResponse);
-      const newRoomName = roomData.name;
+      // Room data already parsed above
       const newRoomDescription = this.filterOutput(roomData.description).trim();
       
       logger.info(`   🆕 Discovered room in different zone: ${newRoomName} (${currentZone})`);
@@ -1282,8 +1440,8 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       const exits = this.parseExitsOutput(exitsResponse);
       const exitDirections = exits.map(e => e.direction.toLowerCase());
       
-      // Try to get portal key
-      const portalKey = await this.roomProcessor.getPortalKey(roomData);
+      // Try to get portal key (FORCE NEW - we're in a cross-zone room we just moved to)
+      const portalKey = await this.getCachedPortalKey(roomData, true);
       if (portalKey) {
         roomData.portal_key = portalKey;
       }
@@ -1378,73 +1536,46 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
         await this.delay(this.config.delayBetweenActions);
         await this.config.mudClient.sendAndWait(oppositeDir, this.config.delayBetweenActions);
         this.actionsUsed++;
-        // Don't sync position - we know we're back in the original zone
       }
       return;
     }
 
-    // We're still in the same zone, parse the room from the movement response
-    const roomData = await this.roomProcessor['parseLookOutput'](moveResponse);
-    const newRoomName = roomData.name;
+    // We're still in the same zone - reuse roomData already parsed above
+    const newRoomDescription = this.filterOutput(roomData.description).trim();
 
-    // Check if the move actually changed the room (by comparing name AND description)
-    const currentDescription = this.filterOutput(roomData.description).trim();
-    const currentRoomNode = this.roomGraph.get(this.currentRoomId);
-    const currentRoomDescription = currentRoomNode ? this.filterOutput(currentRoomNode.description).trim() : '';
-
-    // First check: Did we actually move to a different room?
-    const roomActuallyChanged = !(
-      newRoomName.trim().toLowerCase() === this.currentRoomName.trim().toLowerCase() &&
-      this.calculateRoomSimilarity(currentDescription, currentRoomDescription) > 0.9
-    );
-
-    if (!roomActuallyChanged) {
-      logger.info(`   ❌ Direction ${direction} didn't change room (blocked exit or special connection) - marking as explored`);
-      room.exploredConnections.add(direction);
-      room.unexploredConnections.delete(direction);
-      return;
+    // Get exits BEFORE matching to enable exit pattern disambiguation
+    // (but skip if we already got them during same-name check)
+    let exitDirections = roomData.exits;
+    if (!exitDirections) {
+      await this.delay(this.config.delayBetweenActions);
+      const exitsResponse = await this.config.mudClient.sendAndWait('exits', this.config.delayBetweenActions);
+      this.actionsUsed++;
+      const exits = this.parseExitsOutput(exitsResponse);
+      exitDirections = exits.map(e => e.direction.toLowerCase());
     }
 
-    // Look for existing room in graph
-    const newRoomDescription = this.filterOutput(roomData.description).trim();
-    let existingRoom = this.findMatchingRoom({
-      name: newRoomName,
-      description: newRoomDescription,
-      portal_key: roomData.portal_key
-    }, undefined, false); // Disable description-only matching for new room discovery
+    // Get portal key if not already obtained (needed for room matching) - FORCE NEW since we just moved
+    if (!roomData.portal_key) {
+      const portalKey = await this.getCachedPortalKey(roomData, true);
+      if (portalKey) {
+        roomData.portal_key = portalKey;
+        logger.info(`   🔑 Portal key for matching: ${portalKey}`);
+      }
+    }
 
-    // CRITICAL: Check if the "new" room is actually the same room we started from
-    // This can happen with dynamic content or if the movement didn't actually work
-    if (existingRoom && existingRoom.id === this.currentRoomId) {
-      logger.info(`   ❌ Direction ${direction} led back to the same room (special connection or blocked) - marking as explored`);
-      room.exploredConnections.add(direction);
-      room.unexploredConnections.delete(direction);
-      return;
+    // Look for existing room in graph - but skip if we've already confirmed this is a new room
+    let existingRoom = null;
+    if (!isConfirmedNewRoom) {
+      existingRoom = this.findMatchingRoom({
+        name: newRoomName,
+        description: newRoomDescription,
+        portal_key: roomData.portal_key,
+        exits: exitDirections
+      }, undefined, false);
     }
 
     if (existingRoom) {
       logger.info(`   ✓ Already know about room: ${existingRoom.name} (ID: ${existingRoom.id})`);
-
-      // For MUDs with special connections (teleporters, one-way passages, multi-entrance rooms)
-      // be more careful about distance-based teleporter detection
-      const distance = this.calculateRoomDistance(room, existingRoom);
-      
-      // Only flag as potential teleporter if distance is significantly large (> 3 rooms)
-      // Allow distance 1-3 as potentially valid direct connections that just haven't been
-      // fully mapped yet, or special room layouts
-      if (distance > 3) {
-        logger.warn(`   ⚠️  Connection from ${room.name} ${direction} to ${existingRoom.name} spans ${distance} rooms - possible teleporter`);
-        logger.warn(`   ⚠️  Not creating direct connection to avoid false adjacency`);
-        room.exploredConnections.add(direction);
-        room.unexploredConnections.delete(direction);
-        return;
-      }
-
-      // Special handling for rooms that might have multiple entrances/exits
-      // like temples with south/down both leading to same gate area
-      if (distance === 1 && existingRoom.name.includes('Temple') && room.name.includes('Temple')) {
-        logger.info(`   ℹ️  Detected potential multi-entrance temple connection - allowing direct connection`);
-      }
 
       // Update the connection
       room.connections.set(direction, existingRoom.id);
@@ -1453,6 +1584,12 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
 
       // Update the exit in database to set the destination
       await this.updateExitDestination(room.id, direction, existingRoom.id);
+
+      // Cache the portal key we just obtained for this room (if we got one)
+      if (roomData.portal_key && !existingRoom.portal_key) {
+        existingRoom.portal_key = roomData.portal_key;
+        logger.info(`   🔑 Cached portal key for room ${existingRoom.id}: ${roomData.portal_key}`);
+      }
 
       // Update current position
       this.currentRoomId = existingRoom.id;
@@ -1475,8 +1612,8 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       const exits = this.parseExitsOutput(exitsResponse);
       const exitDirections = exits.map(e => e.direction.toLowerCase());
 
-      // Try to get portal key for unique identification
-      const portalKey = await this.roomProcessor.getPortalKey(roomData);
+      // Try to get portal key for unique identification (FORCE NEW - we just moved to this room)
+      const portalKey = await this.getCachedPortalKey(roomData, true);
       if (portalKey) {
         roomData.portal_key = portalKey;
       }
@@ -1543,63 +1680,6 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
 
       // Skip return path verification for now to avoid position desync
       // The connection is established, and we can verify return paths later if needed
-    }
-  }
-
-  /**
-   * Verify we're in the expected room and sync position if not
-   */
-  private async verifyAndSyncPosition(expectedRoom: RoomNode): Promise<void> {
-    // Get current room information
-    await this.delay(this.config.delayBetweenActions);
-    const lookResponse = await this.config.mudClient.sendAndWait('look', this.config.delayBetweenActions);
-    this.actionsUsed++;
-
-    const roomData = await this.roomProcessor['parseLookOutput'](lookResponse);
-    const actualRoomName = roomData.name.trim();
-
-    // Check if we're where we think we are
-    if (actualRoomName !== expectedRoom.name.trim()) {
-      logger.warn(`⚠️  Position desync detected. Expected: "${expectedRoom.name}", Actual: "${actualRoomName}"`);
-
-      // Try to get portal key for better matching
-      const portalKey = await this.roomProcessor.getPortalKey(roomData);
-      if (portalKey) {
-        roomData.portal_key = portalKey;
-      }
-
-      // Find the actual room in our graph using improved matching
-      const actualRoom = this.findMatchingRoom(roomData, undefined, true);
-
-      if (actualRoom) {
-        logger.info(`✓ Resynced position to: ${actualRoom.name} (ID: ${actualRoom.id})`);
-        this.currentRoomId = actualRoom.id;
-        this.currentRoomName = actualRoom.name;
-        this.navigationPath = [actualRoom.id];
-        this.recoveryAttempts = 0; // Reset recovery attempts on successful sync
-
-        // If we're not in the expected room, navigate there
-        if (actualRoom.id !== expectedRoom.id) {
-          logger.info(`🔄 Navigating from ${actualRoom.name} to expected room ${expectedRoom.name}`);
-          const path = this.findPathToRoom(actualRoom.id, expectedRoom.id);
-          if (path && path.length > 1) {
-            await this.navigateAlongPath(path);
-          } else {
-            logger.error(`❌ Cannot navigate to expected room ${expectedRoom.name} for exploration`);
-            return;
-          }
-        }
-      } else {
-        logger.error(`❌ Current room "${actualRoomName}" not found in graph - cannot proceed with exploration`);
-        return;
-      }
-    } else {
-      // We're in the expected room, but double-check the room ID matches
-      if (this.currentRoomId !== expectedRoom.id) {
-        logger.info(`🔄 Room name matches but ID doesn't - updating current room ID to ${expectedRoom.id}`);
-        this.currentRoomId = expectedRoom.id;
-        this.navigationPath = [expectedRoom.id];
-      }
     }
   }
 
@@ -1787,12 +1867,6 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
    */
   private async updateExitDestination(fromRoomId: number, direction: string, toRoomId: number | null): Promise<void> {
     try {
-      // Prevent self-referencing connections
-      if (toRoomId === fromRoomId) {
-        logger.warn(`⚠️  Attempted to create self-referencing exit ${direction} from room ${fromRoomId} to itself - skipping`);
-        return;
-      }
-
       // Find the exit record
       const existingExits = await this.config.api.getAllEntities('room_exits', {
         from_room_id: fromRoomId,
@@ -1818,73 +1892,6 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
     } catch (error) {
       logger.error(`Failed to update exit destination for ${direction} from room ${fromRoomId}:`, error);
     }
-  }
-
-  /**
-   * Calculate the shortest path distance between two rooms in the graph
-   * For new room discovery, if rooms aren't connected yet, assume they're adjacent (distance 1)
-   */
-  private calculateRoomDistance(room1: RoomNode, room2: RoomNode): number {
-    if (room1.id === room2.id) return 0;
-
-    // If we're checking distance during exploration of a new connection,
-    // and the rooms are in the same zone, assume they're adjacent unless proven otherwise
-    if (room1.zone_id === room2.zone_id) {
-      // Check if there's already a path in the graph
-      const visited = new Set<number>();
-      const queue: Array<{ roomId: number; distance: number }> = [{ roomId: room1.id, distance: 0 }];
-
-      while (queue.length > 0) {
-        const { roomId, distance } = queue.shift()!;
-        if (visited.has(roomId)) continue;
-        visited.add(roomId);
-
-        if (roomId === room2.id) {
-          return distance;
-        }
-
-        const room = this.roomGraph.get(roomId);
-        if (!room) continue;
-
-        // Add connected rooms to queue
-        for (const targetId of room.connections.values()) {
-          if (targetId > 0 && !visited.has(targetId)) {
-            queue.push({ roomId: targetId, distance: distance + 1 });
-          }
-        }
-      }
-
-      // No existing path found - for rooms in same zone during exploration,
-      // assume they're adjacent (distance 1) rather than infinite
-      // This prevents false teleporter warnings for direct connections
-      return 1;
-    }
-
-    // For cross-zone rooms, use the full distance calculation
-    const visited = new Set<number>();
-    const queue: Array<{ roomId: number; distance: number }> = [{ roomId: room1.id, distance: 0 }];
-
-    while (queue.length > 0) {
-      const { roomId, distance } = queue.shift()!;
-      if (visited.has(roomId)) continue;
-      visited.add(roomId);
-
-      if (roomId === room2.id) {
-        return distance;
-      }
-
-      const room = this.roomGraph.get(roomId);
-      if (!room) continue;
-
-      // Add connected rooms to queue
-      for (const targetId of room.connections.values()) {
-        if (targetId > 0 && !visited.has(targetId)) {
-          queue.push({ roomId: targetId, distance: distance + 1 });
-        }
-      }
-    }
-
-    return Infinity; // No path found between different zones
   }
 
   /**
@@ -2030,6 +2037,37 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
     return filtered;
   }
 
+  /**
+   * Get portal key for a room. When discovering new rooms (forceNew=true), always casts the spell.
+   * When checking current position (forceNew=false), uses cached value if available.
+   * 
+   * NOTE: Portal keys change every time you cast the spell, so they cannot be reliably used
+   * for room identification across sessions. We mainly use name + description + exits.
+   * 
+   * @param roomData - The room data
+   * @param forceNew - If true, always cast the spell (for discovering new rooms)
+   */
+  private async getCachedPortalKey(roomData: any, forceNew: boolean = false): Promise<string | null> {
+    // Check if roomData already has a portal key
+    if (roomData.portal_key) {
+      logger.info(`   🔑 Portal key already in roomData: ${roomData.portal_key}`);
+      return roomData.portal_key;
+    }
+
+    // If not forcing new and we have a current room with a cached key, use it
+    if (!forceNew && this.currentRoomId && this.roomGraph.has(this.currentRoomId)) {
+      const currentNode = this.roomGraph.get(this.currentRoomId);
+      if (currentNode?.portal_key) {
+        logger.info(`   🔑 Using cached portal key from current room: ${currentNode.portal_key}`);
+        return currentNode.portal_key;
+      }
+    }
+
+    // Fetch fresh portal key (don't cache here - will be cached after room is confirmed)
+    const portalKey = await this.roomProcessor.getPortalKey(roomData);
+    return portalKey;
+  }
+
   private delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
@@ -2042,6 +2080,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
     const roomName = roomData.name?.toLowerCase().trim();
     const roomDescription = this.filterOutput(roomData.description).toLowerCase().trim();
     const portalKey = roomData.portal_key;
+    const exitDirections = roomData.exits || [];
 
     // Priority 1: Match by portal key (most reliable)
     if (portalKey) {
@@ -2066,18 +2105,87 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       }
     }
 
-    // Priority 3: Flexible name matching with description similarity
+    // Priority 3: Flexible name matching
     const candidates = Array.from(this.roomGraph.values()).filter(r =>
       r.zone_id === targetZoneId &&
       this.roomNamesMatch(r.name, roomName)
     );
 
-    if (candidates.length === 1) {
-      logger.info(`✓ Matched room by name: ${candidates[0].name}`);
+    // Priority 4: Validate with exit pattern matching (even for single candidate if exits available)
+    if (candidates.length >= 1 && exitDirections.length > 0) {
+      // Create a set of exit directions for comparison
+      const exitSet = new Set(exitDirections.map((d: string) => d.toLowerCase()));
+      
+      // Find candidates with matching exit patterns
+      const exitMatches = candidates.filter(candidate => {
+        const candidateExits = new Set<string>();
+        
+        // Collect all exit directions from this candidate
+        for (const [direction] of candidate.connections) {
+          candidateExits.add(direction.toLowerCase());
+        }
+        for (const direction of candidate.unexploredConnections) {
+          candidateExits.add(direction.toLowerCase());
+        }
+        for (const direction of candidate.exploredConnections) {
+          candidateExits.add(direction.toLowerCase());
+        }
+        
+        // Calculate how many exits match
+        let matchCount = 0;
+        for (const exit of exitSet) {
+          const exitStr = String(exit);
+          if (candidateExits.has(exitStr)) {
+            matchCount++;
+          }
+        }
+        
+        // Consider it a match if at least 70% of exits match
+        const matchPercent = matchCount / Math.max(exitSet.size, candidateExits.size);
+        return matchPercent >= 0.7;
+      });
+      
+      if (exitMatches.length === 1) {
+        logger.info(`✓ Matched room by name + exit pattern: ${exitMatches[0].name} (${exitMatches[0].id})`);
+        return exitMatches[0];
+      } else if (exitMatches.length > 1) {
+        // If still multiple matches, use the one with highest exit match percentage
+        let bestMatch = exitMatches[0];
+        let bestMatchPercent = 0;
+        
+        for (const candidate of exitMatches) {
+          const candidateExits = new Set<string>();
+          for (const [direction] of candidate.connections) candidateExits.add(direction.toLowerCase());
+          for (const direction of candidate.unexploredConnections) candidateExits.add(direction.toLowerCase());
+          for (const direction of candidate.exploredConnections) candidateExits.add(direction.toLowerCase());
+          
+          let matchCount = 0;
+          for (const exit of exitSet) {
+            const exitStr = String(exit);
+            if (candidateExits.has(exitStr)) matchCount++;
+          }
+          const matchPercent = matchCount / exitSet.size;
+          
+          if (matchPercent > bestMatchPercent) {
+            bestMatchPercent = matchPercent;
+            bestMatch = candidate;
+          }
+        }
+        
+        logger.info(`✓ Matched room by name + best exit pattern: ${bestMatch.name} (${bestMatch.id}) - ${(bestMatchPercent * 100).toFixed(0)}% exits match`);
+        return bestMatch;
+      }
+      // If exit matching produced no matches, it means exits don't match - treat as new room
+      // This prevents incorrect matching when exits differ
+    }
+
+    // Priority 4.5: Single name candidate with no exits to validate - accept it
+    if (candidates.length === 1 && exitDirections.length === 0) {
+      logger.info(`✓ Matched room by name (no exits to validate): ${candidates[0].name} (${candidates[0].id})`);
       return candidates[0];
     }
 
-    // Priority 4: Find best description match among name candidates
+    // Priority 5: Find best description match among name candidates
     if (candidates.length > 1) {
       let bestMatch = null;
       let bestSimilarity = 0;

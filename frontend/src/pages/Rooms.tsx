@@ -92,7 +92,10 @@ export default function Rooms() {
         ) : (
           filteredRooms.map(room => (
             <div key={room.id} className="entity-card">
-              <h3>{room.name}</h3>
+              <h3>
+                {room.name}
+                {room.portal_key && <span style={{ color: '#888', fontWeight: 'normal' }}> ({room.portal_key})</span>}
+              </h3>
               <p>{room.description.substring(0, 150)}...</p>
 
               <div style={{ marginTop: '10px' }}>

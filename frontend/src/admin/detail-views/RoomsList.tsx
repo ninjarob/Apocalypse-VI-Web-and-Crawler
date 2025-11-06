@@ -50,7 +50,10 @@ export const RoomsList: React.FC<RoomsListProps> = ({
                 className="clickable-row"
                 onClick={() => handleRoomClick(room)}
               >
-                <td>{room.name}</td>
+                <td>
+                  {room.name}
+                  {room.portal_key && <span style={{ color: '#888', marginLeft: '8px' }}>({room.portal_key})</span>}
+                </td>
                 {showZoneColumn && (
                   <td>
                     {room.zone_id ? (

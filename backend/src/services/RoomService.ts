@@ -74,20 +74,30 @@ export class RoomService extends BaseService {
     // Ensure name is a string (defensive programming)
     const roomName = typeof roomData.name === 'string' ? roomData.name.trim() : '';
 
-    // Check if room already exists by name and zone_id (rooms are unique within zones by name)
+    // Check if room already exists
+    // Priority 1: Match by portal_key if provided (most reliable for duplicate names)
+    // Priority 2: Match by name + description + zone_id (allows multiple rooms with same name)
     let existing: Room | null = null;
-    if (roomData.zone_id) {
-      // Find by name and zone_id only - description can vary between crawls
-      // Trim whitespace from names for comparison
+    
+    if (roomData.portal_key) {
+      // Portal keys are unique identifiers - match by portal key first
+      const rooms = await repositories.rooms.findAll({ portal_key: roomData.portal_key });
+      existing = rooms.length > 0 ? rooms[0] : null;
+    }
+    
+    if (!existing && roomData.zone_id && roomData.description) {
+      // Match by name + description + zone_id to allow multiple rooms with same name but different descriptions
       const rooms = await repositories.rooms.findAll({ 
         name: roomName,
         zone_id: roomData.zone_id 
       });
-      existing = rooms.length > 0 ? rooms[0] : null;
-    } else {
-      // Fallback: find by name only if no zone_id provided (shouldn't happen in normal operation)
-      const rooms = await repositories.rooms.findAll({ name: roomName });
-      existing = rooms.length > 0 ? rooms[0] : null;
+      
+      // Filter by description match to find exact room
+      const descriptionMatch = rooms.find(r => 
+        r.description && roomData.description && 
+        r.description.trim() === roomData.description.trim()
+      );
+      existing = descriptionMatch || null;
     }
 
     if (existing) {
