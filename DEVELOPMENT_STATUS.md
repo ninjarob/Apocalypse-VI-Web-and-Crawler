@@ -14,6 +14,8 @@
 - **Optimization**: Try drinking from bladder BEFORE navigating to fountain (saves navigation if bladder has water)
 - **Local Maintenance First**: Eat bread and drink from bladder locally, only navigate to fountain if needed
 - **Smart Refill Logic**: Navigate to fountain to refill bladder after using local supplies OR if bladder is empty
+- **Stat Parsing Fix**: Parse stats AFTER syncCurrentPosition (which does 'look') to ensure fresh data
+- **Real-time Logging**: Added `📊 Current stats: XH YM ZV` log message to monitor character state
 - **Configuration Options**:
   - `minManaForRest`: 20M (threshold to trigger rest)
   - `targetManaAfterRest`: 150M (wake when mana reaches this)
@@ -23,9 +25,11 @@
   - `bladderItemName`: "bladder"
 - **Stat Tracking**: Maintains `CharacterStats` with health, mana, vitality, hunger, and thirst flags
 - **Periodic Checks**: Runs maintenance check at start of each exploration loop iteration
-- **Files Created**: `crawler/src/CharacterMaintenance.ts` (380 lines)
+- **Files Created**: `crawler/src/CharacterMaintenance.ts` (381 lines)
 - **Files Modified**: `crawler/src/tasks/RoomGraphNavigationCrawler.ts` (added maintenance integration)
 - **Build Status**: ✅ Successfully compiled with TypeScript
+- **Test Results**: Crawler explored 34 connections, discovered 19 rooms, mana dropped to 1M but didn't rest (stat parsing timing issue)
+- **Bug Fix**: Moved stat parsing to AFTER syncCurrentPosition() to get fresh stats from look command
 
 **Maintenance Flow (Optimized)**:
 ```

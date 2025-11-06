@@ -451,9 +451,23 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
     const maxStuckAttempts = 5;
     
     while (this.actionsUsed < this.maxActions) {
-      // Update stats from recent response
-      const buffer = this.config.mudClient.getBuffer();
-      this.maintenance.parseStats(buffer);
+      // Sync current position to ensure we're tracking correctly
+      await this.syncCurrentPosition();
+      
+      // Get the most recent stat line (tracked across all commands)
+      const lastStatLine = this.config.mudClient.getLastStatLine();
+      logger.info(`🔍 DEBUG: lastStatLine = "${lastStatLine}"`);
+      const stats = this.maintenance.parseStats(lastStatLine);
+      logger.info(`🔍 DEBUG: stats = ${stats ? JSON.stringify(stats) : 'null'}`);
+      
+      if (stats) {
+        logger.info(`📊 Current stats: ${stats.health}H ${stats.mana}M ${stats.vitality}V`);
+        
+        // Check if mana is critically low
+        if (stats.mana < 20) {
+          logger.warn(`⚠️  Low mana detected: ${stats.mana}M < 20M threshold - triggering rest!`);
+        }
+      }
 
       // Check and handle maintenance needs (rest, eat, drink)
       const currentRoom = this.roomGraph.get(this.currentRoomId);
@@ -468,9 +482,6 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
           await this.syncCurrentPosition();
         }
       }
-
-      // Sync current position to ensure we're tracking correctly
-      await this.syncCurrentPosition();
 
       // If we're lost, try to get back to a known location
       if (this.currentRoomId === -1) {

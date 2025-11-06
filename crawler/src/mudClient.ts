@@ -6,6 +6,7 @@ export class MUDClient extends EventEmitter {
   private client: Telnet;
   private connected: boolean = false;
   private buffer: string = '';
+  private lastStatLine: string = '';
   private host: string;
   private port: number;
   private username: string;
@@ -39,6 +40,21 @@ export class MUDClient extends EventEmitter {
       this.client.on('data', (data: Buffer) => {
         const text = data.toString('utf8');
         this.buffer += text;
+        
+        // Check for stat line in BOTH the incoming chunk AND the buffer
+        // (stat lines might be split across multiple packets)
+        let statMatch = text.match(/<\s*\d+H\s+\d+M\s+\d+V[^>]*>/);
+        if (!statMatch) {
+          // If not in current chunk, check last 200 chars of buffer
+          const recentBuffer = this.buffer.slice(-200);
+          statMatch = recentBuffer.match(/<\s*\d+H\s+\d+M\s+\d+V[^>]*>/);
+        }
+        
+        if (statMatch) {
+          this.lastStatLine = statMatch[0];
+          logger.info(`✨ CAPTURED STAT LINE: "${this.lastStatLine}"`);
+        }
+        
         this.emit('data', text);
         // Log received data with visual separator
         const preview = text.length > 200 ? text.substring(0, 200) + '...' : text;
@@ -159,6 +175,10 @@ export class MUDClient extends EventEmitter {
 
   getBuffer(): string {
     return this.buffer;
+  }
+  
+  getLastStatLine(): string {
+    return this.lastStatLine;
   }
 
   clearBuffer(): void {
