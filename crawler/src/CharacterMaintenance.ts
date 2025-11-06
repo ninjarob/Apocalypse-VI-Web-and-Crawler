@@ -45,10 +45,12 @@ export class CharacterMaintenance {
 
   /**
    * Parse character stats from MUD response
-   * Format: < 197H 286M 134V >
+   * Format: < 197H 286M 134V > (may contain ANSI color codes)
    */
   parseStats(text: string): CharacterStats | null {
-    const statMatch = text.match(/<\s*(\d+)H\s+(\d+)M\s+(\d+)V/);
+    // Strip ANSI color codes first (e.g., \x1b[1;31m for red)
+    const cleanText = text.replace(/\x1b\[[0-9;]*m/g, '');
+    const statMatch = cleanText.match(/<\s*(\d+)H\s+(\d+)M\s+(\d+)V/);
     if (!statMatch) {
       return null;
     }

@@ -86,9 +86,12 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
 
       logger.info(`✓ Current zone: ${this.currentZone}`);
 
-      // Get zone ID
+      // Get zone ID - match by name OR alias
       const zones = await this.config.api.getAllEntities('zones');
-      const zone = zones.find((z: any) => z.name === this.currentZone);
+      const zone = zones.find((z: any) => 
+        z.name === this.currentZone || 
+        z.alias?.toLowerCase() === this.currentZone.toLowerCase()
+      );
       if (!zone) {
         logger.error(`❌ Could not find zone "${this.currentZone}" in database`);
         return;

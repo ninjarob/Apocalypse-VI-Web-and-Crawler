@@ -41,13 +41,18 @@ export class MUDClient extends EventEmitter {
         const text = data.toString('utf8');
         this.buffer += text;
         
+        // Strip ANSI color codes before parsing stat lines
+        // ANSI codes are: ESC [ <params> m  where ESC = \x1b
+        const cleanText = text.replace(/\x1b\[[0-9;]*m/g, '');
+        
         // Check for stat line in BOTH the incoming chunk AND the buffer
         // (stat lines might be split across multiple packets)
-        let statMatch = text.match(/<\s*\d+H\s+\d+M\s+\d+V[^>]*>/);
+        let statMatch = cleanText.match(/<\s*\d+H\s+\d+M\s+\d+V[^>]*>/);
         if (!statMatch) {
           // If not in current chunk, check last 200 chars of buffer
           const recentBuffer = this.buffer.slice(-200);
-          statMatch = recentBuffer.match(/<\s*\d+H\s+\d+M\s+\d+V[^>]*>/);
+          const cleanBuffer = recentBuffer.replace(/\x1b\[[0-9;]*m/g, '');
+          statMatch = cleanBuffer.match(/<\s*\d+H\s+\d+M\s+\d+V[^>]*>/);
         }
         
         if (statMatch) {
