@@ -2,7 +2,58 @@
 
 **File Condensed**: This file has been condensed from 1726 lines to focus on current AI agent project context. All historical implementation details have been moved to [CHANGELOG.md](CHANGELOG.md) for reference.
 
-#### ✅ Character Maintenance System - Rest/Wake, Eat/Drink (Latest - 2025-11-05)
+## Quick Start
+
+### Running the Backend
+The backend should be run with PM2 for process management:
+```bash
+cd backend
+npm run build
+pm2 start ecosystem.config.js
+pm2 status  # Check it's running
+```
+
+### Running the Crawler
+```bash
+cd crawler
+npm run build
+npm run crawl:document-zone-new  # Or other crawl tasks
+```
+
+---
+
+#### ✅ Character Maintenance System - ANSI Color Code Fix (Latest - 2025-11-06)
+**Status**: ✅ COMPLETED - Fixed stat parsing by stripping ANSI color codes from MUD responses
+- **Critical Bug Found**: MUD server embeds ANSI color codes in stat lines, causing regex matching to fail
+- **Example**: `< 197H 95M 134V >` is actually `<\x1b[0m \x1b[1;31m197H\x1b[0m \x1b[1;32m95M\x1b[0m \x1b[1;33m134V\x1b[0m...`
+- **Character Codes**: Discovered via debug logging: `60,27,91,48,109,32,27,91,49,59,51,49,109,49,57,55,72...`
+  - `27,91` = `\x1b[` (ANSI escape sequence)
+  - `1;31m` = bright red color
+  - `1;32m` = bright green color
+  - `1;33m` = bright yellow color
+- **Solution**: Strip ANSI codes with regex `/\x1b\[[0-9;]*m/g` before parsing
+- **Files Modified**:
+  - `crawler/src/mudClient.ts`: Strip ANSI in data handler before capturing stat lines
+  - `crawler/src/CharacterMaintenance.ts`: Strip ANSI in parseStats() method
+- **Test Results**: ✅ Stats now captured successfully: `✨ CAPTURED STAT LINE: "< 197H 107M 134V 290536X 5905SP >"`
+- **Stat Parsing Working**: `📊 Current stats: 197H 163M 134V` logs appearing in crawler output
+- **Zone Alias Matching**: Fixed zone lookup to check both `name` and `alias` fields (case-insensitive)
+- **Backend Setup**: Added PM2 configuration file `ecosystem.config.js` for process management
+- **Documentation**: Updated README.md with PM2 startup instructions
+
+**Debugging Process**:
+1. Added debug logging to show character codes in stat lines
+2. Discovered ANSI escape sequences embedded between characters
+3. Tested multiple regex patterns - only loose pattern matched
+4. Implemented ANSI stripping solution
+5. Verified stat capture and parsing working correctly
+
+**Next Steps**:
+- Test maintenance system continues to work (rest/wake/eat/drink)
+- Verify rest cycle triggers when mana drops below 20M
+- Monitor for any infinite loops in maintenance logic
+
+#### ✅ Character Maintenance System - Rest/Wake, Eat/Drink (2025-11-05)
 **Status**: ✅ COMPLETED - Implemented autonomous character maintenance for mana, hunger, and thirst
 - **Feature**: Created `CharacterMaintenance` class to handle long-running crawler sessions without manual intervention
 - **Mana Management**: Automatically rests when mana drops below 20M, wakes when restored to 150M+

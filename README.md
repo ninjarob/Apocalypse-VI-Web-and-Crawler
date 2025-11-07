@@ -17,10 +17,36 @@ npm run install-all
 
 # Set up environment variables (see .env.example files)
 # Create .env files in crawler/ and backend/
+```
 
-# Start the backend API
-npm run dev:backend
+### Starting the Backend (Recommended: PM2)
 
+The backend should be run using PM2 for process management:
+
+```bash
+cd backend
+
+# Build the backend first
+npm run build
+
+# Start with PM2 (preferred)
+pm2 start ecosystem.config.js
+
+# Check status
+pm2 status
+
+# View logs
+pm2 logs mud-backend
+
+# Stop when needed
+pm2 stop mud-backend
+```
+
+**Alternative (Development)**: You can also run `npm run dev` for direct execution, but PM2 is preferred for stability.
+
+### Starting Other Services
+
+```bash
 # Start the frontend (in another terminal)
 npm run dev:frontend
 
