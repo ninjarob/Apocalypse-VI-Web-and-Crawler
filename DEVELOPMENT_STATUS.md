@@ -22,7 +22,79 @@ npm run crawl:document-zone-new  # Or other crawl tasks
 
 ---
 
-#### ✅ Character Maintenance System - ANSI Color Code Fix (Latest - 2025-11-06)
+#### ✅ MUD Session Log Parser - Portal Key-Based Room Deduplication (Latest - 2025-11-07)
+**Status**: ✅ COMPLETED - Successfully implemented portal key extraction and hierarchical deduplication to eliminate duplicate rooms
+- **Portal Key Extraction**: Parser detects `'abcdefgh'` portal key responses from 'bind portal minor' commands and associates them with rooms
+- **Hierarchical Room Keys**: Rooms uniquely identified by `portal:${portalKey}` when available, falling back to `namedesc:${name}|||${description}`
+- **Database Integration**: Portal keys properly saved to database with `portal_key` field in rooms table
+  * `#00FFFF` (cyan) = Room titles
+  * `#C0C0C0` (white/gray) = Room descriptions
+  * `#008080` (teal) = Exit lines
+  * `#008000` (green) = Items
+  * Red/Green/Yellow = Health/Mana/Vitality in status prompts
+- **Status Line Filtering**: Added regex filtering to exclude status prompts containing `\d+H`, `\d+M`, `\d+V`, `\d+X` patterns
+- **XP Value Detection**: Handles cyan-colored XP values (e.g., "290536X") that appear in status lines to prevent false room detection
+- **Zone Change Tracking**: Detects `[Current Zone: ...]` lines from `who -z` command output and tracks which zone each room belongs to
+- **Zone Exit Detection**: Automatically identifies exits that cross zone boundaries based on tracked zone changes
+- **Room Zone Exit Marking**: Marks rooms as `zone_exit=1` if they have any exits leading to different zones
+- **Exit Zone Exit Marking**: Marks individual exits as `is_zone_exit=1` when they connect to rooms in different zones
+- **Multi-Zone Support**: Properly assigns zone IDs to rooms discovered in different zones during exploration
+- **Zone Alias Matching**: Resolves zone names using both `name` and `alias` fields for flexible matching (e.g., "Astyll Hills" matches "The Hills of Astyll")
+- **Movement Tracking**: Tracks player movement commands to build exit connections between rooms automatically
+- **Bidirectional Exits**: Properly creates two-way exit connections when revisiting rooms from different directions
+- **CLI Tool**: Created `parse-logs.ts` with `--zone-id`, `--dry-run`, and `--export` flags for flexible parsing workflow
+- **Documentation**: Complete `LOG_PARSER_README.md` with usage examples, troubleshooting, and workflow guidance
+- **Test Results**: Parser now discovers 63 rooms (up from 47) with proper deduplication using portal keys
+- **Portal Key Coverage**: 28 rooms now have portal keys saved in database (dehimpqr, cijklpqr, cfghmpqr, cefghijklpqr, dghjklpqr, dgklmoq, etc.)
+- **Room Identification**: Rooms properly identified as [portal key] or [name+desc] based on available identification method
+- **Exit Saving**: 70 exits saved successfully with enhanced portal key matching for destination resolution
+- **Workflow**: Dry-run testing with `--dry-run` flag, full database save with `--zone-id 2` for production use
+- **Files Modified**: `crawler/src/mudLogParser.ts` - Added portal key extraction, hierarchical deduplication, and database saving
+- **Performance**: Much faster than automated crawler - explore manually once, parse multiple times for refinement
+- **Iteration Friendly**: Can adjust parser logic and re-run on same log file without re-exploring the MUD
+
+**Zone Exit Examples Detected**:
+- Market Square (Midgaard: City) → Northern Bazaar (Astyll Hills) - zone exit on both sides
+- Main Street East (Midgaard: City) → Buster's Pawn Shop (Quester's Enclave) - zone exit on both sides
+- Market Square (Midgaard: City) → Main Street West (Haunted Forest) - zone exit on both sides  
+- Western End of Poor Alley (Midgaard: City) → Eastern End of Poor Alley (Midgaard: Sewers) - zone exit on both sides
+
+**Room Deduplication**:
+- **Portal Key Priority**: Rooms are now uniquely identified by portal binding keys (`bind portal minor`) when available
+- **Key Format**: `portal:${portalKey}` for rooms with portal keys, `namedesc:${name}|||${description}` as fallback
+- **Automatic Extraction**: Parser detects `'abcdefgh'` portal key responses and associates them with rooms
+- **Deduplication Logic**: Rooms with same name but different portal keys are treated as separate rooms
+- **Fallback Matching**: For rooms without portal keys, falls back to name + description matching
+- **Improved Accuracy**: Eliminates false duplicates where rooms had similar names/descriptions but were actually different locations
+
+**Test Results** (sessions/Exploration - Northern Midgaard City.txt):
+- **Before**: 47 rooms (some duplicates not properly distinguished)
+- **After**: 63 rooms (properly deduplicated using portal keys)
+- Portal keys extracted: `dehimpqr`, `cijklpqr`, `cfghmpqr`, `cefghijklpqr`, `dghjklpqr`, `dgklmoq`, etc.
+- Rooms now identified as `[portal key]` or `[name+desc]` based on available identification method
+
+**Workflow**:
+```bash
+# 1. Manually explore MUD with "who -z" commands at zone boundaries
+# 2. Save session (use MUSHclient "copy as HTML")
+# 3. Parse with dry-run to verify
+npx tsx parse-logs.ts "sessions/YourSession.txt" --dry-run --export preview.json
+# 4. Save to database with default zone ID
+npx tsx parse-logs.ts "sessions/YourSession.txt" --zone-id 2
+```
+
+**Files Modified**:
+- `crawler/src/mudLogParser.ts` - Added zone tracking, zone exit detection, and bidirectional exit saving
+- `crawler/LOG_PARSER_README.md` - Updated with zone exit documentation
+
+**Next Steps**:
+- Fix duplicate exit errors when saving (UNIQUE constraint on from_room_id + direction)
+- Test parser with other zones and log formats
+- Enhance NPC and item detection accuracy
+- Add door detection (locked, closed, hidden)
+- Consider terrain/flag detection from room descriptions
+
+#### ✅ Character Maintenance System - ANSI Color Code Fix (2025-11-06)
 **Status**: ✅ COMPLETED - Fixed stat parsing by stripping ANSI color codes from MUD responses
 - **Critical Bug Found**: MUD server embeds ANSI color codes in stat lines, causing regex matching to fail
 - **Example**: `< 197H 95M 134V >` is actually `<\x1b[0m \x1b[1;31m197H\x1b[0m \x1b[1;32m95M\x1b[0m \x1b[1;33m134V\x1b[0m...`

@@ -17,7 +17,8 @@
     "crawl:play-game": "tsx src/index.ts -- --task=play-game",
     "learn-commands": "tsx src/commandCrawler.ts",
     "learn-commands:build": "tsc && node dist/commandCrawler.js",
-    "discover-races": "tsx src/discoverRaces.ts"
+    "discover-races": "tsx src/discoverRaces.ts",
+    "parse-logs": "tsx parse-logs.ts"
   },
   "dependencies": {
     "telnet-client": "^2.1.0",

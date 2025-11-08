@@ -75,29 +75,14 @@ export class RoomService extends BaseService {
     const roomName = typeof roomData.name === 'string' ? roomData.name.trim() : '';
 
     // Check if room already exists
-    // Priority 1: Match by portal_key if provided (most reliable for duplicate names)
-    // Priority 2: Match by name + description + zone_id (allows multiple rooms with same name)
+    // ONLY match by portal_key if provided - this is the only reliable unique identifier
+    // Do NOT match by name+description as multiple distinct rooms can have identical text
     let existing: Room | null = null;
     
-    if (roomData.portal_key) {
-      // Portal keys are unique identifiers - match by portal key first
+    if (roomData.portal_key && roomData.portal_key.trim() !== '') {
+      // Portal keys are unique identifiers - match by portal key only
       const rooms = await repositories.rooms.findAll({ portal_key: roomData.portal_key });
       existing = rooms.length > 0 ? rooms[0] : null;
-    }
-    
-    if (!existing && roomData.zone_id && roomData.description) {
-      // Match by name + description + zone_id to allow multiple rooms with same name but different descriptions
-      const rooms = await repositories.rooms.findAll({ 
-        name: roomName,
-        zone_id: roomData.zone_id 
-      });
-      
-      // Filter by description match to find exact room
-      const descriptionMatch = rooms.find(r => 
-        r.description && roomData.description && 
-        r.description.trim() === roomData.description.trim()
-      );
-      existing = descriptionMatch || null;
     }
 
     if (existing) {
@@ -112,12 +97,12 @@ export class RoomService extends BaseService {
       exits: roomData.exits || undefined,
       npcs: roomData.npcs || undefined,
       items: roomData.items || undefined,
-      area: roomData.area || undefined,
+      area: roomData.area && roomData.area.trim() !== '' ? roomData.area : undefined,
       zone_id: roomData.zone_id || undefined,
       vnum: roomData.vnum || undefined,
       terrain: roomData.terrain || undefined,
       flags: roomData.flags || undefined,
-      portal_key: roomData.portal_key || undefined,
+      portal_key: roomData.portal_key && roomData.portal_key.trim() !== '' ? roomData.portal_key : undefined,
       visitCount: 1,
       firstVisited: new Date().toISOString(),
       lastVisited: new Date().toISOString(),
