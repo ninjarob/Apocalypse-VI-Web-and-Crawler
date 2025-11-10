@@ -127,22 +127,38 @@ netstat -ano | findstr :3002
 ```
 
 ### Database Access Issues
-**IMPORTANT**: Avoid `sqlite3` commands in PowerShell - they fail with path/escaping issues
+**🚨 CRITICAL: USE THE API, NOT DIRECT DATABASE QUERIES 🚨**
 
-**DO THIS**:
+Direct database access (sqlite3, query-db.js, etc.) is **HIGHLY PROBLEMATIC** and should be avoided. Use the REST API instead.
+
+**✅ ALWAYS DO THIS**:
 ```powershell
-# Use Node.js script
-node backend/query-db.js "SELECT * FROM rooms LIMIT 5"
-
-# Or use API
+# Use the API - it's reliable and consistent
 curl http://localhost:3002/api/rooms
+curl http://localhost:3002/api/room_exits
+curl http://localhost:3002/api/zones
+
+# Or in browser
+# http://localhost:3002/api/rooms
+# http://localhost:3002/api/room_exits?from_room_id=123
 ```
 
-**NOT THIS**:
+**❌ NEVER DO THIS**:
 ```powershell
-# ❌ This will likely fail
+# Direct sqlite3 commands - fail with path/escaping issues
 sqlite3 backend/mud-data.db "SELECT * FROM rooms"
+
+# query-db.js script - unreliable, often gives wrong results
+node backend/query-db.js "SELECT * FROM rooms"
+
+# Any other direct database access - just don't
 ```
+
+**Why?**
+- Direct database access in PowerShell has path/escaping issues
+- query-db.js script is unreliable and often returns incorrect data
+- API is tested, consistent, and handles all edge cases properly
+- API provides proper JSON formatting and error handling
 
 ## 📁 Important Files
 

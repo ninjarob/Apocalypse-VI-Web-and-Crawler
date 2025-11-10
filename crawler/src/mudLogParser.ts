@@ -231,17 +231,26 @@ export class MudLogParser {
       // Detect "look <direction>" commands and capture exit descriptions
       const lookDirectionMatch = cleanLine.match(/^look\s+(n|s|e|w|u|d|north|south|east|west|up|down|northeast|northwest|southeast|southwest|ne|nw|se|sw)$/i);
       if (lookDirectionMatch) {
-        const lookDirection = this.expandDirection(lookDirectionMatch[1]);
+        const lookDirection = normalizeDirection(this.expandDirection(lookDirectionMatch[1]));
+        console.log(`  👁️  Looking ${lookDirection} from ${this.state.currentRoom?.name || 'unknown'}`);
 
         // Look for the exit description in the following lines
         let exitDescription = '';
         let k = i + 1;
         let foundExitDesc = false;
+        let hasNothingSpecial = false;
         let descriptionLines = 0;
 
         while (k < lines.length) {
           const descLine = lines[k];
           const cleanDesc = this.stripHtml(descLine).trim();
+
+          // Check for "You see nothing special" - this is a valid response meaning no description
+          if (cleanDesc.match(/^You see nothing special/i)) {
+            hasNothingSpecial = true;
+            k++;
+            break;
+          }
 
           // Stop at room titles, exits, prompts, or other commands
           if (descLine.includes('color="#00FFFF"') || // Room title
@@ -249,7 +258,9 @@ export class MudLogParser {
               (descLine.includes('&lt;') && descLine.includes('&gt;')) || // Prompt
               cleanDesc.match(/^(look|exits|cast|who|The last remnants|Lightning begins|arrives from|leaves|says|orates)/i) ||
               cleanDesc.match(/^\[EXITS:/i) || // Exit list
-              cleanDesc.match(/^\[Current Zone:/i)) { // Zone info
+              cleanDesc.match(/^\[Current Zone:/i) || // Zone info
+              cleanDesc.match(/^Looking [nesw]/i) || // "Looking w..." response
+              cleanDesc.match(/^Room scan complete/i)) { // Room scan message
             break;
           }
 
@@ -258,8 +269,8 @@ export class MudLogParser {
               descLine.includes('color="#008000"') || // Green items
               descLine.includes('color="#808000"')) { // Gold/yellow NPCs
 
-            // Skip obvious system messages and commands
-            if (!cleanDesc.match(/^(Room scan complete|Found exits|You see|You look|Stairs lead|The prostitute|The bartender|A receptionist|A Guard)/i) &&
+            // Skip obvious system messages but allow meaningful descriptions
+            if (!cleanDesc.match(/^(Room scan complete|Found exits|Stairs lead|The prostitute|The bartender|A receptionist|A Guard)/i) &&
                 !cleanDesc.match(/^\d+H \d+M \d+V/i) && // Health/mana prompts
                 cleanDesc.length > 0) {
 
@@ -277,27 +288,40 @@ export class MudLogParser {
 
         exitDescription = exitDescription.trim();
 
-        // If we found an exit description, associate it with the last exit we created
-        if (foundExitDesc && exitDescription && this.state.exits.length > 0) {
-          const lastExit = this.state.exits[this.state.exits.length - 1];
-          if (lastExit.direction === lookDirection && !lastExit.look_description) {
-            lastExit.look_description = exitDescription;
+        // Find the exit from current room in this direction and update its description
+        if (this.state.currentRoomKey) {
+          const matchingExits = this.state.exits.filter(
+            exit => exit.from_room_key === this.state.currentRoomKey && exit.direction === lookDirection
+          );
 
-            // Check for door information in the description
-            const doorMatch = exitDescription.match(/(?:a|an|the)\s+([^.!]+?)\s+(?:door|gate|portal|entrance|exit|hatch|archway|opening)/i);
-            if (doorMatch) {
-              lastExit.is_door = true;
-              lastExit.door_name = doorMatch[1].trim();
-              console.log(`  🚪 Door detected [${lookDirection}]: ${lastExit.door_name}`);
+          if (matchingExits.length > 0) {
+            for (const exit of matchingExits) {
+              if (hasNothingSpecial) {
+                // Explicitly mark as having no special description
+                exit.look_description = undefined;
+                console.log(`  ℹ️  No special description [${lookDirection}]`);
+              } else if (foundExitDesc && exitDescription) {
+                exit.look_description = exitDescription;
+
+                // Check for door information in the description
+                const doorMatch = exitDescription.match(/(?:a|an|the)\s+([^.!]+?)\s+(?:door|gate|portal|entrance|exit|hatch|archway|opening)/i);
+                if (doorMatch) {
+                  exit.is_door = true;
+                  exit.door_name = doorMatch[1].trim();
+                  console.log(`  🚪 Door detected [${lookDirection}]: ${exit.door_name}`);
+                }
+
+                // Check for locked doors or barriers
+                if (exitDescription.match(/locked|closed|barred|sealed|blocked|guarded/i)) {
+                  exit.is_door = true;
+                  console.log(`  🔒 Barrier detected [${lookDirection}]: ${exitDescription.substring(0, 50)}...`);
+                }
+
+                console.log(`  👁️  Exit description [${lookDirection}]: ${exitDescription.substring(0, 60)}...`);
+              }
             }
-
-            // Check for locked doors or barriers
-            if (exitDescription.match(/locked|closed|barred|sealed|blocked|guarded/i)) {
-              lastExit.is_door = true;
-              console.log(`  🔒 Barrier detected [${lookDirection}]: ${exitDescription.substring(0, 50)}...`);
-            }
-
-            console.log(`  👁️  Exit description [${lookDirection}]: ${exitDescription.substring(0, 60)}...`);
+          } else {
+            console.log(`  ⚠️  No exit found in direction ${lookDirection} from current room`);
           }
         }
 
@@ -994,6 +1018,7 @@ export class MudLogParser {
           direction: exit.direction,
           to_room_id: toRoomId || null, // null if blocked/unknown
           is_zone_exit: exit.is_zone_exit ? 1 : 0,
+          description: exit.look_description || 'No description', // Use look_description as the main description
           look_description: exit.look_description || null,
           is_door: exit.is_door ? 1 : 0,
           door_name: exit.door_name || null

@@ -198,13 +198,49 @@ The seed script (`backend/seed.ts`) populates reference tables with:
 
 ## API Access
 
-The database is accessed through:
+**🚨 CRITICAL: ALWAYS USE THE API FOR DATABASE ACCESS 🚨**
+
+The database should **ONLY** be accessed through the REST API:
 
 - **Backend API:** REST endpoints at `http://localhost:3002/api`
 - **Generic CRUD:** `/api/{entity-type}` supports GET, POST, PUT, DELETE for all entities
 - **Specialized Endpoints:** Custom logic for rooms (visit tracking), zones, items
 
 See backend API routes in `backend/src/routes/api.ts` for complete endpoint documentation.
+
+### ❌ DO NOT USE DIRECT DATABASE ACCESS
+
+**NEVER** use these methods to access the database:
+- ❌ `sqlite3` command-line tool (fails in PowerShell with path/escaping issues)
+- ❌ `query-db.js` script (unreliable, often returns incorrect or incomplete data)
+- ❌ Any other direct database queries (inconsistent results)
+
+**Why the API is required:**
+1. **Reliability:** Direct database access in PowerShell has numerous path/escaping issues
+2. **Consistency:** query-db.js and other scripts often return wrong or incomplete results
+3. **Proper Formatting:** API returns properly formatted JSON
+4. **Error Handling:** API handles edge cases and provides meaningful error messages
+5. **Tested:** API endpoints are tested and validated, direct queries are not
+
+### ✅ Example API Usage
+
+```powershell
+# Get all rooms
+curl http://localhost:3002/api/rooms
+
+# Get specific room
+curl http://localhost:3002/api/rooms?id=123
+
+# Get exits from a room
+curl http://localhost:3002/api/room_exits?from_room_id=123
+
+# Get all zones
+curl http://localhost:3002/api/zones
+
+# In browser (easier to read JSON)
+# http://localhost:3002/api/rooms
+# http://localhost:3002/api/room_exits
+```
 
 ## Customization
 

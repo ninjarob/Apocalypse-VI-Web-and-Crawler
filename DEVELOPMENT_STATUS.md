@@ -25,6 +25,24 @@
 
 ## ✅ Recently Completed
 
+### Exit Description Fix (2025-11-10)
+- **Issue**: Exit descriptions not showing in frontend - always showing "No description"
+- **Root Cause**: Parser only populating `look_description` field, but frontend displays `description` field
+- **Database Schema**: Three fields available: `description`, `exit_description`, `look_description`
+- **Solution**: 
+  - Modified parser to populate `description` field from `look_description` when available
+  - Fixed "look <direction>" parsing to match exits by current room and direction (not just last exit)
+  - Added handling for "You see nothing special" responses
+  - Parser now correctly processes look commands throughout the log file
+- **Default Behavior**: Sets `description` to "No description" when no look_description captured
+- **Testing**: Verified with existing log file - parser correctly processes all "look <direction>" commands
+- **Note**: Most exits in the test MUD returned "You see nothing special", which is normal
+
+**Database Access Best Practices Added:**
+- Added **CRITICAL warnings** to documentation to always use REST API for database queries
+- Direct database access (sqlite3, query-db.js) is unreliable and produces incorrect results
+- API is the only supported method: `http://localhost:3002/api/room_exits`
+
 ### Zone Exit Marking Fix (2025-11-10)
 - **Issue**: Rooms marked as zone exits in parser weren't being saved to database
 - **Root Cause**: `RoomService.createOrUpdateRoom()` wasn't including `zone_exit` field in room creation
