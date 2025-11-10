@@ -25,6 +25,14 @@
 
 ## ✅ Recently Completed
 
+### Zone Exit Marking Fix (2025-11-10)
+- **Issue**: Rooms marked as zone exits in parser weren't being saved to database
+- **Root Cause**: `RoomService.createOrUpdateRoom()` wasn't including `zone_exit` field in room creation
+- **Solution**: Added `zone_exit` to room creation data in backend service
+- **Result**: Zone exit rooms now correctly marked in database and displayed in frontend
+
+**Affected Rooms:** The Dump, Outside the City Walls, Quester's, Entrance to the Midgaard Sewers, On the River, A long tunnel, Rear exit of the Temple, Main Street East
+
 ### Room Deduplication Fix (2025-11-10)
 - **Root Cause Identified**: Rooms without portal keys were being duplicated (19 room types affected)
 - **Improved Description Matching**: Added `normalizeDescription()` to strip dynamic content (NPCs, items)

@@ -99,6 +99,7 @@ export class RoomService extends BaseService {
       items: roomData.items || undefined,
       area: roomData.area && roomData.area.trim() !== '' ? roomData.area : undefined,
       zone_id: roomData.zone_id || undefined,
+      zone_exit: roomData.zone_exit || undefined,
       vnum: roomData.vnum || undefined,
       terrain: roomData.terrain || undefined,
       flags: roomData.flags || undefined,
