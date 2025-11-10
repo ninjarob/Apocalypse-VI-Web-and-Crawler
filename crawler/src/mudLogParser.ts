@@ -98,7 +98,7 @@ export class MudLogParser {
       const cleanLine = this.stripHtml(line).trim();
       
       // Detect portal binding results
-      const portalKeyMatch = cleanLine.match(/'([a-z]{7,})' briefly appears as a portal shimmers into view/);
+      const portalKeyMatch = cleanLine.match(/'([a-z]{6,})' briefly appears as a portal shimmers into view/);
       if (portalKeyMatch) {
         this.state.pendingPortalKey = portalKeyMatch[1];
         this.state.portalRetryCount = 0; // Reset retry count on success
@@ -358,6 +358,7 @@ export class MudLogParser {
         let description = '';
         let j = i + 1;
         let foundDescription = false;
+        let inDescription = false;
         
         while (j < lines.length) {
           const descLine = lines[j];
@@ -375,8 +376,25 @@ export class MudLogParser {
             break;
           }
           
-          // Collect white/gray text that's part of description
-          if (descLine.includes('color="#C0C0C0"') && cleanDesc) {
+          // Stop at other colored text (commands, etc) unless we haven't started description yet
+          if (inDescription && descLine.includes('color=') && !descLine.includes('color="#C0C0C0"')) {
+            console.log(`DEBUG: Found non-gray colored text at j=${j}, stopping description collection`);
+            break;
+          }
+          
+          // Start collecting when we see gray text
+          if (descLine.includes('color="#C0C0C0"')) {
+            inDescription = true;
+          }
+          
+          // Stop if we hit a portal key line (this should be processed by main parser, not included in description)
+          if (cleanDesc.match(/'[a-z]{6,}' briefly appears as a portal shimmers/)) {
+            console.log(`DEBUG: Found portal key line at j=${j}, stopping description collection`);
+            break;
+          }
+          
+          // Collect text if we're in description mode and line has content
+          if (inDescription && cleanDesc) {
             console.log(`DEBUG: Processing description line j=${j}: "${cleanDesc.substring(0, 50)}..."`);
             // Skip commands, system messages, and dynamic content that shouldn't be part of room description
             if (!cleanDesc.match(/^(look|exits|cast|who|The last remnants|Lightning begins|arrives from|leaves|says|orates)/i) &&
@@ -585,7 +603,23 @@ export class MudLogParser {
   private findExistingRoomKey(name: string, description: string, portalKey?: string | null): string | null {
     console.log(`DEBUG: findExistingRoomKey called for "${name}" with portalKey: ${portalKey}`);
     
-    // Always check if any existing room with the same name has a portal key and similar description
+    // HIGHEST PRIORITY: If we have a portal key, ONLY match rooms with THE SAME portal key
+    // Different portal keys = definitely different rooms, even if name/description similar
+    if (portalKey) {
+      for (const [key, room] of this.state.rooms) {
+        if (room.portal_key === portalKey) {
+          console.log(`DEBUG: Found existing room with SAME portal key ${portalKey}: ${key} (${room.name})`);
+          return key;
+        }
+      }
+      // If we have a portal key but found no match, this is a NEW room
+      // Don't check name+description similarity - different portal key means different room
+      console.log(`DEBUG: New portal key ${portalKey} - treating as new room even if name/desc similar`);
+      return null;
+    }
+    
+    // Only if NO portal key is available, fall back to name+description matching
+    // Check if any existing room with the same name has a portal key
     for (const [key, room] of this.state.rooms) {
       if (room.portal_key && room.name === name) {
         const similarity = this.calculateDescriptionSimilarity(room.description, description);
@@ -597,30 +631,10 @@ export class MudLogParser {
       }
     }
     
-    // First priority: check if any existing room already has this portal key
-    if (portalKey) {
-      for (const [key, room] of this.state.rooms) {
-        if (room.portal_key === portalKey) {
-          console.log(`DEBUG: Found existing room with portal key ${portalKey}: ${key} (${room.name})`);
-          return key;
-        }
-      }
-    }
-    
-    // Second priority: check if any existing room with this name has the same portal key
-    if (portalKey) {
-      for (const [key, room] of this.state.rooms) {
-        if (room.name === name && room.portal_key === portalKey) {
-          console.log(`DEBUG: Found name+portal match: ${key} (${room.name})`);
-          return key;
-        }
-      }
-    }
-    
-    // Third priority: fuzzy matching for rooms without portal keys
+    // Fuzzy matching for rooms without portal keys
     // Use description similarity but ignore dynamic content like NPCs
     for (const [key, room] of this.state.rooms) {
-      if (room.name === name && !room.portal_key && !portalKey) {
+      if (room.name === name && !room.portal_key) {
         console.log(`DEBUG: Checking fuzzy match for room: ${key} (${room.name})`);
         
         // Calculate description similarity
