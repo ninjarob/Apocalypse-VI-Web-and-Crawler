@@ -706,13 +706,14 @@ export class MudLogParser {
       if (room.name === name && !room.portal_key) {
         console.log(`DEBUG: Checking fuzzy match for room: ${key} (${room.name})`);
         
-        // Calculate description similarity
+        // Calculate description similarity (now uses normalized descriptions)
         const similarity = this.calculateDescriptionSimilarity(room.description, description);
-        console.log(`DEBUG: Description similarity: ${similarity}`);
+        console.log(`DEBUG: Description similarity (normalized): ${similarity.toFixed(3)}`);
         
-        // Use moderate similarity threshold (80%+) to allow for some variation
-        if (similarity > 0.80) {
-          console.log(`DEBUG: Moderate similarity match found: ${key}`);
+        // Use high similarity threshold (90%+) for rooms without portal keys
+        // This prevents false matches while still catching legitimate duplicates
+        if (similarity >= 0.90) {
+          console.log(`DEBUG: High similarity match found: ${key} (${similarity.toFixed(3)})`);
           return key;
         }
       }
@@ -723,14 +724,45 @@ export class MudLogParser {
   }
 
   /**
+   * Normalize a room description by removing dynamic content
+   */
+  private normalizeDescription(description: string): string {
+    let normalized = description.toLowerCase();
+    
+    // Remove common NPC patterns (people/creatures that might be present)
+    normalized = normalized.replace(/\b(a|an|the)\s+\w+\s+(is|are|stands|sits|sleeps|lies|floats)\s+(here|sleeping|sitting|standing)\b/gi, '');
+    
+    // Remove item presence indicators
+    normalized = normalized.replace(/\b(a|an|the)\s+\w+\s+lies?\s+here\b/gi, '');
+    
+    // Normalize whitespace
+    normalized = normalized.replace(/\s+/g, ' ').trim();
+    
+    return normalized;
+  }
+
+  /**
    * Calculate similarity between two descriptions (simple word overlap)
+   * Uses normalized descriptions to account for dynamic content
    */
   private calculateDescriptionSimilarity(desc1: string, desc2: string): number {
-    const words1 = new Set(desc1.toLowerCase().split(/\s+/));
-    const words2 = new Set(desc2.toLowerCase().split(/\s+/));
+    // Normalize both descriptions first
+    const norm1 = this.normalizeDescription(desc1);
+    const norm2 = this.normalizeDescription(desc2);
+    
+    // If normalized descriptions are very short, require exact match
+    if (norm1.length < 50 || norm2.length < 50) {
+      return norm1 === norm2 ? 1.0 : 0.0;
+    }
+    
+    const words1 = new Set(norm1.split(/\s+/).filter(w => w.length > 2)); // Ignore short words
+    const words2 = new Set(norm2.split(/\s+/).filter(w => w.length > 2));
     
     const intersection = new Set([...words1].filter(x => words2.has(x)));
     const union = new Set([...words1, ...words2]);
+    
+    // Avoid division by zero
+    if (union.size === 0) return 0;
     
     return intersection.size / union.size;
   }

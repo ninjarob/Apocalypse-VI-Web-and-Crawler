@@ -4,9 +4,9 @@
 
 ## 🎯 Current Focus
 
-**Active Development**: Exit system improvements with automatic reverse exit creation
+**Active Development**: Fixed room duplication issue for rooms without portal keys
 
-**Priority**: Proper exit linking between rooms for accurate navigation
+**Priority**: Proper room deduplication to prevent duplicate entries in database
 
 ## Project Architecture
 
@@ -24,6 +24,20 @@
 - Ollama AI: http://localhost:11434 (Local AI models)
 
 ## ✅ Recently Completed
+
+### Room Deduplication Fix (2025-11-10)
+- **Root Cause Identified**: Rooms without portal keys were being duplicated (19 room types affected)
+- **Improved Description Matching**: Added `normalizeDescription()` to strip dynamic content (NPCs, items)
+- **Stricter Similarity Threshold**: Increased from 80% to 90% for rooms without portal keys
+- **Better Word Filtering**: Only compare words >2 characters to ignore articles and prepositions
+- **Normalized Comparison**: Lowercase and whitespace normalization for consistent matching
+
+**Problem Examples:**
+- "The Armory", "Market Square", "The Temple of Midgaard" - all duplicated without portal keys
+- Descriptions varied due to NPCs, items, or minor text differences
+- Parser created separate `namedesc:` keys for what was actually the same room
+
+**Solution:** Enhanced fuzzy matching with content normalization prevents false duplicates while catching legitimate same-room variations
 
 ### Exit System Overhaul (2025-11-10)
 - **Automatic Reverse Exits**: When moving north to a room, automatically creates south exit back (99% accurate)
