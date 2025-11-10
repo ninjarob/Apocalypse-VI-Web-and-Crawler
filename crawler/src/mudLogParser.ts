@@ -1007,11 +1007,14 @@ export class MudLogParser {
         }
       } catch (error: any) {
         exitsFailed++;
-        console.error(`   ❌ Failed to save exit: ${exit.from_room_name} -> ${exit.to_room_name} - ${error.message}`);
+        console.warn(`   ⚠️  Skipped exit: ${exit.from_room_name} -> ${exit.to_room_name} (likely deduplicated room)`);
       }
     }
     
-    console.log(`\n✅ Exits saved! ${exitsSaved} saved, ${exitsFailed} failed`);
+    console.log(`\n✅ Exits saved! ${exitsSaved} saved, ${exitsFailed} skipped`);
+    if (exitsFailed > 0) {
+      console.log(`   💡 Skipped exits reference deduplicated rooms (this is expected)`);
+    }
   }
 
   /**

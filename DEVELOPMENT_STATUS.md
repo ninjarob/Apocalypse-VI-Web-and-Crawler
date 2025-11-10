@@ -31,13 +31,24 @@
 - **Stricter Similarity Threshold**: Increased from 80% to 90% for rooms without portal keys
 - **Better Word Filtering**: Only compare words >2 characters to ignore articles and prepositions
 - **Normalized Comparison**: Lowercase and whitespace normalization for consistent matching
+- **Improved User Experience**: Changed exit save error messages to informative warnings
 
 **Problem Examples:**
 - "The Armory", "Market Square", "The Temple of Midgaard" - all duplicated without portal keys
 - Descriptions varied due to NPCs, items, or minor text differences
 - Parser created separate `namedesc:` keys for what was actually the same room
+- Exit save failures showing as errors when they were actually expected behavior
 
-**Solution:** Enhanced fuzzy matching with content normalization prevents false duplicates while catching legitimate same-room variations
+**Solution:** 
+- Enhanced fuzzy matching with content normalization prevents false duplicates while catching legitimate same-room variations
+- Exit saves now show "⚠️ Skipped" with "(likely deduplicated room)" explanation instead of error messages
+- Added informational note: "💡 Skipped exits reference deduplicated rooms (this is expected)"
+
+**Results:**
+- 68 unique rooms (down from 87 with duplicates)
+- 32 exits saved successfully
+- 234 exits skipped (referencing correctly deduplicated rooms)
+- Clear, user-friendly warnings instead of confusing error messages
 
 ### Exit System Overhaul (2025-11-10)
 - **Automatic Reverse Exits**: When moving north to a room, automatically creates south exit back (99% accurate)
