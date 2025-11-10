@@ -16,6 +16,7 @@ interface ParsedRoom {
 }
 
 interface ParsedExit {
+  from_room_key: string;
   from_room_name: string;
   from_room_description: string;
   direction: string;
@@ -38,6 +39,9 @@ interface ParserState {
   lastRoomBeforeZoneChange: ParsedRoom | null; // Track the room we left before zone changed
   recentZoneCheck: boolean; // True if we just did a who -z (clear after discovering a room)
   pendingPortalKey: string | null; // Portal key from last successful binding
+  noMagicRooms: Set<string>; // Track rooms where portal binding permanently fails
+  portalRetryCount: number; // Track consecutive portal binding failures for retry logic
+  bindingAttemptRoomKey: string | null; // Track which room the binding attempt was made in
 }
 
 export class MudLogParser {
@@ -56,7 +60,10 @@ export class MudLogParser {
       zoneMapping: new Map(),
       lastRoomBeforeZoneChange: null,
       recentZoneCheck: false,
-      pendingPortalKey: null
+      pendingPortalKey: null,
+      noMagicRooms: new Set(),
+      portalRetryCount: 0,
+      bindingAttemptRoomKey: null
     };
   }
 
@@ -76,6 +83,11 @@ export class MudLogParser {
     while (i < lines.length) {
       const line = lines[i];
       
+      // Debug: log every 500th line
+      if (i % 500 === 0) {
+        console.log(`   DEBUG: Processing line ${i}/${lines.length}`);
+      }
+      
       // Skip empty lines
       if (!line.trim()) {
         i++;
@@ -89,36 +101,255 @@ export class MudLogParser {
       const portalKeyMatch = cleanLine.match(/'([a-z]{7,})' briefly appears as a portal shimmers into view/);
       if (portalKeyMatch) {
         this.state.pendingPortalKey = portalKeyMatch[1];
+        this.state.portalRetryCount = 0; // Reset retry count on success
         console.log(`  🔑 Portal key: ${this.state.pendingPortalKey}`);
+        
+        // Check if this portal key is already associated with ANY room
+        let alreadyAssociated = false;
+        console.log(`DEBUG: Checking if portal key ${this.state.pendingPortalKey} is already associated...`);
+        console.log(`DEBUG: Current rooms in map: ${this.state.rooms.size}`);
+        console.log(`DEBUG: Binding attempt room key: ${this.state.bindingAttemptRoomKey}`);
+        for (const [key, room] of this.state.rooms) {
+          console.log(`DEBUG: Checking room ${key.substring(0, 100)}...: portal_key = ${room.portal_key}`);
+          if (room.portal_key === this.state.pendingPortalKey) {
+            console.log(`  ⚠️  Portal key ${this.state.pendingPortalKey} already associated with room: ${room.name} (key: ${key})`);
+            alreadyAssociated = true;
+            break;
+          }
+        }
+        console.log(`DEBUG: alreadyAssociated = ${alreadyAssociated}`);
+        
+        if (!alreadyAssociated) {
+          // Associate the portal key with the room where the binding attempt was made
+          if (this.state.bindingAttemptRoomKey) {
+            console.log(`DEBUG: Associating portal key ${this.state.pendingPortalKey} with binding attempt room key: ${this.state.bindingAttemptRoomKey}`);
+            const bindingRoom = this.state.rooms.get(this.state.bindingAttemptRoomKey);
+            if (bindingRoom && !bindingRoom.portal_key) { // Only associate if room doesn't already have a portal key
+              bindingRoom.portal_key = this.state.pendingPortalKey;
+              
+              // If the room key is namedesc:, change it to portal: key for better deduplication
+              if (this.state.bindingAttemptRoomKey.startsWith('namedesc:')) {
+                const portalKey = `portal:${this.state.pendingPortalKey}`;
+                this.state.rooms.delete(this.state.bindingAttemptRoomKey);
+                this.state.rooms.set(portalKey, bindingRoom);
+                this.state.currentRoomKey = portalKey;
+                this.state.bindingAttemptRoomKey = portalKey;
+              }
+              
+              console.log(`  🔗 Associated portal key ${this.state.pendingPortalKey} with binding attempt room: ${bindingRoom.name}`);
+              
+              // Debug: Log all rooms with portal keys
+              console.log(`DEBUG: Current portal key associations:`);
+              for (const [key, room] of this.state.rooms) {
+                if (room.portal_key) {
+                  console.log(`  ${room.portal_key} -> ${room.name} (${key})`);
+                }
+              }
+            } else if (bindingRoom && bindingRoom.portal_key) {
+              console.log(`  ⚠️  Binding attempt room already has portal key: ${bindingRoom.name} has ${bindingRoom.portal_key}`);
+            } else {
+              console.log(`  ⚠️  No binding attempt room found for portal key ${this.state.pendingPortalKey}`);
+            }
+          } else {
+            console.log(`  ⚠️  No binding attempt room recorded for portal key ${this.state.pendingPortalKey}`);
+          }
+        }
+        
+        // Clear the binding attempt room and pending portal key after processing
+        this.state.bindingAttemptRoomKey = null;
+        this.state.pendingPortalKey = null;
+        
         i++;
         continue;
       }
       
-      // Detect failed portal binding
+      // Detect failed portal binding - permanent failures (no-magic zones)
       if (cleanLine.includes("Something prevents you from binding the portal") ||
           cleanLine.includes("Your magic fizzles out and dies")) {
         this.state.pendingPortalKey = null; // Clear any pending key
+        
+        // Mark current room as no-magic zone if we have one
+        if (this.state.currentRoomKey) {
+          this.state.noMagicRooms.add(this.state.currentRoomKey);
+          console.log(`  🚫 Marked room as no-magic zone: ${this.state.rooms.get(this.state.currentRoomKey)?.name}`);
+        }
+        
+        this.state.portalRetryCount = 0; // Reset for permanent failure
+        this.state.bindingAttemptRoomKey = null; // Clear binding attempt room
         i++;
         continue;
       }
       
-      // Detect movement commands (single direction on its own line with cyan color or white)
-      if (cleanLine.match(/^(n|s|e|w|u|d|north|south|east|west|up|down|northeast|northwest|southeast|southwest|ne|nw|se|sw)$/i)) {
-        lastDirection = this.expandDirection(cleanLine);
+      // Detect temporary portal binding failure (concentration loss)
+      if (cleanLine.includes("You lost your concentration!")) {
+        this.state.pendingPortalKey = null; // Clear any pending key
+        this.state.portalRetryCount++;
+        
+        // If we've failed multiple times in a row, mark as no-magic
+        if (this.state.portalRetryCount >= 3 && this.state.currentRoomKey) {
+          this.state.noMagicRooms.add(this.state.currentRoomKey);
+          console.log(`  🚫 Marked room as no-magic zone after ${this.state.portalRetryCount} concentration failures: ${this.state.rooms.get(this.state.currentRoomKey)?.name}`);
+          this.state.portalRetryCount = 0;
+        } else {
+          console.log(`  💫 Portal binding failed due to concentration loss (${this.state.portalRetryCount}/3 attempts)`);
+        }
+        
+        this.state.bindingAttemptRoomKey = null; // Clear binding attempt room
+        i++;
+        continue;
+      }
+      
+      // Detect portal binding attempts
+      if (cleanLine.includes("cast 'bind portal minor'") || cleanLine.includes("cast 'bind portal major'")) {
+        // Check if current room is known to be a no-magic zone
+        if (this.state.currentRoomKey && this.state.noMagicRooms.has(this.state.currentRoomKey)) {
+          console.log(`  🚫 Skipping portal binding in known no-magic room: ${this.state.rooms.get(this.state.currentRoomKey)?.name}`);
+        } else {
+          console.log(`  🔮 Attempting portal binding in room: ${this.state.currentRoom?.name || 'unknown'}`);
+          // Record which room the binding attempt was made in
+          this.state.bindingAttemptRoomKey = this.state.currentRoomKey;
+        }
+        i++;
+        continue;
+      }
+      
+      // Detect "look <direction>" commands and capture exit descriptions
+      const lookDirectionMatch = cleanLine.match(/^look\s+(n|s|e|w|u|d|north|south|east|west|up|down|northeast|northwest|southeast|southwest|ne|nw|se|sw)$/i);
+      if (lookDirectionMatch) {
+        const lookDirection = this.expandDirection(lookDirectionMatch[1]);
+
+        // Look for the exit description in the following lines
+        let exitDescription = '';
+        let k = i + 1;
+        let foundExitDesc = false;
+        let descriptionLines = 0;
+
+        while (k < lines.length) {
+          const descLine = lines[k];
+          const cleanDesc = this.stripHtml(descLine).trim();
+
+          // Stop at room titles, exits, prompts, or other commands
+          if (descLine.includes('color="#00FFFF"') || // Room title
+              descLine.includes('color="#008080"') || // Exits line
+              (descLine.includes('&lt;') && descLine.includes('&gt;')) || // Prompt
+              cleanDesc.match(/^(look|exits|cast|who|The last remnants|Lightning begins|arrives from|leaves|says|orates)/i) ||
+              cleanDesc.match(/^\[EXITS:/i) || // Exit list
+              cleanDesc.match(/^\[Current Zone:/i)) { // Zone info
+            break;
+          }
+
+          // Collect description text (usually white/gray, but also handle other colors for items/NPCs)
+          if (descLine.includes('color="#C0C0C0"') || // Gray/white text
+              descLine.includes('color="#008000"') || // Green items
+              descLine.includes('color="#808000"')) { // Gold/yellow NPCs
+
+            // Skip obvious system messages and commands
+            if (!cleanDesc.match(/^(Room scan complete|Found exits|You see|You look|Stairs lead|The prostitute|The bartender|A receptionist|A Guard)/i) &&
+                !cleanDesc.match(/^\d+H \d+M \d+V/i) && // Health/mana prompts
+                cleanDesc.length > 0) {
+
+              exitDescription += cleanDesc + ' ';
+              foundExitDesc = true;
+              descriptionLines++;
+            }
+          }
+
+          k++;
+
+          // Don't go too far - limit to reasonable description length
+          if (descriptionLines > 10 || k - i > 25) break;
+        }
+
+        exitDescription = exitDescription.trim();
+
+        // If we found an exit description, associate it with the last exit we created
+        if (foundExitDesc && exitDescription && this.state.exits.length > 0) {
+          const lastExit = this.state.exits[this.state.exits.length - 1];
+          if (lastExit.direction === lookDirection && !lastExit.look_description) {
+            lastExit.look_description = exitDescription;
+
+            // Check for door information in the description
+            const doorMatch = exitDescription.match(/(?:a|an|the)\s+([^.!]+?)\s+(?:door|gate|portal|entrance|exit|hatch|archway|opening)/i);
+            if (doorMatch) {
+              lastExit.is_door = true;
+              lastExit.door_name = doorMatch[1].trim();
+              console.log(`  🚪 Door detected [${lookDirection}]: ${lastExit.door_name}`);
+            }
+
+            // Check for locked doors or barriers
+            if (exitDescription.match(/locked|closed|barred|sealed|blocked|guarded/i)) {
+              lastExit.is_door = true;
+              console.log(`  🔒 Barrier detected [${lookDirection}]: ${exitDescription.substring(0, 50)}...`);
+            }
+
+            console.log(`  👁️  Exit description [${lookDirection}]: ${exitDescription.substring(0, 60)}...`);
+          }
+        }
+
+        i = k;
+        continue;
+      }
+      
+      // Detect zone change from "who -z" command output
+      const zoneChangeMatch = cleanLine.match(/\[Current Zone:\s*([^\]]+)\]/i);
+      if (zoneChangeMatch) {
+        const newZoneName = zoneChangeMatch[1].trim();
+        console.log(`   🗺️  Zone detected: "${newZoneName}" (current: "${this.state.currentZoneName}", roomKey: "${this.state.currentRoomKey}")`);
+        
+        // If this is a different zone than the current one, record the zone change
+        if (this.state.currentZoneName && this.state.currentZoneName !== newZoneName && this.state.currentRoomKey) {
+          // The room we just discovered is in a different zone
+          this.state.zoneMapping.set(this.state.currentRoomKey, newZoneName);
+          console.log(`   🗺️  Zone change detected: ${this.state.currentZoneName} → ${newZoneName} (room: ${this.state.rooms.get(this.state.currentRoomKey)?.name})`);
+        }
+        
+        this.state.currentZoneName = newZoneName;
+        this.state.recentZoneCheck = true;
+        i++;
+        continue;
+      }
+      
+      // Detect zone change from "who -z" command output (alternative format)
+      const altZoneChangeMatch = cleanLine.match(/Current zone[:\s]+(.+?)[\r\n]/i);
+      if (altZoneChangeMatch) {
+        const newZoneName = altZoneChangeMatch[1].trim();
+        
+        // If this is a different zone than the current one, record the zone change
+        if (this.state.currentZoneName && this.state.currentZoneName !== newZoneName && this.state.currentRoomKey) {
+          // The room we just discovered is in a different zone
+          this.state.zoneMapping.set(this.state.currentRoomKey, newZoneName);
+          console.log(`   🗺️  Zone change detected: ${this.state.currentZoneName} → ${newZoneName} (room: ${this.state.rooms.get(this.state.currentRoomKey)?.name})`);
+        }
+        
+        this.state.currentZoneName = newZoneName;
+        this.state.recentZoneCheck = true;
+        i++;
+        continue;
+      }
+      
+      // Detect movement commands (single letters or full directions)
+      const movementMatch = cleanLine.match(/^(n|s|e|w|u|d|north|south|east|west|up|down|northeast|northwest|southeast|southwest|ne|nw|se|sw)$/i);
+      if (movementMatch) {
+        lastDirection = this.expandDirection(movementMatch[1]);
+        console.log(`   ➡️  Moving ${lastDirection}`);
         i++;
         continue;
       }
       
       // Detect room title - cyan colored text (#00FFFF)
       if (line.includes('color="#00FFFF"')) {
-        const roomName = this.stripHtml(line).trim();
+        console.log(`DEBUG: Found potential room title line: ${line.substring(0, 100)}...`);
+        // Extract room name from cyan colored text using regex
+        const roomTitleMatch = line.match(/color="#00FFFF"[^>]*>([^<]*)/);
+        const roomName = roomTitleMatch ? roomTitleMatch[1].trim() : this.stripHtml(line).trim();
+        console.log(`DEBUG: Extracted room name: "${roomName}"`);
         
-        // Skip invalid room names (empty, too short, prompts, or status lines)
         if (!roomName || 
             roomName.length < 2 || 
             roomName.match(/^</) ||
             roomName.match(/\d+H/) ||  // Status line with health
             roomName.match(/\d+X/)) {   // Status line with XP
+          console.log(`DEBUG: Skipping room name "${roomName}" - validation failed`);
           i++;
           continue;
         }
@@ -134,33 +365,49 @@ export class MudLogParser {
           
           // Stop at exits line (teal color #008080)
           if (descLine.includes('color="#008080"')) {
+            console.log(`DEBUG: Found exits line at j=${j}: ${descLine.substring(0, 50)}...`);
             break;
           }
           
           // Stop at prompts
           if (descLine.includes('&lt;') && descLine.includes('&gt;')) {
+            console.log(`DEBUG: Found prompt line at j=${j}: ${descLine.substring(0, 50)}...`);
             break;
           }
           
           // Collect white/gray text that's part of description
           if (descLine.includes('color="#C0C0C0"') && cleanDesc) {
-            // Skip commands and system messages
-            if (!cleanDesc.match(/^(look|exits|cast|who|The last remnants|Lightning begins|arrives from|leaves|says|orates)/i)) {
+            console.log(`DEBUG: Processing description line j=${j}: "${cleanDesc.substring(0, 50)}..."`);
+            // Skip commands, system messages, and dynamic content that shouldn't be part of room description
+            if (!cleanDesc.match(/^(look|exits|cast|who|The last remnants|Lightning begins|arrives from|leaves|says|orates)/i) &&
+                !cleanDesc.match(/^(Room scan complete|Found exits|You see|You look|Stairs lead)/i) &&
+                !cleanDesc.match(/^\d+H \d+M \d+V/i) && // Health/mana prompts
+                !cleanDesc.match(/^(The prostitute|The bartender|A receptionist|A Guard|A guard|The guard)/i) && // Common NPCs that appear dynamically
+                !cleanDesc.match(/^(A|An|The)\s+\w+\s+(is|are|stands|sits|sleeps)\s+here/i) && // NPC presence indicators
+                !cleanDesc.match(/^(A|An|The)\s+\w+\s+(lies|floats|hangs)\s+here/i)) { // Item presence indicators
               description += cleanDesc + ' ';
               foundDescription = true;
+              console.log(`DEBUG: Added to description, length now: ${description.length}`);
+            } else {
+              console.log(`DEBUG: Skipped description line (filtered): "${cleanDesc.substring(0, 50)}..."`);
             }
           }
           
           j++;
           
           // Don't go too far
-          if (j - i > 50) break;
+          if (j - i > 50) {
+            console.log(`DEBUG: Stopped collecting description at j=${j} (too far)`);
+            break;
+          }
         }
         
         description = description.trim();
+        console.log(`DEBUG: Final description for "${roomName}": found=${foundDescription}, length=${description.length}, preview="${description.substring(0, 100)}..."`);
         
         // Only process if we have a valid description
         if (!foundDescription || description.length < 10) {
+          console.log(`DEBUG: Skipping room "${roomName}" - no valid description`);
           i++;
           continue;
         }
@@ -170,15 +417,19 @@ export class MudLogParser {
         
         for (let k = j; k < Math.min(j + 30, lines.length); k++) {
           const exitLine = this.stripHtml(lines[k]).trim();
+          console.log(`DEBUG: Checking for exits at k=${k}: "${exitLine.substring(0, 50)}..."`);
           
           // Parse [EXITS: n e s w]
           const shortExitsMatch = exitLine.match(/^\[EXITS:\s*(.+?)\s*\]/i);
           if (shortExitsMatch) {
             const exitStr = shortExitsMatch[1];
             exits = exitStr.split(/\s+/).map(d => this.expandDirection(d));
+            console.log(`DEBUG: Found exits for "${roomName}": ${exits.join(', ')}`);
             break;
           }
         }
+        
+        console.log(`DEBUG: Room "${roomName}" processing complete - exits: ${exits.length}, description length: ${description.length}`);
         
         // Parse NPCs and items from colored text
         let npcs: string[] = [];
@@ -206,8 +457,44 @@ export class MudLogParser {
         
         // Create room key - use portal key if available, fall back to name + description
         const roomKey = this.getRoomKey(roomName, description, this.state.pendingPortalKey);
+        console.log(`DEBUG: Room key for "${roomName}": ${roomKey}`);
         
-        if (!this.state.rooms.has(roomKey)) {
+        // Check if we already have this room (by portal key or name+desc)
+        let existingRoomKey = this.findExistingRoomKey(roomName, description, this.state.pendingPortalKey);
+        console.log(`DEBUG: Existing room key check for "${roomName}": ${existingRoomKey}`);
+        console.log(`DEBUG: Current description hash: ${this.hashString(description.substring(0, 100))}...`);
+        
+        if (existingRoomKey) {
+          console.log(`DEBUG: Updating existing room: ${roomName}`);
+          console.log(`DEBUG: Existing room description hash: ${this.hashString(this.state.rooms.get(existingRoomKey)!.description.substring(0, 100))}...`);
+          // Update existing room with any new information
+          const existingRoom = this.state.rooms.get(existingRoomKey)!;
+          
+          // Update portal key if we got one and it doesn't have one
+          if (this.state.pendingPortalKey && !existingRoom.portal_key) {
+            existingRoom.portal_key = this.state.pendingPortalKey;
+            console.log(`  � Updated portal key for existing room: ${roomName} (${this.state.pendingPortalKey})`);
+          }
+          
+          // Update exits if we have more/different exits
+          if (exits.length > existingRoom.exits.length) {
+            existingRoom.exits = exits;
+          }
+          
+          // Update NPCs/items if we found more
+          if (npcs.length > existingRoom.npcs.length) {
+            existingRoom.npcs = npcs;
+          }
+          if (items.length > existingRoom.items.length) {
+            existingRoom.items = items;
+          }
+          
+          this.state.currentRoom = existingRoom;
+          this.state.currentRoomKey = existingRoomKey;
+          
+        } else {
+          console.log(`DEBUG: Creating new room: ${roomName}`);
+          // Create new room
           const room: ParsedRoom = {
             name: roomName,
             description,
@@ -220,30 +507,24 @@ export class MudLogParser {
           
           this.state.rooms.set(roomKey, room);
           
-          // All newly discovered rooms default to the default zone
-          // (they get reassigned by who -z if they're in a different zone)
           const keyType = this.state.pendingPortalKey ? 'portal key' : 'name+desc';
           console.log(`  📦 Room: ${roomName} (${exits.length} exits, ${npcs.length} NPCs, ${items.length} items) [${keyType}]`);
-        } else {
-          // Room already exists - update portal key if we got one
-          const existingRoom = this.state.rooms.get(roomKey)!;
-          if (this.state.pendingPortalKey && !existingRoom.portal_key) {
-            existingRoom.portal_key = this.state.pendingPortalKey;
-            console.log(`  � Updated portal key for existing room: ${roomName}`);
-          }
+          
+          this.state.currentRoom = room;
+          this.state.currentRoomKey = roomKey;
         }
         
-        // Clear the pending portal key after processing this room
-        this.state.pendingPortalKey = null;
-        
-        // Record exit if we just moved here
-        if (lastDirection && this.state.currentRoom) {
+        // Record exit if we just moved here - but only if we actually moved to a different room
+        if (lastDirection && this.state.currentRoom && this.state.currentRoomKey && existingRoomKey !== this.state.currentRoomKey) {
+          // Only create exit if we moved from a different room
+          const fromRoomKey = this.state.currentRoomKey;
           const exit: ParsedExit = {
-            from_room_name: this.state.currentRoom.name,
-            from_room_description: this.state.currentRoom.description,
+            from_room_key: fromRoomKey,
             direction: lastDirection,
             to_room_name: roomName,
-            portal_key: this.state.pendingPortalKey || undefined // Associate portal key with exit if we just bound it
+            portal_key: this.state.pendingPortalKey || undefined, // Associate portal key with exit if we just bound it
+            from_room_name: this.state.currentRoom.name, // Keep for debugging/logging
+            from_room_description: this.state.currentRoom.description // Keep for debugging/logging
           };
           this.state.exits.push(exit);
           console.log(`    🚪 ${this.state.currentRoom.name} --[${lastDirection}]--> ${roomName}`);
@@ -252,6 +533,9 @@ export class MudLogParser {
         this.state.currentRoom = this.state.rooms.get(roomKey)!;
         this.state.currentRoomKey = roomKey; // Track the room key
         lastDirection = '';
+        
+        // Clear recent zone check flag after discovering a room
+        this.state.recentZoneCheck = false;
         
         i = j;
         continue;
@@ -296,9 +580,95 @@ export class MudLogParser {
   }
 
   /**
+   * Find existing room key by checking portal key first, then fuzzy name+description matching
+   */
+  private findExistingRoomKey(name: string, description: string, portalKey?: string | null): string | null {
+    console.log(`DEBUG: findExistingRoomKey called for "${name}" with portalKey: ${portalKey}`);
+    
+    // Always check if any existing room with the same name has a portal key and similar description
+    for (const [key, room] of this.state.rooms) {
+      if (room.portal_key && room.name === name) {
+        const similarity = this.calculateDescriptionSimilarity(room.description, description);
+        console.log(`DEBUG: Checking existing room with portal key ${room.portal_key}, similarity: ${similarity}`);
+        if (similarity > 0.8) {
+          console.log(`DEBUG: Found existing room with portal key for same name and similar description: ${key}`);
+          return key;
+        }
+      }
+    }
+    
+    // First priority: check if any existing room already has this portal key
+    if (portalKey) {
+      for (const [key, room] of this.state.rooms) {
+        if (room.portal_key === portalKey) {
+          console.log(`DEBUG: Found existing room with portal key ${portalKey}: ${key} (${room.name})`);
+          return key;
+        }
+      }
+    }
+    
+    // Second priority: check if any existing room with this name has the same portal key
+    if (portalKey) {
+      for (const [key, room] of this.state.rooms) {
+        if (room.name === name && room.portal_key === portalKey) {
+          console.log(`DEBUG: Found name+portal match: ${key} (${room.name})`);
+          return key;
+        }
+      }
+    }
+    
+    // Third priority: fuzzy matching for rooms without portal keys
+    // Use description similarity but ignore dynamic content like NPCs
+    for (const [key, room] of this.state.rooms) {
+      if (room.name === name && !room.portal_key && !portalKey) {
+        console.log(`DEBUG: Checking fuzzy match for room: ${key} (${room.name})`);
+        
+        // Calculate description similarity
+        const similarity = this.calculateDescriptionSimilarity(room.description, description);
+        console.log(`DEBUG: Description similarity: ${similarity}`);
+        
+        // Use moderate similarity threshold (80%+) to allow for some variation
+        if (similarity > 0.80) {
+          console.log(`DEBUG: Moderate similarity match found: ${key}`);
+          return key;
+        }
+      }
+    }
+    
+    console.log(`DEBUG: No existing room found for "${name}"`);
+    return null; // No existing room found
+  }
+
+  /**
+   * Calculate similarity between two descriptions (simple word overlap)
+   */
+  private calculateDescriptionSimilarity(desc1: string, desc2: string): number {
+    const words1 = new Set(desc1.toLowerCase().split(/\s+/));
+    const words2 = new Set(desc2.toLowerCase().split(/\s+/));
+    
+    const intersection = new Set([...words1].filter(x => words2.has(x)));
+    const union = new Set([...words1, ...words2]);
+    
+    return intersection.size / union.size;
+  }
+
+  /**
+   * Simple string hash for debugging
+   */
+  private hashString(str: string): string {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32-bit integer
+    }
+    return hash.toString(16);
+  }
+
+  /**
    * Resolve zone IDs from zone names and mark zone exits
    */
-  async resolveZones(): Promise<void> {
+  async resolveZones(defaultZoneId?: number): Promise<void> {
     console.log('\n🔍 Resolving zone IDs...');
     
     try {
@@ -317,12 +687,19 @@ export class MudLogParser {
       console.log(`   Found ${zones.length} zones in database`);
       
       // First, find the default zone (the zone we're exploring)
-      let defaultZoneId: number | undefined;
-      if (this.state.defaultZoneName) {
+      let resolvedDefaultZoneId: number | undefined = defaultZoneId;
+      if (resolvedDefaultZoneId) {
+        // Find the zone name for logging
+        const defaultZone = zones.find((z: any) => z.id === resolvedDefaultZoneId);
+        if (defaultZone) {
+          console.log(`   Default zone: ${defaultZone.name} (ID: ${resolvedDefaultZoneId})`);
+        }
+      } else if (this.state.defaultZoneName) {
+        // Fallback to name-based lookup if no ID provided
         const defaultZone = zoneNameMap.get(this.state.defaultZoneName.toLowerCase());
         if (defaultZone) {
-          defaultZoneId = defaultZone.id;
-          console.log(`   Default zone: ${this.state.defaultZoneName} (ID: ${defaultZoneId})`);
+          resolvedDefaultZoneId = defaultZone.id;
+          console.log(`   Default zone: ${this.state.defaultZoneName} (ID: ${resolvedDefaultZoneId})`);
         }
       }
       
@@ -340,11 +717,11 @@ export class MudLogParser {
             console.log(`   Assigned ${room.name} to zone ${assignedZoneName} (ID: ${zone.id})`);
           } else {
             console.log(`   ⚠️  Warning: Zone "${assignedZoneName}" not found in database for room "${room.name}"`);
-            room.zone_id = defaultZoneId; // Fall back to default zone
+            room.zone_id = resolvedDefaultZoneId; // Fall back to default zone
           }
         } else {
           // This room is in the default zone
-          room.zone_id = defaultZoneId;
+          room.zone_id = resolvedDefaultZoneId;
         }
       }
       
@@ -354,8 +731,8 @@ export class MudLogParser {
       const zoneExitRoomKeys = new Set<string>(); // Track which rooms should be marked as zone exits
       
       for (const exit of this.state.exits) {
-        const fromRoomKey = this.getRoomKey(exit.from_room_name, exit.from_room_description);
-        const fromRoom = this.state.rooms.get(fromRoomKey);
+        // Use the stored room key directly
+        const fromRoom = this.state.rooms.get(exit.from_room_key);
         
         // Find the destination room by portal key first, then by name
         let toRoom: ParsedRoom | undefined;
@@ -386,7 +763,7 @@ export class MudLogParser {
           zoneExitCount++;
           
           // Mark BOTH rooms as zone exits (the boundary rooms on both sides)
-          zoneExitRoomKeys.add(fromRoomKey);
+          zoneExitRoomKeys.add(exit.from_room_key);
           const toRoomKey = toRoom.portal_key ? `portal:${toRoom.portal_key}` : `namedesc:${toRoom.name}|||${toRoom.description}`;
           zoneExitRoomKeys.add(toRoomKey);
           
@@ -455,11 +832,11 @@ export class MudLogParser {
     
     for (const exit of this.state.exits) {
       try {
-        const fromRoomKey = this.getRoomKey(exit.from_room_name, exit.from_room_description);
-        const fromRoomId = roomIdMap.get(fromRoomKey);
+        // Use the stored room key directly
+        const fromRoomId = roomIdMap.get(exit.from_room_key);
         
         if (!fromRoomId) {
-          console.log(`   ⚠️  Skipping exit: from room "${exit.from_room_name}" not found`);
+          console.log(`   ⚠️  Skipping exit: from room key "${exit.from_room_key}" not found (available keys: ${Array.from(roomIdMap.keys()).slice(0, 5).join(', ')}...)`);
           continue;
         }
         
@@ -491,7 +868,7 @@ export class MudLogParser {
           continue;
         }
         
-        const exitData = {
+        const exitData: any = {
           from_room_id: fromRoomId,
           direction: exit.direction,
           to_room_id: toRoomId,

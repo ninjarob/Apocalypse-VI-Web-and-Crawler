@@ -69,7 +69,7 @@ const dryRun = args.includes('--dry-run');
         process.exit(1);
       }
       
-      await parser.resolveZones();
+      await parser.resolveZones(zoneId);
       await parser.saveToDatabase(zoneId);
     } else {
       console.log('\n🔍 Dry run complete - no data saved to database');

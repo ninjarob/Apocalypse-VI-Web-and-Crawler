@@ -1,0 +1,1203 @@
+{
+  "rooms": [
+    {
+      "name": "South Temple Street",
+      "description": "The newly renovated Temple Street is wide and clean, with light colored",
+      "exits": [
+        "north",
+        "south"
+      ],
+      "npcs": [
+        "A Cityguard is here keeping the peace."
+      ],
+      "items": [],
+      "portal_key": "dehimpqr"
+    },
+    {
+      "name": "North Temple Street",
+      "description": "The historic Temple of Midgaard entrance is to the north and past that, the",
+      "exits": [
+        "north",
+        "east",
+        "south",
+        "west"
+      ],
+      "npcs": [
+        "A Cityguard is here keeping the peace."
+      ],
+      "items": [],
+      "portal_key": "cijklpqr"
+    },
+    {
+      "name": "Temple Hall of Clerics",
+      "description": "The smooth slightly curved walls arches upwards where all four corners meet",
+      "exits": [
+        "north",
+        "east"
+      ],
+      "npcs": [
+        "A priestess of the Temple is here."
+      ],
+      "items": [],
+      "portal_key": "cfghmpqr"
+    },
+    {
+      "name": "The Grunting Boar Inn",
+      "description": "Should you tire of adventure or seek a peaceful nights rest, the Grunting",
+      "exits": [
+        "east",
+        "west",
+        "up"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "cefghijklpqr"
+    },
+    {
+      "name": "The Grunting Boar Tavern",
+      "description": "The rustic old Grunting Boar Tavern has been in business since Midgaard was",
+      "exits": [
+        "west"
+      ],
+      "npcs": [],
+      "items": []
+    },
+    {
+      "name": "The Reception Desk",
+      "description": "You are standing in a reception area.  A hallway leads to the east where",
+      "exits": [
+        "up",
+        "down"
+      ],
+      "npcs": [],
+      "items": []
+    },
+    {
+      "name": "The Grunting Boar Lounge",
+      "description": "A small foyer furnished with rustic tables and chairs awaits weary travelers",
+      "exits": [
+        "north",
+        "down"
+      ],
+      "npcs": [],
+      "items": []
+    },
+    {
+      "name": "The Extended Stay Reception Area",
+      "description": "The reception area here is complete with a large cocobolo desk, a service",
+      "exits": [
+        "south"
+      ],
+      "npcs": [],
+      "items": []
+    },
+    {
+      "name": "Grand Gates of the Temple of Midgaard",
+      "description": "You stand at the base of the huge mound upon which the Temple of Midgaard",
+      "exits": [
+        "north",
+        "south"
+      ],
+      "npcs": [
+        "A Guard of the Temple stands here eyeing people entering the temple."
+      ],
+      "items": [],
+      "portal_key": "dghjklpqr"
+    },
+    {
+      "name": "The Temple of Midgaard",
+      "description": "Entering the great halls of the Temple of Midgaard is awe-inspiring, as you",
+      "exits": [
+        "north",
+        "east",
+        "south",
+        "west",
+        "down"
+      ],
+      "npcs": [],
+      "items": [
+        "A large welcome sign hangs before the archway that leads into the city. Perhaps"
+      ]
+    },
+    {
+      "name": "Midgaard Clan Hall",
+      "description": "This section of the temple complex has been prepared to oversee the many",
+      "exits": [
+        "east"
+      ],
+      "npcs": [],
+      "items": [
+        "An engraved sign is posted next to the Vanguard."
+      ]
+    },
+    {
+      "name": "The Donation Room",
+      "description": "Whether you are itemless, lesser equipped, or the victim of some terrible",
+      "exits": [
+        "west"
+      ],
+      "npcs": [],
+      "items": [
+        "A golden circlet"
+      ]
+    },
+    {
+      "name": "Rear exit of the Temple",
+      "description": "You are in a small dank passage with barely enough light to see by.  The",
+      "exits": [
+        "north",
+        "south"
+      ],
+      "npcs": [],
+      "items": []
+    },
+    {
+      "name": "Outside the City Walls",
+      "description": "The stout walls of the City of Midgaard are to the south.  The wall here has",
+      "exits": [
+        "north",
+        "south"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "dgklmoq"
+    },
+    {
+      "name": "Market Square",
+      "description": "You are standing on the Market Square, the famous Square of Midgaard.  It is",
+      "exits": [
+        "north",
+        "east",
+        "south",
+        "west"
+      ],
+      "npcs": [
+        "A Beastly Fido is here barking at the people passing by."
+      ],
+      "items": [
+        "A fountain of an angel cascades with sparkling water here."
+      ]
+    },
+    {
+      "name": "Main Street East",
+      "description": "You are on the Main Street in the City of Midgaard.  This street is the",
+      "exits": [
+        "north",
+        "east",
+        "south",
+        "west"
+      ],
+      "npcs": [
+        "A Beastly Fido is here barking at the people passing by."
+      ],
+      "items": [],
+      "portal_key": "cdgjmpqr"
+    },
+    {
+      "name": "Midgaard Jewelers",
+      "description": "You are standing in a small workshop that appears to be a complete mess.",
+      "exits": [
+        "south"
+      ],
+      "npcs": [],
+      "items": []
+    },
+    {
+      "name": "Quester's",
+      "description": "Quester's is a very large yet crowded store.  There are rows upon rows",
+      "exits": [
+        "north",
+        "east",
+        "south",
+        "west",
+        "up",
+        "down"
+      ],
+      "npcs": [],
+      "items": []
+    },
+    {
+      "name": "Buster's Pawn Shop",
+      "description": "Items of all shapes and sizes used in all walks of life are both sold and",
+      "exits": [
+        "south"
+      ],
+      "npcs": [
+        "Pawn shop owner Buster is here, offering up all items for trade."
+      ],
+      "items": [
+        "You spot a pair of polished greaves"
+      ]
+    },
+    {
+      "name": "Entrance Hall to the Guild of Swordsmen",
+      "description": "You find yourself in the entrance hall of the Guild of Swordsmen.  Suits",
+      "exits": [
+        "north",
+        "south"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "cdfkmpqr"
+    },
+    {
+      "name": "Inside the East Gate of Midgaard",
+      "description": "You are by two large towers that have been built into the city wall.",
+      "exits": [
+        "north",
+        "east",
+        "south",
+        "west"
+      ],
+      "npcs": [
+        "A cityguard is here, guarding the gate from intruders."
+      ],
+      "items": [],
+      "portal_key": "dhjmpqr"
+    },
+    {
+      "name": "The Midgaard Bank",
+      "description": "A stuffy looking place, the Moneylender's Guild only has the most basic of",
+      "exits": [
+        "south"
+      ],
+      "npcs": [],
+      "items": [
+        "A large vault is mounted securely to the wall"
+      ]
+    },
+    {
+      "name": "At the Bottom of the Great Spire",
+      "description": "The arched entrance to the spire opens up to you from the street to the east.",
+      "exits": [
+        "north",
+        "up"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "cdeikmpqr"
+    },
+    {
+      "name": "Atop the Great Spire",
+      "description": "Ancient relics of all kinds hang upon the wall, roughly hewn and polished",
+      "exits": [
+        "north",
+        "down"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "degikmpqr"
+    },
+    {
+      "name": "The Mage's Guild",
+      "description": "Although no visible source of light can be found, a strange magical glow",
+      "exits": [
+        "south"
+      ],
+      "npcs": [
+        "Your guildmaster stands here."
+      ],
+      "items": []
+    },
+    {
+      "name": "Main Street West",
+      "description": "You are on the Main Street in the City of Midgaard.  This street is the",
+      "exits": [
+        "north",
+        "east",
+        "south",
+        "west"
+      ],
+      "npcs": [
+        "A Mercenary is here waiting for someone to hire him."
+      ],
+      "items": [],
+      "portal_key": "cghjmpqr"
+    },
+    {
+      "name": "The General Store",
+      "description": "The store shelves are stocked with basic everyday supplies, from food and",
+      "exits": [
+        "south"
+      ],
+      "npcs": [],
+      "items": []
+    },
+    {
+      "name": "The Armory",
+      "description": "There are rows of all armor types lined up along the display cases, along",
+      "exits": [
+        "north",
+        "west"
+      ],
+      "npcs": [],
+      "items": []
+    },
+    {
+      "name": "The Weapon Shop",
+      "description": "You find yourself inside a weapon shop.  Hanging off the walls are various",
+      "exits": [
+        "north",
+        "east"
+      ],
+      "npcs": [],
+      "items": []
+    },
+    {
+      "name": "The Magic Shop",
+      "description": "Stepping inside the Magic Shop is like crossing the boundaries of an optical",
+      "exits": [
+        "south"
+      ],
+      "npcs": [],
+      "items": []
+    },
+    {
+      "name": "Inside the West Gate of Midgaard",
+      "description": "You are by two large towers that have been built into the city wall.",
+      "exits": [
+        "north",
+        "east",
+        "south",
+        "west"
+      ],
+      "npcs": [
+        "A cityguard is here, guarding the gate from intruders."
+      ],
+      "items": [],
+      "portal_key": "cdefijmpqr"
+    },
+    {
+      "name": "Outside the Western Gate",
+      "description": "You stand outside two large towers that have been built into the city wall",
+      "exits": [
+        "east",
+        "west"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "defjknpqr"
+    },
+    {
+      "name": "The edge of the forest",
+      "description": "You are standing at the eastern edge of a big forest.  To the east is the",
+      "exits": [
+        "east",
+        "south",
+        "west"
+      ],
+      "npcs": [],
+      "items": [
+        "A tall wooden sign stands here, swaying back and forth in the wind."
+      ]
+    },
+    {
+      "name": "A Dirt Path",
+      "description": "Along the inner side of the eastern city wall is a seldom traveled dirt path,",
+      "exits": [
+        "east",
+        "south"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "dfgijnpqr"
+    },
+    {
+      "name": "A Bend in the Path",
+      "description": "The dimly lit path here takes a slight detour northwards following the city",
+      "exits": [
+        "north",
+        "west"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "cfhijnpqr"
+    },
+    {
+      "name": "Before the Hidden Grove",
+      "description": "You wander around, slightly lost by now.  The forest growth seems to stretch",
+      "exits": [
+        "east",
+        "south"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "fghijnpqr"
+    },
+    {
+      "name": "Wall Road",
+      "description": "You are at the northern end of Wall Road.  Farther to north you can see the",
+      "exits": [
+        "north",
+        "south"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "dfghijlmpqr"
+    },
+    {
+      "name": "Wall Road",
+      "description": "You are on wall road that runs north-south through western Midgaard.  The",
+      "exits": [
+        "north",
+        "south"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "fhlmpqr"
+    },
+    {
+      "name": "Western End of Poor Alley",
+      "description": "You are at the western end of a small alley connecting the Common Square",
+      "exits": [
+        "east",
+        "south",
+        "west"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "cfglmpqr"
+    },
+    {
+      "name": "The Dump",
+      "description": "You find yourself in the dump with garbage up to your knees.  This is where",
+      "exits": [
+        "north",
+        "down"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "cdeghlmpqr"
+    },
+    {
+      "name": "Entrance to the Midgaard Sewers",
+      "description": "You are directly under the City of Midgaard.  A ladder here, secured against",
+      "exits": [
+        "south",
+        "up"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "cefhimnpqr"
+    },
+    {
+      "name": "Eastern End of Poor Alley",
+      "description": "You are at the eastern end of a small alley connecting the Common Square to",
+      "exits": [
+        "east",
+        "west"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "dflmpqr"
+    },
+    {
+      "name": "The Common Square",
+      "description": "You are in the common square of Midgaard.  The sound of merchants can be",
+      "exits": [
+        "north",
+        "east",
+        "south",
+        "west"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "defijkmpqr"
+    },
+    {
+      "name": "Southern Bazaar",
+      "description": "Merchant selling chants echo above the excited buzz of buyers.  Here, all",
+      "exits": [
+        "north",
+        "south"
+      ],
+      "npcs": [
+        "A Beastly Fido is here barking at the people passing by."
+      ],
+      "items": [],
+      "portal_key": "cdefghjkmpqr"
+    },
+    {
+      "name": "Northern Bazaar",
+      "description": "Merchant selling chants echo above the excited buzz of buyers.  Here, all",
+      "exits": [
+        "north",
+        "south"
+      ],
+      "npcs": [
+        "A Mercenary is here waiting for someone to hire him."
+      ],
+      "items": [],
+      "portal_key": "ghjkmpqr"
+    },
+    {
+      "name": "Western End of Dark Alley",
+      "description": "You find yourself at the western end of a dark alley that winds east towards",
+      "exits": [
+        "east",
+        "south",
+        "west"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "cefgijkmpqr"
+    },
+    {
+      "name": "Entrance Hall to the Guild of Thieves",
+      "description": "You find yourself in the dim hall of the Thieves' Guild.  Glancing nervously",
+      "exits": [
+        "north",
+        "east"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "deilmpqr"
+    },
+    {
+      "name": "Dark Alley",
+      "description": "You are standing in a dark alley that runs east and west.  This alley does",
+      "exits": [
+        "east",
+        "south",
+        "west"
+      ],
+      "npcs": [
+        "A Mercenary is here waiting for someone to hire him."
+      ],
+      "items": [],
+      "portal_key": "efhijkmpqr"
+    },
+    {
+      "name": "Eastern End of Dark Alley",
+      "description": "You find yourself at the eastern end of a dark alley that winds west towards",
+      "exits": [
+        "north",
+        "south",
+        "west"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "djlmpqr"
+    },
+    {
+      "name": "Battle Arena",
+      "description": "The smell of blood and sweat permeates the battlegrounds here.  You are",
+      "exits": [
+        "east",
+        "south"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "cgjlmpqr"
+    },
+    {
+      "name": "Entrance to the Warlock's Guild",
+      "description": "Intricate sketchings of the different phases of the moon scatter along the",
+      "exits": [
+        "north",
+        "south"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "hjlmpqr"
+    },
+    {
+      "name": "Warehouse",
+      "description": "You are inside a huge warehouse.  There are stacks of lumber and ore piled",
+      "exits": [
+        "north",
+        "south"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "cdefhjlmpqr"
+    },
+    {
+      "name": "Levee",
+      "description": "You are at the levee.  The ground beneath your feet is moist from the river",
+      "exits": [
+        "north",
+        "south"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "defghjlmpqr"
+    },
+    {
+      "name": "On the River",
+      "description": "The levee to the north forms a sturdy bulwark against the river, ensuring the",
+      "exits": [
+        "north",
+        "east",
+        "west"
+      ],
+      "npcs": [],
+      "items": [
+        "A school of fish jump around the surface of the water."
+      ],
+      "portal_key": "ceghjklmnpqr"
+    },
+    {
+      "name": "Under the Eastern Wall",
+      "description": "The river flows westward from a hole in the eastern city wall and under",
+      "exits": [
+        "east",
+        "west"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "fghiopqr"
+    },
+    {
+      "name": "Under the City Wall",
+      "description": "Light filtering in from the west almost masks a faint glimmer from",
+      "exits": [
+        "east",
+        "west"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "cdejopqr"
+    },
+    {
+      "name": "Under the City Wall",
+      "description": "An opening to the east marks the outside of the Midgaard city wall.  The",
+      "exits": [
+        "east",
+        "west"
+      ],
+      "npcs": [],
+      "items": [
+        "A school of fish jump around the surface of the water."
+      ],
+      "portal_key": "degjopqr"
+    },
+    {
+      "name": "On the River",
+      "description": "Water flows rapidly into an opening in the Midgaard city wall to the west.",
+      "exits": [
+        "east",
+        "west"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "cehjopqr"
+    },
+    {
+      "name": "On the River",
+      "description": "Far to the west you can see the Midgaard city wall. Dense forest blocks",
+      "exits": [
+        "east",
+        "west"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "eghjopqr"
+    },
+    {
+      "name": "On the River",
+      "description": "To the north lies an impenetrable forest.  The river flows east to west past",
+      "exits": [
+        "east",
+        "south",
+        "west"
+      ],
+      "npcs": [],
+      "items": [
+        "A school of fish jump around the surface of the water."
+      ],
+      "portal_key": "cdijopqr"
+    },
+    {
+      "name": "On the River",
+      "description": "The river is flowing swiftly as it exits the mountain from the east.",
+      "exits": [
+        "east",
+        "west"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "dgijopqr"
+    },
+    {
+      "name": "A long tunnel",
+      "description": "You encounter some rapids as you enter this tunnel cut out of",
+      "exits": [
+        "east",
+        "west"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "dhijnoqs"
+    },
+    {
+      "name": "Bridge Road",
+      "description": "The stone cobbled path leads to the Midgaard Bridge to the south.  This",
+      "exits": [
+        "north",
+        "south"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "deghklmpqr"
+    },
+    {
+      "name": "Midgaard Bridge",
+      "description": "You are standing on a stone bridge crossing the Candlebriar River that",
+      "exits": [
+        "north",
+        "south"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "cdehklmpqr"
+    }
+  ],
+  "exits": [
+    {
+      "from_room_key": "namedesc:North Temple Street|||The historic Temple of Midgaard entrance is to the north and past that, the",
+      "direction": "north",
+      "to_room_name": "North Temple Street",
+      "from_room_name": "North Temple Street",
+      "from_room_description": "The historic Temple of Midgaard entrance is to the north and past that, the"
+    },
+    {
+      "from_room_key": "namedesc:Temple Hall of Clerics|||The smooth slightly curved walls arches upwards where all four corners meet",
+      "direction": "west",
+      "to_room_name": "Temple Hall of Clerics",
+      "from_room_name": "Temple Hall of Clerics",
+      "from_room_description": "The smooth slightly curved walls arches upwards where all four corners meet"
+    },
+    {
+      "from_room_key": "namedesc:The Grunting Boar Inn|||Should you tire of adventure or seek a peaceful nights rest, the Grunting",
+      "direction": "east",
+      "to_room_name": "The Grunting Boar Inn",
+      "from_room_name": "The Grunting Boar Inn",
+      "from_room_description": "Should you tire of adventure or seek a peaceful nights rest, the Grunting"
+    },
+    {
+      "from_room_key": "namedesc:The Grunting Boar Tavern|||The rustic old Grunting Boar Tavern has been in business since Midgaard was",
+      "direction": "east",
+      "to_room_name": "The Grunting Boar Tavern",
+      "from_room_name": "The Grunting Boar Tavern",
+      "from_room_description": "The rustic old Grunting Boar Tavern has been in business since Midgaard was"
+    },
+    {
+      "from_room_key": "namedesc:The Reception Desk|||You are standing in a reception area.  A hallway leads to the east where",
+      "direction": "up",
+      "to_room_name": "The Reception Desk",
+      "from_room_name": "The Reception Desk",
+      "from_room_description": "You are standing in a reception area.  A hallway leads to the east where"
+    },
+    {
+      "from_room_key": "namedesc:The Grunting Boar Lounge|||A small foyer furnished with rustic tables and chairs awaits weary travelers",
+      "direction": "up",
+      "to_room_name": "The Grunting Boar Lounge",
+      "from_room_name": "The Grunting Boar Lounge",
+      "from_room_description": "A small foyer furnished with rustic tables and chairs awaits weary travelers"
+    },
+    {
+      "from_room_key": "namedesc:The Extended Stay Reception Area|||The reception area here is complete with a large cocobolo desk, a service",
+      "direction": "north",
+      "to_room_name": "The Extended Stay Reception Area",
+      "from_room_name": "The Extended Stay Reception Area",
+      "from_room_description": "The reception area here is complete with a large cocobolo desk, a service"
+    },
+    {
+      "from_room_key": "namedesc:Grand Gates of the Temple of Midgaard|||You stand at the base of the huge mound upon which the Temple of Midgaard",
+      "direction": "north",
+      "to_room_name": "Grand Gates of the Temple of Midgaard",
+      "from_room_name": "Grand Gates of the Temple of Midgaard",
+      "from_room_description": "You stand at the base of the huge mound upon which the Temple of Midgaard"
+    },
+    {
+      "from_room_key": "namedesc:The Temple of Midgaard|||Entering the great halls of the Temple of Midgaard is awe-inspiring, as you",
+      "direction": "north",
+      "to_room_name": "The Temple of Midgaard",
+      "from_room_name": "The Temple of Midgaard",
+      "from_room_description": "Entering the great halls of the Temple of Midgaard is awe-inspiring, as you"
+    },
+    {
+      "from_room_key": "namedesc:Midgaard Clan Hall|||This section of the temple complex has been prepared to oversee the many",
+      "direction": "west",
+      "to_room_name": "Midgaard Clan Hall",
+      "from_room_name": "Midgaard Clan Hall",
+      "from_room_description": "This section of the temple complex has been prepared to oversee the many"
+    },
+    {
+      "from_room_key": "namedesc:The Donation Room|||Whether you are itemless, lesser equipped, or the victim of some terrible",
+      "direction": "east",
+      "to_room_name": "The Donation Room",
+      "from_room_name": "The Donation Room",
+      "from_room_description": "Whether you are itemless, lesser equipped, or the victim of some terrible"
+    },
+    {
+      "from_room_key": "namedesc:Rear exit of the Temple|||You are in a small dank passage with barely enough light to see by.  The",
+      "direction": "north",
+      "to_room_name": "Rear exit of the Temple",
+      "from_room_name": "Rear exit of the Temple",
+      "from_room_description": "You are in a small dank passage with barely enough light to see by.  The"
+    },
+    {
+      "from_room_key": "namedesc:Outside the City Walls|||The stout walls of the City of Midgaard are to the south.  The wall here has",
+      "direction": "north",
+      "to_room_name": "Outside the City Walls",
+      "from_room_name": "Outside the City Walls",
+      "from_room_description": "The stout walls of the City of Midgaard are to the south.  The wall here has"
+    },
+    {
+      "from_room_key": "namedesc:Market Square|||You are standing on the Market Square, the famous Square of Midgaard.  It is",
+      "direction": "south",
+      "to_room_name": "Market Square",
+      "from_room_name": "Market Square",
+      "from_room_description": "You are standing on the Market Square, the famous Square of Midgaard.  It is"
+    },
+    {
+      "from_room_key": "namedesc:Main Street East|||You are on the Main Street in the City of Midgaard.  This street is the",
+      "direction": "east",
+      "to_room_name": "Main Street East",
+      "from_room_name": "Main Street East",
+      "from_room_description": "You are on the Main Street in the City of Midgaard.  This street is the"
+    },
+    {
+      "from_room_key": "namedesc:Midgaard Jewelers|||You are standing in a small workshop that appears to be a complete mess.",
+      "direction": "north",
+      "to_room_name": "Midgaard Jewelers",
+      "from_room_name": "Midgaard Jewelers",
+      "from_room_description": "You are standing in a small workshop that appears to be a complete mess."
+    },
+    {
+      "from_room_key": "namedesc:Quester's|||Quester's is a very large yet crowded store.  There are rows upon rows",
+      "direction": "south",
+      "to_room_name": "Quester's",
+      "from_room_name": "Quester's",
+      "from_room_description": "Quester's is a very large yet crowded store.  There are rows upon rows"
+    },
+    {
+      "from_room_key": "namedesc:Buster's Pawn Shop|||Items of all shapes and sizes used in all walks of life are both sold and",
+      "direction": "north",
+      "to_room_name": "Buster's Pawn Shop",
+      "from_room_name": "Buster's Pawn Shop",
+      "from_room_description": "Items of all shapes and sizes used in all walks of life are both sold and"
+    },
+    {
+      "from_room_key": "namedesc:Entrance Hall to the Guild of Swordsmen|||You find yourself in the entrance hall of the Guild of Swordsmen.  Suits",
+      "direction": "south",
+      "to_room_name": "Entrance Hall to the Guild of Swordsmen",
+      "from_room_name": "Entrance Hall to the Guild of Swordsmen",
+      "from_room_description": "You find yourself in the entrance hall of the Guild of Swordsmen.  Suits"
+    },
+    {
+      "from_room_key": "namedesc:Inside the East Gate of Midgaard|||You are by two large towers that have been built into the city wall.",
+      "direction": "east",
+      "to_room_name": "Inside the East Gate of Midgaard",
+      "from_room_name": "Inside the East Gate of Midgaard",
+      "from_room_description": "You are by two large towers that have been built into the city wall."
+    },
+    {
+      "from_room_key": "namedesc:The Midgaard Bank|||A stuffy looking place, the Moneylender's Guild only has the most basic of",
+      "direction": "north",
+      "to_room_name": "The Midgaard Bank",
+      "from_room_name": "The Midgaard Bank",
+      "from_room_description": "A stuffy looking place, the Moneylender's Guild only has the most basic of"
+    },
+    {
+      "from_room_key": "namedesc:At the Bottom of the Great Spire|||The arched entrance to the spire opens up to you from the street to the east.",
+      "direction": "south",
+      "to_room_name": "At the Bottom of the Great Spire",
+      "from_room_name": "At the Bottom of the Great Spire",
+      "from_room_description": "The arched entrance to the spire opens up to you from the street to the east."
+    },
+    {
+      "from_room_key": "namedesc:Atop the Great Spire|||Ancient relics of all kinds hang upon the wall, roughly hewn and polished",
+      "direction": "up",
+      "to_room_name": "Atop the Great Spire",
+      "from_room_name": "Atop the Great Spire",
+      "from_room_description": "Ancient relics of all kinds hang upon the wall, roughly hewn and polished"
+    },
+    {
+      "from_room_key": "namedesc:The Mage's Guild|||Although no visible source of light can be found, a strange magical glow",
+      "direction": "north",
+      "to_room_name": "The Mage's Guild",
+      "from_room_name": "The Mage's Guild",
+      "from_room_description": "Although no visible source of light can be found, a strange magical glow"
+    },
+    {
+      "from_room_key": "namedesc:Main Street West|||You are on the Main Street in the City of Midgaard.  This street is the",
+      "direction": "west",
+      "to_room_name": "Main Street West",
+      "from_room_name": "Main Street West",
+      "from_room_description": "You are on the Main Street in the City of Midgaard.  This street is the"
+    },
+    {
+      "from_room_key": "namedesc:The General Store|||The store shelves are stocked with basic everyday supplies, from food and",
+      "direction": "north",
+      "to_room_name": "The General Store",
+      "from_room_name": "The General Store",
+      "from_room_description": "The store shelves are stocked with basic everyday supplies, from food and"
+    },
+    {
+      "from_room_key": "namedesc:The Armory|||There are rows of all armor types lined up along the display cases, along",
+      "direction": "south",
+      "to_room_name": "The Armory",
+      "from_room_name": "The Armory",
+      "from_room_description": "There are rows of all armor types lined up along the display cases, along"
+    },
+    {
+      "from_room_key": "namedesc:The Weapon Shop|||You find yourself inside a weapon shop.  Hanging off the walls are various",
+      "direction": "west",
+      "to_room_name": "The Weapon Shop",
+      "from_room_name": "The Weapon Shop",
+      "from_room_description": "You find yourself inside a weapon shop.  Hanging off the walls are various"
+    },
+    {
+      "from_room_key": "namedesc:The Magic Shop|||Stepping inside the Magic Shop is like crossing the boundaries of an optical",
+      "direction": "north",
+      "to_room_name": "The Magic Shop",
+      "from_room_name": "The Magic Shop",
+      "from_room_description": "Stepping inside the Magic Shop is like crossing the boundaries of an optical"
+    },
+    {
+      "from_room_key": "namedesc:Inside the West Gate of Midgaard|||You are by two large towers that have been built into the city wall.",
+      "direction": "west",
+      "to_room_name": "Inside the West Gate of Midgaard",
+      "from_room_name": "Inside the West Gate of Midgaard",
+      "from_room_description": "You are by two large towers that have been built into the city wall."
+    },
+    {
+      "from_room_key": "namedesc:Outside the Western Gate|||You stand outside two large towers that have been built into the city wall",
+      "direction": "west",
+      "to_room_name": "Outside the Western Gate",
+      "from_room_name": "Outside the Western Gate",
+      "from_room_description": "You stand outside two large towers that have been built into the city wall"
+    },
+    {
+      "from_room_key": "namedesc:The edge of the forest|||You are standing at the eastern edge of a big forest.  To the east is the",
+      "direction": "west",
+      "to_room_name": "The edge of the forest",
+      "from_room_name": "The edge of the forest",
+      "from_room_description": "You are standing at the eastern edge of a big forest.  To the east is the"
+    },
+    {
+      "from_room_key": "namedesc:A Dirt Path|||Along the inner side of the eastern city wall is a seldom traveled dirt path,",
+      "direction": "north",
+      "to_room_name": "A Dirt Path",
+      "from_room_name": "A Dirt Path",
+      "from_room_description": "Along the inner side of the eastern city wall is a seldom traveled dirt path,"
+    },
+    {
+      "from_room_key": "namedesc:A Bend in the Path|||The dimly lit path here takes a slight detour northwards following the city",
+      "direction": "east",
+      "to_room_name": "A Bend in the Path",
+      "from_room_name": "A Bend in the Path",
+      "from_room_description": "The dimly lit path here takes a slight detour northwards following the city"
+    },
+    {
+      "from_room_key": "namedesc:Before the Hidden Grove|||You wander around, slightly lost by now.  The forest growth seems to stretch",
+      "direction": "north",
+      "to_room_name": "Before the Hidden Grove",
+      "from_room_name": "Before the Hidden Grove",
+      "from_room_description": "You wander around, slightly lost by now.  The forest growth seems to stretch"
+    },
+    {
+      "from_room_key": "namedesc:Wall Road|||You are at the northern end of Wall Road.  Farther to north you can see the",
+      "direction": "south",
+      "to_room_name": "Wall Road",
+      "from_room_name": "Wall Road",
+      "from_room_description": "You are at the northern end of Wall Road.  Farther to north you can see the"
+    },
+    {
+      "from_room_key": "namedesc:Wall Road|||You are on wall road that runs north-south through western Midgaard.  The",
+      "direction": "south",
+      "to_room_name": "Wall Road",
+      "from_room_name": "Wall Road",
+      "from_room_description": "You are on wall road that runs north-south through western Midgaard.  The"
+    },
+    {
+      "from_room_key": "namedesc:Western End of Poor Alley|||You are at the western end of a small alley connecting the Common Square",
+      "direction": "east",
+      "to_room_name": "Western End of Poor Alley",
+      "from_room_name": "Western End of Poor Alley",
+      "from_room_description": "You are at the western end of a small alley connecting the Common Square"
+    },
+    {
+      "from_room_key": "namedesc:The Dump|||You find yourself in the dump with garbage up to your knees.  This is where",
+      "direction": "south",
+      "to_room_name": "The Dump",
+      "from_room_name": "The Dump",
+      "from_room_description": "You find yourself in the dump with garbage up to your knees.  This is where"
+    },
+    {
+      "from_room_key": "namedesc:Entrance to the Midgaard Sewers|||You are directly under the City of Midgaard.  A ladder here, secured against",
+      "direction": "down",
+      "to_room_name": "Entrance to the Midgaard Sewers",
+      "from_room_name": "Entrance to the Midgaard Sewers",
+      "from_room_description": "You are directly under the City of Midgaard.  A ladder here, secured against"
+    },
+    {
+      "from_room_key": "namedesc:Eastern End of Poor Alley|||You are at the eastern end of a small alley connecting the Common Square to",
+      "direction": "east",
+      "to_room_name": "Eastern End of Poor Alley",
+      "from_room_name": "Eastern End of Poor Alley",
+      "from_room_description": "You are at the eastern end of a small alley connecting the Common Square to"
+    },
+    {
+      "from_room_key": "namedesc:The Common Square|||You are in the common square of Midgaard.  The sound of merchants can be",
+      "direction": "east",
+      "to_room_name": "The Common Square",
+      "from_room_name": "The Common Square",
+      "from_room_description": "You are in the common square of Midgaard.  The sound of merchants can be"
+    },
+    {
+      "from_room_key": "namedesc:Southern Bazaar|||Merchant selling chants echo above the excited buzz of buyers.  Here, all",
+      "direction": "north",
+      "to_room_name": "Southern Bazaar",
+      "from_room_name": "Southern Bazaar",
+      "from_room_description": "Merchant selling chants echo above the excited buzz of buyers.  Here, all"
+    },
+    {
+      "from_room_key": "namedesc:Northern Bazaar|||Merchant selling chants echo above the excited buzz of buyers.  Here, all",
+      "direction": "north",
+      "to_room_name": "Northern Bazaar",
+      "from_room_name": "Northern Bazaar",
+      "from_room_description": "Merchant selling chants echo above the excited buzz of buyers.  Here, all"
+    },
+    {
+      "from_room_key": "namedesc:Western End of Dark Alley|||You find yourself at the western end of a dark alley that winds east towards",
+      "direction": "east",
+      "to_room_name": "Western End of Dark Alley",
+      "from_room_name": "Western End of Dark Alley",
+      "from_room_description": "You find yourself at the western end of a dark alley that winds east towards"
+    },
+    {
+      "from_room_key": "namedesc:Entrance Hall to the Guild of Thieves|||You find yourself in the dim hall of the Thieves' Guild.  Glancing nervously",
+      "direction": "south",
+      "to_room_name": "Entrance Hall to the Guild of Thieves",
+      "from_room_name": "Entrance Hall to the Guild of Thieves",
+      "from_room_description": "You find yourself in the dim hall of the Thieves' Guild.  Glancing nervously"
+    },
+    {
+      "from_room_key": "namedesc:Dark Alley|||You are standing in a dark alley that runs east and west.  This alley does",
+      "direction": "east",
+      "to_room_name": "Dark Alley",
+      "from_room_name": "Dark Alley",
+      "from_room_description": "You are standing in a dark alley that runs east and west.  This alley does"
+    },
+    {
+      "from_room_key": "namedesc:Eastern End of Dark Alley|||You find yourself at the eastern end of a dark alley that winds west towards",
+      "direction": "east",
+      "to_room_name": "Eastern End of Dark Alley",
+      "from_room_name": "Eastern End of Dark Alley",
+      "from_room_description": "You find yourself at the eastern end of a dark alley that winds west towards"
+    },
+    {
+      "from_room_key": "namedesc:Battle Arena|||The smell of blood and sweat permeates the battlegrounds here.  You are",
+      "direction": "north",
+      "to_room_name": "Battle Arena",
+      "from_room_name": "Battle Arena",
+      "from_room_description": "The smell of blood and sweat permeates the battlegrounds here.  You are"
+    },
+    {
+      "from_room_key": "namedesc:Entrance to the Warlock's Guild|||Intricate sketchings of the different phases of the moon scatter along the",
+      "direction": "south",
+      "to_room_name": "Entrance to the Warlock's Guild",
+      "from_room_name": "Entrance to the Warlock's Guild",
+      "from_room_description": "Intricate sketchings of the different phases of the moon scatter along the"
+    },
+    {
+      "from_room_key": "namedesc:Warehouse|||You are inside a huge warehouse.  There are stacks of lumber and ore piled",
+      "direction": "south",
+      "to_room_name": "Warehouse",
+      "from_room_name": "Warehouse",
+      "from_room_description": "You are inside a huge warehouse.  There are stacks of lumber and ore piled"
+    },
+    {
+      "from_room_key": "namedesc:Levee|||You are at the levee.  The ground beneath your feet is moist from the river",
+      "direction": "south",
+      "to_room_name": "Levee",
+      "from_room_name": "Levee",
+      "from_room_description": "You are at the levee.  The ground beneath your feet is moist from the river"
+    },
+    {
+      "from_room_key": "namedesc:On the River|||The levee to the north forms a sturdy bulwark against the river, ensuring the",
+      "direction": "south",
+      "to_room_name": "On the River",
+      "from_room_name": "On the River",
+      "from_room_description": "The levee to the north forms a sturdy bulwark against the river, ensuring the"
+    },
+    {
+      "from_room_key": "namedesc:Under the Eastern Wall|||The river flows westward from a hole in the eastern city wall and under",
+      "direction": "east",
+      "to_room_name": "Under the Eastern Wall",
+      "from_room_name": "Under the Eastern Wall",
+      "from_room_description": "The river flows westward from a hole in the eastern city wall and under"
+    },
+    {
+      "from_room_key": "namedesc:Under the City Wall|||Light filtering in from the west almost masks a faint glimmer from",
+      "direction": "east",
+      "to_room_name": "Under the City Wall",
+      "from_room_name": "Under the City Wall",
+      "from_room_description": "Light filtering in from the west almost masks a faint glimmer from"
+    },
+    {
+      "from_room_key": "namedesc:Under the City Wall|||An opening to the east marks the outside of the Midgaard city wall.  The",
+      "direction": "east",
+      "to_room_name": "Under the City Wall",
+      "from_room_name": "Under the City Wall",
+      "from_room_description": "An opening to the east marks the outside of the Midgaard city wall.  The"
+    },
+    {
+      "from_room_key": "namedesc:On the River|||Water flows rapidly into an opening in the Midgaard city wall to the west.",
+      "direction": "east",
+      "to_room_name": "On the River",
+      "from_room_name": "On the River",
+      "from_room_description": "Water flows rapidly into an opening in the Midgaard city wall to the west."
+    },
+    {
+      "from_room_key": "namedesc:On the River|||Far to the west you can see the Midgaard city wall. Dense forest blocks",
+      "direction": "east",
+      "to_room_name": "On the River",
+      "from_room_name": "On the River",
+      "from_room_description": "Far to the west you can see the Midgaard city wall. Dense forest blocks"
+    },
+    {
+      "from_room_key": "namedesc:On the River|||To the north lies an impenetrable forest.  The river flows east to west past",
+      "direction": "east",
+      "to_room_name": "On the River",
+      "from_room_name": "On the River",
+      "from_room_description": "To the north lies an impenetrable forest.  The river flows east to west past"
+    },
+    {
+      "from_room_key": "namedesc:On the River|||The river is flowing swiftly as it exits the mountain from the east.",
+      "direction": "east",
+      "to_room_name": "On the River",
+      "from_room_name": "On the River",
+      "from_room_description": "The river is flowing swiftly as it exits the mountain from the east."
+    },
+    {
+      "from_room_key": "namedesc:A long tunnel|||You encounter some rapids as you enter this tunnel cut out of",
+      "direction": "east",
+      "to_room_name": "A long tunnel",
+      "from_room_name": "A long tunnel",
+      "from_room_description": "You encounter some rapids as you enter this tunnel cut out of"
+    },
+    {
+      "from_room_key": "namedesc:Bridge Road|||The stone cobbled path leads to the Midgaard Bridge to the south.  This",
+      "direction": "south",
+      "to_room_name": "Bridge Road",
+      "from_room_name": "Bridge Road",
+      "from_room_description": "The stone cobbled path leads to the Midgaard Bridge to the south.  This"
+    },
+    {
+      "from_room_key": "namedesc:Midgaard Bridge|||You are standing on a stone bridge crossing the Candlebriar River that",
+      "direction": "south",
+      "to_room_name": "Midgaard Bridge",
+      "from_room_name": "Midgaard Bridge",
+      "from_room_description": "You are standing on a stone bridge crossing the Candlebriar River that"
+    }
+  ],
+  "stats": {
+    "totalRooms": 64,
+    "totalExits": 63
+  }
+}

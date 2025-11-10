@@ -54,6 +54,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
   private navigationPath: number[] = []; // Stack of room IDs for backtracking
   private maintenance: CharacterMaintenance; // Character maintenance (mana, hunger, thirst)
   private marketSquareRoomId: number = -1; // ID of Market Square room for navigation
+  private exitsCache: Map<number, string[]> = new Map(); // Cache exits per room to avoid redundant 'exits' commands
 
   constructor(config: TaskConfig) {
     this.config = config;
@@ -102,6 +103,10 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       // Step 2: Build room graph for this zone
       logger.info('Step 2: Building room graph for zone...');
       await this.buildRoomGraph();
+
+      // Step 2.5: Mark zone exits based on existing connections
+      logger.info('Step 2.5: Marking zone exits...');
+      await this.markZoneExits();
 
       // Step 3: Determine starting position
       logger.info('Step 3: Determining starting position...');
@@ -328,12 +333,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
         logger.info(`✓ Existing room ${existingRoom.name} has no exits saved - processing exits now`);
         
         // Get exits for current room
-        await this.delay(this.config.delayBetweenActions);
-        const exitsResponse = await this.config.mudClient.sendAndWait('exits', this.config.delayBetweenActions);
-        this.actionsUsed++;
-
-        const exits = this.parseExitsOutput(exitsResponse);
-        const exitDirections = exits.map(e => e.direction.toLowerCase());
+        const exitDirections = await this.getCachedExits(existingRoom.id);
 
         // Save exits for this existing room
         await this.saveExitsForRoom(existingRoom.id, exitDirections);
@@ -453,9 +453,16 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
     let stuckCounter = 0;
     const maxStuckAttempts = 5;
     
+    let lastPositionSync = 0;
+    const POSITION_SYNC_INTERVAL = 5; // Only sync position every 5 actions
+    
     while (this.actionsUsed < this.maxActions) {
-      // Sync current position to ensure we're tracking correctly
-      await this.syncCurrentPosition();
+      // Sync current position periodically to ensure we're tracking correctly
+      const actionsSinceLastSync = this.actionsUsed - lastPositionSync;
+      if (actionsSinceLastSync >= POSITION_SYNC_INTERVAL) {
+        await this.syncCurrentPosition();
+        lastPositionSync = this.actionsUsed;
+      }
       
       // Get the most recent stat line (tracked across all commands)
       const lastStatLine = this.config.mudClient.getLastStatLine();
@@ -862,8 +869,8 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       if (actualRoomName !== this.currentRoomName.trim()) {
         logger.warn(`⚠️  Position desync detected. Expected: "${this.currentRoomName}", Actual: "${actualRoomName}"`);
 
-        // Try to get portal key for better matching (cached)
-        const portalKey = await this.getCachedPortalKey(roomData);
+        // Try to get portal key for better matching (cached first, force new only if truly needed)
+        const portalKey = await this.getCachedPortalKey(roomData, false); // Don't force new during sync
         if (portalKey) {
           roomData.portal_key = portalKey;
         }
@@ -1185,31 +1192,76 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       return currentRoom;
     }
 
-    // Use BFS to find nearest room with unexplored connections
+    // Use a more strategic approach: find rooms with unexplored connections,
+    // prioritizing those with more connections and those farther from start
+    const candidates: Array<{room: RoomNode, distance: number, unexploredCount: number}> = [];
+    
+    // Calculate distance from starting room for each room with unexplored connections
+    const startRoom = this.roomGraph.get(this.navigationPath[0]);
+    if (!startRoom) return null;
+    
+    for (const [roomId, room] of this.roomGraph.entries()) {
+      if (room.unexploredConnections.size > 0) {
+        // Calculate approximate distance from start (using BFS distance)
+        const distance = this.calculateDistanceFromRoom(startRoom.id, roomId);
+        candidates.push({
+          room,
+          distance,
+          unexploredCount: room.unexploredConnections.size
+        });
+      }
+    }
+
+    if (candidates.length === 0) {
+      return null;
+    }
+
+    // Sort by a combination of distance (favoring farther rooms) and unexplored connection count
+    candidates.sort((a, b) => {
+      // Primary sort: prefer rooms with more unexplored connections
+      if (a.unexploredCount !== b.unexploredCount) {
+        return b.unexploredCount - a.unexploredCount;
+      }
+      // Secondary sort: prefer rooms farther from start (broader exploration)
+      return b.distance - a.distance;
+    });
+
+    const bestCandidate = candidates[0];
+    logger.info(`🎯 Selected exploration target: ${bestCandidate.room.name} (${bestCandidate.unexploredCount} unexplored connections, distance ${bestCandidate.distance})`);
+    
+    return bestCandidate.room;
+  }
+
+  /**
+   * Calculate approximate distance between two rooms using BFS
+   */
+  private calculateDistanceFromRoom(startId: number, targetId: number): number {
+    if (startId === targetId) return 0;
+
     const visited = new Set<number>();
-    const queue: number[] = [this.currentRoomId];
+    const queue: Array<{roomId: number, distance: number}> = [{roomId: startId, distance: 0}];
 
     while (queue.length > 0) {
-      const roomId = queue.shift()!;
+      const {roomId, distance} = queue.shift()!;
       if (visited.has(roomId)) continue;
       visited.add(roomId);
+
+      if (roomId === targetId) {
+        return distance;
+      }
 
       const room = this.roomGraph.get(roomId);
       if (!room) continue;
 
-      if (room.unexploredConnections.size > 0) {
-        return room;
-      }
-
-      // Add connected rooms to queue
-      for (const targetId of room.connections.values()) {
-        if (targetId > 0 && !visited.has(targetId)) {
-          queue.push(targetId);
+      // Add all connected rooms to queue
+      for (const connectedId of room.connections.values()) {
+        if (connectedId > 0 && !visited.has(connectedId)) {
+          queue.push({roomId: connectedId, distance: distance + 1});
         }
       }
     }
 
-    return null;
+    return Infinity; // No path found
   }
 
   /**
@@ -1463,7 +1515,7 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       // Get the correct zone ID for the new zone
       const newZoneId = await this.getZoneId(currentZone);
       
-      // Save the room to database AND add to exploration graph as boundary room
+      // Save the room to database AND add to exploration graph as boundary room (won't be explored further)
       const roomToSave: any = {
         name: newRoomName,
         description: newRoomDescription,
@@ -1568,9 +1620,13 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
       exitDirections = exits.map(e => e.direction.toLowerCase());
     }
 
-    // Get portal key if not already obtained (needed for room matching) - FORCE NEW since we just moved
+    // Get portal key if not already obtained (needed for room matching) - FORCE NEW only for truly unknown rooms
     if (!roomData.portal_key) {
-      const portalKey = await this.getCachedPortalKey(roomData, true);
+      // Only force new portal key if this appears to be a completely new room (not just moved to adjacent)
+      // We can determine this by checking if we have any cached keys from recent movements
+      const shouldForceNew = !this.currentRoomId || !this.roomGraph.has(this.currentRoomId) || 
+                            !this.roomGraph.get(this.currentRoomId)?.portal_key;
+      const portalKey = await this.getCachedPortalKey(roomData, shouldForceNew);
       if (portalKey) {
         roomData.portal_key = portalKey;
         logger.info(`   🔑 Portal key for matching: ${portalKey}`);
@@ -2367,6 +2423,96 @@ export class RoomGraphNavigationCrawler implements CrawlerTask {
     } catch (error) {
       logger.error('Failed to get available portal keys:', error);
       return [];
+    }
+  }
+
+  /**
+   * Get exits for a room, using cache to avoid redundant commands
+   */
+  private async getCachedExits(roomId: number): Promise<string[]> {
+    // Check cache first
+    const cachedExits = this.exitsCache.get(roomId);
+    if (cachedExits) {
+      logger.info(`✓ Using cached exits for room ${roomId}: ${cachedExits.join(', ')}`);
+      return cachedExits;
+    }
+
+    // Not cached - send command and cache result
+    logger.info(`📡 Getting exits for room ${roomId} (not cached)`);
+    await this.delay(this.config.delayBetweenActions);
+    const exitsResponse = await this.config.mudClient.sendAndWait('exits', this.config.delayBetweenActions);
+    this.actionsUsed++;
+
+    const exits = this.parseExitsOutput(exitsResponse);
+    const exitDirections = exits.map(e => e.direction.toLowerCase());
+
+    // Cache the result
+    this.exitsCache.set(roomId, exitDirections);
+    logger.info(`✓ Cached exits for room ${roomId}: ${exitDirections.join(', ')}`);
+
+    return exitDirections;
+  }
+
+  /**
+   * Mark zone exits based on existing room connections
+   * Rooms that have exits leading to different zones should be marked as zone exits
+   */
+  private async markZoneExits(): Promise<void> {
+    logger.info('🚪 Marking zone exits based on existing connections...');
+
+    try {
+      // Get all rooms and exits
+      const allRooms = await this.config.api.getAllEntities('rooms');
+      const allExits = await this.config.api.getAllEntities('room_exits');
+
+      const zoneExitRoomIds = new Set<number>();
+      let zoneExitCount = 0;
+
+      // Check each exit to see if it connects rooms in different zones
+      for (const exit of allExits) {
+        const fromRoom = allRooms.find((r: any) => r.id === exit.from_room_id);
+        const toRoom = allRooms.find((r: any) => r.id === exit.to_room_id);
+
+        // If both rooms exist and are in different zones, mark as zone exit
+        if (fromRoom && toRoom && fromRoom.zone_id !== toRoom.zone_id) {
+          // Mark the exit as a zone exit
+          if (!exit.is_zone_exit) {
+            try {
+              await this.config.api.updateEntity('room_exits', exit.id.toString(), {
+                is_zone_exit: true
+              });
+              logger.info(`   🔀 Marked exit as zone exit: ${fromRoom.name} [${exit.direction}] -> ${toRoom.name}`);
+            } catch (error) {
+              logger.error(`   ❌ Failed to mark exit as zone exit: ${error}`);
+            }
+          }
+
+          // Mark both rooms as zone exits
+          zoneExitRoomIds.add(exit.from_room_id);
+          zoneExitRoomIds.add(exit.to_room_id);
+          zoneExitCount++;
+        }
+      }
+
+      // Update rooms that should be marked as zone exits
+      for (const roomId of zoneExitRoomIds) {
+        const room = allRooms.find((r: any) => r.id === roomId);
+        if (room && !room.zone_exit) {
+          try {
+            await this.config.api.updateEntity('rooms', roomId.toString(), {
+              zone_exit: true
+            });
+            logger.info(`   🏞️ Marked room as zone exit: ${room.name} (ID: ${roomId})`);
+          } catch (error) {
+            logger.error(`   ❌ Failed to mark room as zone exit: ${error}`);
+          }
+        }
+      }
+
+      logger.info(`✓ Marked ${zoneExitCount} zone exits and ${zoneExitRoomIds.size} rooms as zone exits`);
+
+    } catch (error) {
+      logger.error('❌ Failed to mark zone exits:', error);
     }
   }
 }
