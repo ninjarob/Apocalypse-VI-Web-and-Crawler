@@ -1,0 +1,1856 @@
+{
+  "rooms": [
+    {
+      "name": "South Temple Street",
+      "description": "The newly renovated Temple Street is wide and clean, with light colored bricks gleaming from being freshly washed.  Nobles, common folk and adventurers alike move about in a steady stream as they make their way through town.  The Market Square to the south is a common destination, which locals consider to be the heart of the city.",
+      "exits": [
+        "north",
+        "south"
+      ],
+      "npcs": [
+        "A Cityguard is here keeping the peace."
+      ],
+      "items": [],
+      "portal_key": "dehimpqr"
+    },
+    {
+      "name": "North Temple Street",
+      "description": "The historic Temple of Midgaard entrance is to the north and past that, the Grand Gates of Midgaard which controls passage into and out of the main city. To the west is a room housing the Social Boards while to the east is an entrance to the Old Grunting Boar Inn.",
+      "exits": [
+        "north",
+        "east",
+        "south",
+        "west"
+      ],
+      "npcs": [
+        "A Cityguard is here keeping the peace."
+      ],
+      "items": [],
+      "portal_key": "cijklpqr"
+    },
+    {
+      "name": "Temple Hall of Clerics",
+      "description": "The smooth slightly curved walls arches upwards where all four corners meet at a point in the ceiling.  On one wall is a stained glass mural depicting a magnificent battle scene, and on another wall is a relief of a large white rose chiseled in plaster.  Lighting from torches illuminate the room, and a small area with some candles has been set aside for a prayer bench.",
+      "exits": [
+        "north",
+        "east"
+      ],
+      "npcs": [
+        "A priestess of the Temple is here."
+      ],
+      "items": [],
+      "portal_key": "cfghmpqr"
+    },
+    {
+      "name": "The Grunting Boar Inn",
+      "description": "Should you tire of adventure or seek a peaceful nights rest, the Grunting Boar Inn is willing to accommodate any traveler that carry enough gold.  The dimly lit foyer has a slight musty odor, possibly coming from various trophy animals mounted high above the walls.  A cozy arrangement of overstuffed couches sit next to a blazing fire offering an inviting place to rest.  A simple set of sounds of bar patrons enjoying fine drink and good company.",
+      "exits": [
+        "east",
+        "west",
+        "up"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "cefghijklpqr"
+    },
+    {
+      "name": "The Grunting Boar Tavern",
+      "description": "The rustic old Grunting Boar Tavern has been in business since Midgaard was recounted by seasoned adventurers, and get a decent drink or two.  An occasional rowdy patron may at times create an uproar, but generally most are there to relax and have a good time.  Founded.  It's a well known destination to learn the local gossip, hear tales recounted by seasoned adventurers, and get a decent drink or two.  An occasional rowdy patron may at times create an uproar, but generally most are there to relax and have a good time.",
+      "exits": [
+        "west"
+      ],
+      "npcs": [],
+      "items": []
+    },
+    {
+      "name": "The Reception Desk",
+      "description": "You are standing in a reception area.  A hallway leads to the east where one can rent a room if they need to take a rest from the rigors of a life of adventuring.  The hallway is closed off by a small steel gate that is periodically opened for adventurers wishing a rest.  Next to the hall is a small counter with a sign sitting on it. A fireplace with a cozy little fire is set in the northern wall offering heat as well as light. The stairs leading up to the third floor will take you to the extended stay area of the inn.",
+      "exits": [
+        "up",
+        "down"
+      ],
+      "npcs": [],
+      "items": []
+    },
+    {
+      "name": "The Grunting Boar Lounge",
+      "description": "A small foyer furnished with rustic tables and chairs awaits weary travelers wishing to take a break from their adventures.  Landscape paintings of the surrounding forests and countryside cover the walls, making for a peaceful and cozy atmosphere to lounge for a while and rest.  The stairs leading down will take you to the second floor of the inn, while the extended stay rooms can be found just to the north.",
+      "exits": [
+        "north",
+        "down"
+      ],
+      "npcs": [],
+      "items": []
+    },
+    {
+      "name": "The Extended Stay Reception Area",
+      "description": "The reception area here is complete with a large cocobolo desk, a service bell, and a staff of workers tending to the needs of the many residents it houses.  Hallways lead off to the north, east, and west from here where many chamber doors can be seen by the marked addition of lit sconces on the walls. Off to the south you can make out the inn's lounge room.  A large sign hangs directly above the reception desk.",
+      "exits": [
+        "south"
+      ],
+      "npcs": [],
+      "items": []
+    },
+    {
+      "name": "Grand Gates of the Temple of Midgaard",
+      "description": "You stand at the base of the huge mound upon which the Temple of Midgaard is built within the Grand Gates of the Temple.  The gates are gargantuan in size and are made of solid gold with ancient designs of Gods, Giants, Warriors, and peasants. Steps hewn from huge marble blocks lead the way up the mound to the actual temple itself while south beyond the gates is what is commonly known as the Temple Square. Braziers of eternal flame built upon the posts of the foundation of the temple wall brightly light up the sky, even in the day.",
+      "exits": [
+        "north",
+        "south"
+      ],
+      "npcs": [
+        "A Guard of the Temple stands here eyeing people entering the temple."
+      ],
+      "items": [],
+      "portal_key": "dghjklpqr"
+    },
+    {
+      "name": "The Temple of Midgaard",
+      "description": "Entering the great halls of the Temple of Midgaard is awe-inspiring, as you stand at an ornate entryway spanning nearly thirty feet across.  Huge copper braziers at each temple corner bathes the cool, marble walls in a fiery glow. Elaborate tapestries bearing the crests and symbols of nobles who helped established the Temple long ago hang gracefully from the walls and ceilings.  A set of large stone steps inside the temple lead up to an altar dedicated to the heroes and patrons of this age.  The entire temple is elevated prominently above all the other buildings of Midgaard, reinforcing its position as the pinnacle landmark within the city.",
+      "exits": [
+        "north",
+        "east",
+        "south",
+        "west",
+        "down"
+      ],
+      "npcs": [],
+      "items": [
+        "A large welcome sign hangs before the archway that leads into the city. Perhaps"
+      ]
+    },
+    {
+      "name": "Midgaard Clan Hall",
+      "description": "This section of the temple complex has been prepared to oversee the many clans of the realm.  Here adventurers can come to create, build, and manage their clan.  Behind the stone counter towards the rear of the room is a rather large man who seems to be scribbling away in his book.  No one knows his real name or even where he is from but around here he is known at the Vanguard. Sitting beneath an open domed cella allows for light from the outside world to illuminate the room during the day.  A portico to the east leads back to the Temple of Midgaard.",
+      "exits": [
+        "east"
+      ],
+      "npcs": [],
+      "items": [
+        "An engraved sign is posted next to the Vanguard."
+      ]
+    },
+    {
+      "name": "The Donation Room",
+      "description": "Whether you are itemless, lesser equipped, or the victim of some terrible experience such as a death trap it is possible to find donated items in this you consider the possibility that today might be your lucky day.  Room.  Although the items of your dreams will likely never pass through here, you consider the possibility that today might be your lucky day.",
+      "exits": [
+        "west"
+      ],
+      "npcs": [],
+      "items": [
+        "A golden circlet"
+      ]
+    },
+    {
+      "name": "Rear exit of the Temple",
+      "description": "You are in a small dank passage with barely enough light to see by.  The walls are made from unpolished marble.  Torches are in sconces in the walls, but are covered in dust and appear not to have been lit in years.  The wall to the north appears to be a carefully constructed doorway that leads outside the temple.  A small oaken door stands to the south.",
+      "exits": [
+        "north",
+        "south"
+      ],
+      "npcs": [],
+      "items": []
+    },
+    {
+      "name": "Outside the City Walls",
+      "description": "The stout walls of the City of Midgaard are to the south.  The wall here has been carefully constructed to hide a door into the back of the temple.  A plain covered in tall grass is to the north.  The blowing wind ripples the tall grass in a peaceful manner.",
+      "exits": [
+        "north",
+        "south"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "dgklmoq"
+    },
+    {
+      "name": "Market Square",
+      "description": "You are standing on the Market Square, the famous Square of Midgaard.  It is said that the North, East, South, and West all meet here.  This square is the busiest in the realms for Midgaard is the center of the known civilization. People from all lands can be found wandering here.  At the four corners can be found tall poles with magical lanterns, provided by the Mage's Guild, that glow with a bright light when it gets dark. A large fountain of an angel pouring water stands in the center of the square.  Roads lead in every direction, north to the temple square, south to the bazaar, east and west bound is the main street.",
+      "exits": [
+        "north",
+        "east",
+        "south",
+        "west"
+      ],
+      "npcs": [
+        "A Beastly Fido is here barking at the people passing by."
+      ],
+      "items": [
+        "A fountain of an angel cascades with sparkling water here."
+      ]
+    },
+    {
+      "name": "Main Street East",
+      "description": "You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. To the west is a beautiful fountain of an angel which is like a shining beacon guiding all to the Market Square of Midgaard. North of you the Midgaard Jewelers is open to everyone at all times. Travelers can continue east towards the gates of Midgaard by following the well lit path of magical lanterns.",
+      "exits": [
+        "north",
+        "east",
+        "south",
+        "west"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "ejmpqr"
+    },
+    {
+      "name": "Midgaard Jewelers",
+      "description": "You are standing in a small workshop that appears to be a complete mess. You notice a small crackling fire in the corner of the room and you are surprised that the rest of the room doesn't catch in flames.  The only clean area is a small desk filled with many instruments of fine precision that are used to weigh, cut, and polish gems.  Hanging off the desk is an old sign yellowish with age.",
+      "exits": [
+        "south"
+      ],
+      "npcs": [],
+      "items": []
+    },
+    {
+      "name": "Quester's",
+      "description": "Quester's is a very large yet crowded store.  There are rows upon rows of vendors that extend down the hallway, each selling their own special wares. Adventurers from all over come to spend their quest points on some nice, shiny rewards. There is a sign above the doorway leading to the hall.",
+      "exits": [
+        "north",
+        "east",
+        "south",
+        "west",
+        "up",
+        "down"
+      ],
+      "npcs": [],
+      "items": []
+    },
+    {
+      "name": "Main Street East",
+      "description": "You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. North of here is the Pawn Shop, a large sign hangs above the doorway of the shop. The road south leads to a small circular arena where you spot several armored warriors engaged in the rugged training needed to become a fighter. Just to the east is the East Gate of Midgaard.",
+      "exits": [
+        "north",
+        "east",
+        "south",
+        "west"
+      ],
+      "npcs": [
+        "A Beastly Fido is here barking at the people passing by."
+      ],
+      "items": [],
+      "portal_key": "cdgjmpqr"
+    },
+    {
+      "name": "Buster's Pawn Shop",
+      "description": "Items of all shapes and sizes used in all walks of life are both sold and purchased here.  Should the need arise to free yourself of an item either valued or of little worth, the pawn broker here can almost always find a good home for it.  Common sense would lead you to believe that few would be willing to part with their hard earned goods, but judging by the enormous amount of items here you know that not to be so.",
+      "exits": [
+        "south"
+      ],
+      "npcs": [
+        "Pawn shop owner Buster is here, offering up all items for trade."
+      ],
+      "items": [
+        "You spot a pair of polished greaves"
+      ]
+    },
+    {
+      "name": "Entrance Hall to the Guild of Swordsmen",
+      "description": "You find yourself in the entrance hall of the Guild of Swordsmen.  Suits of armor with halberds pointed towards the arched ceiling line the walls. This is a place where one has to be careful not to say something wrong (or right) for tempers are quite to flare here in times of peace and prosperity. Huge chandeliers hang down from the ceiling that causes a scintillating effect against all the polished suits of armor. The hall leads further south into the guild.",
+      "exits": [
+        "north",
+        "south"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "cdfkmpqr"
+    },
+    {
+      "name": "Inside the East Gate of Midgaard",
+      "description": "You are by two large towers that have been built into the city wall. Connecting the towers high up in the air is a narrow walkway that the guards use to cross from one tower to the next.  Between the towers is a heavy iron gate that is used to keep the enemies of Midgaard out.  Along the top of the towers, huge magical fires burn providing a bright light even on the darkest of the nights. Main Street begins to the west, the Midgaard Bank can be found to the north. Directly south is a large, magical spire while the road to the east leads out of Midgaard and towards a towering forest.",
+      "exits": [
+        "north",
+        "east",
+        "south",
+        "west"
+      ],
+      "npcs": [
+        "A cityguard is here, guarding the gate from intruders."
+      ],
+      "items": [],
+      "portal_key": "dhjmpqr"
+    },
+    {
+      "name": "The Midgaard Bank",
+      "description": "A stuffy looking place, the Moneylender's Guild only has the most basic of a large, very sturdy looking safe built into it.  Odd looking eyes mounted at each corner of the building move back and forth as if keeping an eye on things. furniture.  A simple oak desk and chair sits in front of the north wall that has On the desk, there sits a sign.",
+      "exits": [
+        "south"
+      ],
+      "npcs": [],
+      "items": [
+        "A large vault is mounted securely to the wall"
+      ]
+    },
+    {
+      "name": "At the Bottom of the Great Spire",
+      "description": "The arched entrance to the spire opens up to you from the street to the east. Large enough to accommodate a young dragon if needed its cold grey stones stand strong, remnants of an age long gone.  The Great Spire has stood watch over the city for aeons, its polished white stones taken from a distant land at the end of the Great War.  A solid wooden staircase leads up to the top of the spire, the spindles that connect the rails to the floor all appear to be hand carved from a single great tree.",
+      "exits": [
+        "north",
+        "up"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "cdeikmpqr"
+    },
+    {
+      "name": "Atop the Great Spire",
+      "description": "Ancient relics of all kinds hang upon the wall, roughly hewn and polished stones lay beneath your feet.  All trophies of the Great War and the skirmishes that came after, they stand as a reminder of the past and present to all that visit this great room The future is what those that live make of it.  You dare not touch anything for fear that some great and unseen power may strike you down rather you wish that one day you may add to this collection of memories. To the north a pair of eyes watch your every move and mark the entrance to the Mage's Guild.",
+      "exits": [
+        "north",
+        "down"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "degikmpqr"
+    },
+    {
+      "name": "The Mage's Guild",
+      "description": "Although no visible source of light can be found, a strange magical glow envelops you and everything in the chamber.  At first glance you see and hear no one, a second look reveals a man lost in thought gazing into a glowing orb of light.  He is clad in full mage's regalia of the highest order but more noticeable are his unblinking eyes which look remarkably similar to the ones that watched you from the entrance to the south.  Scattered around the room on wooden tables are many tomes, potions, and foreign objects.  He is obviously a man of great power and knowledge.",
+      "exits": [
+        "south"
+      ],
+      "npcs": [
+        "Your guildmaster stands here."
+      ],
+      "items": []
+    },
+    {
+      "name": "Main Street West",
+      "description": "You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. To the east is a beautiful fountain of an angel which is like a shining beacon guiding all to the Market Square of Midgaard. To the north is the busy General Store while south of here is the local Armory. Travelers heading west on Main Street will eventually find themselves at the western gates of Midgaard.",
+      "exits": [
+        "north",
+        "east",
+        "south",
+        "west"
+      ],
+      "npcs": [
+        "A Mercenary is here waiting for someone to hire him."
+      ],
+      "items": [],
+      "portal_key": "cghjmpqr"
+    },
+    {
+      "name": "The General Store",
+      "description": "The store shelves are stocked with basic everyday supplies, from food and water to light adventuring gear and clothing.  Occasionally you might find rare and expensive items up for sale, though not for long as they usually sell out quickly.  Stopping by the general store on a regular basis to stock up on supplies would be a really smart. A small note hangs on the wall.",
+      "exits": [
+        "south"
+      ],
+      "npcs": [],
+      "items": []
+    },
+    {
+      "name": "The Armory",
+      "description": "There are rows of all armor types lined up along the display cases, along with bright shields of all sizes hanging from the walls.  Any equipment purchased here can always be serviced or repaired for a nominal fee.  At the back of the shop is a door which leads to the armorer's furnace, where rhythmic sound of hammers falling on anvils can be heard. A finely crafted sign made of polished bronze hangs above the counter.",
+      "exits": [
+        "north",
+        "west"
+      ],
+      "npcs": [],
+      "items": []
+    },
+    {
+      "name": "The Weapon Shop",
+      "description": "You find yourself inside a weapon shop.  Hanging off the walls are various implements of death and destruction.  The more valuable weapons can be found behind a counter.  There is a small note on the counter. It feels a bit eerie in here due to the light produced from the glowing weapons under the counter.",
+      "exits": [
+        "north",
+        "east"
+      ],
+      "npcs": [],
+      "items": []
+    },
+    {
+      "name": "Main Street West",
+      "description": "You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. The Main Street continues eastwards towards the Market Square and just west of here are the iron gates of Midgaard. To the south you make out the distinct sounds of weapons being forged by a blacksmith, while just north of where you stand is a well known magic shop.",
+      "exits": [
+        "north",
+        "east",
+        "south",
+        "west"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "ijmpqr"
+    },
+    {
+      "name": "The Magic Shop",
+      "description": "Stepping inside the Magic Shop is like crossing the boundaries of an optical illusion, as the immediate impression is the interior of the shop is many times larger than the outside might suggest.  No doubt powerful magical spells are being used effectively to provide the real estate, as rows and rows of various items are stacked haphazardly in shelves as far as the eye can see.  Potions, scrolls, and various odds and ends that are used for magical arts are available for sale here.  Anyone even thinking of shoplifting might be forewarned, the shop items are guarded with deadly protective runes that have disabled many a would-be thief.",
+      "exits": [
+        "south"
+      ],
+      "npcs": [],
+      "items": []
+    },
+    {
+      "name": "Inside the West Gate of Midgaard",
+      "description": "You are by two large towers that have been built into the city wall. Connecting the towers high up in the air is a narrow walkway that the guards use to cross from one tower to the next.  Between the towers is a heavy iron gate that is used to keep the enemies of Midgaard out.  Along the top of the towers, huge magical fires burn providing a bright light even on the darkest of the nights. Main Street begins to the east, Wall Road begins to the south, and to the north a small dirt path runs along the side of the wall.  As far as beyond the gate, gently rolling hills converge with river and forest.",
+      "exits": [
+        "north",
+        "east",
+        "south",
+        "west"
+      ],
+      "npcs": [
+        "A cityguard is here, guarding the gate from intruders."
+      ],
+      "items": [],
+      "portal_key": "cdefijmpqr"
+    },
+    {
+      "name": "Outside the Western Gate",
+      "description": "You stand outside two large towers that have been built into the city wall and house the massive iron gates protecting the city.  Directly west of here, the road leads out of Midgaard and into the open plains.  On the horizon to the north, south, and west the faint outline of trees and a river that snakes through it all can be seen.  Seeing beyond that is impossible.",
+      "exits": [
+        "east",
+        "west"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "defjknpqr"
+    },
+    {
+      "name": "The edge of the forest",
+      "description": "You are standing at the eastern edge of a big forest.  To the east is the West Gate of Midgaard and to the west is a narrow trail, leading in through the forest.  To the south is a wide path running along the edge of the forest.",
+      "exits": [
+        "east",
+        "south",
+        "west"
+      ],
+      "npcs": [],
+      "items": [
+        "A tall wooden sign stands here, swaying back and forth in the wind."
+      ]
+    },
+    {
+      "name": "A Dirt Path",
+      "description": "Along the inner side of the eastern city wall is a seldom traveled dirt path, nestled among a grove of young oak trees.  The trail winds around low shrubbery and hedgerows making it difficult to follow.  The faint sound of rustling leaves can be heard as a cool breezes dances lightly through the trees, otherwise the surroundings are stangely silent.",
+      "exits": [
+        "east",
+        "south"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "dfgijnpqr"
+    },
+    {
+      "name": "Before the Hidden Grove",
+      "description": "You wander around, slightly lost by now.  The forest growth seems to stretch in all directions, especially towards the west.  Glancing around, you notice a peculiar arrangement of stones to the east that is arranged in a rough circular shape with a small monolith placed in the center.  On a tree to the north and almost concealed by leaves, you spot two small arrows embedded high among the direction that came from.  Branches.  For a second you think you heard a voice, but it's hard to tell which direction that came from.",
+      "exits": [
+        "east",
+        "south"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "fghijnpqr"
+    },
+    {
+      "name": "A Bend in the Path",
+      "description": "The dimly lit path here takes a slight detour northwards following the city wall, where stately older trees have grown to towering heights.  This part of Midgaard was kept pristine, with little development work done throughout the of Migdaard devoted to following nature's path.  Years.  Consequently it has become a haven and place of gathering for the guilds of Migdaard devoted to following nature's path.",
+      "exits": [
+        "north",
+        "west"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "cfhijnpqr"
+    },
+    {
+      "name": "Wall Road",
+      "description": "You are at the northern end of Wall Road.  Farther to north you can see the Western Gate of Midgaard.  The street is quite busy for it is a popular route taken by travelers to enter the Southern Midgaard.  From the tall city wall that runs parallel to the road along its western edge, it is quite easy to figure out where the name for this street came from.  Along the street can be found tall poles with magical lanterns, provided by the sorcerer's guild, that glow with a bright light when it gets dark.  The street continues south towards Southern Midgaard.",
+      "exits": [
+        "north",
+        "south"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "dfghijlmpqr"
+    },
+    {
+      "name": "Wall Road",
+      "description": "You are on wall road that runs north-south through western Midgaard.  The street is quite busy for it is a popular route taken by travellers to enter the Southern Midgaard.  From the tall city wall that runs parallel to the road along its western edge, it is quite easy to figure out where the name for this street came from.  Along the street can be found tall poles with magical lanterns, provided by the sorcerer's guild, that glow with a bright light when it gets dark.  The wall continues north towards the Western Gate and south towards Southern Midgaard.  A small, poor alley leads off to the east. Some letters have been written on the wall here.",
+      "exits": [
+        "north",
+        "east"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "fhlmpqr"
+    },
+    {
+      "name": "Western End of Poor Alley",
+      "description": "You are at the western end of a small alley connecting the Common Square to the Wall Road.  The buildings are built close along the road making the alley indeed narrow.  As with most alleys, the poor and the homeless have collected here. A foul stench permeates from the south. The alley continues to the east and ends at Wall Road to the west.",
+      "exits": [
+        "east",
+        "south",
+        "west"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "cfglmpqr"
+    },
+    {
+      "name": "The Dump",
+      "description": "You find yourself in the dump with garbage up to your knees.  This is where all the people of Midgaard drop their garbage.  Looking across the huge mound, ends up.  You can't say for sure how long this garbage has been here, but it gives off a puke green light that softly illuminates the area, even during the day. The dump exits north back to the alley.  After some searching through the garbage, you can see a large junction of pipes which looks like the entrance to the sewers under Midgaard.",
+      "exits": [
+        "north",
+        "down"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "cdeghlmpqr"
+    },
+    {
+      "name": "Entrance to the Midgaard Sewers",
+      "description": "You are directly under the City of Midgaard.  A ladder here, secured against the wall leads up to a hatch.  The stench is almost unbearable.  The slimy, filthy walls surround you on all sides but south, which leads into miles of darkened tunnel.",
+      "exits": [
+        "south",
+        "up"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "cefhimnpqr"
+    },
+    {
+      "name": "Eastern End of Poor Alley",
+      "description": "You are at the eastern end of a small alley connecting the Common Square to the Wall Road.  The buildings are built close along the road making the alley indeed narrow.  As with most alleys, the poor and the homeless have collected here. The alley continues west and exits at the Common Square to the East.",
+      "exits": [
+        "east",
+        "west"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "dflmpqr"
+    },
+    {
+      "name": "The Common Square",
+      "description": "You are in the common square of Midgaard.  The sound of merchants can be heard off to the north as they chant their goods for sale.  People full of chatter pass you by as they enter or leave the bazaar.  To the east and west, alleys lead to shadier side of Midgaard.  At the corners of the square can be found tall poles with magical lanterns, provided by the sorcerer's guild, that glow with a bright light when it gets dark.  South leads across the bridge to Southern Midgaard.",
+      "exits": [
+        "north",
+        "east",
+        "south",
+        "west"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "defijkmpqr"
+    },
+    {
+      "name": "Southern Bazaar",
+      "description": "Merchant selling chants echo above the excited buzz of buyers.  Here, all kinds of goods can be purchased and sold for profit and never the same thing two days in a row.  Along the street can be found tall poles with magical lanterns, provided by the sorcerer's guild, that glow with a bright light when it gets dark.  The bazaar continues to the north and the Common Square can be seen to the south.",
+      "exits": [
+        "north",
+        "south"
+      ],
+      "npcs": [
+        "A Beastly Fido is here barking at the people passing by."
+      ],
+      "items": [],
+      "portal_key": "cdefghjkmpqr"
+    },
+    {
+      "name": "Northern Bazaar",
+      "description": "Merchant selling chants echo above the excited buzz of buyers.  Here, all kinds of goods can be purchased and sold for profit and never the same thing two days in a row.  Along the street can be found tall poles with magical lanterns, provided by the sorcerer's guild, that glow with a bright light when it gets dark.  Market Square lies to the north and the Common Square can be seen to the south.",
+      "exits": [
+        "north",
+        "south"
+      ],
+      "npcs": [
+        "A Mercenary is here waiting for someone to hire him."
+      ],
+      "items": [],
+      "portal_key": "ghjkmpqr"
+    },
+    {
+      "name": "Western End of Dark Alley",
+      "description": "You find yourself at the western end of a dark alley that winds east towards the walls of Midgaard.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here. The back of the Guild of Swordsmen can be seen to the north while south of here is the highly unpopular Thieves' Guild.  The alley continues east and exits at the Common Square to the West.",
+      "exits": [
+        "east",
+        "south",
+        "west"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "cefgijkmpqr"
+    },
+    {
+      "name": "Entrance Hall to the Guild of Thieves",
+      "description": "You find yourself in the dim hall of the Thieves' Guild.  Glancing nervously about the room, it appears as if it is completely empty of life but the strange sensation of hair standing on the back of your neck can be felt for in these halls can be found the most promising thieves in Midgaard. The entrance hall exits to the north to the dark alley and heads deeper into the guild to the east.",
+      "exits": [
+        "north",
+        "east"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "deilmpqr"
+    },
+    {
+      "name": "Dark Alley",
+      "description": "You are standing in a dark alley that runs east and west.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here.",
+      "exits": [
+        "east",
+        "west"
+      ],
+      "npcs": [
+        "A Mercenary is here waiting for someone to hire him."
+      ],
+      "items": [],
+      "portal_key": "efhijkmpqr"
+    },
+    {
+      "name": "Dark Alley",
+      "description": "You are standing in a dark alley that runs east and west.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here. To the south lies a huge warehouse filled with boats of all different shapes and sizes. The warehouse extends out towards the levee leading to the river.",
+      "exits": [
+        "east",
+        "south",
+        "west"
+      ],
+      "npcs": [
+        "A beggar is here, asking for a few coins."
+      ],
+      "items": [],
+      "portal_key": "cdghilmpqr"
+    },
+    {
+      "name": "Eastern End of Dark Alley",
+      "description": "You find yourself at the eastern end of a dark alley that winds west towards the Common Square.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here. The alley ends here with the large wall that surrounds Midgaard. To the north you hear battle shouts and fighting while to the south, a strange green glow emits from darkness.",
+      "exits": [
+        "north",
+        "south",
+        "west"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "djlmpqr"
+    },
+    {
+      "name": "Battle Arena",
+      "description": "The smell of blood and sweat permeates the battlegrounds here.  You are nearly deafened by the shouts of the many people positioned around the battle arena that is centered in the middle of this hall.  Some are shouting victory for the champion they placed their bets on while others are crying in disbelief. The battle arena itself has two strong berserker fighters facing off in an epic battle for dominance.  The east leads to the training quarters for these strong and fierce warriors.",
+      "exits": [
+        "east",
+        "south"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "cgjlmpqr"
+    },
+    {
+      "name": "Entrance to the Warlock's Guild",
+      "description": "Intricate sketchings of the different phases of the moon scatter along the dark hall.  Shadowy, cloaked figures sit in various corners studying from their black books of magic.  You watch in horror as one student reaches out with a bony hand, green flashes fly from his fingertips, sucking the life out of a large rat that was scampering from a hole in the wall.  It makes a loud squeak then silence as it's soul is consumed by the figure.  To the south, the hall continues deeper into the guild.",
+      "exits": [
+        "north",
+        "south"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "hjlmpqr"
+    },
+    {
+      "name": "Warehouse",
+      "description": "You are inside a huge warehouse.  There are stacks of lumber and ore piled up to the roof against the western wall while east of that are various boats that are currently being built.  The walls of the warehouse is decorated with various items from ships.  The room is brightly illuminated from lanterns hanging from the ceiling. The warehouse exits to the north and south.",
+      "exits": [
+        "north",
+        "south"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "cdefhjlmpqr"
+    },
+    {
+      "name": "Levee",
+      "description": "You are at the levee.  The ground beneath your feet is moist from the river that is gently flowing west to the south of here.  The river back is very low making it possible to enter the river.  Tied to stakes on the river banks are various fishing boats used for navigating the river. A warehouse can be seen to the north.",
+      "exits": [
+        "north",
+        "south"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "defghjlmpqr"
+    },
+    {
+      "name": "On the River",
+      "description": "The levee to the north forms a sturdy bulwark against the river, ensuring the citizens, shopkeepers, and adventurers in Midgaard are safe from the perils of a flood.  Rapidly swirling eddies can be observed directly to the west where the river bottom dips and swimming becomes impossible.  You can continue to the east along the shallows of the river, but traveling west would be impossible without a boat.",
+      "exits": [
+        "north",
+        "east",
+        "west"
+      ],
+      "npcs": [],
+      "items": [
+        "A school of fish jump around the surface of the water."
+      ],
+      "portal_key": "ceghjklmnpqr"
+    },
+    {
+      "name": "On the River",
+      "description": "a bit upstream from here.  The river flows west towards the levee.  Past the riverbank to the south you can see the Penny Lane Plaza.",
+      "exits": [
+        "east",
+        "west"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "dfgiopqr"
+    },
+    {
+      "name": "Under the Eastern Wall",
+      "description": "The river flows westward from a hole in the eastern city wall and under the bridge.  The hole appears to have been blocked at one time by several iron bars set into the wall, but these have long since been pried away.",
+      "exits": [
+        "east",
+        "west"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "fghiopqr"
+    },
+    {
+      "name": "Under the City Wall",
+      "description": "Light filtering in from the west almost masks a faint glimmer from upstream.",
+      "exits": [
+        "east",
+        "west"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "cdejopqr"
+    },
+    {
+      "name": "Under the City Wall",
+      "description": "An opening to the east marks the outside of the Midgaard city wall.  The river flows into the city to the west.",
+      "exits": [
+        "east",
+        "west"
+      ],
+      "npcs": [],
+      "items": [
+        "A school of fish jump around the surface of the water."
+      ],
+      "portal_key": "degjopqr"
+    },
+    {
+      "name": "On the River",
+      "description": "Water flows rapidly into an opening in the Midgaard city wall to the west. Dense forest blocks any view to the north and impassible rocks lie to the south.",
+      "exits": [
+        "east",
+        "west"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "cehjopqr"
+    },
+    {
+      "name": "On the River",
+      "description": "Far to the west you can see the Midgaard city wall. Dense forest blocks any view to the north, and impassible rocks lie to the south.  The rocks",
+      "exits": [
+        "east",
+        "west"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "eghjopqr"
+    },
+    {
+      "name": "On the River",
+      "description": "To the north lies an impenetrable forest.  The river flows east to west past a rocky shoreline to the south.",
+      "exits": [
+        "east",
+        "south",
+        "west"
+      ],
+      "npcs": [],
+      "items": [
+        "A school of fish jump around the surface of the water."
+      ],
+      "portal_key": "cdijopqr"
+    },
+    {
+      "name": "On the River",
+      "description": "The river is flowing swiftly as it exits the mountain from the east. North of here lies a thick forest.  To the south is a shoreline lined with slippery rocks.",
+      "exits": [
+        "east",
+        "west"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "dgijopqr"
+    },
+    {
+      "name": "A long tunnel",
+      "description": "You encounter some rapids as you enter this tunnel cut out of the mountains by the river.",
+      "exits": [
+        "east",
+        "west"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "dhijnoqs"
+    },
+    {
+      "name": "Bridge Road",
+      "description": "The stone cobbled path leads to the Midgaard Bridge to the south.  This bridge separates Northern and Southern Midgaard.  People of all shapes, sizes, and races traverse this path.",
+      "exits": [
+        "north",
+        "south"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "cfklmpqr"
+    },
+    {
+      "name": "Midgaard Bridge",
+      "description": "You are standing on a stone bridge crossing the Candlebriar River that separates Northern and Southern Midgaard.  The bridge is built out from the city walls and the river flows west and east through an opening ten feet below the bridge.  Along the length of the bridge can be found tall poles with magical lanterns, provided by the Mage's Guild, that glow with a bright light when it gets dark.",
+      "exits": [
+        "north",
+        "south"
+      ],
+      "npcs": [],
+      "items": [],
+      "portal_key": "cdehklmpqr"
+    }
+  ],
+  "exits": [
+    {
+      "from_room_key": "portal:cijklpqr",
+      "from_room_name": "North Temple Street",
+      "from_room_description": "The historic Temple of Midgaard entrance is to the north and past that, the Grand Gates of Midgaard which controls passage into and out of the main city. To the west is a room housing the Social Boards while to the east is an entrance to the Old Grunting Boar Inn.",
+      "direction": "east",
+      "to_room_key": "namedesc:North Temple Street|||The historic Temple of Midgaard entrance is to the north and past that, the Grand Gates of Midgaard which controls passage into and out of the main city. To the west is a room housing the Social Boards while to the east is an entrance to the Old Grunting Boar Inn.",
+      "to_room_name": "North Temple Street",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:North Temple Street|||The historic Temple of Midgaard entrance is to the north and past that, the Grand Gates of Midgaard which controls passage into and out of the main city. To the west is a room housing the Social Boards while to the east is an entrance to the Old Grunting Boar Inn.",
+      "from_room_name": "North Temple Street",
+      "from_room_description": "The historic Temple of Midgaard entrance is to the north and past that, the Grand Gates of Midgaard which controls passage into and out of the main city. To the west is a room housing the Social Boards while to the east is an entrance to the Old Grunting Boar Inn.",
+      "direction": "west",
+      "to_room_key": "portal:cijklpqr",
+      "to_room_name": "North Temple Street",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:cefghijklpqr",
+      "from_room_name": "The Grunting Boar Inn",
+      "from_room_description": "Should you tire of adventure or seek a peaceful nights rest, the Grunting Boar Inn is willing to accommodate any traveler that carry enough gold.  The dimly lit foyer has a slight musty odor, possibly coming from various trophy animals mounted high above the walls.  A cozy arrangement of overstuffed couches sit next to a blazing fire offering an inviting place to rest.  A simple set of sounds of bar patrons enjoying fine drink and good company.",
+      "direction": "west",
+      "to_room_key": "namedesc:The Grunting Boar Inn|||Should you tire of adventure or seek a peaceful nights rest, the Grunting Boar Inn is willing to accommodate any traveler that carry enough gold.  The dimly lit foyer has a slight musty odor, possibly coming from various trophy animals mounted high above the walls.  A cozy arrangement of overstuffed couches sit next to a blazing fire offering an inviting place to rest.  A simple set of sounds of bar patrons enjoying fine drink and good company.",
+      "to_room_name": "The Grunting Boar Inn",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:The Grunting Boar Inn|||Should you tire of adventure or seek a peaceful nights rest, the Grunting Boar Inn is willing to accommodate any traveler that carry enough gold.  The dimly lit foyer has a slight musty odor, possibly coming from various trophy animals mounted high above the walls.  A cozy arrangement of overstuffed couches sit next to a blazing fire offering an inviting place to rest.  A simple set of sounds of bar patrons enjoying fine drink and good company.",
+      "from_room_name": "The Grunting Boar Inn",
+      "from_room_description": "Should you tire of adventure or seek a peaceful nights rest, the Grunting Boar Inn is willing to accommodate any traveler that carry enough gold.  The dimly lit foyer has a slight musty odor, possibly coming from various trophy animals mounted high above the walls.  A cozy arrangement of overstuffed couches sit next to a blazing fire offering an inviting place to rest.  A simple set of sounds of bar patrons enjoying fine drink and good company.",
+      "direction": "east",
+      "to_room_key": "portal:cefghijklpqr",
+      "to_room_name": "The Grunting Boar Inn",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:The Reception Desk|||You are standing in a reception area.  A hallway leads to the east where one can rent a room if they need to take a rest from the rigors of a life of adventuring.  The hallway is closed off by a small steel gate that is periodically opened for adventurers wishing a rest.  Next to the hall is a small counter with a sign sitting on it. A fireplace with a cozy little fire is set in the northern wall offering heat as well as light. The stairs leading up to the third floor will take you to the extended stay area of the inn.",
+      "from_room_name": "The Reception Desk",
+      "from_room_description": "You are standing in a reception area.  A hallway leads to the east where one can rent a room if they need to take a rest from the rigors of a life of adventuring.  The hallway is closed off by a small steel gate that is periodically opened for adventurers wishing a rest.  Next to the hall is a small counter with a sign sitting on it. A fireplace with a cozy little fire is set in the northern wall offering heat as well as light. The stairs leading up to the third floor will take you to the extended stay area of the inn.",
+      "direction": "north",
+      "to_room_name": "Unknown (blocked)",
+      "is_blocked": true,
+      "is_door": false
+    },
+    {
+      "from_room_key": "portal:cefghijklpqr",
+      "from_room_name": "The Grunting Boar Inn",
+      "from_room_description": "Should you tire of adventure or seek a peaceful nights rest, the Grunting Boar Inn is willing to accommodate any traveler that carry enough gold.  The dimly lit foyer has a slight musty odor, possibly coming from various trophy animals mounted high above the walls.  A cozy arrangement of overstuffed couches sit next to a blazing fire offering an inviting place to rest.  A simple set of sounds of bar patrons enjoying fine drink and good company.",
+      "direction": "down",
+      "to_room_key": "namedesc:The Grunting Boar Inn|||Should you tire of adventure or seek a peaceful nights rest, the Grunting Boar Inn is willing to accommodate any traveler that carry enough gold.  The dimly lit foyer has a slight musty odor, possibly coming from various trophy animals mounted high above the walls.  A cozy arrangement of overstuffed couches sit next to a blazing fire offering an inviting place to rest.  A simple set of sounds of bar patrons enjoying fine drink and good company.",
+      "to_room_name": "The Grunting Boar Inn",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:The Grunting Boar Inn|||Should you tire of adventure or seek a peaceful nights rest, the Grunting Boar Inn is willing to accommodate any traveler that carry enough gold.  The dimly lit foyer has a slight musty odor, possibly coming from various trophy animals mounted high above the walls.  A cozy arrangement of overstuffed couches sit next to a blazing fire offering an inviting place to rest.  A simple set of sounds of bar patrons enjoying fine drink and good company.",
+      "from_room_name": "The Grunting Boar Inn",
+      "from_room_description": "Should you tire of adventure or seek a peaceful nights rest, the Grunting Boar Inn is willing to accommodate any traveler that carry enough gold.  The dimly lit foyer has a slight musty odor, possibly coming from various trophy animals mounted high above the walls.  A cozy arrangement of overstuffed couches sit next to a blazing fire offering an inviting place to rest.  A simple set of sounds of bar patrons enjoying fine drink and good company.",
+      "direction": "up",
+      "to_room_key": "portal:cefghijklpqr",
+      "to_room_name": "The Grunting Boar Inn",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:cijklpqr",
+      "from_room_name": "North Temple Street",
+      "from_room_description": "The historic Temple of Midgaard entrance is to the north and past that, the Grand Gates of Midgaard which controls passage into and out of the main city. To the west is a room housing the Social Boards while to the east is an entrance to the Old Grunting Boar Inn.",
+      "direction": "west",
+      "to_room_key": "namedesc:North Temple Street|||The historic Temple of Midgaard entrance is to the north and past that, the Grand Gates of Midgaard which controls passage into and out of the main city. To the west is a room housing the Social Boards while to the east is an entrance to the Old Grunting Boar Inn.",
+      "to_room_name": "North Temple Street",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:North Temple Street|||The historic Temple of Midgaard entrance is to the north and past that, the Grand Gates of Midgaard which controls passage into and out of the main city. To the west is a room housing the Social Boards while to the east is an entrance to the Old Grunting Boar Inn.",
+      "from_room_name": "North Temple Street",
+      "from_room_description": "The historic Temple of Midgaard entrance is to the north and past that, the Grand Gates of Midgaard which controls passage into and out of the main city. To the west is a room housing the Social Boards while to the east is an entrance to the Old Grunting Boar Inn.",
+      "direction": "east",
+      "to_room_key": "portal:cijklpqr",
+      "to_room_name": "North Temple Street",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:dghjklpqr",
+      "from_room_name": "Grand Gates of the Temple of Midgaard",
+      "from_room_description": "You stand at the base of the huge mound upon which the Temple of Midgaard is built within the Grand Gates of the Temple.  The gates are gargantuan in size and are made of solid gold with ancient designs of Gods, Giants, Warriors, and peasants. Steps hewn from huge marble blocks lead the way up the mound to the actual temple itself while south beyond the gates is what is commonly known as the Temple Square. Braziers of eternal flame built upon the posts of the foundation of the temple wall brightly light up the sky, even in the day.",
+      "direction": "down",
+      "to_room_key": "namedesc:Grand Gates of the Temple of Midgaard|||You stand at the base of the huge mound upon which the Temple of Midgaard is built within the Grand Gates of the Temple.  The gates are gargantuan in size and are made of solid gold with ancient designs of Gods, Giants, Warriors, and peasants. Steps hewn from huge marble blocks lead the way up the mound to the actual temple itself while south beyond the gates is what is commonly known as the Temple Square. Braziers of eternal flame built upon the posts of the foundation of the temple wall brightly light up the sky, even in the day.",
+      "to_room_name": "Grand Gates of the Temple of Midgaard",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Grand Gates of the Temple of Midgaard|||You stand at the base of the huge mound upon which the Temple of Midgaard is built within the Grand Gates of the Temple.  The gates are gargantuan in size and are made of solid gold with ancient designs of Gods, Giants, Warriors, and peasants. Steps hewn from huge marble blocks lead the way up the mound to the actual temple itself while south beyond the gates is what is commonly known as the Temple Square. Braziers of eternal flame built upon the posts of the foundation of the temple wall brightly light up the sky, even in the day.",
+      "from_room_name": "Grand Gates of the Temple of Midgaard",
+      "from_room_description": "You stand at the base of the huge mound upon which the Temple of Midgaard is built within the Grand Gates of the Temple.  The gates are gargantuan in size and are made of solid gold with ancient designs of Gods, Giants, Warriors, and peasants. Steps hewn from huge marble blocks lead the way up the mound to the actual temple itself while south beyond the gates is what is commonly known as the Temple Square. Braziers of eternal flame built upon the posts of the foundation of the temple wall brightly light up the sky, even in the day.",
+      "direction": "up",
+      "to_room_key": "portal:dghjklpqr",
+      "to_room_name": "Grand Gates of the Temple of Midgaard",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:dghjklpqr",
+      "from_room_name": "Grand Gates of the Temple of Midgaard",
+      "from_room_description": "You stand at the base of the huge mound upon which the Temple of Midgaard is built within the Grand Gates of the Temple.  The gates are gargantuan in size and are made of solid gold with ancient designs of Gods, Giants, Warriors, and peasants. Steps hewn from huge marble blocks lead the way up the mound to the actual temple itself while south beyond the gates is what is commonly known as the Temple Square. Braziers of eternal flame built upon the posts of the foundation of the temple wall brightly light up the sky, even in the day.",
+      "direction": "south",
+      "to_room_key": "namedesc:Grand Gates of the Temple of Midgaard|||You stand at the base of the huge mound upon which the Temple of Midgaard is built within the Grand Gates of the Temple.  The gates are gargantuan in size and are made of solid gold with ancient designs of Gods, Giants, Warriors, and peasants. Steps hewn from huge marble blocks lead the way up the mound to the actual temple itself while south beyond the gates is what is commonly known as the Temple Square. Braziers of eternal flame built upon the posts of the foundation of the temple wall brightly light up the sky, even in the day.",
+      "to_room_name": "Grand Gates of the Temple of Midgaard",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Grand Gates of the Temple of Midgaard|||You stand at the base of the huge mound upon which the Temple of Midgaard is built within the Grand Gates of the Temple.  The gates are gargantuan in size and are made of solid gold with ancient designs of Gods, Giants, Warriors, and peasants. Steps hewn from huge marble blocks lead the way up the mound to the actual temple itself while south beyond the gates is what is commonly known as the Temple Square. Braziers of eternal flame built upon the posts of the foundation of the temple wall brightly light up the sky, even in the day.",
+      "from_room_name": "Grand Gates of the Temple of Midgaard",
+      "from_room_description": "You stand at the base of the huge mound upon which the Temple of Midgaard is built within the Grand Gates of the Temple.  The gates are gargantuan in size and are made of solid gold with ancient designs of Gods, Giants, Warriors, and peasants. Steps hewn from huge marble blocks lead the way up the mound to the actual temple itself while south beyond the gates is what is commonly known as the Temple Square. Braziers of eternal flame built upon the posts of the foundation of the temple wall brightly light up the sky, even in the day.",
+      "direction": "north",
+      "to_room_key": "portal:dghjklpqr",
+      "to_room_name": "Grand Gates of the Temple of Midgaard",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:dghjklpqr",
+      "from_room_name": "Grand Gates of the Temple of Midgaard",
+      "from_room_description": "You stand at the base of the huge mound upon which the Temple of Midgaard is built within the Grand Gates of the Temple.  The gates are gargantuan in size and are made of solid gold with ancient designs of Gods, Giants, Warriors, and peasants. Steps hewn from huge marble blocks lead the way up the mound to the actual temple itself while south beyond the gates is what is commonly known as the Temple Square. Braziers of eternal flame built upon the posts of the foundation of the temple wall brightly light up the sky, even in the day.",
+      "direction": "south",
+      "to_room_key": "namedesc:Grand Gates of the Temple of Midgaard|||You stand at the base of the huge mound upon which the Temple of Midgaard is built within the Grand Gates of the Temple.  The gates are gargantuan in size and are made of solid gold with ancient designs of Gods, Giants, Warriors, and peasants. Steps hewn from huge marble blocks lead the way up the mound to the actual temple itself while south beyond the gates is what is commonly known as the Temple Square. Braziers of eternal flame built upon the posts of the foundation of the temple wall brightly light up the sky, even in the day.",
+      "to_room_name": "Grand Gates of the Temple of Midgaard",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Grand Gates of the Temple of Midgaard|||You stand at the base of the huge mound upon which the Temple of Midgaard is built within the Grand Gates of the Temple.  The gates are gargantuan in size and are made of solid gold with ancient designs of Gods, Giants, Warriors, and peasants. Steps hewn from huge marble blocks lead the way up the mound to the actual temple itself while south beyond the gates is what is commonly known as the Temple Square. Braziers of eternal flame built upon the posts of the foundation of the temple wall brightly light up the sky, even in the day.",
+      "from_room_name": "Grand Gates of the Temple of Midgaard",
+      "from_room_description": "You stand at the base of the huge mound upon which the Temple of Midgaard is built within the Grand Gates of the Temple.  The gates are gargantuan in size and are made of solid gold with ancient designs of Gods, Giants, Warriors, and peasants. Steps hewn from huge marble blocks lead the way up the mound to the actual temple itself while south beyond the gates is what is commonly known as the Temple Square. Braziers of eternal flame built upon the posts of the foundation of the temple wall brightly light up the sky, even in the day.",
+      "direction": "north",
+      "to_room_key": "portal:dghjklpqr",
+      "to_room_name": "Grand Gates of the Temple of Midgaard",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:cijklpqr",
+      "from_room_name": "North Temple Street",
+      "from_room_description": "The historic Temple of Midgaard entrance is to the north and past that, the Grand Gates of Midgaard which controls passage into and out of the main city. To the west is a room housing the Social Boards while to the east is an entrance to the Old Grunting Boar Inn.",
+      "direction": "south",
+      "to_room_key": "namedesc:North Temple Street|||The historic Temple of Midgaard entrance is to the north and past that, the Grand Gates of Midgaard which controls passage into and out of the main city. To the west is a room housing the Social Boards while to the east is an entrance to the Old Grunting Boar Inn.",
+      "to_room_name": "North Temple Street",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:North Temple Street|||The historic Temple of Midgaard entrance is to the north and past that, the Grand Gates of Midgaard which controls passage into and out of the main city. To the west is a room housing the Social Boards while to the east is an entrance to the Old Grunting Boar Inn.",
+      "from_room_name": "North Temple Street",
+      "from_room_description": "The historic Temple of Midgaard entrance is to the north and past that, the Grand Gates of Midgaard which controls passage into and out of the main city. To the west is a room housing the Social Boards while to the east is an entrance to the Old Grunting Boar Inn.",
+      "direction": "north",
+      "to_room_key": "portal:cijklpqr",
+      "to_room_name": "North Temple Street",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:dehimpqr",
+      "from_room_name": "South Temple Street",
+      "from_room_description": "The newly renovated Temple Street is wide and clean, with light colored bricks gleaming from being freshly washed.  Nobles, common folk and adventurers alike move about in a steady stream as they make their way through town.  The Market Square to the south is a common destination, which locals consider to be the heart of the city.",
+      "direction": "south",
+      "to_room_key": "namedesc:South Temple Street|||The newly renovated Temple Street is wide and clean, with light colored bricks gleaming from being freshly washed.  Nobles, common folk and adventurers alike move about in a steady stream as they make their way through town.  The Market Square to the south is a common destination, which locals consider to be the heart of the city.",
+      "to_room_name": "South Temple Street",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:South Temple Street|||The newly renovated Temple Street is wide and clean, with light colored bricks gleaming from being freshly washed.  Nobles, common folk and adventurers alike move about in a steady stream as they make their way through town.  The Market Square to the south is a common destination, which locals consider to be the heart of the city.",
+      "from_room_name": "South Temple Street",
+      "from_room_description": "The newly renovated Temple Street is wide and clean, with light colored bricks gleaming from being freshly washed.  Nobles, common folk and adventurers alike move about in a steady stream as they make their way through town.  The Market Square to the south is a common destination, which locals consider to be the heart of the city.",
+      "direction": "north",
+      "to_room_key": "portal:dehimpqr",
+      "to_room_name": "South Temple Street",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:ejmpqr",
+      "from_room_name": "Main Street East",
+      "from_room_description": "You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. To the west is a beautiful fountain of an angel which is like a shining beacon guiding all to the Market Square of Midgaard. North of you the Midgaard Jewelers is open to everyone at all times. Travelers can continue east towards the gates of Midgaard by following the well lit path of magical lanterns.",
+      "direction": "south",
+      "to_room_key": "namedesc:Main Street East|||You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. To the west is a beautiful fountain of an angel which is like a shining beacon guiding all to the Market Square of Midgaard. North of you the Midgaard Jewelers is open to everyone at all times. Travelers can continue east towards the gates of Midgaard by following the well lit path of magical lanterns.",
+      "to_room_name": "Main Street East",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Main Street East|||You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. To the west is a beautiful fountain of an angel which is like a shining beacon guiding all to the Market Square of Midgaard. North of you the Midgaard Jewelers is open to everyone at all times. Travelers can continue east towards the gates of Midgaard by following the well lit path of magical lanterns.",
+      "from_room_name": "Main Street East",
+      "from_room_description": "You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. To the west is a beautiful fountain of an angel which is like a shining beacon guiding all to the Market Square of Midgaard. North of you the Midgaard Jewelers is open to everyone at all times. Travelers can continue east towards the gates of Midgaard by following the well lit path of magical lanterns.",
+      "direction": "north",
+      "to_room_key": "portal:ejmpqr",
+      "to_room_name": "Main Street East",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:ejmpqr",
+      "from_room_name": "Main Street East",
+      "from_room_description": "You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. To the west is a beautiful fountain of an angel which is like a shining beacon guiding all to the Market Square of Midgaard. North of you the Midgaard Jewelers is open to everyone at all times. Travelers can continue east towards the gates of Midgaard by following the well lit path of magical lanterns.",
+      "direction": "north",
+      "to_room_key": "namedesc:Main Street East|||You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. To the west is a beautiful fountain of an angel which is like a shining beacon guiding all to the Market Square of Midgaard. North of you the Midgaard Jewelers is open to everyone at all times. Travelers can continue east towards the gates of Midgaard by following the well lit path of magical lanterns.",
+      "to_room_name": "Main Street East",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Main Street East|||You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. To the west is a beautiful fountain of an angel which is like a shining beacon guiding all to the Market Square of Midgaard. North of you the Midgaard Jewelers is open to everyone at all times. Travelers can continue east towards the gates of Midgaard by following the well lit path of magical lanterns.",
+      "from_room_name": "Main Street East",
+      "from_room_description": "You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. To the west is a beautiful fountain of an angel which is like a shining beacon guiding all to the Market Square of Midgaard. North of you the Midgaard Jewelers is open to everyone at all times. Travelers can continue east towards the gates of Midgaard by following the well lit path of magical lanterns.",
+      "direction": "south",
+      "to_room_key": "portal:ejmpqr",
+      "to_room_name": "Main Street East",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:cdgjmpqr",
+      "from_room_name": "Main Street East",
+      "from_room_description": "You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. North of here is the Pawn Shop, a large sign hangs above the doorway of the shop. The road south leads to a small circular arena where you spot several armored warriors engaged in the rugged training needed to become a fighter. Just to the east is the East Gate of Midgaard.",
+      "direction": "south",
+      "to_room_key": "namedesc:Main Street East|||You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. North of here is the Pawn Shop, a large sign hangs above the doorway of the shop. The road south leads to a small circular arena where you spot several armored warriors engaged in the rugged training needed to become a fighter. Just to the east is the East Gate of Midgaard.",
+      "to_room_name": "Main Street East",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Main Street East|||You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. North of here is the Pawn Shop, a large sign hangs above the doorway of the shop. The road south leads to a small circular arena where you spot several armored warriors engaged in the rugged training needed to become a fighter. Just to the east is the East Gate of Midgaard.",
+      "from_room_name": "Main Street East",
+      "from_room_description": "You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. North of here is the Pawn Shop, a large sign hangs above the doorway of the shop. The road south leads to a small circular arena where you spot several armored warriors engaged in the rugged training needed to become a fighter. Just to the east is the East Gate of Midgaard.",
+      "direction": "north",
+      "to_room_key": "portal:cdgjmpqr",
+      "to_room_name": "Main Street East",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:cdgjmpqr",
+      "from_room_name": "Main Street East",
+      "from_room_description": "You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. North of here is the Pawn Shop, a large sign hangs above the doorway of the shop. The road south leads to a small circular arena where you spot several armored warriors engaged in the rugged training needed to become a fighter. Just to the east is the East Gate of Midgaard.",
+      "direction": "north",
+      "to_room_key": "namedesc:Main Street East|||You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. North of here is the Pawn Shop, a large sign hangs above the doorway of the shop. The road south leads to a small circular arena where you spot several armored warriors engaged in the rugged training needed to become a fighter. Just to the east is the East Gate of Midgaard.",
+      "to_room_name": "Main Street East",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Main Street East|||You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. North of here is the Pawn Shop, a large sign hangs above the doorway of the shop. The road south leads to a small circular arena where you spot several armored warriors engaged in the rugged training needed to become a fighter. Just to the east is the East Gate of Midgaard.",
+      "from_room_name": "Main Street East",
+      "from_room_description": "You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. North of here is the Pawn Shop, a large sign hangs above the doorway of the shop. The road south leads to a small circular arena where you spot several armored warriors engaged in the rugged training needed to become a fighter. Just to the east is the East Gate of Midgaard.",
+      "direction": "south",
+      "to_room_key": "portal:cdgjmpqr",
+      "to_room_name": "Main Street East",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:dhjmpqr",
+      "from_room_name": "Inside the East Gate of Midgaard",
+      "from_room_description": "You are by two large towers that have been built into the city wall. Connecting the towers high up in the air is a narrow walkway that the guards use to cross from one tower to the next.  Between the towers is a heavy iron gate that is used to keep the enemies of Midgaard out.  Along the top of the towers, huge magical fires burn providing a bright light even on the darkest of the nights. Main Street begins to the west, the Midgaard Bank can be found to the north. Directly south is a large, magical spire while the road to the east leads out of Midgaard and towards a towering forest.",
+      "direction": "south",
+      "to_room_key": "namedesc:Inside the East Gate of Midgaard|||You are by two large towers that have been built into the city wall. Connecting the towers high up in the air is a narrow walkway that the guards use to cross from one tower to the next.  Between the towers is a heavy iron gate that is used to keep the enemies of Midgaard out.  Along the top of the towers, huge magical fires burn providing a bright light even on the darkest of the nights. Main Street begins to the west, the Midgaard Bank can be found to the north. Directly south is a large, magical spire while the road to the east leads out of Midgaard and towards a towering forest.",
+      "to_room_name": "Inside the East Gate of Midgaard",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Inside the East Gate of Midgaard|||You are by two large towers that have been built into the city wall. Connecting the towers high up in the air is a narrow walkway that the guards use to cross from one tower to the next.  Between the towers is a heavy iron gate that is used to keep the enemies of Midgaard out.  Along the top of the towers, huge magical fires burn providing a bright light even on the darkest of the nights. Main Street begins to the west, the Midgaard Bank can be found to the north. Directly south is a large, magical spire while the road to the east leads out of Midgaard and towards a towering forest.",
+      "from_room_name": "Inside the East Gate of Midgaard",
+      "from_room_description": "You are by two large towers that have been built into the city wall. Connecting the towers high up in the air is a narrow walkway that the guards use to cross from one tower to the next.  Between the towers is a heavy iron gate that is used to keep the enemies of Midgaard out.  Along the top of the towers, huge magical fires burn providing a bright light even on the darkest of the nights. Main Street begins to the west, the Midgaard Bank can be found to the north. Directly south is a large, magical spire while the road to the east leads out of Midgaard and towards a towering forest.",
+      "direction": "north",
+      "to_room_key": "portal:dhjmpqr",
+      "to_room_name": "Inside the East Gate of Midgaard",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:degikmpqr",
+      "from_room_name": "Atop the Great Spire",
+      "from_room_description": "Ancient relics of all kinds hang upon the wall, roughly hewn and polished stones lay beneath your feet.  All trophies of the Great War and the skirmishes that came after, they stand as a reminder of the past and present to all that visit this great room The future is what those that live make of it.  You dare not touch anything for fear that some great and unseen power may strike you down rather you wish that one day you may add to this collection of memories. To the north a pair of eyes watch your every move and mark the entrance to the Mage's Guild.",
+      "direction": "south",
+      "to_room_key": "namedesc:Atop the Great Spire|||Ancient relics of all kinds hang upon the wall, roughly hewn and polished stones lay beneath your feet.  All trophies of the Great War and the skirmishes that came after, they stand as a reminder of the past and present to all that visit this great room The future is what those that live make of it.  You dare not touch anything for fear that some great and unseen power may strike you down rather you wish that one day you may add to this collection of memories. To the north a pair of eyes watch your every move and mark the entrance to the Mage's Guild.",
+      "to_room_name": "Atop the Great Spire",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Atop the Great Spire|||Ancient relics of all kinds hang upon the wall, roughly hewn and polished stones lay beneath your feet.  All trophies of the Great War and the skirmishes that came after, they stand as a reminder of the past and present to all that visit this great room The future is what those that live make of it.  You dare not touch anything for fear that some great and unseen power may strike you down rather you wish that one day you may add to this collection of memories. To the north a pair of eyes watch your every move and mark the entrance to the Mage's Guild.",
+      "from_room_name": "Atop the Great Spire",
+      "from_room_description": "Ancient relics of all kinds hang upon the wall, roughly hewn and polished stones lay beneath your feet.  All trophies of the Great War and the skirmishes that came after, they stand as a reminder of the past and present to all that visit this great room The future is what those that live make of it.  You dare not touch anything for fear that some great and unseen power may strike you down rather you wish that one day you may add to this collection of memories. To the north a pair of eyes watch your every move and mark the entrance to the Mage's Guild.",
+      "direction": "north",
+      "to_room_key": "portal:degikmpqr",
+      "to_room_name": "Atop the Great Spire",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:cdeikmpqr",
+      "from_room_name": "At the Bottom of the Great Spire",
+      "from_room_description": "The arched entrance to the spire opens up to you from the street to the east. Large enough to accommodate a young dragon if needed its cold grey stones stand strong, remnants of an age long gone.  The Great Spire has stood watch over the city for aeons, its polished white stones taken from a distant land at the end of the Great War.  A solid wooden staircase leads up to the top of the spire, the spindles that connect the rails to the floor all appear to be hand carved from a single great tree.",
+      "direction": "down",
+      "to_room_key": "namedesc:At the Bottom of the Great Spire|||The arched entrance to the spire opens up to you from the street to the east. Large enough to accommodate a young dragon if needed its cold grey stones stand strong, remnants of an age long gone.  The Great Spire has stood watch over the city for aeons, its polished white stones taken from a distant land at the end of the Great War.  A solid wooden staircase leads up to the top of the spire, the spindles that connect the rails to the floor all appear to be hand carved from a single great tree.",
+      "to_room_name": "At the Bottom of the Great Spire",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:At the Bottom of the Great Spire|||The arched entrance to the spire opens up to you from the street to the east. Large enough to accommodate a young dragon if needed its cold grey stones stand strong, remnants of an age long gone.  The Great Spire has stood watch over the city for aeons, its polished white stones taken from a distant land at the end of the Great War.  A solid wooden staircase leads up to the top of the spire, the spindles that connect the rails to the floor all appear to be hand carved from a single great tree.",
+      "from_room_name": "At the Bottom of the Great Spire",
+      "from_room_description": "The arched entrance to the spire opens up to you from the street to the east. Large enough to accommodate a young dragon if needed its cold grey stones stand strong, remnants of an age long gone.  The Great Spire has stood watch over the city for aeons, its polished white stones taken from a distant land at the end of the Great War.  A solid wooden staircase leads up to the top of the spire, the spindles that connect the rails to the floor all appear to be hand carved from a single great tree.",
+      "direction": "up",
+      "to_room_key": "portal:cdeikmpqr",
+      "to_room_name": "At the Bottom of the Great Spire",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:dhjmpqr",
+      "from_room_name": "Inside the East Gate of Midgaard",
+      "from_room_description": "You are by two large towers that have been built into the city wall. Connecting the towers high up in the air is a narrow walkway that the guards use to cross from one tower to the next.  Between the towers is a heavy iron gate that is used to keep the enemies of Midgaard out.  Along the top of the towers, huge magical fires burn providing a bright light even on the darkest of the nights. Main Street begins to the west, the Midgaard Bank can be found to the north. Directly south is a large, magical spire while the road to the east leads out of Midgaard and towards a towering forest.",
+      "direction": "north",
+      "to_room_key": "namedesc:Inside the East Gate of Midgaard|||You are by two large towers that have been built into the city wall. Connecting the towers high up in the air is a narrow walkway that the guards use to cross from one tower to the next.  Between the towers is a heavy iron gate that is used to keep the enemies of Midgaard out.  Along the top of the towers, huge magical fires burn providing a bright light even on the darkest of the nights. Main Street begins to the west, the Midgaard Bank can be found to the north. Directly south is a large, magical spire while the road to the east leads out of Midgaard and towards a towering forest.",
+      "to_room_name": "Inside the East Gate of Midgaard",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Inside the East Gate of Midgaard|||You are by two large towers that have been built into the city wall. Connecting the towers high up in the air is a narrow walkway that the guards use to cross from one tower to the next.  Between the towers is a heavy iron gate that is used to keep the enemies of Midgaard out.  Along the top of the towers, huge magical fires burn providing a bright light even on the darkest of the nights. Main Street begins to the west, the Midgaard Bank can be found to the north. Directly south is a large, magical spire while the road to the east leads out of Midgaard and towards a towering forest.",
+      "from_room_name": "Inside the East Gate of Midgaard",
+      "from_room_description": "You are by two large towers that have been built into the city wall. Connecting the towers high up in the air is a narrow walkway that the guards use to cross from one tower to the next.  Between the towers is a heavy iron gate that is used to keep the enemies of Midgaard out.  Along the top of the towers, huge magical fires burn providing a bright light even on the darkest of the nights. Main Street begins to the west, the Midgaard Bank can be found to the north. Directly south is a large, magical spire while the road to the east leads out of Midgaard and towards a towering forest.",
+      "direction": "south",
+      "to_room_key": "portal:dhjmpqr",
+      "to_room_name": "Inside the East Gate of Midgaard",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:cdgjmpqr",
+      "from_room_name": "Main Street East",
+      "from_room_description": "You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. North of here is the Pawn Shop, a large sign hangs above the doorway of the shop. The road south leads to a small circular arena where you spot several armored warriors engaged in the rugged training needed to become a fighter. Just to the east is the East Gate of Midgaard.",
+      "direction": "west",
+      "to_room_key": "namedesc:Main Street East|||You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. North of here is the Pawn Shop, a large sign hangs above the doorway of the shop. The road south leads to a small circular arena where you spot several armored warriors engaged in the rugged training needed to become a fighter. Just to the east is the East Gate of Midgaard.",
+      "to_room_name": "Main Street East",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Main Street East|||You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. North of here is the Pawn Shop, a large sign hangs above the doorway of the shop. The road south leads to a small circular arena where you spot several armored warriors engaged in the rugged training needed to become a fighter. Just to the east is the East Gate of Midgaard.",
+      "from_room_name": "Main Street East",
+      "from_room_description": "You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. North of here is the Pawn Shop, a large sign hangs above the doorway of the shop. The road south leads to a small circular arena where you spot several armored warriors engaged in the rugged training needed to become a fighter. Just to the east is the East Gate of Midgaard.",
+      "direction": "east",
+      "to_room_key": "portal:cdgjmpqr",
+      "to_room_name": "Main Street East",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:ejmpqr",
+      "from_room_name": "Main Street East",
+      "from_room_description": "You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. To the west is a beautiful fountain of an angel which is like a shining beacon guiding all to the Market Square of Midgaard. North of you the Midgaard Jewelers is open to everyone at all times. Travelers can continue east towards the gates of Midgaard by following the well lit path of magical lanterns.",
+      "direction": "west",
+      "to_room_key": "namedesc:Main Street East|||You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. To the west is a beautiful fountain of an angel which is like a shining beacon guiding all to the Market Square of Midgaard. North of you the Midgaard Jewelers is open to everyone at all times. Travelers can continue east towards the gates of Midgaard by following the well lit path of magical lanterns.",
+      "to_room_name": "Main Street East",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Main Street East|||You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. To the west is a beautiful fountain of an angel which is like a shining beacon guiding all to the Market Square of Midgaard. North of you the Midgaard Jewelers is open to everyone at all times. Travelers can continue east towards the gates of Midgaard by following the well lit path of magical lanterns.",
+      "from_room_name": "Main Street East",
+      "from_room_description": "You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. To the west is a beautiful fountain of an angel which is like a shining beacon guiding all to the Market Square of Midgaard. North of you the Midgaard Jewelers is open to everyone at all times. Travelers can continue east towards the gates of Midgaard by following the well lit path of magical lanterns.",
+      "direction": "east",
+      "to_room_key": "portal:ejmpqr",
+      "to_room_name": "Main Street East",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:dehimpqr",
+      "from_room_name": "South Temple Street",
+      "from_room_description": "The newly renovated Temple Street is wide and clean, with light colored bricks gleaming from being freshly washed.  Nobles, common folk and adventurers alike move about in a steady stream as they make their way through town.  The Market Square to the south is a common destination, which locals consider to be the heart of the city.",
+      "direction": "north",
+      "to_room_key": "namedesc:South Temple Street|||The newly renovated Temple Street is wide and clean, with light colored bricks gleaming from being freshly washed.  Nobles, common folk and adventurers alike move about in a steady stream as they make their way through town.  The Market Square to the south is a common destination, which locals consider to be the heart of the city.",
+      "to_room_name": "South Temple Street",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:South Temple Street|||The newly renovated Temple Street is wide and clean, with light colored bricks gleaming from being freshly washed.  Nobles, common folk and adventurers alike move about in a steady stream as they make their way through town.  The Market Square to the south is a common destination, which locals consider to be the heart of the city.",
+      "from_room_name": "South Temple Street",
+      "from_room_description": "The newly renovated Temple Street is wide and clean, with light colored bricks gleaming from being freshly washed.  Nobles, common folk and adventurers alike move about in a steady stream as they make their way through town.  The Market Square to the south is a common destination, which locals consider to be the heart of the city.",
+      "direction": "south",
+      "to_room_key": "portal:dehimpqr",
+      "to_room_name": "South Temple Street",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:cghjmpqr",
+      "from_room_name": "Main Street West",
+      "from_room_description": "You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. To the east is a beautiful fountain of an angel which is like a shining beacon guiding all to the Market Square of Midgaard. To the north is the busy General Store while south of here is the local Armory. Travelers heading west on Main Street will eventually find themselves at the western gates of Midgaard.",
+      "direction": "south",
+      "to_room_key": "namedesc:Main Street West|||You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. To the east is a beautiful fountain of an angel which is like a shining beacon guiding all to the Market Square of Midgaard. To the north is the busy General Store while south of here is the local Armory. Travelers heading west on Main Street will eventually find themselves at the western gates of Midgaard.",
+      "to_room_name": "Main Street West",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Main Street West|||You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. To the east is a beautiful fountain of an angel which is like a shining beacon guiding all to the Market Square of Midgaard. To the north is the busy General Store while south of here is the local Armory. Travelers heading west on Main Street will eventually find themselves at the western gates of Midgaard.",
+      "from_room_name": "Main Street West",
+      "from_room_description": "You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. To the east is a beautiful fountain of an angel which is like a shining beacon guiding all to the Market Square of Midgaard. To the north is the busy General Store while south of here is the local Armory. Travelers heading west on Main Street will eventually find themselves at the western gates of Midgaard.",
+      "direction": "north",
+      "to_room_key": "portal:cghjmpqr",
+      "to_room_name": "Main Street West",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:cghjmpqr",
+      "from_room_name": "Main Street West",
+      "from_room_description": "You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. To the east is a beautiful fountain of an angel which is like a shining beacon guiding all to the Market Square of Midgaard. To the north is the busy General Store while south of here is the local Armory. Travelers heading west on Main Street will eventually find themselves at the western gates of Midgaard.",
+      "direction": "east",
+      "to_room_key": "namedesc:Main Street West|||You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. To the east is a beautiful fountain of an angel which is like a shining beacon guiding all to the Market Square of Midgaard. To the north is the busy General Store while south of here is the local Armory. Travelers heading west on Main Street will eventually find themselves at the western gates of Midgaard.",
+      "to_room_name": "Main Street West",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Main Street West|||You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. To the east is a beautiful fountain of an angel which is like a shining beacon guiding all to the Market Square of Midgaard. To the north is the busy General Store while south of here is the local Armory. Travelers heading west on Main Street will eventually find themselves at the western gates of Midgaard.",
+      "from_room_name": "Main Street West",
+      "from_room_description": "You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. To the east is a beautiful fountain of an angel which is like a shining beacon guiding all to the Market Square of Midgaard. To the north is the busy General Store while south of here is the local Armory. Travelers heading west on Main Street will eventually find themselves at the western gates of Midgaard.",
+      "direction": "west",
+      "to_room_key": "portal:cghjmpqr",
+      "to_room_name": "Main Street West",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:ijmpqr",
+      "from_room_name": "Main Street West",
+      "from_room_description": "You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. The Main Street continues eastwards towards the Market Square and just west of here are the iron gates of Midgaard. To the south you make out the distinct sounds of weapons being forged by a blacksmith, while just north of where you stand is a well known magic shop.",
+      "direction": "west",
+      "to_room_key": "namedesc:Main Street West|||You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. The Main Street continues eastwards towards the Market Square and just west of here are the iron gates of Midgaard. To the south you make out the distinct sounds of weapons being forged by a blacksmith, while just north of where you stand is a well known magic shop.",
+      "to_room_name": "Main Street West",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Main Street West|||You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. The Main Street continues eastwards towards the Market Square and just west of here are the iron gates of Midgaard. To the south you make out the distinct sounds of weapons being forged by a blacksmith, while just north of where you stand is a well known magic shop.",
+      "from_room_name": "Main Street West",
+      "from_room_description": "You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. The Main Street continues eastwards towards the Market Square and just west of here are the iron gates of Midgaard. To the south you make out the distinct sounds of weapons being forged by a blacksmith, while just north of where you stand is a well known magic shop.",
+      "direction": "east",
+      "to_room_key": "portal:ijmpqr",
+      "to_room_name": "Main Street West",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:ijmpqr",
+      "from_room_name": "Main Street West",
+      "from_room_description": "You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. The Main Street continues eastwards towards the Market Square and just west of here are the iron gates of Midgaard. To the south you make out the distinct sounds of weapons being forged by a blacksmith, while just north of where you stand is a well known magic shop.",
+      "direction": "south",
+      "to_room_key": "namedesc:Main Street West|||You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. The Main Street continues eastwards towards the Market Square and just west of here are the iron gates of Midgaard. To the south you make out the distinct sounds of weapons being forged by a blacksmith, while just north of where you stand is a well known magic shop.",
+      "to_room_name": "Main Street West",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Main Street West|||You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. The Main Street continues eastwards towards the Market Square and just west of here are the iron gates of Midgaard. To the south you make out the distinct sounds of weapons being forged by a blacksmith, while just north of where you stand is a well known magic shop.",
+      "from_room_name": "Main Street West",
+      "from_room_description": "You are on the Main Street in the City of Midgaard.  This street is the busiest in all the known realms for Midgaard is the central trade city.  People from all civilizations can be seen wandering the streets, stocking up on supplies, and bartering with one another.  Day or night the stores here are always open, truly the city that never sleeps. The Main Street continues eastwards towards the Market Square and just west of here are the iron gates of Midgaard. To the south you make out the distinct sounds of weapons being forged by a blacksmith, while just north of where you stand is a well known magic shop.",
+      "direction": "north",
+      "to_room_key": "portal:ijmpqr",
+      "to_room_name": "Main Street West",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:defjknpqr",
+      "from_room_name": "Outside the Western Gate",
+      "from_room_description": "You stand outside two large towers that have been built into the city wall and house the massive iron gates protecting the city.  Directly west of here, the road leads out of Midgaard and into the open plains.  On the horizon to the north, south, and west the faint outline of trees and a river that snakes through it all can be seen.  Seeing beyond that is impossible.",
+      "direction": "east",
+      "to_room_key": "namedesc:Outside the Western Gate|||You stand outside two large towers that have been built into the city wall and house the massive iron gates protecting the city.  Directly west of here, the road leads out of Midgaard and into the open plains.  On the horizon to the north, south, and west the faint outline of trees and a river that snakes through it all can be seen.  Seeing beyond that is impossible.",
+      "to_room_name": "Outside the Western Gate",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Outside the Western Gate|||You stand outside two large towers that have been built into the city wall and house the massive iron gates protecting the city.  Directly west of here, the road leads out of Midgaard and into the open plains.  On the horizon to the north, south, and west the faint outline of trees and a river that snakes through it all can be seen.  Seeing beyond that is impossible.",
+      "from_room_name": "Outside the Western Gate",
+      "from_room_description": "You stand outside two large towers that have been built into the city wall and house the massive iron gates protecting the city.  Directly west of here, the road leads out of Midgaard and into the open plains.  On the horizon to the north, south, and west the faint outline of trees and a river that snakes through it all can be seen.  Seeing beyond that is impossible.",
+      "direction": "west",
+      "to_room_key": "portal:defjknpqr",
+      "to_room_name": "Outside the Western Gate",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:cdefijmpqr",
+      "from_room_name": "Inside the West Gate of Midgaard",
+      "from_room_description": "You are by two large towers that have been built into the city wall. Connecting the towers high up in the air is a narrow walkway that the guards use to cross from one tower to the next.  Between the towers is a heavy iron gate that is used to keep the enemies of Midgaard out.  Along the top of the towers, huge magical fires burn providing a bright light even on the darkest of the nights. Main Street begins to the east, Wall Road begins to the south, and to the north a small dirt path runs along the side of the wall.  As far as beyond the gate, gently rolling hills converge with river and forest.",
+      "direction": "east",
+      "to_room_key": "namedesc:Inside the West Gate of Midgaard|||You are by two large towers that have been built into the city wall. Connecting the towers high up in the air is a narrow walkway that the guards use to cross from one tower to the next.  Between the towers is a heavy iron gate that is used to keep the enemies of Midgaard out.  Along the top of the towers, huge magical fires burn providing a bright light even on the darkest of the nights. Main Street begins to the east, Wall Road begins to the south, and to the north a small dirt path runs along the side of the wall.  As far as beyond the gate, gently rolling hills converge with river and forest.",
+      "to_room_name": "Inside the West Gate of Midgaard",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Inside the West Gate of Midgaard|||You are by two large towers that have been built into the city wall. Connecting the towers high up in the air is a narrow walkway that the guards use to cross from one tower to the next.  Between the towers is a heavy iron gate that is used to keep the enemies of Midgaard out.  Along the top of the towers, huge magical fires burn providing a bright light even on the darkest of the nights. Main Street begins to the east, Wall Road begins to the south, and to the north a small dirt path runs along the side of the wall.  As far as beyond the gate, gently rolling hills converge with river and forest.",
+      "from_room_name": "Inside the West Gate of Midgaard",
+      "from_room_description": "You are by two large towers that have been built into the city wall. Connecting the towers high up in the air is a narrow walkway that the guards use to cross from one tower to the next.  Between the towers is a heavy iron gate that is used to keep the enemies of Midgaard out.  Along the top of the towers, huge magical fires burn providing a bright light even on the darkest of the nights. Main Street begins to the east, Wall Road begins to the south, and to the north a small dirt path runs along the side of the wall.  As far as beyond the gate, gently rolling hills converge with river and forest.",
+      "direction": "west",
+      "to_room_key": "portal:cdefijmpqr",
+      "to_room_name": "Inside the West Gate of Midgaard",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:dfgijnpqr",
+      "from_room_name": "A Dirt Path",
+      "from_room_description": "Along the inner side of the eastern city wall is a seldom traveled dirt path, nestled among a grove of young oak trees.  The trail winds around low shrubbery and hedgerows making it difficult to follow.  The faint sound of rustling leaves can be heard as a cool breezes dances lightly through the trees, otherwise the surroundings are stangely silent.",
+      "direction": "west",
+      "to_room_key": "namedesc:A Dirt Path|||Along the inner side of the eastern city wall is a seldom traveled dirt path, nestled among a grove of young oak trees.  The trail winds around low shrubbery and hedgerows making it difficult to follow.  The faint sound of rustling leaves can be heard as a cool breezes dances lightly through the trees, otherwise the surroundings are stangely silent.",
+      "to_room_name": "A Dirt Path",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:A Dirt Path|||Along the inner side of the eastern city wall is a seldom traveled dirt path, nestled among a grove of young oak trees.  The trail winds around low shrubbery and hedgerows making it difficult to follow.  The faint sound of rustling leaves can be heard as a cool breezes dances lightly through the trees, otherwise the surroundings are stangely silent.",
+      "from_room_name": "A Dirt Path",
+      "from_room_description": "Along the inner side of the eastern city wall is a seldom traveled dirt path, nestled among a grove of young oak trees.  The trail winds around low shrubbery and hedgerows making it difficult to follow.  The faint sound of rustling leaves can be heard as a cool breezes dances lightly through the trees, otherwise the surroundings are stangely silent.",
+      "direction": "east",
+      "to_room_key": "portal:dfgijnpqr",
+      "to_room_name": "A Dirt Path",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:cdefijmpqr",
+      "from_room_name": "Inside the West Gate of Midgaard",
+      "from_room_description": "You are by two large towers that have been built into the city wall. Connecting the towers high up in the air is a narrow walkway that the guards use to cross from one tower to the next.  Between the towers is a heavy iron gate that is used to keep the enemies of Midgaard out.  Along the top of the towers, huge magical fires burn providing a bright light even on the darkest of the nights. Main Street begins to the east, Wall Road begins to the south, and to the north a small dirt path runs along the side of the wall.  As far as beyond the gate, gently rolling hills converge with river and forest.",
+      "direction": "south",
+      "to_room_key": "namedesc:Inside the West Gate of Midgaard|||You are by two large towers that have been built into the city wall. Connecting the towers high up in the air is a narrow walkway that the guards use to cross from one tower to the next.  Between the towers is a heavy iron gate that is used to keep the enemies of Midgaard out.  Along the top of the towers, huge magical fires burn providing a bright light even on the darkest of the nights. Main Street begins to the east, Wall Road begins to the south, and to the north a small dirt path runs along the side of the wall.  As far as beyond the gate, gently rolling hills converge with river and forest.",
+      "to_room_name": "Inside the West Gate of Midgaard",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Inside the West Gate of Midgaard|||You are by two large towers that have been built into the city wall. Connecting the towers high up in the air is a narrow walkway that the guards use to cross from one tower to the next.  Between the towers is a heavy iron gate that is used to keep the enemies of Midgaard out.  Along the top of the towers, huge magical fires burn providing a bright light even on the darkest of the nights. Main Street begins to the east, Wall Road begins to the south, and to the north a small dirt path runs along the side of the wall.  As far as beyond the gate, gently rolling hills converge with river and forest.",
+      "from_room_name": "Inside the West Gate of Midgaard",
+      "from_room_description": "You are by two large towers that have been built into the city wall. Connecting the towers high up in the air is a narrow walkway that the guards use to cross from one tower to the next.  Between the towers is a heavy iron gate that is used to keep the enemies of Midgaard out.  Along the top of the towers, huge magical fires burn providing a bright light even on the darkest of the nights. Main Street begins to the east, Wall Road begins to the south, and to the north a small dirt path runs along the side of the wall.  As far as beyond the gate, gently rolling hills converge with river and forest.",
+      "direction": "north",
+      "to_room_key": "portal:cdefijmpqr",
+      "to_room_name": "Inside the West Gate of Midgaard",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:dfghijlmpqr",
+      "from_room_name": "Wall Road",
+      "from_room_description": "You are at the northern end of Wall Road.  Farther to north you can see the Western Gate of Midgaard.  The street is quite busy for it is a popular route taken by travelers to enter the Southern Midgaard.  From the tall city wall that runs parallel to the road along its western edge, it is quite easy to figure out where the name for this street came from.  Along the street can be found tall poles with magical lanterns, provided by the sorcerer's guild, that glow with a bright light when it gets dark.  The street continues south towards Southern Midgaard.",
+      "direction": "south",
+      "to_room_key": "namedesc:Wall Road|||You are on wall road that runs north-south through western Midgaard.  The street is quite busy for it is a popular route taken by travellers to enter the Southern Midgaard.  From the tall city wall that runs parallel to the road along its western edge, it is quite easy to figure out where the name for this street came from.  Along the street can be found tall poles with magical lanterns, provided by the sorcerer's guild, that glow with a bright light when it gets dark.  The street continues north towards the Western Gate and south towards Southern Midgaard.",
+      "to_room_name": "Wall Road",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Wall Road|||You are on wall road that runs north-south through western Midgaard.  The street is quite busy for it is a popular route taken by travellers to enter the Southern Midgaard.  From the tall city wall that runs parallel to the road along its western edge, it is quite easy to figure out where the name for this street came from.  Along the street can be found tall poles with magical lanterns, provided by the sorcerer's guild, that glow with a bright light when it gets dark.  The street continues north towards the Western Gate and south towards Southern Midgaard.",
+      "from_room_name": "Wall Road",
+      "from_room_description": "You are on wall road that runs north-south through western Midgaard.  The street is quite busy for it is a popular route taken by travellers to enter the Southern Midgaard.  From the tall city wall that runs parallel to the road along its western edge, it is quite easy to figure out where the name for this street came from.  Along the street can be found tall poles with magical lanterns, provided by the sorcerer's guild, that glow with a bright light when it gets dark.  The street continues north towards the Western Gate and south towards Southern Midgaard.",
+      "direction": "north",
+      "to_room_key": "portal:dfghijlmpqr",
+      "to_room_name": "Wall Road",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:cdeghlmpqr",
+      "from_room_name": "The Dump",
+      "from_room_description": "You find yourself in the dump with garbage up to your knees.  This is where all the people of Midgaard drop their garbage.  Looking across the huge mound, ends up.  You can't say for sure how long this garbage has been here, but it gives off a puke green light that softly illuminates the area, even during the day. The dump exits north back to the alley.  After some searching through the garbage, you can see a large junction of pipes which looks like the entrance to the sewers under Midgaard.",
+      "direction": "up",
+      "to_room_key": "namedesc:The Dump|||You find yourself in the dump with garbage up to your knees.  This is where all the people of Midgaard drop their garbage.  Looking across the huge mound, ends up.  You can't say for sure how long this garbage has been here, but it gives off a puke green light that softly illuminates the area, even during the day. The dump exits north back to the alley.  After some searching through the garbage, you can see a large junction of pipes which looks like the entrance to the sewers under Midgaard.",
+      "to_room_name": "The Dump",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:The Dump|||You find yourself in the dump with garbage up to your knees.  This is where all the people of Midgaard drop their garbage.  Looking across the huge mound, ends up.  You can't say for sure how long this garbage has been here, but it gives off a puke green light that softly illuminates the area, even during the day. The dump exits north back to the alley.  After some searching through the garbage, you can see a large junction of pipes which looks like the entrance to the sewers under Midgaard.",
+      "from_room_name": "The Dump",
+      "from_room_description": "You find yourself in the dump with garbage up to your knees.  This is where all the people of Midgaard drop their garbage.  Looking across the huge mound, ends up.  You can't say for sure how long this garbage has been here, but it gives off a puke green light that softly illuminates the area, even during the day. The dump exits north back to the alley.  After some searching through the garbage, you can see a large junction of pipes which looks like the entrance to the sewers under Midgaard.",
+      "direction": "down",
+      "to_room_key": "portal:cdeghlmpqr",
+      "to_room_name": "The Dump",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:cfglmpqr",
+      "from_room_name": "Western End of Poor Alley",
+      "from_room_description": "You are at the western end of a small alley connecting the Common Square to the Wall Road.  The buildings are built close along the road making the alley indeed narrow.  As with most alleys, the poor and the homeless have collected here. A foul stench permeates from the south. The alley continues to the east and ends at Wall Road to the west.",
+      "direction": "north",
+      "to_room_key": "namedesc:Western End of Poor Alley|||You are at the western end of a small alley connecting the Common Square to the Wall Road.  The buildings are built close along the road making the alley indeed narrow.  As with most alleys, the poor and the homeless have collected here. A foul stench permeates from the south. The alley continues to the east and ends at Wall Road to the west.",
+      "to_room_name": "Western End of Poor Alley",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Western End of Poor Alley|||You are at the western end of a small alley connecting the Common Square to the Wall Road.  The buildings are built close along the road making the alley indeed narrow.  As with most alleys, the poor and the homeless have collected here. A foul stench permeates from the south. The alley continues to the east and ends at Wall Road to the west.",
+      "from_room_name": "Western End of Poor Alley",
+      "from_room_description": "You are at the western end of a small alley connecting the Common Square to the Wall Road.  The buildings are built close along the road making the alley indeed narrow.  As with most alleys, the poor and the homeless have collected here. A foul stench permeates from the south. The alley continues to the east and ends at Wall Road to the west.",
+      "direction": "south",
+      "to_room_key": "portal:cfglmpqr",
+      "to_room_name": "Western End of Poor Alley",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:ghjkmpqr",
+      "from_room_name": "Northern Bazaar",
+      "from_room_description": "Merchant selling chants echo above the excited buzz of buyers.  Here, all kinds of goods can be purchased and sold for profit and never the same thing two days in a row.  Along the street can be found tall poles with magical lanterns, provided by the sorcerer's guild, that glow with a bright light when it gets dark.  Market Square lies to the north and the Common Square can be seen to the south.",
+      "direction": "south",
+      "to_room_key": "namedesc:Northern Bazaar|||Merchant selling chants echo above the excited buzz of buyers.  Here, all kinds of goods can be purchased and sold for profit and never the same thing two days in a row.  Along the street can be found tall poles with magical lanterns, provided by the sorcerer's guild, that glow with a bright light when it gets dark.  Market Square lies to the north and the Common Square can be seen to the south.",
+      "to_room_name": "Northern Bazaar",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Northern Bazaar|||Merchant selling chants echo above the excited buzz of buyers.  Here, all kinds of goods can be purchased and sold for profit and never the same thing two days in a row.  Along the street can be found tall poles with magical lanterns, provided by the sorcerer's guild, that glow with a bright light when it gets dark.  Market Square lies to the north and the Common Square can be seen to the south.",
+      "from_room_name": "Northern Bazaar",
+      "from_room_description": "Merchant selling chants echo above the excited buzz of buyers.  Here, all kinds of goods can be purchased and sold for profit and never the same thing two days in a row.  Along the street can be found tall poles with magical lanterns, provided by the sorcerer's guild, that glow with a bright light when it gets dark.  Market Square lies to the north and the Common Square can be seen to the south.",
+      "direction": "north",
+      "to_room_key": "portal:ghjkmpqr",
+      "to_room_name": "Northern Bazaar",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:cdefghjkmpqr",
+      "from_room_name": "Southern Bazaar",
+      "from_room_description": "Merchant selling chants echo above the excited buzz of buyers.  Here, all kinds of goods can be purchased and sold for profit and never the same thing two days in a row.  Along the street can be found tall poles with magical lanterns, provided by the sorcerer's guild, that glow with a bright light when it gets dark.  The bazaar continues to the north and the Common Square can be seen to the south.",
+      "direction": "south",
+      "to_room_key": "namedesc:Southern Bazaar|||Merchant selling chants echo above the excited buzz of buyers.  Here, all kinds of goods can be purchased and sold for profit and never the same thing two days in a row.  Along the street can be found tall poles with magical lanterns, provided by the sorcerer's guild, that glow with a bright light when it gets dark.  The bazaar continues to the north and the Common Square can be seen to the south.",
+      "to_room_name": "Southern Bazaar",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Southern Bazaar|||Merchant selling chants echo above the excited buzz of buyers.  Here, all kinds of goods can be purchased and sold for profit and never the same thing two days in a row.  Along the street can be found tall poles with magical lanterns, provided by the sorcerer's guild, that glow with a bright light when it gets dark.  The bazaar continues to the north and the Common Square can be seen to the south.",
+      "from_room_name": "Southern Bazaar",
+      "from_room_description": "Merchant selling chants echo above the excited buzz of buyers.  Here, all kinds of goods can be purchased and sold for profit and never the same thing two days in a row.  Along the street can be found tall poles with magical lanterns, provided by the sorcerer's guild, that glow with a bright light when it gets dark.  The bazaar continues to the north and the Common Square can be seen to the south.",
+      "direction": "north",
+      "to_room_key": "portal:cdefghjkmpqr",
+      "to_room_name": "Southern Bazaar",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:defijkmpqr",
+      "from_room_name": "The Common Square",
+      "from_room_description": "You are in the common square of Midgaard.  The sound of merchants can be heard off to the north as they chant their goods for sale.  People full of chatter pass you by as they enter or leave the bazaar.  To the east and west, alleys lead to shadier side of Midgaard.  At the corners of the square can be found tall poles with magical lanterns, provided by the sorcerer's guild, that glow with a bright light when it gets dark.  South leads across the bridge to Southern Midgaard.",
+      "direction": "south",
+      "to_room_key": "namedesc:The Common Square|||You are in the common square of Midgaard.  The sound of merchants can be heard off to the north as they chant their goods for sale.  People full of chatter pass you by as they enter or leave the bazaar.  To the east and west, alleys lead to shadier side of Midgaard.  At the corners of the square can be found tall poles with magical lanterns, provided by the sorcerer's guild, that glow with a bright light when it gets dark.  South leads across the bridge to Southern Midgaard.",
+      "to_room_name": "The Common Square",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:The Common Square|||You are in the common square of Midgaard.  The sound of merchants can be heard off to the north as they chant their goods for sale.  People full of chatter pass you by as they enter or leave the bazaar.  To the east and west, alleys lead to shadier side of Midgaard.  At the corners of the square can be found tall poles with magical lanterns, provided by the sorcerer's guild, that glow with a bright light when it gets dark.  South leads across the bridge to Southern Midgaard.",
+      "from_room_name": "The Common Square",
+      "from_room_description": "You are in the common square of Midgaard.  The sound of merchants can be heard off to the north as they chant their goods for sale.  People full of chatter pass you by as they enter or leave the bazaar.  To the east and west, alleys lead to shadier side of Midgaard.  At the corners of the square can be found tall poles with magical lanterns, provided by the sorcerer's guild, that glow with a bright light when it gets dark.  South leads across the bridge to Southern Midgaard.",
+      "direction": "north",
+      "to_room_key": "portal:defijkmpqr",
+      "to_room_name": "The Common Square",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:cefgijkmpqr",
+      "from_room_name": "Western End of Dark Alley",
+      "from_room_description": "You find yourself at the western end of a dark alley that winds east towards the walls of Midgaard.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here. The back of the Guild of Swordsmen can be seen to the north while south of here is the highly unpopular Thieves' Guild.  The alley continues east and exits at the Common Square to the West.",
+      "direction": "north",
+      "to_room_key": "namedesc:Western End of Dark Alley|||You find yourself at the western end of a dark alley that winds east towards the walls of Midgaard.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here. The back of the Guild of Swordsmen can be seen to the north while south of here is the highly unpopular Thieves' Guild.  The alley continues east and exits at the Common Square to the West.",
+      "to_room_name": "Western End of Dark Alley",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Western End of Dark Alley|||You find yourself at the western end of a dark alley that winds east towards the walls of Midgaard.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here. The back of the Guild of Swordsmen can be seen to the north while south of here is the highly unpopular Thieves' Guild.  The alley continues east and exits at the Common Square to the West.",
+      "from_room_name": "Western End of Dark Alley",
+      "from_room_description": "You find yourself at the western end of a dark alley that winds east towards the walls of Midgaard.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here. The back of the Guild of Swordsmen can be seen to the north while south of here is the highly unpopular Thieves' Guild.  The alley continues east and exits at the Common Square to the West.",
+      "direction": "south",
+      "to_room_key": "portal:cefgijkmpqr",
+      "to_room_name": "Western End of Dark Alley",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:efhijkmpqr",
+      "from_room_name": "Dark Alley",
+      "from_room_description": "You are standing in a dark alley that runs east and west.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here.",
+      "direction": "east",
+      "to_room_key": "namedesc:Dark Alley|||You are standing in a dark alley that runs east and west.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here.",
+      "to_room_name": "Dark Alley",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Dark Alley|||You are standing in a dark alley that runs east and west.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here.",
+      "from_room_name": "Dark Alley",
+      "from_room_description": "You are standing in a dark alley that runs east and west.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here.",
+      "direction": "west",
+      "to_room_key": "portal:efhijkmpqr",
+      "to_room_name": "Dark Alley",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:djlmpqr",
+      "from_room_name": "Eastern End of Dark Alley",
+      "from_room_description": "You find yourself at the eastern end of a dark alley that winds west towards the Common Square.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here. The alley ends here with the large wall that surrounds Midgaard. To the north you hear battle shouts and fighting while to the south, a strange green glow emits from darkness.",
+      "direction": "south",
+      "to_room_key": "namedesc:Eastern End of Dark Alley|||You find yourself at the eastern end of a dark alley that winds west towards the Common Square.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here. The alley ends here with the large wall that surrounds Midgaard. To the north you hear battle shouts and fighting while to the south, a strange green glow emits from darkness.",
+      "to_room_name": "Eastern End of Dark Alley",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Eastern End of Dark Alley|||You find yourself at the eastern end of a dark alley that winds west towards the Common Square.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here. The alley ends here with the large wall that surrounds Midgaard. To the north you hear battle shouts and fighting while to the south, a strange green glow emits from darkness.",
+      "from_room_name": "Eastern End of Dark Alley",
+      "from_room_description": "You find yourself at the eastern end of a dark alley that winds west towards the Common Square.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here. The alley ends here with the large wall that surrounds Midgaard. To the north you hear battle shouts and fighting while to the south, a strange green glow emits from darkness.",
+      "direction": "north",
+      "to_room_key": "portal:djlmpqr",
+      "to_room_name": "Eastern End of Dark Alley",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:djlmpqr",
+      "from_room_name": "Eastern End of Dark Alley",
+      "from_room_description": "You find yourself at the eastern end of a dark alley that winds west towards the Common Square.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here. The alley ends here with the large wall that surrounds Midgaard. To the north you hear battle shouts and fighting while to the south, a strange green glow emits from darkness.",
+      "direction": "north",
+      "to_room_key": "namedesc:Eastern End of Dark Alley|||You find yourself at the eastern end of a dark alley that winds west towards the Common Square.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here. The alley ends here with the large wall that surrounds Midgaard. To the north you hear battle shouts and fighting while to the south, a strange green glow emits from darkness.",
+      "to_room_name": "Eastern End of Dark Alley",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Eastern End of Dark Alley|||You find yourself at the eastern end of a dark alley that winds west towards the Common Square.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here. The alley ends here with the large wall that surrounds Midgaard. To the north you hear battle shouts and fighting while to the south, a strange green glow emits from darkness.",
+      "from_room_name": "Eastern End of Dark Alley",
+      "from_room_description": "You find yourself at the eastern end of a dark alley that winds west towards the Common Square.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here. The alley ends here with the large wall that surrounds Midgaard. To the north you hear battle shouts and fighting while to the south, a strange green glow emits from darkness.",
+      "direction": "south",
+      "to_room_key": "portal:djlmpqr",
+      "to_room_name": "Eastern End of Dark Alley",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:cdghilmpqr",
+      "from_room_name": "Dark Alley",
+      "from_room_description": "You are standing in a dark alley that runs east and west.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here. To the south lies a huge warehouse filled with boats of all different shapes and sizes. The warehouse extends out towards the levee leading to the river.",
+      "direction": "west",
+      "to_room_key": "namedesc:Dark Alley|||You are standing in a dark alley that runs east and west.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here. To the south lies a huge warehouse filled with boats of all different shapes and sizes. The warehouse extends out towards the levee leading to the river.",
+      "to_room_name": "Dark Alley",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Dark Alley|||You are standing in a dark alley that runs east and west.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here. To the south lies a huge warehouse filled with boats of all different shapes and sizes. The warehouse extends out towards the levee leading to the river.",
+      "from_room_name": "Dark Alley",
+      "from_room_description": "You are standing in a dark alley that runs east and west.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here. To the south lies a huge warehouse filled with boats of all different shapes and sizes. The warehouse extends out towards the levee leading to the river.",
+      "direction": "east",
+      "to_room_key": "portal:cdghilmpqr",
+      "to_room_name": "Dark Alley",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:defghjlmpqr",
+      "from_room_name": "Levee",
+      "from_room_description": "You are at the levee.  The ground beneath your feet is moist from the river that is gently flowing west to the south of here.  The river back is very low making it possible to enter the river.  Tied to stakes on the river banks are various fishing boats used for navigating the river. A warehouse can be seen to the north.",
+      "direction": "east",
+      "to_room_name": "Unknown (blocked)",
+      "is_blocked": true,
+      "is_door": false
+    },
+    {
+      "from_room_key": "portal:dgijopqr",
+      "from_room_name": "On the River",
+      "from_room_description": "The river is flowing swiftly as it exits the mountain from the east. North of here lies a thick forest.  To the south is a shoreline lined with slippery rocks.",
+      "direction": "west",
+      "to_room_key": "namedesc:On the River|||The river is flowing swiftly as it exits the mountain from the east. North of here lies a thick forest.  To the south is a shoreline lined with slippery rocks.",
+      "to_room_name": "On the River",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:On the River|||The river is flowing swiftly as it exits the mountain from the east. North of here lies a thick forest.  To the south is a shoreline lined with slippery rocks.",
+      "from_room_name": "On the River",
+      "from_room_description": "The river is flowing swiftly as it exits the mountain from the east. North of here lies a thick forest.  To the south is a shoreline lined with slippery rocks.",
+      "direction": "east",
+      "to_room_key": "portal:dgijopqr",
+      "to_room_name": "On the River",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:cdijopqr",
+      "from_room_name": "On the River",
+      "from_room_description": "To the north lies an impenetrable forest.  The river flows east to west past a rocky shoreline to the south.",
+      "direction": "west",
+      "to_room_key": "namedesc:On the River|||To the north lies an impenetrable forest.  The river flows east to west past a rocky shoreline to the south.",
+      "to_room_name": "On the River",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:On the River|||To the north lies an impenetrable forest.  The river flows east to west past a rocky shoreline to the south.",
+      "from_room_name": "On the River",
+      "from_room_description": "To the north lies an impenetrable forest.  The river flows east to west past a rocky shoreline to the south.",
+      "direction": "east",
+      "to_room_key": "portal:cdijopqr",
+      "to_room_name": "On the River",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:eghjopqr",
+      "from_room_name": "On the River",
+      "from_room_description": "Far to the west you can see the Midgaard city wall. Dense forest blocks any view to the north, and impassible rocks lie to the south.  The rocks",
+      "direction": "west",
+      "to_room_key": "namedesc:On the River|||Far to the west you can see the Midgaard city wall. Dense forest blocks any view to the north, and impassible rocks lie to the south.  The rocks",
+      "to_room_name": "On the River",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:On the River|||Far to the west you can see the Midgaard city wall. Dense forest blocks any view to the north, and impassible rocks lie to the south.  The rocks",
+      "from_room_name": "On the River",
+      "from_room_description": "Far to the west you can see the Midgaard city wall. Dense forest blocks any view to the north, and impassible rocks lie to the south.  The rocks",
+      "direction": "east",
+      "to_room_key": "portal:eghjopqr",
+      "to_room_name": "On the River",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:cehjopqr",
+      "from_room_name": "On the River",
+      "from_room_description": "Water flows rapidly into an opening in the Midgaard city wall to the west. Dense forest blocks any view to the north and impassible rocks lie to the south.",
+      "direction": "west",
+      "to_room_key": "namedesc:On the River|||Water flows rapidly into an opening in the Midgaard city wall to the west. Dense forest blocks any view to the north and impassible rocks lie to the south.",
+      "to_room_name": "On the River",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:On the River|||Water flows rapidly into an opening in the Midgaard city wall to the west. Dense forest blocks any view to the north and impassible rocks lie to the south.",
+      "from_room_name": "On the River",
+      "from_room_description": "Water flows rapidly into an opening in the Midgaard city wall to the west. Dense forest blocks any view to the north and impassible rocks lie to the south.",
+      "direction": "east",
+      "to_room_key": "portal:cehjopqr",
+      "to_room_name": "On the River",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:degjopqr",
+      "from_room_name": "Under the City Wall",
+      "from_room_description": "An opening to the east marks the outside of the Midgaard city wall.  The river flows into the city to the west.",
+      "direction": "west",
+      "to_room_key": "namedesc:Under the City Wall|||An opening to the east marks the outside of the Midgaard city wall.  The river flows into the city to the west.",
+      "to_room_name": "Under the City Wall",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Under the City Wall|||An opening to the east marks the outside of the Midgaard city wall.  The river flows into the city to the west.",
+      "from_room_name": "Under the City Wall",
+      "from_room_description": "An opening to the east marks the outside of the Midgaard city wall.  The river flows into the city to the west.",
+      "direction": "east",
+      "to_room_key": "portal:degjopqr",
+      "to_room_name": "Under the City Wall",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:cdejopqr",
+      "from_room_name": "Under the City Wall",
+      "from_room_description": "Light filtering in from the west almost masks a faint glimmer from upstream.",
+      "direction": "west",
+      "to_room_key": "namedesc:Under the City Wall|||Light filtering in from the west almost masks a faint glimmer from upstream.",
+      "to_room_name": "Under the City Wall",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Under the City Wall|||Light filtering in from the west almost masks a faint glimmer from upstream.",
+      "from_room_name": "Under the City Wall",
+      "from_room_description": "Light filtering in from the west almost masks a faint glimmer from upstream.",
+      "direction": "east",
+      "to_room_key": "portal:cdejopqr",
+      "to_room_name": "Under the City Wall",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:fghiopqr",
+      "from_room_name": "Under the Eastern Wall",
+      "from_room_description": "The river flows westward from a hole in the eastern city wall and under the bridge.  The hole appears to have been blocked at one time by several iron bars set into the wall, but these have long since been pried away.",
+      "direction": "west",
+      "to_room_key": "namedesc:Under the Eastern Wall|||The river flows westward from a hole in the eastern city wall and under the bridge.  The hole appears to have been blocked at one time by several iron bars set into the wall, but these have long since been pried away.",
+      "to_room_name": "Under the Eastern Wall",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Under the Eastern Wall|||The river flows westward from a hole in the eastern city wall and under the bridge.  The hole appears to have been blocked at one time by several iron bars set into the wall, but these have long since been pried away.",
+      "from_room_name": "Under the Eastern Wall",
+      "from_room_description": "The river flows westward from a hole in the eastern city wall and under the bridge.  The hole appears to have been blocked at one time by several iron bars set into the wall, but these have long since been pried away.",
+      "direction": "east",
+      "to_room_key": "portal:fghiopqr",
+      "to_room_name": "Under the Eastern Wall",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:dfgiopqr",
+      "from_room_name": "On the River",
+      "from_room_description": "a bit upstream from here.  The river flows west towards the levee.  Past the riverbank to the south you can see the Penny Lane Plaza.",
+      "direction": "west",
+      "to_room_key": "namedesc:On the River|||a bit upstream from here.  The river flows west towards the levee.  Past the riverbank to the south you can see the Penny Lane Plaza.",
+      "to_room_name": "On the River",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:On the River|||a bit upstream from here.  The river flows west towards the levee.  Past the riverbank to the south you can see the Penny Lane Plaza.",
+      "from_room_name": "On the River",
+      "from_room_description": "a bit upstream from here.  The river flows west towards the levee.  Past the riverbank to the south you can see the Penny Lane Plaza.",
+      "direction": "east",
+      "to_room_key": "portal:dfgiopqr",
+      "to_room_name": "On the River",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:ceghjklmnpqr",
+      "from_room_name": "On the River",
+      "from_room_description": "The levee to the north forms a sturdy bulwark against the river, ensuring the citizens, shopkeepers, and adventurers in Midgaard are safe from the perils of a flood.  Rapidly swirling eddies can be observed directly to the west where the river bottom dips and swimming becomes impossible.  You can continue to the east along the shallows of the river, but traveling west would be impossible without a boat.",
+      "direction": "west",
+      "to_room_key": "namedesc:On the River|||The levee to the north forms a sturdy bulwark against the river, ensuring the citizens, shopkeepers, and adventurers in Midgaard are safe from the perils of a flood.  Rapidly swirling eddies can be observed directly to the west where the river bottom dips and swimming becomes impossible.  You can continue to the east along the shallows of the river, but traveling west would be impossible without a boat.",
+      "to_room_name": "On the River",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:On the River|||The levee to the north forms a sturdy bulwark against the river, ensuring the citizens, shopkeepers, and adventurers in Midgaard are safe from the perils of a flood.  Rapidly swirling eddies can be observed directly to the west where the river bottom dips and swimming becomes impossible.  You can continue to the east along the shallows of the river, but traveling west would be impossible without a boat.",
+      "from_room_name": "On the River",
+      "from_room_description": "The levee to the north forms a sturdy bulwark against the river, ensuring the citizens, shopkeepers, and adventurers in Midgaard are safe from the perils of a flood.  Rapidly swirling eddies can be observed directly to the west where the river bottom dips and swimming becomes impossible.  You can continue to the east along the shallows of the river, but traveling west would be impossible without a boat.",
+      "direction": "east",
+      "to_room_key": "portal:ceghjklmnpqr",
+      "to_room_name": "On the River",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:defghjlmpqr",
+      "from_room_name": "Levee",
+      "from_room_description": "You are at the levee.  The ground beneath your feet is moist from the river that is gently flowing west to the south of here.  The river back is very low making it possible to enter the river.  Tied to stakes on the river banks are various fishing boats used for navigating the river. A warehouse can be seen to the north.",
+      "direction": "north",
+      "to_room_key": "namedesc:Levee|||You are at the levee.  The ground beneath your feet is moist from the river that is gently flowing west to the south of here.  The river back is very low making it possible to enter the river.  Tied to stakes on the river banks are various fishing boats used for navigating the river. A warehouse can be seen to the north.",
+      "to_room_name": "Levee",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Levee|||You are at the levee.  The ground beneath your feet is moist from the river that is gently flowing west to the south of here.  The river back is very low making it possible to enter the river.  Tied to stakes on the river banks are various fishing boats used for navigating the river. A warehouse can be seen to the north.",
+      "from_room_name": "Levee",
+      "from_room_description": "You are at the levee.  The ground beneath your feet is moist from the river that is gently flowing west to the south of here.  The river back is very low making it possible to enter the river.  Tied to stakes on the river banks are various fishing boats used for navigating the river. A warehouse can be seen to the north.",
+      "direction": "south",
+      "to_room_key": "portal:defghjlmpqr",
+      "to_room_name": "Levee",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:cdefhjlmpqr",
+      "from_room_name": "Warehouse",
+      "from_room_description": "You are inside a huge warehouse.  There are stacks of lumber and ore piled up to the roof against the western wall while east of that are various boats that are currently being built.  The walls of the warehouse is decorated with various items from ships.  The room is brightly illuminated from lanterns hanging from the ceiling. The warehouse exits to the north and south.",
+      "direction": "north",
+      "to_room_key": "namedesc:Warehouse|||You are inside a huge warehouse.  There are stacks of lumber and ore piled up to the roof against the western wall while east of that are various boats that are currently being built.  The walls of the warehouse is decorated with various items from ships.  The room is brightly illuminated from lanterns hanging from the ceiling. The warehouse exits to the north and south.",
+      "to_room_name": "Warehouse",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Warehouse|||You are inside a huge warehouse.  There are stacks of lumber and ore piled up to the roof against the western wall while east of that are various boats that are currently being built.  The walls of the warehouse is decorated with various items from ships.  The room is brightly illuminated from lanterns hanging from the ceiling. The warehouse exits to the north and south.",
+      "from_room_name": "Warehouse",
+      "from_room_description": "You are inside a huge warehouse.  There are stacks of lumber and ore piled up to the roof against the western wall while east of that are various boats that are currently being built.  The walls of the warehouse is decorated with various items from ships.  The room is brightly illuminated from lanterns hanging from the ceiling. The warehouse exits to the north and south.",
+      "direction": "south",
+      "to_room_key": "portal:cdefhjlmpqr",
+      "to_room_name": "Warehouse",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:cdghilmpqr",
+      "from_room_name": "Dark Alley",
+      "from_room_description": "You are standing in a dark alley that runs east and west.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here. To the south lies a huge warehouse filled with boats of all different shapes and sizes. The warehouse extends out towards the levee leading to the river.",
+      "direction": "north",
+      "to_room_key": "namedesc:Dark Alley|||You are standing in a dark alley that runs east and west.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here. To the south lies a huge warehouse filled with boats of all different shapes and sizes. The warehouse extends out towards the levee leading to the river.",
+      "to_room_name": "Dark Alley",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Dark Alley|||You are standing in a dark alley that runs east and west.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here. To the south lies a huge warehouse filled with boats of all different shapes and sizes. The warehouse extends out towards the levee leading to the river.",
+      "from_room_name": "Dark Alley",
+      "from_room_description": "You are standing in a dark alley that runs east and west.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here. To the south lies a huge warehouse filled with boats of all different shapes and sizes. The warehouse extends out towards the levee leading to the river.",
+      "direction": "south",
+      "to_room_key": "portal:cdghilmpqr",
+      "to_room_name": "Dark Alley",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:efhijkmpqr",
+      "from_room_name": "Dark Alley",
+      "from_room_description": "You are standing in a dark alley that runs east and west.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here.",
+      "direction": "west",
+      "to_room_key": "namedesc:Dark Alley|||You are standing in a dark alley that runs east and west.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here.",
+      "to_room_name": "Dark Alley",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Dark Alley|||You are standing in a dark alley that runs east and west.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here.",
+      "from_room_name": "Dark Alley",
+      "from_room_description": "You are standing in a dark alley that runs east and west.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here.",
+      "direction": "east",
+      "to_room_key": "portal:efhijkmpqr",
+      "to_room_name": "Dark Alley",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:efhijkmpqr",
+      "from_room_name": "Dark Alley",
+      "from_room_description": "You are standing in a dark alley that runs east and west.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here.",
+      "direction": "west",
+      "to_room_key": "namedesc:Dark Alley|||You are standing in a dark alley that runs east and west.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here.",
+      "to_room_name": "Dark Alley",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Dark Alley|||You are standing in a dark alley that runs east and west.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here.",
+      "from_room_name": "Dark Alley",
+      "from_room_description": "You are standing in a dark alley that runs east and west.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here.",
+      "direction": "east",
+      "to_room_key": "portal:efhijkmpqr",
+      "to_room_name": "Dark Alley",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:cefgijkmpqr",
+      "from_room_name": "Western End of Dark Alley",
+      "from_room_description": "You find yourself at the western end of a dark alley that winds east towards the walls of Midgaard.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here. The back of the Guild of Swordsmen can be seen to the north while south of here is the highly unpopular Thieves' Guild.  The alley continues east and exits at the Common Square to the West.",
+      "direction": "west",
+      "to_room_key": "namedesc:Western End of Dark Alley|||You find yourself at the western end of a dark alley that winds east towards the walls of Midgaard.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here. The back of the Guild of Swordsmen can be seen to the north while south of here is the highly unpopular Thieves' Guild.  The alley continues east and exits at the Common Square to the West.",
+      "to_room_name": "Western End of Dark Alley",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Western End of Dark Alley|||You find yourself at the western end of a dark alley that winds east towards the walls of Midgaard.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here. The back of the Guild of Swordsmen can be seen to the north while south of here is the highly unpopular Thieves' Guild.  The alley continues east and exits at the Common Square to the West.",
+      "from_room_name": "Western End of Dark Alley",
+      "from_room_description": "You find yourself at the western end of a dark alley that winds east towards the walls of Midgaard.  This alley does not only gets its name from how the buildings are cropped so close to the alley so that most light is blocked, but it also gets its name from the fact that the shadier side of Midgaard can be found here. The back of the Guild of Swordsmen can be seen to the north while south of here is the highly unpopular Thieves' Guild.  The alley continues east and exits at the Common Square to the West.",
+      "direction": "east",
+      "to_room_key": "portal:cefgijkmpqr",
+      "to_room_name": "Western End of Dark Alley",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:defijkmpqr",
+      "from_room_name": "The Common Square",
+      "from_room_description": "You are in the common square of Midgaard.  The sound of merchants can be heard off to the north as they chant their goods for sale.  People full of chatter pass you by as they enter or leave the bazaar.  To the east and west, alleys lead to shadier side of Midgaard.  At the corners of the square can be found tall poles with magical lanterns, provided by the sorcerer's guild, that glow with a bright light when it gets dark.  South leads across the bridge to Southern Midgaard.",
+      "direction": "west",
+      "to_room_key": "namedesc:The Common Square|||You are in the common square of Midgaard.  The sound of merchants can be heard off to the north as they chant their goods for sale.  People full of chatter pass you by as they enter or leave the bazaar.  To the east and west, alleys lead to shadier side of Midgaard.  At the corners of the square can be found tall poles with magical lanterns, provided by the sorcerer's guild, that glow with a bright light when it gets dark.  South leads across the bridge to Southern Midgaard.",
+      "to_room_name": "The Common Square",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:The Common Square|||You are in the common square of Midgaard.  The sound of merchants can be heard off to the north as they chant their goods for sale.  People full of chatter pass you by as they enter or leave the bazaar.  To the east and west, alleys lead to shadier side of Midgaard.  At the corners of the square can be found tall poles with magical lanterns, provided by the sorcerer's guild, that glow with a bright light when it gets dark.  South leads across the bridge to Southern Midgaard.",
+      "from_room_name": "The Common Square",
+      "from_room_description": "You are in the common square of Midgaard.  The sound of merchants can be heard off to the north as they chant their goods for sale.  People full of chatter pass you by as they enter or leave the bazaar.  To the east and west, alleys lead to shadier side of Midgaard.  At the corners of the square can be found tall poles with magical lanterns, provided by the sorcerer's guild, that glow with a bright light when it gets dark.  South leads across the bridge to Southern Midgaard.",
+      "direction": "east",
+      "to_room_key": "portal:defijkmpqr",
+      "to_room_name": "The Common Square",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:cfklmpqr",
+      "from_room_name": "Bridge Road",
+      "from_room_description": "The stone cobbled path leads to the Midgaard Bridge to the south.  This bridge separates Northern and Southern Midgaard.  People of all shapes, sizes, and races traverse this path.",
+      "direction": "south",
+      "to_room_key": "namedesc:Bridge Road|||The stone cobbled path leads to the Midgaard Bridge to the south.  This bridge separates Northern and Southern Midgaard.  People of all shapes, sizes, and races traverse this path.",
+      "to_room_name": "Bridge Road",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Bridge Road|||The stone cobbled path leads to the Midgaard Bridge to the south.  This bridge separates Northern and Southern Midgaard.  People of all shapes, sizes, and races traverse this path.",
+      "from_room_name": "Bridge Road",
+      "from_room_description": "The stone cobbled path leads to the Midgaard Bridge to the south.  This bridge separates Northern and Southern Midgaard.  People of all shapes, sizes, and races traverse this path.",
+      "direction": "north",
+      "to_room_key": "portal:cfklmpqr",
+      "to_room_name": "Bridge Road",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "portal:cfklmpqr",
+      "from_room_name": "Bridge Road",
+      "from_room_description": "The stone cobbled path leads to the Midgaard Bridge to the south.  This bridge separates Northern and Southern Midgaard.  People of all shapes, sizes, and races traverse this path.",
+      "direction": "south",
+      "to_room_key": "namedesc:Bridge Road|||The stone cobbled path leads to the Midgaard Bridge to the south.  This bridge separates Northern and Southern Midgaard.  People of all shapes, sizes, and races traverse this path.",
+      "to_room_name": "Bridge Road",
+      "is_blocked": false
+    },
+    {
+      "from_room_key": "namedesc:Bridge Road|||The stone cobbled path leads to the Midgaard Bridge to the south.  This bridge separates Northern and Southern Midgaard.  People of all shapes, sizes, and races traverse this path.",
+      "from_room_name": "Bridge Road",
+      "from_room_description": "The stone cobbled path leads to the Midgaard Bridge to the south.  This bridge separates Northern and Southern Midgaard.  People of all shapes, sizes, and races traverse this path.",
+      "direction": "north",
+      "to_room_key": "portal:cfklmpqr",
+      "to_room_name": "Bridge Road",
+      "is_blocked": false
+    }
+  ],
+  "stats": {
+    "totalRooms": 68,
+    "totalExits": 116
+  }
+}

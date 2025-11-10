@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import axios from 'axios';
+import { getOppositeDirection, normalizeDirection } from './directionHelper.js';
 
 interface ParsedRoom {
   name: string;
@@ -20,10 +21,12 @@ interface ParsedExit {
   from_room_name: string;
   from_room_description: string;
   direction: string;
+  to_room_key?: string; // Key of destination room (for linking)
   to_room_name: string;
   look_description?: string;
   is_door?: boolean;
   door_name?: string;
+  is_blocked?: boolean; // Exit exists but cannot be traversed
   is_zone_exit?: boolean;
   portal_key?: string; // Portal key of destination room if known
 }
@@ -129,11 +132,23 @@ export class MudLogParser {
               
               // If the room key is namedesc:, change it to portal: key for better deduplication
               if (this.state.bindingAttemptRoomKey.startsWith('namedesc:')) {
+                const oldKey = this.state.bindingAttemptRoomKey;
                 const portalKey = `portal:${this.state.pendingPortalKey}`;
-                this.state.rooms.delete(this.state.bindingAttemptRoomKey);
+                this.state.rooms.delete(oldKey);
                 this.state.rooms.set(portalKey, bindingRoom);
                 this.state.currentRoomKey = portalKey;
                 this.state.bindingAttemptRoomKey = portalKey;
+                
+                // IMPORTANT: Update all exits that reference the old key
+                for (const exit of this.state.exits) {
+                  if (exit.from_room_key === oldKey) {
+                    exit.from_room_key = portalKey;
+                  }
+                  if (exit.to_room_key === oldKey) {
+                    exit.to_room_key = portalKey;
+                  }
+                }
+                console.log(`  🔄 Updated room key: ${oldKey.substring(0, 50)}... -> ${portalKey}`);
               }
               
               console.log(`  🔗 Associated portal key ${this.state.pendingPortalKey} with binding attempt room: ${bindingRoom.name}`);
@@ -336,6 +351,39 @@ export class MudLogParser {
         continue;
       }
       
+      // Detect blocked movement (tried to move but couldn't)
+      // Common blocking messages from MUDs
+      const blockPatterns = [
+        /You can't go that way/i,
+        /There is no exit in that direction/i,
+        /The .+ (is closed|blocks your way|bars your passage)/i,
+        /You cannot go that way/i,
+        /Alas, you cannot go that way/i,
+        /You walk into a wall/i,
+        /The door is locked/i,
+        /It's locked/i
+      ];
+      
+      const isBlocked = blockPatterns.some(pattern => pattern.test(cleanLine));
+      if (isBlocked && lastDirection && this.state.currentRoomKey && this.state.currentRoom) {
+        // Movement was attempted but blocked - record a blocked exit
+        console.log(`   🚫 Blocked: ${lastDirection} from ${this.state.currentRoom.name} - ${cleanLine.substring(0, 50)}...`);
+        
+        const blockedExit: ParsedExit = {
+          from_room_key: this.state.currentRoomKey,
+          from_room_name: this.state.currentRoom.name,
+          from_room_description: this.state.currentRoom.description,
+          direction: normalizeDirection(lastDirection),
+          to_room_name: 'Unknown (blocked)',
+          is_blocked: true,
+          is_door: cleanLine.match(/(door|gate|portal|locked|closed)/i) !== null
+        };
+        this.state.exits.push(blockedExit);
+        lastDirection = ''; // Clear after recording
+        i++;
+        continue;
+      }
+      
       // Detect room title - cyan colored text (#00FFFF)
       if (line.includes('color="#00FFFF"')) {
         console.log(`DEBUG: Found potential room title line: ${line.substring(0, 100)}...`);
@@ -477,6 +525,11 @@ export class MudLogParser {
         const roomKey = this.getRoomKey(roomName, description, this.state.pendingPortalKey);
         console.log(`DEBUG: Room key for "${roomName}": ${roomKey}`);
         
+        // Store previous room info BEFORE any updates
+        // This ensures we capture the correct keys for exit creation
+        const previousRoomKey = this.state.currentRoomKey;
+        const previousRoom = this.state.currentRoom;
+        
         // Check if we already have this room (by portal key or name+desc)
         let existingRoomKey = this.findExistingRoomKey(roomName, description, this.state.pendingPortalKey);
         console.log(`DEBUG: Existing room key check for "${roomName}": ${existingRoomKey}`);
@@ -507,6 +560,7 @@ export class MudLogParser {
             existingRoom.items = items;
           }
           
+          // Update current room tracking
           this.state.currentRoom = existingRoom;
           this.state.currentRoomKey = existingRoomKey;
           
@@ -528,29 +582,44 @@ export class MudLogParser {
           const keyType = this.state.pendingPortalKey ? 'portal key' : 'name+desc';
           console.log(`  📦 Room: ${roomName} (${exits.length} exits, ${npcs.length} NPCs, ${items.length} items) [${keyType}]`);
           
+          // Update current room tracking
           this.state.currentRoom = room;
           this.state.currentRoomKey = roomKey;
         }
         
-        // Record exit if we just moved here - but only if we actually moved to a different room
-        if (lastDirection && this.state.currentRoom && this.state.currentRoomKey && existingRoomKey !== this.state.currentRoomKey) {
-          // Only create exit if we moved from a different room
-          const fromRoomKey = this.state.currentRoomKey;
+        // Record exit if we just moved here AND it's a different room
+        // previousRoomKey and previousRoom were captured BEFORE any room updates
+        if (lastDirection && previousRoomKey && previousRoom && this.state.currentRoomKey !== previousRoomKey) {
           const exit: ParsedExit = {
-            from_room_key: fromRoomKey,
-            direction: lastDirection,
+            from_room_key: previousRoomKey,
+            from_room_name: previousRoom.name,
+            from_room_description: previousRoom.description,
+            direction: normalizeDirection(lastDirection),
+            to_room_key: this.state.currentRoomKey, // Use the UPDATED current room key
             to_room_name: roomName,
-            portal_key: this.state.pendingPortalKey || undefined, // Associate portal key with exit if we just bound it
-            from_room_name: this.state.currentRoom.name, // Keep for debugging/logging
-            from_room_description: this.state.currentRoom.description // Keep for debugging/logging
+            portal_key: this.state.pendingPortalKey || undefined,
+            is_blocked: false // Successfully moved, not blocked
           };
           this.state.exits.push(exit);
-          console.log(`    🚪 ${this.state.currentRoom.name} --[${lastDirection}]--> ${roomName}`);
+          console.log(`    🚪 ${previousRoom.name} --[${exit.direction}]--> ${roomName}`);
+          
+          // AUTOMATIC REVERSE EXIT: Create the opposite direction exit
+          // This works 99% of the time - if you go north to a room, south takes you back
+          const oppositeDirection = getOppositeDirection(lastDirection);
+          const reverseExit: ParsedExit = {
+            from_room_key: this.state.currentRoomKey, // Use the UPDATED current room key
+            from_room_name: roomName,
+            from_room_description: description,
+            direction: oppositeDirection,
+            to_room_key: previousRoomKey,
+            to_room_name: previousRoom.name,
+            is_blocked: false // Assume reverse is also traversable
+          };
+          this.state.exits.push(reverseExit);
+          console.log(`    🔄 Auto-reverse: ${roomName} --[${oppositeDirection}]--> ${previousRoom.name}`);
         }
         
-        this.state.currentRoom = this.state.rooms.get(roomKey)!;
-        this.state.currentRoomKey = roomKey; // Track the room key
-        lastDirection = '';
+        lastDirection = ''; // Clear after processing
         
         // Clear recent zone check flag after discovering a room
         this.state.recentZoneCheck = false;
@@ -850,15 +919,19 @@ export class MudLogParser {
         const fromRoomId = roomIdMap.get(exit.from_room_key);
         
         if (!fromRoomId) {
-          console.log(`   ⚠️  Skipping exit: from room key "${exit.from_room_key}" not found (available keys: ${Array.from(roomIdMap.keys()).slice(0, 5).join(', ')}...)`);
+          console.log(`   ⚠️  Skipping exit: from room key "${exit.from_room_key.substring(0, 50)}..." not found`);
           continue;
         }
         
-        // Find destination room by portal key first, then by name
+        // Use to_room_key if available (most reliable)
         let toRoomId: number | undefined;
         
-        // First try to find by portal key if we have one
-        if (exit.portal_key) {
+        if (exit.to_room_key) {
+          toRoomId = roomIdMap.get(exit.to_room_key);
+        }
+        
+        // Fallback: try portal key
+        if (!toRoomId && exit.portal_key) {
           for (const [key, room] of this.state.rooms) {
             if (room.portal_key === exit.portal_key) {
               toRoomId = roomIdMap.get(key);
@@ -867,7 +940,7 @@ export class MudLogParser {
           }
         }
         
-        // Fall back to name matching
+        // Fallback: try name matching
         if (!toRoomId) {
           for (const [key, room] of this.state.rooms) {
             if (room.name === exit.to_room_name) {
@@ -877,15 +950,17 @@ export class MudLogParser {
           }
         }
         
-        if (!toRoomId) {
-          console.log(`   ⚠️  Skipping exit: to room "${exit.to_room_name}" not found`);
+        // If exit is blocked, we can save it without a to_room_id
+        // This represents an exit that exists but cannot be traversed yet
+        if (!toRoomId && !exit.is_blocked) {
+          console.log(`   ⚠️  Skipping exit: to room "${exit.to_room_name}" not found and not marked as blocked`);
           continue;
         }
         
         const exitData: any = {
           from_room_id: fromRoomId,
           direction: exit.direction,
-          to_room_id: toRoomId,
+          to_room_id: toRoomId || null, // null if blocked/unknown
           is_zone_exit: exit.is_zone_exit ? 1 : 0,
           look_description: exit.look_description || null,
           is_door: exit.is_door ? 1 : 0,
