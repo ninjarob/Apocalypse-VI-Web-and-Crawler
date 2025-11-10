@@ -1,69 +1,69 @@
-# Apocalypse VI MUD Crawler
+# Apocalypse VI MUD
 
-AI-powered autonomous crawler for documenting and exploring the Apocalypse VI MUD.
+AI-powered autonomous crawler and mapping system for the Apocalypse VI MUD.
+
+## Quick Start
+
+```powershell
+# Automated setup and start
+.\install.ps1   # Install all dependencies
+.\start.ps1     # Start all services (opens 3 terminals)
+```
+
+Access the web interface at **http://localhost:5173**
 
 ## Project Structure
 
-- **crawler/** - AI agent that connects to the MUD, explores, and extracts data
-- **backend/** - Node.js API server with database integration
-- **frontend/** - React web interface for browsing discovered content
-- **shared/** - Shared types and utilities
+- **crawler/** - AI agent for autonomous MUD exploration
+- **backend/** - REST API with SQLite database
+- **frontend/** - React admin interface and map viewer
+- **shared/** - TypeScript types used across modules
 
-## Setup
+## Core Features
 
-```bash
-# Install all dependencies
-npm run install-all
-
-# Set up environment variables (see .env.example files)
-# Create .env files in crawler/ and backend/
-```
-
-### Starting the Backend (Recommended: PM2)
-
-The backend should be run using PM2 for process management:
-
-```bash
-cd backend
-
-# Build the backend first
-npm run build
-
-# Start with PM2 (preferred)
-pm2 start ecosystem.config.js
-
-# Check status
-pm2 status
-
-# View logs
-pm2 logs mud-backend
-
-# Stop when needed
-pm2 stop mud-backend
-```
-
-**Alternative (Development)**: You can also run `npm run dev` for direct execution, but PM2 is preferred for stability.
-
-### Starting Other Services
-
-```bash
-# Start the frontend (in another terminal)
-npm run dev:frontend
-
-# Run the crawler (in another terminal)
-npm run dev:crawler
-```
-
-## Features
-
-- **Autonomous Exploration**: AI decides where to go and what to examine
-- **Intelligent Parsing**: Extracts entities from unstructured text
-- **Comprehensive Database**: Rooms, NPCs, items, spells, attacks, and more
-- **Web Interface**: Browse and search all discovered content
-- **Real-time Updates**: See the crawler's progress live
+- **Autonomous Exploration** - AI-driven zone mapping and room documentation
+- **Room Management** - Full CRUD interface with exit binding
+- **Zone Mapping** - Coordinate-based room tracking and visualization
+- **Character Maintenance** - Automatic rest, hunger, and thirst management
+- **Local AI** - Free Ollama integration (no API costs)
 
 ## Configuration
 
-- MUD Host: apocalypse6.com:6000
-- Database: PostgreSQL (configurable)
-- AI: OpenAI GPT-4 (configurable)
+**MUD Server**: apocalypse6.com:6000  
+**Backend API**: http://localhost:3002  
+**Frontend**: http://localhost:5173  
+**Database**: SQLite (backend/mud-data.db)  
+**AI**: Ollama llama3.2:3b (local, free)
+
+## Essential Setup Steps
+
+1. **Install Ollama** (local AI - free!)
+   ```powershell
+   # Download from https://ollama.ai
+   ollama pull llama3.2:3b
+   ```
+
+2. **Configure Environment**
+   - Create `crawler/.env` with MUD credentials
+   - Create `backend/.env` with PORT=3002
+   - See SETUP.md for detailed configuration
+
+3. **Start Services**
+   ```powershell
+   .\start.ps1  # Opens 3 terminals automatically
+   ```
+
+## Documentation
+
+- **SETUP.md** - Detailed installation and configuration
+- **QUICK_REFERENCE.md** - Common commands and troubleshooting
+- **DEVELOPMENT_STATUS.md** - Current development status
+- **ARCHIVE.md** - Historical features and implementation details
+- **docs/** - Technical documentation (database, items schema)
+
+## Support
+
+For issues, check:
+1. Logs in `crawler/logs/`
+2. QUICK_REFERENCE.md troubleshooting section
+3. SETUP.md for configuration help
