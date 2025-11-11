@@ -15,6 +15,9 @@ export interface Room {
   portal_key?: string;
   greater_binding_key?: string;
   zone_exit?: boolean;
+  x?: number;
+  y?: number;
+  z?: number;
   visitCount?: number;
   firstVisited?: string;
   lastVisited?: string;

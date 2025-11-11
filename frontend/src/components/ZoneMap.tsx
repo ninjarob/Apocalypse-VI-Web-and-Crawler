@@ -11,6 +11,9 @@ interface Room {
   terrain?: string;
   flags?: string;
   zone_exit?: boolean;
+  x?: number;
+  y?: number;
+  z?: number;
 }
 
 interface RoomExit {
@@ -26,10 +29,12 @@ interface Zone {
   name: string;
 }
 
-interface GraphNode extends d3.SimulationNodeDatum {
+interface MapNode {
   id: number;
   name: string;
   roomData: Room;
+  x: number;
+  y: number;
 }
 
 interface ZoneMapProps {
@@ -94,7 +99,7 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick }) => {
     loadZoneData();
   }, [selectedZoneId]);
 
-  // Force-directed layout effect
+  // Coordinate-based layout effect
   useEffect(() => {
     if (!svgRef.current || rooms.length === 0) {
       return;
@@ -106,29 +111,95 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick }) => {
     const width = 800;
     const height = 600;
 
-    // Create nodes and links data
-    const nodes: GraphNode[] = rooms.map(room => ({
-      id: room.id,
-      name: room.name,
-      roomData: room
-    }));
+    // Check if rooms have coordinates
+    const hasCoordinates = rooms.some(room => room.x !== undefined && room.y !== undefined);
+    console.log('🔍 ZoneMap: Checking coordinates for', rooms.length, 'rooms');
+    console.log('🔍 First few rooms:', rooms.slice(0, 3).map(r => ({ id: r.id, name: r.name, x: r.x, y: r.y, z: r.z })));
+    console.log('🔍 hasCoordinates:', hasCoordinates);
 
-    const links = exits
-      .filter(exit => exit.to_room_id && 
+    let nodes: MapNode[];
+    let links: any[];
+
+    if (hasCoordinates) {
+      // Use coordinate-based positioning
+      console.log('📍 Using coordinate-based layout');
+
+      // Calculate coordinate bounds
+      const coords = rooms.filter(r => r.x !== undefined && r.y !== undefined);
+      console.log('📍 Rooms with coordinates:', coords.length);
+      if (coords.length === 0) {
+        console.warn('No rooms with coordinates found');
+        return;
+      }
+
+      const xCoords = coords.map(r => r.x!);
+      const yCoords = coords.map(r => r.y!);
+      const minX = Math.min(...xCoords);
+      const maxX = Math.max(...xCoords);
+      const minY = Math.min(...yCoords);
+      const maxY = Math.max(...yCoords);
+
+      const coordWidth = maxX - minX || 1;
+      const coordHeight = maxY - minY || 1;
+
+      // Scale coordinates to fit the SVG
+      const scaleX = (width - 200) / coordWidth; // Leave margin
+      const scaleY = (height - 200) / coordHeight; // Leave margin
+      const scale = Math.min(scaleX, scaleY, 20); // Max 20 pixels per unit, min scale
+
+      const offsetX = width / 2 - ((minX + maxX) / 2) * scale;
+      const offsetY = height / 2 - ((minY + maxY) / 2) * scale;
+
+      nodes = rooms.map(room => ({
+        id: room.id,
+        name: room.name,
+        roomData: room,
+        x: room.x !== undefined ? room.x * scale + offsetX : width / 2,
+        y: room.y !== undefined ? room.y * scale + offsetY : height / 2
+      }));
+    } else {
+      // Fall back to force-directed layout
+      console.log('🔗 Using force-directed layout (no coordinates available)');
+      console.log('🔗 Rooms without coordinates:', rooms.filter(r => r.x === undefined || r.y === undefined).length);
+
+      // Create basic nodes
+      const basicNodes = rooms.map(room => ({
+        id: room.id,
+        name: room.name,
+        roomData: room
+      }));
+
+      // Create force simulation as fallback
+      const simulation = d3.forceSimulation(basicNodes as d3.SimulationNodeDatum[])
+        .force('charge', d3.forceManyBody().strength(-300))
+        .force('center', d3.forceCenter(width / 2, height / 2))
+        .force('collision', d3.forceCollide().radius(60));
+
+      // Let simulation run briefly
+      simulation.tick(100);
+      simulation.stop();
+
+      // Convert to MapNode format
+      nodes = (basicNodes as any[]).map(node => ({
+        id: node.id,
+        name: node.name,
+        roomData: node.roomData,
+        x: node.x || width / 2,
+        y: node.y || height / 2
+      }));
+    }
+
+    // Create links
+    links = exits
+      .filter(exit => exit.to_room_id &&
         rooms.find(r => r.id === exit.from_room_id) &&
         rooms.find(r => r.id === exit.to_room_id))
       .map(exit => ({
-        source: exit.from_room_id,
-        target: exit.to_room_id!,
+        source: nodes.find(n => n.id === exit.from_room_id),
+        target: nodes.find(n => n.id === exit.to_room_id),
         direction: exit.direction
-      }));
-
-    // Create force simulation
-    const simulation = d3.forceSimulation(nodes)
-      .force('link', d3.forceLink(links).id((d: any) => d.id).distance(100))
-      .force('charge', d3.forceManyBody().strength(-300))
-      .force('center', d3.forceCenter(width / 2, height / 2))
-      .force('collision', d3.forceCollide().radius(60));
+      }))
+      .filter(link => link.source && link.target);
 
     // Create arrow marker
     const defs = svg.append('defs');
@@ -145,14 +216,18 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick }) => {
       .attr('fill', '#666');
 
     // Create links
-    const link = svg.append('g')
+    svg.append('g')
       .attr('class', 'links')
       .selectAll('line')
       .data(links)
       .enter().append('line')
       .attr('stroke', '#666')
       .attr('stroke-width', 2)
-      .attr('marker-end', 'url(#arrowhead)');
+      .attr('marker-end', 'url(#arrowhead)')
+      .attr('x1', (d: any) => d.source.x)
+      .attr('y1', (d: any) => d.source.y)
+      .attr('x2', (d: any) => d.target.x)
+      .attr('y2', (d: any) => d.target.y);
 
     // Create nodes
     const node = svg.append('g')
@@ -161,25 +236,7 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick }) => {
       .data(nodes)
       .enter().append('g')
       .attr('cursor', 'pointer')
-      .call(d3.drag<SVGGElement, GraphNode>()
-        .on('start', (event, d) => {
-          if (!event.active) {
-            simulation.alphaTarget(0.3).restart();
-          }
-          d.fx = d.x;
-          d.fy = d.y;
-        })
-        .on('drag', (event, d) => {
-          d.fx = event.x;
-          d.fy = event.y;
-        })
-        .on('end', (event, d) => {
-          if (!event.active) {
-            simulation.alphaTarget(0);
-          }
-          d.fx = null;
-          d.fy = null;
-        }));
+      .attr('transform', (d: any) => `translate(${d.x},${d.y})`);
 
     // Add rectangles to nodes
     node.append('rect')
@@ -224,20 +281,8 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick }) => {
         .attr('stroke', '#4fc3f7');
     });
 
-    // Update positions on simulation tick
-    simulation.on('tick', () => {
-      link
-        .attr('x1', (d: any) => d.source.x)
-        .attr('y1', (d: any) => d.source.y)
-        .attr('x2', (d: any) => d.target.x)
-        .attr('y2', (d: any) => d.target.y);
-
-      node
-        .attr('transform', (d: any) => `translate(${d.x},${d.y})`);
-    });
-
     // Text wrapping function
-    function wrapText(text: d3.Selection<SVGTextElement, GraphNode, SVGGElement, unknown>, width: number) {
+    function wrapText(text: d3.Selection<SVGTextElement, MapNode, SVGGElement, unknown>, width: number) {
       text.each(function() {
         const text = d3.select(this);
         const words = text.text().split(/\s+/).reverse();
@@ -263,12 +308,7 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick }) => {
       });
     }
 
-    return () => {
-      simulation.stop();
-    };
-  }, [rooms, exits, onRoomClick]);
-
-  const currentRooms = rooms;
+  }, [rooms, exits, onRoomClick]);  const currentRooms = rooms;
 
   if (loading && zones.length === 0) {
     return <Loading />;

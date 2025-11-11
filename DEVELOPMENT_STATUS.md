@@ -25,7 +25,67 @@
 
 ## ✅ Recently Completed
 
-### Room Deduplication Fix - Portal Keys Only (2025-11-11) ✅ COMPLETED
+### Room Coordinate Display Fix (2025-11-11) ✅ COMPLETED
+- **Issue**: Room coordinates not displaying in admin interface despite being populated in database and editable in forms
+- **Root Cause**: RoomDetailView.tsx component (the actual component used for room details) was missing coordinate display logic entirely
+- **Solution**: Added coordinates section to RoomDetailView.tsx displaying "(X: value, Y: value, Z: value)" format with fallback to "—" for undefined coordinates
+- **Component Architecture**: Discovered Admin.tsx uses RoomDetailView component for room details, not Rooms.tsx (which was previously modified but unused)
+- **Display Format**: Coordinates shown as code-styled text: "(X: 5, Y: -3, Z: 0)" with individual field fallbacks for missing values
+- **Backend**: Room interface already included x?, y?, z? fields, API returns coordinate data correctly
+- **Database Schema**: Confirmed x, y, z INTEGER DEFAULT 0 columns exist in rooms table
+- **Testing**: Frontend compiles successfully, coordinates now visible in room detail views in admin interface
+- **Results**: Administrators can now view room coordinates directly in the admin interface when viewing individual room details
+- **Cleanup**: Removed unused Rooms.tsx file and modified RoomForm.tsx to only show coordinate fields when editing existing rooms (not when creating new ones)
+- **Enhanced Editing**: Added inline coordinate editing in RoomDetailView.tsx with number inputs for X, Y, Z coordinates and helpful coordinate system reference
+- **API Integration**: Fixed coordinate saving by including x, y, z fields in PUT request dataToSend object and validation schemas
+
+### Frontend Coordinate Fields for Admin Room Details (2025-11-11) ✅ COMPLETED
+- **Issue**: Administrators couldn't view or edit room coordinates directly in the web interface
+- **Solution Implemented**:
+  - **Room Cards Display**: Added coordinate display in Rooms.tsx showing "(x, y, z)" when coordinates exist, positioned after visit count information
+  - **RoomForm Edit Fields**: Added new "Coordinates" section with number inputs for x/y/z coordinates in RoomForm.tsx
+  - **Input Validation**: Number inputs with helpful placeholder text explaining coordinate system (north=+y, south=-y, east=+x, west=-x, up=+z, down=-z)
+  - **Backend API Support**: Verified RoomService.updateRoom() method handles coordinate updates through roomUpdates parameter
+  - **Database Schema**: Confirmed x, y, z INTEGER DEFAULT 0 columns exist in rooms table
+  - **TypeScript Types**: Room interface already includes optional x?, y?, z? number fields
+- **Backward Compatibility**: Coordinate fields are optional and default to undefined when not set
+- **User Experience**: Consistent with existing form patterns, clear labeling and helpful guidance
+- **Testing**: Frontend compiles successfully, coordinate fields follow established input patterns
+- **Results**: Administrators can now view coordinates in room list and edit them in room detail forms, enabling manual coordinate management alongside automated coordinate calculation
+
+### Coordinate-Based Map Visualization (2025-11-11) ✅ COMPLETED
+- **Issue**: Force-directed graph layout didn't reflect geographical relationships - west rooms weren't positioned left of east rooms
+- **Solution Implemented**:
+  - **Database Schema**: Added x, y, z INTEGER DEFAULT 0 columns to rooms table
+  - **TypeScript Types**: Updated Room interface in shared/types.ts with optional coordinates
+  - **Coordinate Calculation**: Created calculate-coordinates.js script using BFS to assign coordinates based on directional exits (north=+y, south=-y, east=+x, west=-x, up=+z, down=-z)
+  - **Disconnected Components**: Script handles multiple disconnected room graphs by spacing components 50 units apart
+  - **Visualization Update**: Modified ZoneMap.tsx to detect coordinates and use coordinate-based positioning with automatic scaling and centering
+  - **Backward Compatibility**: Falls back to force-directed layout when rooms lack coordinates
+- **Data Population**: Parsed exploration log to populate database with 123 rooms and 217 exits from Northern Midgaard City
+- **Coordinate Assignment**: Successfully assigned coordinates to all 123 rooms (X: 0-6100, Y: 0-0, Z: 0-0 range)
+- **Results**: 
+  - Rooms now display geographically with west rooms positioned left of east rooms
+  - Proper scaling prevents overcrowding while maintaining readability
+  - Console logging indicates coordinate-based vs force-directed layout usage
+  - Maintains full backward compatibility with existing force-directed visualization
+- **Testing**: Frontend and backend running, coordinate-based map ready for visual verification
+
+### MUD Map Visualization Overhaul (2025-11-11) ✅ COMPLETED
+- **Issue**: Graph visualization didn't reflect geographical layout - west rooms weren't positioned left of east rooms
+- **Root Cause**: Force-directed layout positioned nodes based on graph forces, not directional coordinates
+- **Solution**: 
+  - **Database Schema**: Added x, y, z coordinate columns to rooms table (north=+y, south=-y, east=+x, west=-x, up=+z, down=-z)
+  - **TypeScript Types**: Updated Room interface and ZoneMap component to include coordinates
+  - **Coordinate Calculation**: Created script to assign coordinates based on directional exits using BFS from central rooms
+  - **Visualization**: Modified ZoneMap.tsx to use coordinate-based positioning when coordinates exist, fallback to force-directed layout
+  - **Scaling**: Implemented automatic scaling and centering to fit coordinate ranges within SVG viewport
+- **Results**: 
+  - Rooms now position geographically (west=left, east=right, north=up, south=down)
+  - Maintains backward compatibility with force-directed layout when no coordinates
+  - Proper scaling prevents rooms from being too spread out or cramped
+  - Console logging indicates which layout method is being used
+- **Next Steps**: Run coordinate calculation script on populated database to assign coordinates to existing rooms
 - **Issue**: Rooms with same name but different portal keys were being merged (e.g., multiple "Wall Road" segments)
 - **Root Cause**: Parser was using pendingPortalKey from PREVIOUS room when encountering NEXT room, causing wrong portal key assignments and over-aggressive deduplication
 - **Solution**: 

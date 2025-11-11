@@ -43,6 +43,9 @@ export interface Room {
   roomObjects?: RoomObject[];
   roomExits?: Partial<RoomExit>[];
   zone_exit?: boolean;
+  x?: number;
+  y?: number;
+  z?: number;
   visitCount: number;
   firstVisited?: Date;
   lastVisited?: Date;

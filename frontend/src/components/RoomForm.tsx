@@ -309,6 +309,49 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
                 </div>
               </div>
             </div>
+
+            {/* Coordinates - Only show when editing existing room */}
+            {room && (
+              <div className="form-section">
+                <h3>Coordinates</h3>
+                <p className="form-help">Geographical positioning for map visualization (north=+y, south=-y, east=+x, west=-x, up=+z, down=-z)</p>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="x">X Coordinate</label>
+                    <input
+                      type="number"
+                      id="x"
+                      value={formData.x ?? ''}
+                      onChange={(e) => handleInputChange('x', e.target.value === '' ? undefined : parseInt(e.target.value))}
+                      placeholder="East/West position"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="y">Y Coordinate</label>
+                    <input
+                      type="number"
+                      id="y"
+                      value={formData.y ?? ''}
+                      onChange={(e) => handleInputChange('y', e.target.value === '' ? undefined : parseInt(e.target.value))}
+                      placeholder="North/South position"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="z">Z Coordinate</label>
+                    <input
+                      type="number"
+                      id="z"
+                      value={formData.z ?? ''}
+                      onChange={(e) => handleInputChange('z', e.target.value === '' ? undefined : parseInt(e.target.value))}
+                      placeholder="Up/Down position"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="form-actions">
