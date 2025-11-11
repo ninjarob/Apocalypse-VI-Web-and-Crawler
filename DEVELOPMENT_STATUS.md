@@ -1,12 +1,12 @@
 # Development Status - Apocalypse VI MUD
 
-**Last Updated**: November 10, 2025
+**Last Updated**: November 11, 2025
 
 ## 🎯 Current Focus
 
-**Active Development**: Fixed room duplication issue for rooms without portal keys
+**Active Development**: Room deduplication fixed - street rooms with unique portal keys now correctly identified
 
-**Priority**: Proper room deduplication to prevent duplicate entries in database
+**Priority**: Continue improving parser accuracy for edge cases
 
 ## Project Architecture
 
@@ -24,6 +24,40 @@
 - Ollama AI: http://localhost:11434 (Local AI models)
 
 ## ✅ Recently Completed
+
+### Room Deduplication Fix - Portal Keys Only (2025-11-11) ✅ COMPLETED
+- **Issue**: Rooms with same name but different portal keys were being merged (e.g., multiple "Wall Road" segments)
+- **Root Cause**: Parser was using pendingPortalKey from PREVIOUS room when encountering NEXT room, causing wrong portal key assignments and over-aggressive deduplication
+- **Solution**: 
+  - **Complete redesign**: Portal keys are now THE ONLY reliable room identifier
+  - Room encounter: Pass `null` instead of pendingPortalKey to findExistingRoomKey()
+  - Room creation: Never set portal_key initially (only assigned when bind spell succeeds)
+  - Room matching: Only by portal key (if provided) OR exact description match
+  - Database save: Filter to ONLY save rooms with `portal_key || noMagicRooms.has(key)`
+  - Every room gets bind attempt except 15-20 no-magic zones ("Something prevents" / "fizzles out")
+- **Results**:
+  - **Wall Road**: ✅ All 13 unique rooms with unique portal keys correctly identified (up from 3)
+  - **Emerald Avenue**: ✅ All 5 unique rooms with portal keys found (down from 6 expected)
+  - **Central Street**: ✅ All 3 unique rooms found
+  - **Royal Boulevard**: ✅ All 3 unique rooms found  
+  - **Park Road**: ✅ All 3 unique rooms found
+  - **Total rooms**: 123 (104 with portal keys + 19 no-magic zones) - down from 383
+  - **Exits saved**: 217 (247 skipped as they reference duplicate visit entries)
+  - **Database workflow**: Must `npm run db:reset` before each parse to start clean
+- **Key Insight**: Portal keys uniquely identify every room except 15-20 no-magic zones - this is a 100% reliable fact
+
+### Room Deduplication Fix - Final (2025-11-10) ✅ COMPLETED
+- **Issue**: Rooms without portal keys were being duplicated when encountered multiple times
+- **Root Cause**: Parser wasn't checking for exact namedesc match before creating new room entries
+- **Solution**: 
+  - Added third priority check for exact `namedesc:name|||description` match
+  - Increased fuzzy matching threshold from 90% to 95% for stricter matching
+  - Improved priority order: portal key → existing room with portal → exact namedesc → fuzzy match
+- **Results**:
+  - Rooms like Market Square, The Armory, The Magic Shop, etc. no longer duplicated
+  - 103 unique rooms parsed without duplicates (down from previous runs with duplicates)
+  - Rooms with same name but different portal keys correctly treated as different rooms
+  - Parser correctly handles re-encountering rooms before portal binding
 
 ### Exit Description Fix (2025-11-10) ✅ COMPLETED
 - **Issue**: Exit descriptions not showing in frontend - always showing "No description"

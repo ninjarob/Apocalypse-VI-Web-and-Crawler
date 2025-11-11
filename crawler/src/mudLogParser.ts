@@ -559,8 +559,10 @@ export class MudLogParser {
         const previousRoomKey = this.state.currentRoomKey;
         const previousRoom = this.state.currentRoom;
         
-        // Check if we already have this room (by portal key or name+desc)
-        let existingRoomKey = this.findExistingRoomKey(roomName, description, this.state.pendingPortalKey);
+        // CRITICAL: When encountering a room, we DON'T know its portal key yet
+        // The portal key comes AFTER visiting (when bind portal is cast)
+        // So we ONLY search by exact description match, never by pendingPortalKey here
+        let existingRoomKey = this.findExistingRoomKey(roomName, description, null);
         console.log(`DEBUG: Existing room key check for "${roomName}": ${existingRoomKey}`);
         console.log(`DEBUG: Current description hash: ${this.hashString(description.substring(0, 100))}...`);
         
@@ -569,12 +571,6 @@ export class MudLogParser {
           console.log(`DEBUG: Existing room description hash: ${this.hashString(this.state.rooms.get(existingRoomKey)!.description.substring(0, 100))}...`);
           // Update existing room with any new information
           const existingRoom = this.state.rooms.get(existingRoomKey)!;
-          
-          // Update portal key if we got one and it doesn't have one
-          if (this.state.pendingPortalKey && !existingRoom.portal_key) {
-            existingRoom.portal_key = this.state.pendingPortalKey;
-            console.log(`  � Updated portal key for existing room: ${roomName} (${this.state.pendingPortalKey})`);
-          }
           
           // Update exits if we have more/different exits
           if (exits.length > existingRoom.exits.length) {
@@ -595,7 +591,7 @@ export class MudLogParser {
           
         } else {
           console.log(`DEBUG: Creating new room: ${roomName}`);
-          // Create new room
+          // Create new room WITHOUT portal key (it will be added when bind portal succeeds)
           const room: ParsedRoom = {
             name: roomName,
             description,
@@ -603,13 +599,12 @@ export class MudLogParser {
             npcs,
             items,
             zone_id: undefined,
-            portal_key: this.state.pendingPortalKey || undefined
+            portal_key: undefined // Never set portal key here - it comes from bind portal later
           };
           
           this.state.rooms.set(roomKey, room);
           
-          const keyType = this.state.pendingPortalKey ? 'portal key' : 'name+desc';
-          console.log(`  📦 Room: ${roomName} (${exits.length} exits, ${npcs.length} NPCs, ${items.length} items) [${keyType}]`);
+          console.log(`  📦 Room: ${roomName} (${exits.length} exits, ${npcs.length} NPCs, ${items.length} items) [awaiting portal key]`);
           
           // Update current room tracking
           this.state.currentRoom = room;
@@ -716,33 +711,31 @@ export class MudLogParser {
       return null;
     }
     
-    // Only if NO portal key is available, fall back to name+description matching
-    // Check if any existing room with the same name has a portal key
-    for (const [key, room] of this.state.rooms) {
-      if (room.portal_key && room.name === name) {
-        const similarity = this.calculateDescriptionSimilarity(room.description, description);
-        console.log(`DEBUG: Checking existing room with portal key ${room.portal_key}, similarity: ${similarity}`);
-        if (similarity > 0.8) {
-          console.log(`DEBUG: Found existing room with portal key for same name and similar description: ${key}`);
-          return key;
-        }
-      }
+    // NO PORTAL KEY YET - We need to be careful not to merge different rooms with same name
+    
+    // Check for EXACT name+description match (using keys)
+    // This catches rooms we've seen before in the current session
+    const checkKey = `namedesc:${name}|||${description}`;
+    if (this.state.rooms.has(checkKey)) {
+      console.log(`DEBUG: Found exact namedesc match: ${checkKey.substring(0, 100)}...`);
+      return checkKey;
     }
     
-    // Fuzzy matching for rooms without portal keys
-    // Use description similarity but ignore dynamic content like NPCs
+    // ONLY do similarity matching for rooms that truly appear to be the same
+    // This is for cases where minor description changes occur (NPCs, time of day, etc.)
+    // We use a VERY HIGH threshold to avoid false matches
     for (const [key, room] of this.state.rooms) {
-      if (room.name === name && !room.portal_key) {
-        console.log(`DEBUG: Checking fuzzy match for room: ${key} (${room.name})`);
+      if (room.name === name && !room.portal_key && key !== checkKey) {
+        console.log(`DEBUG: Checking fuzzy match for room without portal: ${key.substring(0, 100)}... (${room.name})`);
         
-        // Calculate description similarity (now uses normalized descriptions)
+        // Calculate description similarity (uses normalized descriptions)
         const similarity = this.calculateDescriptionSimilarity(room.description, description);
         console.log(`DEBUG: Description similarity (normalized): ${similarity.toFixed(3)}`);
         
-        // Use high similarity threshold (90%+) for rooms without portal keys
-        // This prevents false matches while still catching legitimate duplicates
-        if (similarity >= 0.90) {
-          console.log(`DEBUG: High similarity match found: ${key} (${similarity.toFixed(3)})`);
+        // Use VERY high similarity threshold (98%+) for rooms without portal keys
+        // This prevents merging different "Wall Road" segments that happen to have similar descriptions
+        if (similarity >= 0.98) {
+          console.log(`DEBUG: Very high similarity match found: ${key.substring(0, 100)}... (${similarity.toFixed(3)})`);
           return key;
         }
       }
@@ -937,12 +930,26 @@ export class MudLogParser {
   async saveToDatabase(defaultZoneId?: number): Promise<void> {
     console.log('\n💾 Saving rooms to database...');
     
+    // CRITICAL: Only save rooms that have portal keys OR are no-magic zones!
+    // Every room visited should have been bound, except for ~15-20 no-magic rooms
+    // Rooms without portal keys AND not in noMagicRooms are just duplicate visits
+    const roomsToSave = Array.from(this.state.rooms.entries()).filter(([key, room]) => 
+      room.portal_key || this.state.noMagicRooms.has(key)
+    );
+    const skippedRooms = this.state.rooms.size - roomsToSave.length;
+    
+    console.log(`   Found ${this.state.rooms.size} total room entries`);
+    console.log(`   ${roomsToSave.length} rooms to save:`);
+    console.log(`     - ${Array.from(this.state.rooms.values()).filter(r => r.portal_key).length} with portal keys`);
+    console.log(`     - ${this.state.noMagicRooms.size} no-magic zones`);
+    console.log(`   ${skippedRooms} duplicate visits (will skip)\n`);
+    
     let saved = 0;
     let failed = 0;
     const roomIdMap = new Map<string, number>(); // roomKey -> database ID
     
-    // Save all rooms first
-    for (const [key, room] of this.state.rooms) {
+    // Save rooms with portal keys or in no-magic zones
+    for (const [key, room] of roomsToSave) {
       try {
         const roomData = {
           name: room.name,
@@ -959,7 +966,7 @@ export class MudLogParser {
         saved++;
         
         if (saved % 10 === 0) {
-          console.log(`   Saved ${saved}/${this.state.rooms.size} rooms...`);
+          console.log(`   Saved ${saved}/${roomsToSave.length} rooms...`);
         }
       } catch (error: any) {
         failed++;
