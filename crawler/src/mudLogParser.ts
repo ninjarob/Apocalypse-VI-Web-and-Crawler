@@ -101,7 +101,7 @@ export class MudLogParser {
       const cleanLine = this.stripHtml(line).trim();
       
       // Detect portal binding results
-      const portalKeyMatch = cleanLine.match(/'([a-z]{6,})' briefly appears as a portal shimmers into view/);
+      const portalKeyMatch = cleanLine.match(/'([a-z]{5,})' briefly appears as a portal shimmers into view/);
       if (portalKeyMatch) {
         this.state.pendingPortalKey = portalKeyMatch[1];
         this.state.portalRetryCount = 0; // Reset retry count on success
@@ -381,21 +381,38 @@ export class MudLogParser {
       }
       
       // Detect blocked movement (tried to move but couldn't)
-      // Common blocking messages from MUDs
-      const blockPatterns = [
+      // Distinguish between:
+      // 1. Invalid direction (no exit exists) - don't save these
+      // 2. Real blocked exits (doors, barriers) - save these
+      const invalidDirectionPatterns = [
         /You can't go that way/i,
         /There is no exit in that direction/i,
-        /The .+ (is closed|blocks your way|bars your passage)/i,
         /You cannot go that way/i,
         /Alas, you cannot go that way/i,
-        /You walk into a wall/i,
-        /The door is locked/i,
-        /It's locked/i
+        /You walk into a wall/i
       ];
       
-      const isBlocked = blockPatterns.some(pattern => pattern.test(cleanLine));
-      if (isBlocked && lastDirection && this.state.currentRoomKey && this.state.currentRoom) {
-        // Movement was attempted but blocked - record a blocked exit
+      const realBlockedPatterns = [
+        /The .+ (is closed|blocks your way|bars your passage)/i,
+        /The door is locked/i,
+        /It's locked/i,
+        /The door is closed/i,
+        /The gate is closed/i
+      ];
+      
+      const isInvalidDirection = invalidDirectionPatterns.some(pattern => pattern.test(cleanLine));
+      const isRealBlocked = realBlockedPatterns.some(pattern => pattern.test(cleanLine));
+      
+      if (isInvalidDirection && lastDirection) {
+        // Invalid direction - just clear lastDirection and continue, don't save
+        console.log(`   ⚠️  Invalid direction: ${lastDirection} from ${this.state.currentRoom?.name || 'unknown'} - ignoring`);
+        lastDirection = '';
+        i++;
+        continue;
+      }
+      
+      if (isRealBlocked && lastDirection && this.state.currentRoomKey && this.state.currentRoom) {
+        // Real blocked exit (door, gate, etc.) - record it
         console.log(`   🚫 Blocked: ${lastDirection} from ${this.state.currentRoom.name} - ${cleanLine.substring(0, 50)}...`);
         
         const blockedExit: ParsedExit = {
@@ -465,7 +482,7 @@ export class MudLogParser {
           }
           
           // Stop if we hit a portal key line (this should be processed by main parser, not included in description)
-          if (cleanDesc.match(/'[a-z]{6,}' briefly appears as a portal shimmers/)) {
+          if (cleanDesc.match(/'[a-z]{5,}' briefly appears as a portal shimmers/)) {
             console.log(`DEBUG: Found portal key line at j=${j}, stopping description collection`);
             break;
           }
@@ -976,6 +993,39 @@ export class MudLogParser {
     
     console.log(`\n✅ Rooms saved! ${saved} saved, ${failed} failed`);
     
+    // Build enhanced roomIdMap with multiple lookup methods
+    // After saving, fetch all rooms from database to ensure we have complete mapping
+    console.log('\n🔄 Building room ID map from database...');
+    try {
+      const dbRoomsResponse = await axios.get(`${this.apiBaseUrl}/rooms`);
+      const dbRooms = dbRoomsResponse.data;
+      
+      // Clear and rebuild roomIdMap with ALL possible lookups
+      roomIdMap.clear();
+      
+      for (const dbRoom of dbRooms) {
+        // Add by portal key (most reliable)
+        if (dbRoom.portal_key) {
+          const portalKey = `portal:${dbRoom.portal_key}`;
+          roomIdMap.set(portalKey, dbRoom.id);
+        }
+        
+        // Add by namedesc key
+        const namedescKey = `namedesc:${dbRoom.name}|||${dbRoom.description}`;
+        roomIdMap.set(namedescKey, dbRoom.id);
+        
+        // Add by name only as fallback
+        if (!roomIdMap.has(`name:${dbRoom.name}`)) {
+          roomIdMap.set(`name:${dbRoom.name}`, dbRoom.id);
+        }
+      }
+      
+      console.log(`   Mapped ${dbRooms.length} rooms with ${roomIdMap.size} lookup keys`);
+    } catch (error: any) {
+      console.error(`   ❌ Failed to fetch rooms from database: ${error.message}`);
+      console.log(`   Continuing with original roomIdMap...`);
+    }
+    
     // Now save exits
     console.log('\n💾 Saving exits...');
     let exitsSaved = 0;
@@ -983,52 +1033,55 @@ export class MudLogParser {
     
     for (const exit of this.state.exits) {
       try {
-        // Use the stored room key directly
-        const fromRoomId = roomIdMap.get(exit.from_room_key);
+        // Try to find from_room_id using multiple methods
+        let fromRoomId = roomIdMap.get(exit.from_room_key);
+        
+        // Fallback: try by name
+        if (!fromRoomId) {
+          fromRoomId = roomIdMap.get(`name:${exit.from_room_name}`);
+        }
         
         if (!fromRoomId) {
-          console.log(`   ⚠️  Skipping exit: from room key "${exit.from_room_key.substring(0, 50)}..." not found`);
+          console.log(`   ⚠️  Skipping exit: from room "${exit.from_room_name}" (key: "${exit.from_room_key.substring(0, 50)}...") not found`);
           continue;
         }
         
-        // Use to_room_key if available (most reliable)
+        // Try to find to_room_id using multiple methods
         let toRoomId: number | undefined;
         
+        // Method 1: Direct key lookup
         if (exit.to_room_key) {
           toRoomId = roomIdMap.get(exit.to_room_key);
         }
         
-        // Fallback: try portal key
+        // Method 2: Portal key lookup
         if (!toRoomId && exit.portal_key) {
-          for (const [key, room] of this.state.rooms) {
-            if (room.portal_key === exit.portal_key) {
-              toRoomId = roomIdMap.get(key);
-              break;
-            }
-          }
+          toRoomId = roomIdMap.get(`portal:${exit.portal_key}`);
         }
         
-        // Fallback: try name matching
+        // Method 3: Name lookup
+        if (!toRoomId && exit.to_room_name) {
+          toRoomId = roomIdMap.get(`name:${exit.to_room_name}`);
+        }
+        
+        // Skip exits that don't have a destination room
+        // We only save exits if:
+        // 1. We found the destination room ID, OR
+        // 2. The exit is explicitly marked as blocked (door, spell, etc)
+        // Failed movement attempts (Alas, you cannot go that way) should NOT be saved
         if (!toRoomId) {
-          for (const [key, room] of this.state.rooms) {
-            if (room.name === exit.to_room_name) {
-              toRoomId = roomIdMap.get(key);
-              break;
-            }
+          if (exit.is_blocked) {
+            console.log(`   ℹ️  Saving blocked exit: ${exit.from_room_name} [${exit.direction}] (no destination)`);
+          } else {
+            console.log(`   ⚠️  Skipping exit: to room "${exit.to_room_name || 'unknown'}" not found and not marked as blocked`);
+            continue;
           }
-        }
-        
-        // If exit is blocked, we can save it without a to_room_id
-        // This represents an exit that exists but cannot be traversed yet
-        if (!toRoomId && !exit.is_blocked) {
-          console.log(`   ⚠️  Skipping exit: to room "${exit.to_room_name}" not found and not marked as blocked`);
-          continue;
         }
         
         const exitData: any = {
           from_room_id: fromRoomId,
           direction: exit.direction,
-          to_room_id: toRoomId || null, // null if blocked/unknown
+          to_room_id: toRoomId || null, // null only if blocked
           is_zone_exit: exit.is_zone_exit ? 1 : 0,
           description: exit.look_description || 'No description', // Use look_description as the main description
           look_description: exit.look_description || null,

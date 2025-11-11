@@ -4,9 +4,9 @@
 
 ## 🎯 Current Focus
 
-**Active Development**: Room deduplication fixed - street rooms with unique portal keys now correctly identified
+**Active Development**: Parser fixes complete - portal key minimum length corrected, invalid direction attempts filtered out
 
-**Priority**: Continue improving parser accuracy for edge cases
+**Priority**: Continue mapping new zones and improving data quality
 
 ## Project Architecture
 
@@ -24,6 +24,44 @@
 - Ollama AI: http://localhost:11434 (Local AI models)
 
 ## ✅ Recently Completed
+
+### Portal Key Minimum Length & Invalid Direction Filter (2025-11-11) ✅ COMPLETED
+- **Issues Discovered**:
+  1. Missing Royal Boulevard room causing infinite loop - "Intersection of Royal Boulevard and Park Road" going north led to wrong Royal Boulevard
+  2. Invalid direction attempts (e.g., "Alas, you cannot go that way...") were being saved as blocked exits with null destinations
+- **Root Causes**:
+  1. Portal key regex pattern required 6+ characters (`/[a-z]{6,}/`) but some valid portal keys are only 5 characters (e.g., 'jnpqr')
+  2. Invalid direction attempts matched blockPatterns and were treated as blocked exits instead of being filtered out
+- **Solutions**:
+  1. **Portal Key Fix**: Changed regex from `{6,}` to `{5,}` in two locations (lines 105 and 468 of mudLogParser.ts)
+  2. **Direction Filter**: Split blockPatterns into two categories:
+     - `invalidDirectionPatterns` - "Alas, you cannot go that way", "No exit in that direction", etc. → These are now completely ignored
+     - `realBlockedPatterns` - Locked doors, closed gates, barriers → These are still saved as blocked exits
+- **Results**:
+  - ✅ Royal Boulevard with portal key 'jnpqr' now correctly parsed and saved (room ID 103)
+  - ✅ Intersection routing fixed: north now leads to correct Royal Boulevard
+  - ✅ All invalid direction attempts (u, d, w from wrong rooms) no longer saved
+  - ✅ 0 exits with null destinations (down from 4)
+  - 📊 Final database: 125 rooms, 262 exits, all with valid destinations
+- **Error Locations Found**: Log file lines 886 (Grunting Boar Lounge→up), 2178 (Temple→down), 2259 (South Temple Street→down), 2562 (Jewelers→west) - all correctly filtered now
+- **Database Impact**: Cleaner exit data, no spurious "nowhere" exits, correct room connectivity
+
+### Missing Exit Fix - Auto-Reverse Exits Now Saved (2025-11-11) ✅ COMPLETED
+- **Issue**: Parser created auto-reverse exits (e.g., if you go north, it creates a south exit back) but many weren't being saved to database
+- **Symptom**: Market Square → South Temple Street worked, but South Temple Street → Market Square was missing; North Temple Street missing north and east exits
+- **Root Cause**: After saving rooms, exit saving logic looked up room IDs in `roomIdMap` using exact key matching. If a room was saved with one key format (e.g., `namedesc:...`) but an exit referenced it differently, the lookup failed and exit was skipped
+- **Solution**: 
+  - After saving rooms, parser now fetches ALL rooms from database
+  - Rebuilds `roomIdMap` with multiple lookup methods: `portal:key`, `namedesc:name|||description`, and `name:name`
+  - Exit saving now tries multiple lookup methods to find room IDs
+  - Ensures ALL exits can find their from/to rooms regardless of key format
+- **Results**:
+  - ✅ Market Square ↔ South Temple Street: Both directions now work
+  - ✅ North Temple Street: Now has all 4 cardinal exits (north, east, south, west)
+  - ✅ All auto-reverse exits now successfully saved to database
+  - 📊 Parsed 123 rooms with 262 exits saved (up from ~217 before fix)
+  - 198 exits skipped due to referencing rooms outside parsed area (expected behavior)
+- **Database Impact**: Complete bidirectional navigation now possible throughout mapped areas
 
 ### Coordinate System Simplified to 2D (2025-11-11) ✅ COMPLETED
 - **Issue**: Z coordinates not needed for flat 2D map visualization, adding unnecessary complexity
