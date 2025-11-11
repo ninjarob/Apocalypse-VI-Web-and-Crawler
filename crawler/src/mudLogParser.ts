@@ -139,15 +139,49 @@ export class MudLogParser {
                 this.state.currentRoomKey = portalKey;
                 this.state.bindingAttemptRoomKey = portalKey;
                 
-                // IMPORTANT: Update all exits that reference the old key
+                // IMPORTANT: Update all exits that reference the old key OR any namedesc: variant
+                // This handles cases where the same room was visited multiple times before binding
+                const roomName = bindingRoom.name;
+                const roomDesc = bindingRoom.description;
+                const namedescPattern = `namedesc:${roomName}|||`;
+                
                 for (const exit of this.state.exits) {
+                  // Update exits with exact old key match
                   if (exit.from_room_key === oldKey) {
                     exit.from_room_key = portalKey;
+                    console.log(`    🔄 Updated exit from_room_key: ${oldKey.substring(0, 30)}... -> ${portalKey}`);
                   }
                   if (exit.to_room_key === oldKey) {
                     exit.to_room_key = portalKey;
+                    console.log(`    🔄 Updated exit to_room_key: ${oldKey.substring(0, 30)}... -> ${portalKey}`);
+                  }
+                  
+                  // Also update exits pointing to OTHER namedesc: versions of the same room
+                  // (same name and description but different key)
+                  if (exit.from_room_key && exit.from_room_key.startsWith(namedescPattern)) {
+                    const fromRoom = this.state.rooms.get(exit.from_room_key);
+                    if (fromRoom && fromRoom.name === roomName && fromRoom.description === roomDesc) {
+                      exit.from_room_key = portalKey;
+                      console.log(`    🔄 Updated exit from_room_key (variant): ${exit.from_room_key.substring(0, 30)}... -> ${portalKey}`);
+                    }
+                  }
+                  if (exit.to_room_key && exit.to_room_key.startsWith(namedescPattern)) {
+                    const toRoom = this.state.rooms.get(exit.to_room_key);
+                    if (toRoom && toRoom.name === roomName && toRoom.description === roomDesc) {
+                      exit.to_room_key = portalKey;
+                      console.log(`    🔄 Updated exit to_room_key (variant): ${exit.to_room_key.substring(0, 30)}... -> ${portalKey}`);
+                    }
                   }
                 }
+                
+                // CRITICAL: Update zoneMapping if this room is in it
+                if (this.state.zoneMapping.has(oldKey)) {
+                  const zoneName = this.state.zoneMapping.get(oldKey)!;
+                  this.state.zoneMapping.delete(oldKey);
+                  this.state.zoneMapping.set(portalKey, zoneName);
+                  console.log(`  🗺️  Updated zone mapping: ${oldKey.substring(0, 50)}... -> ${portalKey} (zone: ${zoneName})`);
+                }
+                
                 console.log(`  🔄 Updated room key: ${oldKey.substring(0, 50)}... -> ${portalKey}`);
               }
               
@@ -728,7 +762,14 @@ export class MudLogParser {
       return null;
     }
     
-    // NO PORTAL KEY YET - We need to be careful not to merge different rooms with same name
+    // NO PORTAL KEY YET - Check if a portal: version exists first (most reliable)
+    // This prevents creating duplicate namedesc: entries when a portal: version already exists
+    for (const [key, room] of this.state.rooms) {
+      if (room.portal_key && room.name === name && room.description === description) {
+        console.log(`DEBUG: Found existing portal: room with matching name/desc: ${key} (portal: ${room.portal_key})`);
+        return key;
+      }
+    }
     
     // Check for EXACT name+description match (using keys)
     // This catches rooms we've seen before in the current session
@@ -860,6 +901,8 @@ export class MudLogParser {
       // Assign zone IDs to rooms:
       // - Rooms in zoneMapping are in a DIFFERENT zone (explicit who -z showed different zone)
       // - All other rooms are in the default zone
+      const defaultZoneName = zones.find((z: any) => z.id === resolvedDefaultZoneId)?.name || 'default zone';
+      
       for (const [roomKey, room] of this.state.rooms) {
         const assignedZoneName = this.state.zoneMapping.get(roomKey);
         
@@ -871,6 +914,7 @@ export class MudLogParser {
             console.log(`   Assigned ${room.name} to zone ${assignedZoneName} (ID: ${zone.id})`);
           } else {
             console.log(`   ⚠️  Warning: Zone "${assignedZoneName}" not found in database for room "${room.name}"`);
+            console.log(`      Reverting to ${defaultZoneName} (ID: ${resolvedDefaultZoneId})`);
             room.zone_id = resolvedDefaultZoneId; // Fall back to default zone
           }
         } else {
@@ -879,61 +923,71 @@ export class MudLogParser {
         }
       }
       
-      // Now mark zone exits: exits that lead to rooms in different zones
+      // Now mark zone exits: rooms that have exits leading to other zones
       console.log('\n🚪 Marking zone exits...');
       let zoneExitCount = 0;
       const zoneExitRoomKeys = new Set<string>(); // Track which rooms should be marked as zone exits
       
+      // First, mark rooms that are explicitly in zoneMapping (rooms where zone change was detected)
+      for (const [roomKey, zoneName] of this.state.zoneMapping) {
+        const room = this.state.rooms.get(roomKey);
+        if (room && room.zone_id && room.zone_id !== resolvedDefaultZoneId) {
+          // This room is in a different zone than the default - it's a zone exit
+          zoneExitRoomKeys.add(roomKey);
+          console.log(`   🔀 Zone exit (different zone): ${room.name} (Zone ${room.zone_id}: ${zoneName})`);
+        }
+      }
+      
+      // Second, mark rooms that have exits leading to rooms in different zones
       for (const exit of this.state.exits) {
-        // Use the stored room key directly
+        // Use the stored room keys directly for more reliable matching
         const fromRoom = this.state.rooms.get(exit.from_room_key);
-        
-        // Find the destination room by portal key first, then by name
-        let toRoom: ParsedRoom | undefined;
-        
-        // First try portal key matching
-        if (exit.portal_key) {
-          for (const [key, room] of this.state.rooms) {
-            if (room.portal_key === exit.portal_key) {
-              toRoom = room;
-              break;
-            }
+        if (!fromRoom || !fromRoom.zone_id || !exit.to_room_key) {
+          // Debug: log why we're skipping this exit
+          if (!fromRoom) {
+            console.log(`   ⚠️  DEBUG: Skipping exit - fromRoom not found for key: ${exit.from_room_key.substring(0, 50)}...`);
+          } else if (!fromRoom.zone_id) {
+            console.log(`   ⚠️  DEBUG: Skipping exit - fromRoom has no zone_id: ${fromRoom.name} (${exit.from_room_key.substring(0, 50)}...)`);
+          } else if (!exit.to_room_key) {
+            console.log(`   ⚠️  DEBUG: Skipping exit - no to_room_key: ${exit.from_room_name} -> ${exit.to_room_name}`);
           }
+          continue;
         }
         
-        // Fall back to name matching
+        const toRoom = this.state.rooms.get(exit.to_room_key);
+        
         if (!toRoom) {
-          for (const [key, room] of this.state.rooms) {
-            if (room.name === exit.to_room_name) {
-              toRoom = room;
-              break;
-            }
-          }
+          console.log(`   ⚠️  DEBUG: Skipping exit - toRoom not found for key: ${exit.to_room_key?.substring(0, 50)}...`);
+        } else if (!toRoom.zone_id) {
+          console.log(`   ⚠️  DEBUG: Skipping exit - toRoom has no zone_id: ${toRoom.name} (${exit.to_room_key?.substring(0, 50)}...)`);
         }
         
-        // If both rooms have zone IDs and they're different, mark as zone exit
-        if (fromRoom && toRoom && fromRoom.zone_id && toRoom.zone_id && fromRoom.zone_id !== toRoom.zone_id) {
+        // If both rooms exist, have zone IDs, and they're different, mark as zone exit
+        if (toRoom && toRoom.zone_id && fromRoom.zone_id !== toRoom.zone_id) {
           exit.is_zone_exit = true;
           zoneExitCount++;
           
           // Mark BOTH rooms as zone exits (the boundary rooms on both sides)
           zoneExitRoomKeys.add(exit.from_room_key);
-          const toRoomKey = toRoom.portal_key ? `portal:${toRoom.portal_key}` : `namedesc:${toRoom.name}|||${toRoom.description}`;
-          zoneExitRoomKeys.add(toRoomKey);
+          zoneExitRoomKeys.add(exit.to_room_key);
           
-          console.log(`   🔀 Zone exit: ${exit.from_room_name} [${exit.direction}]-> ${exit.to_room_name} (Zone ${fromRoom.zone_id} -> ${toRoom.zone_id})`);
+          console.log(`   🔀 Zone exit (exit to different zone): ${exit.from_room_name} (${exit.from_room_key.substring(0, 30)}...) [${exit.direction}]-> ${exit.to_room_name} (Zone ${fromRoom.zone_id} -> ${toRoom.zone_id})`);
         }
       }
       
       // Mark rooms as zone exits
+      console.log(`\n🏷️  Marking ${zoneExitRoomKeys.size} rooms as zone exits...`);
       for (const roomKey of zoneExitRoomKeys) {
         const room = this.state.rooms.get(roomKey);
         if (room) {
           room.zone_exit = true;
+          console.log(`     ✓ Marked ${room.name} (${roomKey.substring(0, 20)}...)`);
+        } else {
+          console.log(`     ⚠️  Room key not found: ${roomKey.substring(0, 50)}...`);
         }
       }
       
-      console.log(`   Found ${zoneExitCount} zone exits`);
+      console.log(`   Found ${zoneExitCount} cross-zone exits`);
       console.log(`   Marked ${zoneExitRoomKeys.size} rooms as zone exits`);
       
     } catch (error) {

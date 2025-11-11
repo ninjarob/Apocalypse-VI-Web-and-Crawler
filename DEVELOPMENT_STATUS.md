@@ -25,6 +25,82 @@
 
 ## ✅ Recently Completed
 
+### Room Deduplication Fix (2025-11-11) ✅ COMPLETED
+- **Issue**: Room `cdijopqr` ("On the River") NOT marked as zone exit even though it has an exit to zone 30 (Camelot)
+- **Root Cause**: When visiting a room multiple times:
+  1. First visit: room created with `namedesc:` key
+  2. Portal binding: room key updated to `portal:cdijopqr`, exits updated ✅
+  3. Second visit: `findExistingRoomKey()` didn't find the `portal:` version, created NEW `namedesc:` entry ❌
+  4. Exit to "A Rocky Shore" created from the NEW namedesc: entry ❌
+  5. Zone exit marking couldn't find the exit because it was under the wrong room key ❌
+- **Solution 1**: Enhanced exit update logic to also update exits pointing to OTHER `namedesc:` variants when assigning portal key:
+  ```typescript
+  // Also update exits pointing to OTHER namedesc: versions of the same room
+  if (exit.from_room_key && exit.from_room_key.startsWith(namedescPattern)) {
+    const fromRoom = this.state.rooms.get(exit.from_room_key);
+    if (fromRoom && fromRoom.name === roomName && fromRoom.description === roomDesc) {
+      exit.from_room_key = portalKey;
+    }
+  }
+  ```
+- **Solution 2**: Enhanced `findExistingRoomKey()` to check for existing `portal:` rooms BEFORE creating `namedesc:` duplicates:
+  ```typescript
+  // NO PORTAL KEY YET - Check if a portal: version exists first
+  for (const [key, room] of this.state.rooms) {
+    if (room.portal_key && room.name === name && room.description === description) {
+      return key; // Use existing portal: version instead of creating namedesc: duplicate
+    }
+  }
+  ```
+- **Results**:
+  - ✅ Room `cdijopqr` now correctly marked as `zone_exit=True`
+  - ✅ Room `ceghjklmnpqr` correctly NOT marked (no cross-zone exits)
+  - ✅ Room `dgijopqr` still correctly marked as `zone_exit=True`
+  - ✅ All "On the River" rooms now have correct zone exit status
+  - ✅ No more duplicate namedesc: entries created after portal binding
+
+### Zone Name Alias Support (2025-11-11) ✅ COMPLETED
+- **Issue**: "A Rocky Shore" incorrectly assigned to zone 2 instead of zone 30 (Camelot)
+- **Root Cause**: MUD outputs zone name as "King Arthur's Castle, Camelot" but database has "Camelot"
+- **Solution**: Added `alias` field support to zones table and seed data:
+  ```typescript
+  { id: 30, name: 'Camelot', alias: 'King Arthur\'s Castle, Camelot', description: '...' }
+  ```
+- **Results**:
+  - ✅ "A Rocky Shore" now correctly assigned to zone 30
+  - ✅ Zone resolution checks both `name` and `alias` fields
+  - ✅ Warning message added: "Reverting to [zone name] (ID: X)" when zone not found
+
+### Zone Exit Detection Algorithm Fix (2025-11-11) ✅ COMPLETED
+- **Issue**: Zone exit marking logic had two critical problems:
+  1. Room keys were being updated from `namedesc:...` to `portal:...` when portal binding succeeded, but `zoneMapping` entries still pointed to the OLD key
+  2. During zone resolution, the algorithm couldn't find rooms in `zoneMapping` because the keys didn't match
+- **Root Cause**: When portal key was assigned and room key was updated, the code updated:
+  - The rooms Map ✅
+  - All exits referencing that key ✅  
+  - currentRoomKey and bindingAttemptRoomKey ✅
+  - **BUT NOT the zoneMapping** ❌
+- **Solution**: Enhanced room key update logic to also update `zoneMapping` when room key changes:
+  ```typescript
+  // CRITICAL: Update zoneMapping if this room is in it
+  if (this.state.zoneMapping.has(oldKey)) {
+    const zoneName = this.state.zoneMapping.get(oldKey)!;
+    this.state.zoneMapping.delete(oldKey);
+    this.state.zoneMapping.set(portalKey, zoneName);
+  }
+  ```
+- **Results**:
+  - ✅ **13 rooms** now correctly marked as zone exits (up from 2)
+  - ✅ "Entrance to the Midgaard Sewers" (zone 4: Midgaard: Sewers)
+  - ✅ "Outside the City Walls" (zone 9: The Hills of Astyll)
+  - ✅ "City Entrance" (zone 12: The Haunted Forest)
+  - ✅ "A long tunnel" (zone 21: The Great Eastern Desert)
+  - ✅ "On the Swift Flowing River" (zone 8: The Candlebriar Mountains)
+  - ✅ "Rear exit of the Temple", "The Dump", "Under The Bridge", "On the River" (zone 2, connecting to other zones)
+  - ✅ "Quester's" (zone 6: Quester's Enclave)
+  - ✅ "Main Street East" and "Outside the Eastern Gate" (zone 2, with exits to other zones)
+- **Verification**: All rooms that were visited with `who -z` showing different zones are now correctly marked as zone exits
+
 ### Portal Key Minimum Length & Invalid Direction Filter (2025-11-11) ✅ COMPLETED
 - **Issues Discovered**:
   1. Missing Royal Boulevard room causing infinite loop - "Intersection of Royal Boulevard and Park Road" going north led to wrong Royal Boulevard
