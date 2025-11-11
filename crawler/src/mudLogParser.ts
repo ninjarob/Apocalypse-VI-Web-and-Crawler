@@ -252,6 +252,12 @@ export class MudLogParser {
             break;
           }
 
+          // Skip the "Looking x..." response line (in blue) but continue collecting
+          if (cleanDesc.match(/^Looking [nesw]/i) || descLine.includes('color="#0080FF"')) {
+            k++;
+            continue; // Skip this line but keep collecting
+          }
+
           // Stop at room titles, exits, prompts, or other commands
           if (descLine.includes('color="#00FFFF"') || // Room title
               descLine.includes('color="#008080"') || // Exits line
@@ -259,7 +265,6 @@ export class MudLogParser {
               cleanDesc.match(/^(look|exits|cast|who|The last remnants|Lightning begins|arrives from|leaves|says|orates)/i) ||
               cleanDesc.match(/^\[EXITS:/i) || // Exit list
               cleanDesc.match(/^\[Current Zone:/i) || // Zone info
-              cleanDesc.match(/^Looking [nesw]/i) || // "Looking w..." response
               cleanDesc.match(/^Room scan complete/i)) { // Room scan message
             break;
           }
