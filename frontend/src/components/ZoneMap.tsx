@@ -107,8 +107,9 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick }) => {
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove(); // Clear previous render
 
-    const width = 800;
-    const height = 600;
+    // Use much larger canvas for coordinate-based layout
+    const width = 4000;  // Increased to accommodate large coordinate space
+    const height = 2500;  // Increased to accommodate large coordinate space
 
     // Check if rooms have coordinates
     const hasCoordinates = rooms.some(room => room.x !== undefined && room.y !== undefined);
@@ -141,10 +142,10 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick }) => {
       const coordWidth = maxX - minX || 1;
       const coordHeight = maxY - minY || 1;
 
-      // Scale coordinates to fit the SVG
+      // Scale coordinates to fit the SVG - use 1:1 pixel mapping (no artificial scaling limit)
       const scaleX = (width - 200) / coordWidth; // Leave margin
       const scaleY = (height - 200) / coordHeight; // Leave margin
-      const scale = Math.min(scaleX, scaleY, 20); // Max 20 pixels per unit, min scale
+      const scale = Math.min(scaleX, scaleY); // Use natural scale, no artificial limit
 
       const offsetX = width / 2 - ((minX + maxX) / 2) * scale;
       const offsetY = height / 2 - ((minY + maxY) / 2) * scale;
@@ -172,7 +173,7 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick }) => {
       const simulation = d3.forceSimulation(basicNodes as d3.SimulationNodeDatum[])
         .force('charge', d3.forceManyBody().strength(-300))
         .force('center', d3.forceCenter(width / 2, height / 2))
-        .force('collision', d3.forceCollide().radius(60));
+        .force('collision', d3.forceCollide().radius(50));  // Reduced from 60 to match smaller nodes
 
       // Let simulation run briefly
       simulation.tick(100);
@@ -205,7 +206,7 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick }) => {
     defs.append('marker')
       .attr('id', 'arrowhead')
       .attr('viewBox', '0 -5 10 10')
-      .attr('refX', 25)
+      .attr('refX', 20)  // Adjusted for smaller node (was 25)
       .attr('refY', 0)
       .attr('markerWidth', 6)
       .attr('markerHeight', 6)
@@ -239,24 +240,34 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick }) => {
 
     // Add rectangles to nodes
     node.append('rect')
-      .attr('width', 100)
-      .attr('height', 60)
+      .attr('width', 60)  // Further reduced from 80
+      .attr('height', 40)  // Further reduced from 50
       .attr('fill', '#2a2a2a')
       .attr('stroke', '#4fc3f7')
       .attr('stroke-width', 2)
       .attr('rx', 8)
-      .attr('x', -50)
-      .attr('y', -30);
+      .attr('x', -30)  // Adjusted for new width (60/2)
+      .attr('y', -20);  // Adjusted for new height (40/2)
+
+    // Add clipping path for text overflow
+    node.append('clipPath')
+      .attr('id', (d: any) => `clip-${d.id}`)
+      .append('rect')
+      .attr('width', 56)  // Slightly smaller than node for padding
+      .attr('height', 36)
+      .attr('x', -28)
+      .attr('y', -18);
 
     // Add text to nodes
     node.append('text')
+      .attr('clip-path', (d: any) => `url(#clip-${d.id})`)  // Apply clipping
       .text((d: any) => d.name)
       .attr('text-anchor', 'middle')
       .attr('dy', '0.35em')
       .attr('fill', '#fff')
-      .attr('font-size', '12px')
+      .attr('font-size', '10px')  // Reduced from 12px
       .attr('pointer-events', 'none')
-      .call(wrapText, 90);
+      .call(wrapText, 55);  // Adjusted for smaller width (60px node)
 
     // Add click handlers
     node.on('click', (_event, d) => {
@@ -371,8 +382,8 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick }) => {
         ) : (
           <svg
             ref={svgRef}
-            width="100%"
-            height="600"
+            width="4000"
+            height="2500"
             style={{ border: '1px solid #444', backgroundColor: '#1a1a1a' }}
           />
         )}

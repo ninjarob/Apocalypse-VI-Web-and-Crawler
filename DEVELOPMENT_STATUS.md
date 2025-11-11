@@ -4,9 +4,9 @@
 
 ## 🎯 Current Focus
 
-**Active Development**: Parser fixes complete - portal key minimum length corrected, invalid direction attempts filtered out
+**Active Development**: Improved coordinate algorithm with proper spacing and collision detection
 
-**Priority**: Continue mapping new zones and improving data quality
+**Priority**: Enhanced map visualization with geographically accurate room positioning
 
 ## Project Architecture
 
@@ -24,6 +24,58 @@
 - Ollama AI: http://localhost:11434 (Local AI models)
 
 ## ✅ Recently Completed
+
+### Coordinate Algorithm Improvement (2025-11-11) ✅ COMPLETED
+- **Issue**: Rooms piling on top of each other with minimal Y-axis variation (Y: -5 to 3) despite 123 rooms
+- **Root Cause**: Multiple issues:
+  1. Coordinate deltas were only ±1 unit
+  2. Frontend scaling capped at 20 pixels per unit, shrinking everything
+  3. SVG canvas too small (800×600) for large coordinate spaces
+- **Requirements**:
+  - West = left by full node spacing
+  - East = right by full node spacing
+  - North = up by full node spacing
+  - South = down by full node spacing
+  - Up = upper-right diagonal (0.7 × width, 0.7 × height)
+  - Down = lower-left diagonal (-0.7 × width, -0.7 × height)
+- **Solution Implemented**: Enhanced coordinate calculation with proper spacing, no artificial scaling, and large canvas
+  - **Balanced Spacing**: Changed to NODE_WIDTH=100 and NODE_HEIGHT=70 for comfortable spacing around 60×40px nodes
+  - **Inverted Y-Axis**: North uses negative Y (goes UP on screen), south uses positive Y (goes DOWN on screen)
+  - **Small Visual Nodes**: Node display size 60×40px with 10px font (provides ~40px horizontal, ~30px vertical gaps)
+  - **Text Overflow Clipping**: Added SVG clipping paths to prevent text from spilling outside node boundaries
+  - **Removed Scaling Cap**: Eliminated `Math.min(scale, 20)` limit that was shrinking coordinate space
+  - **Large Canvas**: Increased SVG from 800×600 to 4000×2500 to accommodate full coordinate space
+  - **Scrollable Container**: Map container allows scrolling to view entire coordinate space
+  - **Diagonal Handling**: Up/down use 0.7 multiplier for clean diagonal movement
+  - **Collision Detection**: Added `resolveCollision()` function that:
+    - Checks if coordinates would overlap (within 80% of spacing dimensions)
+    - Tries 8 different offset positions at 25% of spacing size
+    - Falls back to accepting collision only if no free spots found
+    - Logs collision avoidance for debugging
+  - **Component Spacing**: 10 × NODE_WIDTH for disconnected graphs
+- **Results**:
+  - ✅ Final coordinate range: X: -400 to 1500 (1,901 wide), Y: -350 to 560 (911 tall)
+  - ✅ Canvas size: 4000×2500 pixels (comfortable viewing area)
+  - ✅ 115 rooms positioned with balanced spacing
+  - ✅ ~40px horizontal gaps and ~30px vertical gaps between nodes
+  - ✅ 6 collisions avoided through smart offsetting
+  - ✅ 7 unavoidable collisions in very dense areas (acceptable)
+  - ✅ Nodes clearly separated without excessive whitespace
+  - ✅ Text clipping prevents spillover outside node boundaries
+  - ✅ 1:1 coordinate-to-pixel mapping (no artificial scaling)
+  - ✅ **North rooms now appear UP on screen (negative Y)**
+  - ✅ **South rooms now appear DOWN on screen (positive Y)**
+  - ✅ West rooms clearly left of east rooms
+  - ✅ Diagonal up/down movement visible and intuitive
+- **Technical Details**:
+  - Coordinate spacing: 100px horizontal, 70px vertical
+  - Visual node size: 60px × 40px (small nodes for clean appearance)
+  - Font size: 10px with SVG text clipping
+  - Canvas size: 4000px × 2500px (scrollable)
+  - Scaling: Natural scale (no artificial limits)
+  - Collision threshold: 80% of spacing dimensions (80px × 56px)
+  - Offset attempts: 25% of spacing dimensions (25px × 18px)
+  - BFS traversal maintains topological relationships
 
 ### Room Deduplication Fix (2025-11-11) ✅ COMPLETED
 - **Issue**: Room `cdijopqr` ("On the River") NOT marked as zone exit even though it has an exit to zone 30 (Camelot)

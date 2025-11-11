@@ -3,19 +3,77 @@ const sqlite3 = require('sqlite3');
 const path = require('path');
 const db = new sqlite3.Database(path.join(__dirname, '..', 'data', 'mud-data.db'));
 
-// Direction to coordinate mapping (2D flat view)
+// Card dimensions (adjusted for better spacing)
+// Spacing should be larger than the visual node size (60x40)
+const NODE_WIDTH = 100;  // Comfortable horizontal spacing (node is 60px)
+const NODE_HEIGHT = 70;  // Comfortable vertical spacing (node is 40px)
+
+// Direction to coordinate mapping with proper spacing
+// Each move should shift by at least one full card dimension
+// NOTE: Y-axis is inverted for screen coordinates (north = negative Y to go UP on screen)
 const DIRECTION_DELTAS = {
-  'north': { x: 0, y: 1 },
-  'south': { x: 0, y: -1 },
-  'east': { x: 1, y: 0 },
-  'west': { x: -1, y: 0 },
-  'up': { x: 0, y: 0 }, // No Z movement in flat view
-  'down': { x: 0, y: 0 }, // No Z movement in flat view
-  'northeast': { x: 1, y: 1 },
-  'northwest': { x: -1, y: 1 },
-  'southeast': { x: 1, y: -1 },
-  'southwest': { x: -1, y: -1 }
+  'north': { x: 0, y: -NODE_HEIGHT },      // North goes UP (negative Y)
+  'south': { x: 0, y: NODE_HEIGHT },       // South goes DOWN (positive Y)
+  'east': { x: NODE_WIDTH, y: 0 },
+  'west': { x: -NODE_WIDTH, y: 0 },
+  'up': { x: Math.round(NODE_WIDTH * 0.7), y: -Math.round(NODE_HEIGHT * 0.7) },    // Upper-right diagonal (negative Y)
+  'down': { x: -Math.round(NODE_WIDTH * 0.7), y: Math.round(NODE_HEIGHT * 0.7) }, // Lower-left diagonal (positive Y)
+  'northeast': { x: NODE_WIDTH, y: -NODE_HEIGHT },
+  'northwest': { x: -NODE_WIDTH, y: -NODE_HEIGHT },
+  'southeast': { x: NODE_WIDTH, y: NODE_HEIGHT },
+  'southwest': { x: -NODE_WIDTH, y: NODE_HEIGHT }
 };
+
+/**
+ * Check if a position would cause a collision with existing rooms
+ * and return an adjusted position if needed
+ */
+function resolveCollision(coordinates, newX, newY, roomId) {
+  // Use tighter thresholds since nodes are smaller but spacing is larger
+  const COLLISION_THRESHOLD_X = NODE_WIDTH * 0.8;
+  const COLLISION_THRESHOLD_Y = NODE_HEIGHT * 0.8;
+  
+  // Check if position is occupied
+  const occupied = Array.from(coordinates.entries()).some(
+    ([id, coord]) => id !== roomId && 
+    Math.abs(coord.x - newX) < COLLISION_THRESHOLD_X && 
+    Math.abs(coord.y - newY) < COLLISION_THRESHOLD_Y
+  );
+  
+  if (!occupied) {
+    return { x: newX, y: newY };
+  }
+  
+  // Try small offsets to find a free spot nearby
+  const offsets = [
+    { x: NODE_WIDTH * 0.25, y: 0 },           // Right
+    { x: -NODE_WIDTH * 0.25, y: 0 },          // Left
+    { x: 0, y: NODE_HEIGHT * 0.25 },          // Up
+    { x: 0, y: -NODE_HEIGHT * 0.25 },         // Down
+    { x: NODE_WIDTH * 0.25, y: NODE_HEIGHT * 0.25 },   // Upper-right
+    { x: -NODE_WIDTH * 0.25, y: NODE_HEIGHT * 0.25 },  // Upper-left
+    { x: NODE_WIDTH * 0.25, y: -NODE_HEIGHT * 0.25 },  // Lower-right
+    { x: -NODE_WIDTH * 0.25, y: -NODE_HEIGHT * 0.25 }  // Lower-left
+  ];
+  
+  for (const offset of offsets) {
+    const testX = newX + offset.x;
+    const testY = newY + offset.y;
+    const stillOccupied = Array.from(coordinates.entries()).some(
+      ([id, coord]) => id !== roomId && 
+      Math.abs(coord.x - testX) < COLLISION_THRESHOLD_X && 
+      Math.abs(coord.y - testY) < COLLISION_THRESHOLD_Y
+    );
+    if (!stillOccupied) {
+      console.log(`   🔧 Collision avoided: room ${roomId} offset by (${Math.round(offset.x)}, ${Math.round(offset.y)})`);
+      return { x: testX, y: testY };
+    }
+  }
+  
+  // Fallback: accept collision (very rare with proper spacing)
+  console.log(`   ⚠️  Warning: Could not avoid collision for room ${roomId} at (${newX}, ${newY})`);
+  return { x: newX, y: newY };
+}
 
 async function calculateCoordinates() {
   console.log('🗺️  Calculating room coordinates based on exits...\n');
@@ -53,7 +111,7 @@ async function calculateCoordinates() {
   const visited = new Set();
   const coordinates = new Map();
   let componentOffset = { x: 0, y: 0 }; // 2D coordinates only
-  const COMPONENT_SPACING = 50; // Space components far apart
+  const COMPONENT_SPACING = 10; // Spacing in "room units" (will be multiplied by NODE_WIDTH)
 
   // Get all unvisited rooms with connections
   const unvisitedRooms = rooms.filter(room => graph.has(room.id) && !visited.has(room.id));
@@ -87,10 +145,11 @@ async function calculateCoordinates() {
 
         if (!coordinates.has(neighborId)) {
           const delta = DIRECTION_DELTAS[direction];
-          const newCoords = {
-            x: current.x + delta.x,
-            y: current.y + delta.y
-          };
+          const idealX = current.x + delta.x;
+          const idealY = current.y + delta.y;
+
+          // Use collision detection to find the best position
+          const newCoords = resolveCollision(coordinates, idealX, idealY, neighborId);
 
           coordinates.set(neighborId, newCoords);
           queue.push({ id: neighborId, ...newCoords });
@@ -98,8 +157,8 @@ async function calculateCoordinates() {
       }
     }
 
-    // Move offset for next component
-    componentOffset.x += COMPONENT_SPACING;
+    // Move offset for next component (with larger spacing to account for new node sizes)
+    componentOffset.x += COMPONENT_SPACING * NODE_WIDTH;
   }
 
   console.log(`✅ Assigned coordinates to ${coordinates.size} rooms\n`);
