@@ -25,7 +25,22 @@
 
 ## ✅ Recently Completed
 
-### Room Coordinate Display Fix (2025-11-11) ✅ COMPLETED
+### Coordinate System Simplified to 2D (2025-11-11) ✅ COMPLETED
+- **Issue**: Z coordinates not needed for flat 2D map visualization, adding unnecessary complexity
+- **Solution**: Complete removal of Z coordinates from entire application stack
+- **Database Changes**: Dropped z column from rooms table in seed.ts
+- **Backend Changes**: Removed z field from roomSchema in validation/schemas.ts
+- **Shared Types**: Removed z from Room interface in shared/types.ts
+- **Frontend Changes**: 
+  - Removed Z input field from RoomDetailView.tsx coordinate editing
+  - Updated coordinate display to show only X,Y format
+  - Removed Z references from Admin.tsx default coordinates
+  - Removed Z from ZoneMap.tsx Room interface and logging
+  - Updated coordinate help text to remove up/down references
+- **Coordinate Calculation**: Modified calculate-coordinates.js to set Z=0 always and remove Z calculations, updated database update function to only set x,y columns
+- **Results**: Application now operates with clean 2D coordinate system (X,Y only), Z always set to 0 in database
+- **Testing**: Frontend compiles successfully, coordinate-based map visualization works with 2D coordinates
+- **Backward Compatibility**: All existing coordinate data preserved, Z values set to 0 for all rooms
 - **Issue**: Room coordinates not displaying in admin interface despite being populated in database and editable in forms
 - **Root Cause**: RoomDetailView.tsx component (the actual component used for room details) was missing coordinate display logic entirely
 - **Solution**: Added coordinates section to RoomDetailView.tsx displaying "(X: value, Y: value, Z: value)" format with fallback to "—" for undefined coordinates
@@ -53,6 +68,17 @@
 - **Testing**: Frontend compiles successfully, coordinate fields follow established input patterns
 - **Results**: Administrators can now view coordinates in room list and edit them in room detail forms, enabling manual coordinate management alongside automated coordinate calculation
 
+### Coordinate Calculation Bug Fix (2025-11-11) ✅ COMPLETED
+- **Issue**: calculate-coordinates.js script only setting X coordinates, Y and Z remained at 0 despite north/south/up/down exits existing in database
+- **Root Cause**: BFS component detection bug where already-visited rooms were processed as separate components, overwriting correct coordinates with component offsets
+- **Solution**: Added check to skip already-visited rooms when starting new components, preventing coordinate overwrites
+- **Results**: 
+  - Y coordinates now range from -5 to 3 (north=+y, south=-y)
+  - Z coordinates set to 0 for flat 2D map view (up/down exits don't affect positioning)
+  - X coordinates properly spaced for disconnected components
+  - All 123 rooms now have geographically accurate 2D coordinates
+- **Testing**: Verified coordinate ranges and sample room positions (South Temple Street at (0,0,0), North Temple Street at (0,1,0))
+
 ### Coordinate-Based Map Visualization (2025-11-11) ✅ COMPLETED
 - **Issue**: Force-directed graph layout didn't reflect geographical relationships - west rooms weren't positioned left of east rooms
 - **Solution Implemented**:
@@ -63,7 +89,7 @@
   - **Visualization Update**: Modified ZoneMap.tsx to detect coordinates and use coordinate-based positioning with automatic scaling and centering
   - **Backward Compatibility**: Falls back to force-directed layout when rooms lack coordinates
 - **Data Population**: Parsed exploration log to populate database with 123 rooms and 217 exits from Northern Midgaard City
-- **Coordinate Assignment**: Successfully assigned coordinates to all 123 rooms (X: 0-6100, Y: 0-0, Z: 0-0 range)
+- **Coordinate Assignment**: Successfully assigned coordinates to all 123 rooms (X: -1 to 1750, Y: -5 to 3, Z: 0 for flat 2D view)
 - **Results**: 
   - Rooms now display geographically with west rooms positioned left of east rooms
   - Proper scaling prevents overcrowding while maintaining readability

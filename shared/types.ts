@@ -45,7 +45,6 @@ export interface Room {
   zone_exit?: boolean;
   x?: number;
   y?: number;
-  z?: number;
   visitCount: number;
   firstVisited?: Date;
   lastVisited?: Date;

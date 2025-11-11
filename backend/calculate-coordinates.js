@@ -3,18 +3,18 @@ const sqlite3 = require('sqlite3');
 const path = require('path');
 const db = new sqlite3.Database(path.join(__dirname, '..', 'data', 'mud-data.db'));
 
-// Direction to coordinate mapping
+// Direction to coordinate mapping (2D flat view)
 const DIRECTION_DELTAS = {
-  'north': { x: 0, y: 1, z: 0 },
-  'south': { x: 0, y: -1, z: 0 },
-  'east': { x: 1, y: 0, z: 0 },
-  'west': { x: -1, y: 0, z: 0 },
-  'up': { x: 0, y: 0, z: 1 },
-  'down': { x: 0, y: 0, z: -1 },
-  'northeast': { x: 1, y: 1, z: 0 },
-  'northwest': { x: -1, y: 1, z: 0 },
-  'southeast': { x: 1, y: -1, z: 0 },
-  'southwest': { x: -1, y: -1, z: 0 }
+  'north': { x: 0, y: 1 },
+  'south': { x: 0, y: -1 },
+  'east': { x: 1, y: 0 },
+  'west': { x: -1, y: 0 },
+  'up': { x: 0, y: 0 }, // No Z movement in flat view
+  'down': { x: 0, y: 0 }, // No Z movement in flat view
+  'northeast': { x: 1, y: 1 },
+  'northwest': { x: -1, y: 1 },
+  'southeast': { x: 1, y: -1 },
+  'southwest': { x: -1, y: -1 }
 };
 
 async function calculateCoordinates() {
@@ -52,18 +52,20 @@ async function calculateCoordinates() {
   // Find all connected components and assign coordinates to each
   const visited = new Set();
   const coordinates = new Map();
-  let componentOffset = { x: 0, y: 0, z: 0 };
+  let componentOffset = { x: 0, y: 0 }; // 2D coordinates only
   const COMPONENT_SPACING = 50; // Space components far apart
 
   // Get all unvisited rooms with connections
   const unvisitedRooms = rooms.filter(room => graph.has(room.id) && !visited.has(room.id));
 
   for (const startRoom of unvisitedRooms) {
+    if (visited.has(startRoom.id)) continue;
+
     console.log(`🎯 Processing component starting from room ${startRoom.id} (${startRoom.name})`);
 
     // BFS for this component
-    const queue = [{ id: startRoom.id, x: componentOffset.x, y: componentOffset.y, z: componentOffset.z }];
-    coordinates.set(startRoom.id, { x: componentOffset.x, y: componentOffset.y, z: componentOffset.z });
+    const queue = [{ id: startRoom.id, x: componentOffset.x, y: componentOffset.y }];
+    coordinates.set(startRoom.id, { x: componentOffset.x, y: componentOffset.y });
 
     while (queue.length > 0) {
       const current = queue.shift();
@@ -87,8 +89,7 @@ async function calculateCoordinates() {
           const delta = DIRECTION_DELTAS[direction];
           const newCoords = {
             x: current.x + delta.x,
-            y: current.y + delta.y,
-            z: current.z + delta.z
+            y: current.y + delta.y
           };
 
           coordinates.set(neighborId, newCoords);
@@ -106,7 +107,7 @@ async function calculateCoordinates() {
   // Update database with coordinates
   let updated = 0;
   for (const [roomId, coords] of coordinates) {
-    await updateRoomCoordinates(roomId, coords.x, coords.y, coords.z);
+    await updateRoomCoordinates(roomId, coords.x, coords.y, 0); // Z always 0 for flat view
     updated++;
   }
 
@@ -115,21 +116,17 @@ async function calculateCoordinates() {
   // Show coordinate range
   let minX = Infinity, maxX = -Infinity;
   let minY = Infinity, maxY = -Infinity;
-  let minZ = Infinity, maxZ = -Infinity;
 
   for (const coords of coordinates.values()) {
     minX = Math.min(minX, coords.x);
     maxX = Math.max(maxX, coords.x);
     minY = Math.min(minY, coords.y);
     maxY = Math.max(maxY, coords.y);
-    minZ = Math.min(minZ, coords.z);
-    maxZ = Math.max(maxZ, coords.z);
   }
 
   console.log('📊 Coordinate ranges:');
   console.log(`   X: ${minX} to ${maxX} (width: ${maxX - minX + 1})`);
   console.log(`   Y: ${minY} to ${maxY} (height: ${maxY - minY + 1})`);
-  console.log(`   Z: ${minZ} to ${maxZ} (depth: ${maxZ - minZ + 1})`);
 
   // Check for rooms without coordinates
   const roomsWithoutCoords = rooms.filter(room => !coordinates.has(room.id));
@@ -166,7 +163,7 @@ function getAllExits() {
 
 function updateRoomCoordinates(roomId, x, y, z) {
   return new Promise((resolve, reject) => {
-    db.run('UPDATE rooms SET x = ?, y = ?, z = ? WHERE id = ?', [x, y, z, roomId], function(err) {
+    db.run('UPDATE rooms SET x = ?, y = ? WHERE id = ?', [x, y, roomId], function(err) {
       if (err) reject(err);
       else resolve(this.changes);
     });

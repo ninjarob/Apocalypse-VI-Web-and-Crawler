@@ -13,15 +13,13 @@ export default function Rooms() {
   useEffect(() => {
     if (rooms.length > 0) {
       console.log('First room data:', rooms[0]);
-      console.log('Room coordinates:', { x: rooms[0].x, y: rooms[0].y, z: rooms[0].z });
-      console.log('Coordinate types:', { xType: typeof rooms[0].x, yType: typeof rooms[0].y, zType: typeof rooms[0].z });
+      console.log('Room coordinates:', { x: rooms[0].x, y: rooms[0].y });
+      console.log('Coordinate types:', { xType: typeof rooms[0].x, yType: typeof rooms[0].y });
       console.log('Coordinate checks:', {
         xUndefined: rooms[0].x === undefined,
         yUndefined: rooms[0].y === undefined,
-        zUndefined: rooms[0].z === undefined,
         xNull: rooms[0].x === null,
-        yNull: rooms[0].y === null,
-        zNull: rooms[0].z === null
+        yNull: rooms[0].y === null
       });
     }
   }, [rooms]);
@@ -132,10 +130,10 @@ export default function Rooms() {
               <div style={{ marginTop: '10px', fontSize: '0.8em', color: '#666' }}>
                 Visited {room.visitCount} time(s)
                 {/* Debug: Show coordinate info */}
-                <div>Debug - x: {JSON.stringify(room.x)} (type: {typeof room.x}), y: {JSON.stringify(room.y)} (type: {typeof room.y}), z: {JSON.stringify(room.z)} (type: {typeof room.z})</div>
+                <div>Debug - x: {JSON.stringify(room.x)} (type: {typeof room.x}), y: {JSON.stringify(room.y)} (type: {typeof room.y})</div>
                 {/* Always show coordinates since they're always present */}
                 <div style={{ marginTop: '5px' }}>
-                  <strong>Coordinates:</strong> ({room.x ?? 0}, {room.y ?? 0}, {room.z ?? 0})
+                  <strong>Coordinates:</strong> ({room.x ?? 0}, {room.y ?? 0})
                 </div>
                 {room.portal_key && (
                   <div style={{ marginTop: '5px' }}>

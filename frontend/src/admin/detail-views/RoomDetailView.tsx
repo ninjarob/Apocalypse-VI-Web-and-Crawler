@@ -211,7 +211,6 @@ export const RoomDetailView: React.FC<RoomDetailViewProps> = ({
         zone_exit: editFormData.zone_exit,
         x: editFormData.x,
         y: editFormData.y,
-        z: editFormData.z,
         roomExits
       };
 
@@ -440,24 +439,14 @@ export const RoomDetailView: React.FC<RoomDetailViewProps> = ({
                       className="inline-edit-input coordinate-input-field"
                     />
                   </div>
-                  <div className="coordinate-input">
-                    <label>Z:</label>
-                    <input
-                      type="number"
-                      value={editFormData.z ?? ''}
-                      onChange={(e) => handleFieldChange('z', e.target.value === '' ? undefined : parseInt(e.target.value))}
-                      placeholder="Up/Down"
-                      className="inline-edit-input coordinate-input-field"
-                    />
-                  </div>
                 </div>
                 <div className="coordinate-help">
-                  north=+y, south=-y, east=+x, west=-x, up=+z, down=-z
+                  north=+y, south=-y, east=+x, west=-x
                 </div>
               </div>
             ) : (
               <span className="code">
-                ({selectedRoom.x !== undefined ? `X: ${selectedRoom.x}` : 'X: —'}, {selectedRoom.y !== undefined ? `Y: ${selectedRoom.y}` : 'Y: —'}, {selectedRoom.z !== undefined ? `Z: ${selectedRoom.z}` : 'Z: —'})
+                ({selectedRoom.x !== undefined ? `X: ${selectedRoom.x}` : 'X: —'}, {selectedRoom.y !== undefined ? `Y: ${selectedRoom.y}` : 'Y: —'})
               </span>
             )}
           </div>

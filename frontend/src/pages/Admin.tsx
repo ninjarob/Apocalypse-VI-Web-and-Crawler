@@ -202,7 +202,7 @@ function Admin() {
       terrain: '',
       portal_key: '',
       greater_binding_key: '',
-      coordinates: { x: 0, y: 0, z: 0 },
+      coordinates: { x: 0, y: 0 },
       exits: [],
       npcs: [],
       items: []

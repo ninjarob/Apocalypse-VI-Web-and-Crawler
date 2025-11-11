@@ -338,17 +338,6 @@ export default function RoomForm({ room, onSave, onCancel, isLoading = false }: 
                       placeholder="North/South position"
                     />
                   </div>
-
-                  <div className="form-group">
-                    <label htmlFor="z">Z Coordinate</label>
-                    <input
-                      type="number"
-                      id="z"
-                      value={formData.z ?? ''}
-                      onChange={(e) => handleInputChange('z', e.target.value === '' ? undefined : parseInt(e.target.value))}
-                      placeholder="Up/Down position"
-                    />
-                  </div>
                 </div>
               </div>
             )}

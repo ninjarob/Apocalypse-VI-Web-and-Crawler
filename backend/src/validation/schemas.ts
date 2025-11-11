@@ -111,7 +111,6 @@ export const roomSchema = z.object({
   zone_exit: booleanFieldSchema,
   x: z.number().int().optional().nullable(),
   y: z.number().int().optional().nullable(),
-  z: z.number().int().optional().nullable(),
   visitCount: z.number().int().min(0).optional(),
   firstVisited: timestampSchema.nullable(),
   lastVisited: timestampSchema.nullable(),

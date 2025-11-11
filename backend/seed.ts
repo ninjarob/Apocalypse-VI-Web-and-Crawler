@@ -119,7 +119,6 @@ function createTables(callback: () => void) {
     zone_exit INTEGER DEFAULT 0,
     x INTEGER DEFAULT 0,
     y INTEGER DEFAULT 0,
-    z INTEGER DEFAULT 0,
     visitCount INTEGER DEFAULT 0,
     firstVisited DATETIME,
     lastVisited DATETIME,

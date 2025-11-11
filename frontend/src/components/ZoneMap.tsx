@@ -13,7 +13,6 @@ interface Room {
   zone_exit?: boolean;
   x?: number;
   y?: number;
-  z?: number;
 }
 
 interface RoomExit {
@@ -114,7 +113,7 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick }) => {
     // Check if rooms have coordinates
     const hasCoordinates = rooms.some(room => room.x !== undefined && room.y !== undefined);
     console.log('🔍 ZoneMap: Checking coordinates for', rooms.length, 'rooms');
-    console.log('🔍 First few rooms:', rooms.slice(0, 3).map(r => ({ id: r.id, name: r.name, x: r.x, y: r.y, z: r.z })));
+    console.log('🔍 First few rooms:', rooms.slice(0, 3).map(r => ({ id: r.id, name: r.name, x: r.x, y: r.y })));
     console.log('🔍 hasCoordinates:', hasCoordinates);
 
     let nodes: MapNode[];
