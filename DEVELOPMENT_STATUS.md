@@ -4,9 +4,9 @@
 
 ## 🎯 Current Focus
 
-**Active Development**: Room collision resolution improvements
+**Active Development**: Parser bug fix - duplicate rooms with same name/description but different portal keys
 
-**Priority**: Enhanced map visualization with accurate room positioning and collision avoidance
+**Priority**: Fix room deduplication logic to prevent overwriting rooms that have identical descriptions but different portal keys
 
 ## Project Architecture
 
@@ -24,6 +24,30 @@
 - Ollama AI: http://localhost:11434 (Local AI models)
 
 ## ✅ Recently Completed
+
+### Bridge Road Missing Rooms Fix (2025-11-11) ✅ COMPLETED
+- **Issue**: Only 1 of 3 "Bridge Road" rooms existed in database
+  - Expected: `cfklmpqr`, `fgklmpqr`, `deghklmpqr`
+  - Found: Only `cfklmpqr`
+- **Root Cause**: Parser deduplication bug - rooms with identical names AND descriptions but different portal keys were being merged
+  - MUD has multiple distinct rooms that happen to have the same name and description
+  - Parser's `findExistingRoomKey()` was finding existing portal rooms by name+description and reusing them
+  - This caused later rooms to overwrite earlier ones in the Map
+- **Solution Implemented**:
+  1. Modified `findExistingRoomKey()` (lines 765-772) to return `null` when it finds a room that already has a portal key
+     - Rooms with portal keys are "complete" and distinct - they should never be reused
+  2. Enhanced `getRoomKey()` (lines 737-760) to add unique counters when creating duplicate `namedesc:` keys
+     - Prevents Map key collisions when multiple unbound rooms have identical names/descriptions
+     - Counter increments based on existing room count: `|||2`, `|||3`, etc.
+- **Files Modified**:
+  - `crawler/src/mudLogParser.ts`
+    - Lines 765-772: Added portal key check to prevent reusing rooms
+    - Lines 737-760: Added counter logic for unique namedesc keys
+- **Testing**: All 3 Bridge Road rooms now appear correctly in frontend
+- **Impact**: Fixes any MUD areas with duplicate room names/descriptions (e.g., long hallways, identical road segments)
+  1. Recognize this as a DIFFERENT physical room (MUD has multiple identical rooms)
+  2. Create a separate room entry, don't update the existing one
+  3. This requires checking if the existing room already has a portal key during deduplication
 
 ### Collision Resolution Algorithm Fix (2025-11-11) ✅ COMPLETED
 - **Issue**: "A bend in the path" and "the magic shop" were positioned on top of each other at (-200, 0)

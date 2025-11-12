@@ -12,19 +12,22 @@ if (args.length === 0) {
 Usage: npm run parse-logs <log-file> [options]
 
 Options:
-  --zone-id <id>      Default zone ID for rooms (required for saving)
+  --zone-id <id>      Default zone ID for rooms (optional - will auto-detect from log)
   --export <file>     Export parsed data to JSON file
   --dry-run          Parse and show stats only, don't save to database
 
 Examples:
-  # Parse and save Midgaard exploration
-  npm run parse-logs midgaard-session.txt --zone-id 1
+  # Parse and save with auto-detected zone
+  npm run parse-logs midgaard-session.txt
+
+  # Parse and save Midgaard exploration with explicit zone
+  npm run parse-logs midgaard-session.txt --zone-id 2
 
   # Parse and export to JSON for review
   npm run parse-logs midgaard-session.txt --export midgaard-rooms.json --dry-run
 
   # Parse and both save and export
-  npm run parse-logs midgaard-session.txt --zone-id 1 --export midgaard-rooms.json
+  npm run parse-logs midgaard-session.txt --export midgaard-rooms.json
 
 Log File Format:
   Your log file should contain the raw output from your MUD session, including:
@@ -63,12 +66,7 @@ const dryRun = args.includes('--dry-run');
     
     // Save to database unless dry-run
     if (!dryRun) {
-      if (!zoneId) {
-        console.error('\n❌ Error: --zone-id is required when saving to database');
-        console.log('   Use --dry-run to parse without saving, or provide --zone-id <id>');
-        process.exit(1);
-      }
-      
+      // Zone ID is now optional - will auto-detect from log
       await parser.resolveZones(zoneId);
       await parser.saveToDatabase(zoneId);
     } else {

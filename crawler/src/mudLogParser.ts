@@ -374,6 +374,12 @@ export class MudLogParser {
         const newZoneName = zoneChangeMatch[1].trim();
         console.log(`   🗺️  Zone detected: "${newZoneName}" (current: "${this.state.currentZoneName}", roomKey: "${this.state.currentRoomKey}")`);
         
+        // Set default zone name if this is the first zone we've detected
+        if (!this.state.defaultZoneName) {
+          this.state.defaultZoneName = newZoneName;
+          console.log(`   🏠 Set default zone to: ${newZoneName}`);
+        }
+        
         // If this is a different zone than the current one, record the zone change
         if (this.state.currentZoneName && this.state.currentZoneName !== newZoneName && this.state.currentRoomKey) {
           // The room we just discovered is in a different zone
@@ -391,6 +397,12 @@ export class MudLogParser {
       const altZoneChangeMatch = cleanLine.match(/Current zone[:\s]+(.+?)[\r\n]/i);
       if (altZoneChangeMatch) {
         const newZoneName = altZoneChangeMatch[1].trim();
+        
+        // Set default zone name if this is the first zone we've detected
+        if (!this.state.defaultZoneName) {
+          this.state.defaultZoneName = newZoneName;
+          console.log(`   🏠 Set default zone to: ${newZoneName}`);
+        }
         
         // If this is a different zone than the current one, record the zone change
         if (this.state.currentZoneName && this.state.currentZoneName !== newZoneName && this.state.currentRoomKey) {
@@ -738,7 +750,26 @@ export class MudLogParser {
     if (portalKey) {
       return `portal:${portalKey}`;
     }
-    return `namedesc:${name}|||${description}`;
+    // Check if a room with this name+description already has a portal key
+    // If so, we need to create a unique namedesc: key because this might be a different room
+    const baseKey = `namedesc:${name}|||${description}`;
+    
+    // Count how many rooms with this exact name+description already exist (with or without portal keys)
+    let existingRoomCount = 0;
+    for (const [key, room] of this.state.rooms) {
+      if (room.name === name && room.description === description) {
+        existingRoomCount++;
+      }
+    }
+    
+    // If no rooms exist yet, use base key
+    if (existingRoomCount === 0) {
+      return baseKey;
+    }
+    
+    // Otherwise, add a counter starting from 2
+    const counter = existingRoomCount + 1;
+    return `${baseKey}|||${counter}`;
   }
 
   /**
@@ -762,21 +793,46 @@ export class MudLogParser {
       return null;
     }
     
-    // NO PORTAL KEY YET - Check if a portal: version exists first (most reliable)
-    // This prevents creating duplicate namedesc: entries when a portal: version already exists
+    // NO PORTAL KEY YET - Check if a portal: version exists first
+    // CRITICAL: If we find a room with a portal key AND matching name/desc, DON'T reuse it!
+    // Multiple distinct rooms can have identical names and descriptions but different portal keys.
     for (const [key, room] of this.state.rooms) {
       if (room.portal_key && room.name === name && room.description === description) {
-        console.log(`DEBUG: Found existing portal: room with matching name/desc: ${key} (portal: ${room.portal_key})`);
-        return key;
+        console.log(`DEBUG: Found existing portal: room with matching name/desc BUT it has portal key ${room.portal_key} - treating as new room`);
+        return null; // Don't reuse rooms with portal keys - they are distinct
       }
     }
     
     // Check for EXACT name+description match (using keys)
     // This catches rooms we've seen before in the current session
     const checkKey = `namedesc:${name}|||${description}`;
+    console.log(`DEBUG: Searching for exact match with key: ${checkKey.substring(0, 80)}...`);
+    console.log(`DEBUG: this.state.rooms.has(checkKey) = ${this.state.rooms.has(checkKey)}`);
+    
     if (this.state.rooms.has(checkKey)) {
+      const matchedRoom = this.state.rooms.get(checkKey)!;
+      console.log(`DEBUG: Found room at checkKey with portal_key: ${matchedRoom.portal_key}`);
+      // CRITICAL FIX: If the matched room already has a portal key, DON'T reuse it!
+      // Rooms with portal keys are complete/distinct. If we encounter what appears to be
+      // the same room but it will get a DIFFERENT portal key, it's actually a different room.
+      // The MUD can have multiple rooms with identical names and descriptions.
+      if (matchedRoom.portal_key) {
+        console.log(`DEBUG: Found exact namedesc match BUT it already has portal key ${matchedRoom.portal_key} - treating as new room`);
+        return null; // Don't reuse rooms with portal keys - they're distinct
+      }
       console.log(`DEBUG: Found exact namedesc match: ${checkKey.substring(0, 100)}...`);
       return checkKey;
+    }
+    
+    console.log(`DEBUG: No exact namedesc match found, checking portal: keys...`);
+    // ALSO check if there's a portal: key version of this room
+    // This handles the case where we encounter a room AFTER it's already been bound
+    for (const [key, room] of this.state.rooms) {
+      if (key.startsWith('portal:') && room.name === name && room.description === description) {
+        console.log(`DEBUG: Found portal: room with matching name+desc: ${key} (portal_key: ${room.portal_key})`);
+        // Don't reuse it - rooms with portal keys are distinct
+        return null;
+      }
     }
     
     // ONLY do similarity matching for rooms that truly appear to be the same
@@ -861,6 +917,46 @@ export class MudLogParser {
   }
 
   /**
+   * Get the first zone name detected in the parsed rooms
+   */
+  getFirstDetectedZone(): string | null {
+    // Check if we have a default zone name that was detected
+    if (this.state.defaultZoneName) {
+      return this.state.defaultZoneName;
+    }
+    
+    // Otherwise, look through rooms in order and find the first one with a zone
+    for (const [_, room] of this.state.rooms) {
+      // Skip rooms that are in zoneMapping (those are different zones)
+      const mappedZone = this.state.zoneMapping.get(room.portal_key || `namedesc:${room.name}|||${room.description}`);
+      if (!mappedZone && this.state.currentZoneName) {
+        return this.state.currentZoneName;
+      }
+    }
+    
+    // If still nothing, check zoneMapping for the most common zone
+    const zoneCounts = new Map<string, number>();
+    for (const zoneName of this.state.zoneMapping.values()) {
+      zoneCounts.set(zoneName, (zoneCounts.get(zoneName) || 0) + 1);
+    }
+    
+    if (zoneCounts.size > 0) {
+      // Return the most frequently occurring zone
+      let maxCount = 0;
+      let maxZone: string | null = null;
+      for (const [zone, count] of zoneCounts) {
+        if (count > maxCount) {
+          maxCount = count;
+          maxZone = zone;
+        }
+      }
+      return maxZone;
+    }
+    
+    return null;
+  }
+
+  /**
    * Resolve zone IDs from zone names and mark zone exits
    */
   async resolveZones(defaultZoneId?: number): Promise<void> {
@@ -883,6 +979,21 @@ export class MudLogParser {
       
       // First, find the default zone (the zone we're exploring)
       let resolvedDefaultZoneId: number | undefined = defaultZoneId;
+      
+      // Auto-detect zone if not provided
+      if (!resolvedDefaultZoneId) {
+        const detectedZoneName = this.getFirstDetectedZone();
+        if (detectedZoneName) {
+          const detectedZone = zoneNameMap.get(detectedZoneName.toLowerCase());
+          if (detectedZone) {
+            resolvedDefaultZoneId = detectedZone.id;
+            console.log(`   🔍 Auto-detected zone from log: ${detectedZoneName} (ID: ${resolvedDefaultZoneId})`);
+          } else {
+            console.log(`   ⚠️  Warning: Detected zone "${detectedZoneName}" not found in database`);
+          }
+        }
+      }
+      
       if (resolvedDefaultZoneId) {
         // Find the zone name for logging
         const defaultZone = zones.find((z: any) => z.id === resolvedDefaultZoneId);
