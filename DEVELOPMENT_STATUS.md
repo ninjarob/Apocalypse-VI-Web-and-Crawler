@@ -4,9 +4,9 @@
 
 ## 🎯 Current Focus
 
-**Active Development**: Parser bug fix - duplicate rooms with same name/description but different portal keys
+**Active Development**: Automated seed process with room data and coordinate calculation
 
-**Priority**: Fix room deduplication logic to prevent overwriting rooms that have identical descriptions but different portal keys
+**Priority**: Streamline database initialization with pre-parsed room data
 
 ## Project Architecture
 
@@ -24,6 +24,27 @@
 - Ollama AI: http://localhost:11434 (Local AI models)
 
 ## ✅ Recently Completed
+
+### Automated Seed with Room Data & Coordinates (2025-11-11) ✅ COMPLETED
+- **Feature**: Integrated coordinate calculation and room/exit seeding into main seed script
+- **Implementation**:
+  1. **Coordinate Calculation Integration**: Converted `calculate-coordinates.js` to TypeScript and added as `calculateRoomCoordinates()` function in seed.ts
+  2. **JSON Data Loading**: Added automatic loading of `rooms.json` and `room_exits.json` from data folder during seeding
+  3. **Execution Order**: Zones → Items → Rooms → Room Exits → **Coordinate Calculation** → Other data
+- **Benefits**:
+  - Single `npm run seed` command now does everything
+  - Coordinates automatically calculated after rooms are seeded
+  - No need to run separate scripts for coordinate calculation
+  - Database ready to use immediately after seeding
+- **Files Modified**:
+  - `backend/seed.ts` (lines 1895-1990): Added room/exit JSON loading
+  - `backend/seed.ts` (lines 2444-2650): Added `calculateRoomCoordinates()` function
+- **Results**:
+  - ✅ 125 rooms seeded from JSON file
+  - ✅ 262 room exits seeded from JSON file
+  - ✅ Coordinates calculated for 61 connected rooms
+  - ✅ Coordinate range: X: -640 to 260, Y: -112 to 728
+  - ✅ Map visualization ready immediately after seeding
 
 ### Self-Referencing Exit Bug Fix (2025-11-11) ✅ COMPLETED
 - **Issue**: Map visualization showing rooms squished due to outlier coordinates at X=10000

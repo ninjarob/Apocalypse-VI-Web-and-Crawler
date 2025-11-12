@@ -2,6 +2,7 @@ import sqlite3 from 'sqlite3';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import { execSync } from 'child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -1898,13 +1899,92 @@ function seedData() {
     checkComplete();
   });
 
-  // No rooms seeded - will be discovered by crawler
-  console.log('  ✓ Rooms table created (empty - to be populated by crawler)');
-  checkComplete();
+  // Seed rooms from JSON file
+  const roomsDataPath = path.resolve(__dirname, '..', 'data', 'rooms.json');
+  if (fs.existsSync(roomsDataPath)) {
+    const roomsData = JSON.parse(fs.readFileSync(roomsDataPath, 'utf-8'));
+    
+    const insertRoom = db.prepare(`INSERT INTO rooms (
+      id, zone_id, vnum, name, description, exits, npcs, items, area, flags, terrain,
+      portal_key, greater_binding_key, zone_exit, x, y, visitCount, firstVisited,
+      lastVisited, rawText, createdAt, updatedAt
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
 
-  // No room exits seeded - will be discovered by crawler
-  console.log('  ✓ Room exits table created (empty - to be populated by crawler)');
-  checkComplete();
+    roomsData.forEach((room: any) => {
+      insertRoom.run(
+        room.id,
+        room.zone_id,
+        room.vnum,
+        room.name,
+        room.description,
+        room.exits ? JSON.stringify(room.exits) : null,
+        room.npcs ? JSON.stringify(room.npcs) : null,
+        room.items ? JSON.stringify(room.items) : null,
+        room.area,
+        room.flags,
+        room.terrain,
+        room.portal_key,
+        room.greater_binding_key,
+        room.zone_exit ? 1 : 0,
+        room.x,
+        room.y,
+        room.visitCount || 0,
+        room.firstVisited,
+        room.lastVisited,
+        room.rawText,
+        room.createdAt,
+        room.updatedAt
+      );
+    });
+
+    insertRoom.finalize(() => {
+      console.log(`  ✓ Seeded ${roomsData.length} rooms from JSON file`);
+      checkComplete();
+    });
+  } else {
+    console.log('  ✓ Rooms table created (empty - rooms.json not found)');
+    checkComplete();
+  }
+
+  // Seed room exits from JSON file
+  const roomExitsDataPath = path.resolve(__dirname, '..', 'data', 'room_exits.json');
+  if (fs.existsSync(roomExitsDataPath)) {
+    const roomExitsData = JSON.parse(fs.readFileSync(roomExitsDataPath, 'utf-8'));
+    
+    const insertRoomExit = db.prepare(`INSERT INTO room_exits (
+      id, from_room_id, to_room_id, direction, description, exit_description,
+      look_description, door_name, door_description, is_door, is_locked,
+      is_zone_exit, key_vnum, createdAt, updatedAt
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
+
+    roomExitsData.forEach((exit: any) => {
+      insertRoomExit.run(
+        exit.id,
+        exit.from_room_id,
+        exit.to_room_id,
+        exit.direction,
+        exit.description,
+        exit.exit_description,
+        exit.look_description,
+        exit.door_name,
+        exit.door_description,
+        exit.is_door ? 1 : 0,
+        exit.is_locked ? 1 : 0,
+        exit.is_zone_exit ? 1 : 0,
+        exit.key_vnum,
+        exit.createdAt,
+        exit.updatedAt
+      );
+    });
+
+    insertRoomExit.finalize(() => {
+      console.log(`  ✓ Seeded ${roomExitsData.length} room exits from JSON file`);
+      checkComplete();
+    });
+  } else {
+    console.log('  ✓ Room exits table created (empty - room_exits.json not found)');
+    checkComplete();
+  }
 
   // Seed sample player actions from JSON file
   const playerActionsDataPath = path.resolve(__dirname, '..', 'data', 'player_actions.json');
