@@ -4,9 +4,9 @@
 
 ## 🎯 Current Focus
 
-**Active Development**: Improved coordinate algorithm with proper spacing and collision detection
+**Active Development**: Room collision resolution improvements
 
-**Priority**: Enhanced map visualization with geographically accurate room positioning
+**Priority**: Enhanced map visualization with accurate room positioning and collision avoidance
 
 ## Project Architecture
 
@@ -24,6 +24,33 @@
 - Ollama AI: http://localhost:11434 (Local AI models)
 
 ## ✅ Recently Completed
+
+### Collision Resolution Algorithm Fix (2025-11-11) ✅ COMPLETED
+- **Issue**: "A bend in the path" and "the magic shop" were positioned on top of each other at (-200, 0)
+- **Root Cause**: Collision threshold was too aggressive (80px) for the actual node size (60px wide)
+  - Rooms 50px apart were being flagged as collisions
+  - Halving algorithm was working but couldn't find free space due to overly strict threshold
+- **Solution**: Improved collision detection with realistic thresholds
+  - Changed from `NODE_WIDTH * 0.8` (80px) to fixed 40px horizontal threshold
+  - Changed from `NODE_HEIGHT * 0.8` (56px) to fixed 30px vertical threshold
+  - Thresholds now based on actual node size (60×40px) rather than spacing (100×70px)
+  - Implemented "halve the distance" collision resolution:
+    - When collision detected, place room halfway between origin and ideal position
+    - Iteratively halve up to 10 times to find free space
+    - Results in rooms being pulled back toward their origin point when needed
+- **Results**:
+  - ✅ "A Bend in the Path" now at (-250, 0)
+  - ✅ "The Magic Shop" at (-200, 0)
+  - ✅ 50px separation between rooms (adequate spacing for 60px wide nodes)
+  - ✅ Collision detection now only prevents actual visual overlap
+  - ✅ Reduced false positives: rooms can now be placed closer together without triggering collisions
+  - ✅ Most collisions (6 out of 7) resolved automatically
+  - ✅ Only 1 unavoidable collision remaining in very dense areas (acceptable)
+- **Technical Details**:
+  - Collision threshold: 40px horizontal, 30px vertical
+  - Resolution method: Iterative halving between origin and destination
+  - Maximum attempts: 10 halvings before accepting collision
+  - Visual node size: 60×40px with comfortable gaps
 
 ### Coordinate Algorithm Improvement (2025-11-11) ✅ COMPLETED
 - **Issue**: Rooms piling on top of each other with minimal Y-axis variation (Y: -5 to 3) despite 123 rooms

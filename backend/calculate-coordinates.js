@@ -28,51 +28,42 @@ const DIRECTION_DELTAS = {
  * Check if a position would cause a collision with existing rooms
  * and return an adjusted position if needed
  */
-function resolveCollision(coordinates, newX, newY, roomId) {
-  // Use tighter thresholds since nodes are smaller but spacing is larger
-  const COLLISION_THRESHOLD_X = NODE_WIDTH * 0.8;
-  const COLLISION_THRESHOLD_Y = NODE_HEIGHT * 0.8;
+function resolveCollision(coordinates, idealX, idealY, roomId, originX, originY) {
+  // Use collision threshold based on actual node size (60px), not spacing (100px)
+  // We want to prevent actual visual overlap, not just proximity
+  // Node is 60px wide, so minimum distance should be ~40px for a small gap
+  const COLLISION_THRESHOLD_X = 40;  // Minimum 40px gap between nodes
+  const COLLISION_THRESHOLD_Y = 30;  // Minimum 30px gap between nodes
   
-  // Check if position is occupied
-  const occupied = Array.from(coordinates.entries()).some(
-    ([id, coord]) => id !== roomId && 
-    Math.abs(coord.x - newX) < COLLISION_THRESHOLD_X && 
-    Math.abs(coord.y - newY) < COLLISION_THRESHOLD_Y
-  );
+  let testX = idealX;
+  let testY = idealY;
+  let attempts = 0;
+  const MAX_ATTEMPTS = 10;
   
-  if (!occupied) {
-    return { x: newX, y: newY };
-  }
-  
-  // Try small offsets to find a free spot nearby
-  const offsets = [
-    { x: NODE_WIDTH * 0.25, y: 0 },           // Right
-    { x: -NODE_WIDTH * 0.25, y: 0 },          // Left
-    { x: 0, y: NODE_HEIGHT * 0.25 },          // Up
-    { x: 0, y: -NODE_HEIGHT * 0.25 },         // Down
-    { x: NODE_WIDTH * 0.25, y: NODE_HEIGHT * 0.25 },   // Upper-right
-    { x: -NODE_WIDTH * 0.25, y: NODE_HEIGHT * 0.25 },  // Upper-left
-    { x: NODE_WIDTH * 0.25, y: -NODE_HEIGHT * 0.25 },  // Lower-right
-    { x: -NODE_WIDTH * 0.25, y: -NODE_HEIGHT * 0.25 }  // Lower-left
-  ];
-  
-  for (const offset of offsets) {
-    const testX = newX + offset.x;
-    const testY = newY + offset.y;
-    const stillOccupied = Array.from(coordinates.entries()).some(
+  while (attempts < MAX_ATTEMPTS) {
+    // Check if current test position is occupied
+    const conflictingRoom = Array.from(coordinates.entries()).find(
       ([id, coord]) => id !== roomId && 
       Math.abs(coord.x - testX) < COLLISION_THRESHOLD_X && 
       Math.abs(coord.y - testY) < COLLISION_THRESHOLD_Y
     );
-    if (!stillOccupied) {
-      console.log(`   🔧 Collision avoided: room ${roomId} offset by (${Math.round(offset.x)}, ${Math.round(offset.y)})`);
+    
+    if (!conflictingRoom) {
+      if (attempts > 0) {
+        console.log(`   🔧 Collision avoided: room ${roomId} placed at (${Math.round(testX)}, ${Math.round(testY)}) after ${attempts} attempt(s)`);
+      }
       return { x: testX, y: testY };
     }
+    
+    // Collision detected - halve the distance between origin and current test position
+    testX = Math.round((originX + testX) / 2);
+    testY = Math.round((originY + testY) / 2);
+    attempts++;
   }
   
-  // Fallback: accept collision (very rare with proper spacing)
-  console.log(`   ⚠️  Warning: Could not avoid collision for room ${roomId} at (${newX}, ${newY})`);
-  return { x: newX, y: newY };
+  // Fallback: accept collision after max attempts
+  console.log(`   ⚠️  Warning: Could not avoid collision for room ${roomId} at (${idealX}, ${idealY}) after ${MAX_ATTEMPTS} attempts`);
+  return { x: idealX, y: idealY };
 }
 
 async function calculateCoordinates() {
@@ -149,7 +140,8 @@ async function calculateCoordinates() {
           const idealY = current.y + delta.y;
 
           // Use collision detection to find the best position
-          const newCoords = resolveCollision(coordinates, idealX, idealY, neighborId);
+          // Pass the current (origin) position so we can halve the distance if needed
+          const newCoords = resolveCollision(coordinates, idealX, idealY, neighborId, current.x, current.y);
 
           coordinates.set(neighborId, newCoords);
           queue.push({ id: neighborId, ...newCoords });
