@@ -109,6 +109,9 @@ export class MudLogParser {
         
         // Check if this portal key is already associated with ANY room
         let alreadyAssociated = false;
+        let existingRoomWithSameKey: ParsedRoom | null = null;
+        let existingRoomKey: string | null = null;
+        
         console.log(`DEBUG: Checking if portal key ${this.state.pendingPortalKey} is already associated...`);
         console.log(`DEBUG: Current rooms in map: ${this.state.rooms.size}`);
         console.log(`DEBUG: Binding attempt room key: ${this.state.bindingAttemptRoomKey}`);
@@ -117,12 +120,45 @@ export class MudLogParser {
           if (room.portal_key === this.state.pendingPortalKey) {
             console.log(`  ⚠️  Portal key ${this.state.pendingPortalKey} already associated with room: ${room.name} (key: ${key})`);
             alreadyAssociated = true;
+            existingRoomWithSameKey = room;
+            existingRoomKey = key;
             break;
           }
         }
         console.log(`DEBUG: alreadyAssociated = ${alreadyAssociated}`);
         
-        if (!alreadyAssociated) {
+        if (alreadyAssociated && existingRoomWithSameKey && existingRoomKey && this.state.bindingAttemptRoomKey) {
+          // We bound a room and got a portal key that ALREADY EXISTS
+          // This means we revisited a room we've already bound
+          // Solution: Merge the duplicate room entry into the existing one
+          const bindingRoom = this.state.rooms.get(this.state.bindingAttemptRoomKey);
+          
+          if (bindingRoom && bindingRoom.name === existingRoomWithSameKey.name && 
+              bindingRoom.description === existingRoomWithSameKey.description) {
+            console.log(`  🔄 Merging duplicate room entry: ${this.state.bindingAttemptRoomKey.substring(0, 50)}... -> ${existingRoomKey}`);
+            
+            // Update all exits that reference the duplicate key to point to the existing key
+            for (const exit of this.state.exits) {
+              if (exit.from_room_key === this.state.bindingAttemptRoomKey) {
+                exit.from_room_key = existingRoomKey;
+                console.log(`    🔄 Updated exit from_room_key: ${this.state.bindingAttemptRoomKey.substring(0, 30)}... -> ${existingRoomKey}`);
+              }
+              if (exit.to_room_key === this.state.bindingAttemptRoomKey) {
+                exit.to_room_key = existingRoomKey;
+                console.log(`    🔄 Updated exit to_room_key: ${this.state.bindingAttemptRoomKey.substring(0, 30)}... -> ${existingRoomKey}`);
+              }
+            }
+            
+            // Remove the duplicate room entry
+            this.state.rooms.delete(this.state.bindingAttemptRoomKey);
+            
+            // Update current room tracking
+            this.state.currentRoomKey = existingRoomKey;
+            this.state.currentRoom = existingRoomWithSameKey;
+            
+            console.log(`  ✅ Merged duplicate into existing room: ${existingRoomWithSameKey.name}`);
+          }
+        } else if (!alreadyAssociated) {
           // Associate the portal key with the room where the binding attempt was made
           if (this.state.bindingAttemptRoomKey) {
             console.log(`DEBUG: Associating portal key ${this.state.pendingPortalKey} with binding attempt room key: ${this.state.bindingAttemptRoomKey}`);
@@ -152,8 +188,14 @@ export class MudLogParser {
                     console.log(`    🔄 Updated exit from_room_key: ${oldKey.substring(0, 30)}... -> ${portalKey}`);
                   }
                   if (exit.to_room_key === oldKey) {
-                    exit.to_room_key = portalKey;
-                    console.log(`    🔄 Updated exit to_room_key: ${oldKey.substring(0, 30)}... -> ${portalKey}`);
+                    // CRITICAL: Don't update to_room_key if from_room_key was also updated (would create self-reference)
+                    const wouldCreateSelfReference = exit.from_room_key === portalKey;
+                    if (!wouldCreateSelfReference) {
+                      exit.to_room_key = portalKey;
+                      console.log(`    🔄 Updated exit to_room_key: ${oldKey.substring(0, 30)}... -> ${portalKey}`);
+                    } else {
+                      console.log(`    ⚠️  Skipped updating to_room_key to prevent self-reference: ${exit.from_room_key} -> ${exit.to_room_key}`);
+                    }
                   }
                   
                   // Also update exits pointing to OTHER namedesc: versions of the same room
@@ -168,8 +210,15 @@ export class MudLogParser {
                   if (exit.to_room_key && exit.to_room_key.startsWith(namedescPattern)) {
                     const toRoom = this.state.rooms.get(exit.to_room_key);
                     if (toRoom && toRoom.name === roomName && toRoom.description === roomDesc) {
-                      exit.to_room_key = portalKey;
-                      console.log(`    🔄 Updated exit to_room_key (variant): ${exit.to_room_key.substring(0, 30)}... -> ${portalKey}`);
+                      // CRITICAL: Don't update to_room_key if it would create a self-referencing exit
+                      // This happens when from_room_key and to_room_key are both namedesc variants of the same room
+                      const wouldCreateSelfReference = exit.from_room_key === portalKey;
+                      if (!wouldCreateSelfReference) {
+                        exit.to_room_key = portalKey;
+                        console.log(`    🔄 Updated exit to_room_key (variant): ${exit.to_room_key.substring(0, 30)}... -> ${portalKey}`);
+                      } else {
+                        console.log(`    ⚠️  Skipped updating to_room_key to prevent self-reference: ${exit.from_room_key} -> ${exit.to_room_key}`);
+                      }
                     }
                   }
                 }
@@ -794,12 +843,14 @@ export class MudLogParser {
     }
     
     // NO PORTAL KEY YET - Check if a portal: version exists first
-    // CRITICAL: If we find a room with a portal key AND matching name/desc, DON'T reuse it!
-    // Multiple distinct rooms can have identical names and descriptions but different portal keys.
+    // CRITICAL: Don't reuse rooms with portal keys yet! We won't know if it's the same room
+    // until we try to bind. Multiple distinct rooms can have identical names/descriptions
+    // but DIFFERENT portal keys (e.g., 3 different "Bridge Road" rooms).
+    // The portal binding attempt will tell us if this is the same room or a new one.
     for (const [key, room] of this.state.rooms) {
       if (room.portal_key && room.name === name && room.description === description) {
-        console.log(`DEBUG: Found existing portal: room with matching name/desc BUT it has portal key ${room.portal_key} - treating as new room`);
-        return null; // Don't reuse rooms with portal keys - they are distinct
+        console.log(`DEBUG: Found existing portal: room "${room.name}" with key ${room.portal_key} - will wait for binding to determine if same room`);
+        // Don't return the key yet - let binding attempt determine if it's the same room
       }
     }
     
@@ -812,15 +863,15 @@ export class MudLogParser {
     if (this.state.rooms.has(checkKey)) {
       const matchedRoom = this.state.rooms.get(checkKey)!;
       console.log(`DEBUG: Found room at checkKey with portal_key: ${matchedRoom.portal_key}`);
-      // CRITICAL FIX: If the matched room already has a portal key, DON'T reuse it!
-      // Rooms with portal keys are complete/distinct. If we encounter what appears to be
-      // the same room but it will get a DIFFERENT portal key, it's actually a different room.
-      // The MUD can have multiple rooms with identical names and descriptions.
+      // If the room already has a portal key, DON'T reuse it yet!
+      // Wait for the portal binding attempt to see if we get the SAME portal key.
+      // If we get the same key = revisiting the same room (should reuse)
+      // If we get a different key = different room with same name/desc (Bridge Road case)
       if (matchedRoom.portal_key) {
-        console.log(`DEBUG: Found exact namedesc match BUT it already has portal key ${matchedRoom.portal_key} - treating as new room`);
-        return null; // Don't reuse rooms with portal keys - they're distinct
+        console.log(`DEBUG: Found exact namedesc match but it has portal key ${matchedRoom.portal_key} - treating as new room until binding confirms`);
+        return null; // Let binding attempt determine if same room
       }
-      console.log(`DEBUG: Found exact namedesc match: ${checkKey.substring(0, 100)}...`);
+      console.log(`DEBUG: Found exact namedesc match without portal key: ${checkKey.substring(0, 100)}...`);
       return checkKey;
     }
     

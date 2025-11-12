@@ -25,6 +25,44 @@
 
 ## ✅ Recently Completed
 
+### Self-Referencing Exit Bug Fix (2025-11-11) ✅ COMPLETED
+- **Issue**: Map visualization showing rooms squished due to outlier coordinates at X=10000
+- **Symptom**: Rooms positioned at extreme X coordinates causing entire map to compress into small area
+- **Root Cause**: Self-referencing exits (from_room_id = to_room_id) causing BFS coordinate algorithm to treat connected rooms as separate components
+  - Found 10 self-referencing exits in rooms: 19, 33, 93, 112, 119, 120, 125
+  - Bug introduced by Bridge Road fix: when same room visited twice before portal binding, both namedesc keys updated to same portal key
+  - Exit had from_room_key = namedesc:X and to_room_key = namedesc:Y, both updated to portal:Z → exit became self-referencing
+- **Solution Implemented**:
+  1. **Self-Reference Prevention** (lines 148-165, 167-183): Added checks before updating exit keys to portal keys
+     - Before: `exit.to_room_key = portalKey` (no validation)
+     - After: `if (exit.from_room_key !== portalKey) { exit.to_room_key = portalKey; }` (prevents self-reference)
+     - Applied to both exact key match AND namedesc variant exits
+  2. **Duplicate Room Merging** (lines 105-160): When portal binding returns existing portal key, detect revisit and merge duplicate
+     - Check if returned portal key already exists in any room
+     - If found AND binding room has same name/description → revisit detected
+     - Update all exits referencing duplicate key to point to existing key
+     - Remove duplicate room entry from Map
+     - Critical for rooms visited multiple times before binding (Bridge Road case)
+  3. **Portal Key Wait Logic** (lines 813-841): Don't reuse portal-keyed rooms until binding confirms identity
+     - Bridge Road lesson: 3 rooms with identical name/description but DIFFERENT portal keys
+     - Wait for binding result to determine if revisit (same key) or new room (different key)
+     - Only exact description match for rooms without portal keys
+- **Files Modified**:
+  - `crawler/src/mudLogParser.ts`
+    - Lines 148-165: Self-reference check for exact key updates
+    - Lines 167-183: Self-reference check for variant key updates
+    - Lines 105-160: Portal key collision detection and duplicate room merging
+    - Lines 813-821: Portal room lookup returns null (wait for binding)
+    - Lines 827-841: Exact match lookup returns null for portal-keyed rooms
+- **Testing Results**:
+  - Re-parsed logs: 125 rooms, 262 exits
+  - **0 self-referencing exits** (down from 10)
+  - **3 Bridge Road rooms preserved**: cfklmpqr, fgklmpqr, deghklmpqr
+  - Coordinate recalculation: X: -400 to 1500, Y: -350 to 560 (no outliers)
+  - Map visualization: Rooms properly spaced, no squishing
+- **Impact**: Fixes both coordinate outliers AND preserves multi-room handling for areas with identical descriptions
+- **Key Insight**: Portal key binding result is definitive - same key returned = revisit, different key = new room with same appearance
+
 ### Bridge Road Missing Rooms Fix (2025-11-11) ✅ COMPLETED
 - **Issue**: Only 1 of 3 "Bridge Road" rooms existed in database
   - Expected: `cfklmpqr`, `fgklmpqr`, `deghklmpqr`
