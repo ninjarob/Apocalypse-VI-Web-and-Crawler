@@ -1,5 +1,5 @@
 ﻿import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { api } from '../api';
 import { SearchBox } from '../components';
 import RoomForm from '../components/RoomForm';
@@ -23,6 +23,7 @@ import {
 
 function Admin() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [selectedEntity, setSelectedEntity] = useState<EntityConfig>(ENTITY_CONFIGS[0]);
   const [entities, setEntities] = useState<Entity[]>([]);
   const [loading, setLoading] = useState(false);
@@ -40,7 +41,6 @@ function Admin() {
   const [allRooms, setAllRooms] = useState<Entity[]>([]);
   const [roomExits, setRoomExits] = useState<any[]>([]);
   const [selectedRoom, setSelectedRoom] = useState<Entity | null>(null);
-  const [roomBackContext, setRoomBackContext] = useState<'rooms' | 'zone'>('rooms');
   const [selectedAction, setSelectedAction] = useState<Entity | null>(null);
   const [selectedNPC, setSelectedNPC] = useState<Entity | null>(null);
   const [selectedItem, setSelectedItem] = useState<Entity | null>(null);
@@ -71,6 +71,89 @@ function Admin() {
     setSearchTerm(''); // Reset search when navigating
     setSortField(null); // Reset sort when navigating
     setSortDirection('asc');
+  }, [location.pathname]);
+
+  // Initialize state from URL parameters
+  useEffect(() => {
+    const pathParts = location.pathname.split('/').filter(Boolean);
+    if (pathParts.length >= 2 && pathParts[0] === 'admin') {
+      const entityType = pathParts[1];
+      const entityId = pathParts[2] ? parseInt(pathParts[2]) : null;
+
+      if (entityId) {
+        // Load the entity data and set the appropriate state
+        const loadEntityFromUrl = async () => {
+          try {
+            let entity;
+            switch (entityType) {
+              case 'rooms':
+                entity = await api.get(`/rooms/${entityId}`);
+                setSelectedRoom(entity);
+                setSelectedEntity(ENTITY_CONFIGS.find(c => c.endpoint === 'rooms') || ENTITY_CONFIGS[0]);
+                break;
+              case 'zones':
+                entity = await api.get(`/zones/${entityId}`);
+                setSelectedZone(entity);
+                setSelectedEntity(ENTITY_CONFIGS.find(c => c.endpoint === 'zones') || ENTITY_CONFIGS[0]);
+                // Load zone rooms
+                const rooms = await api.get(`/rooms?zone_id=${entityId}`);
+                setZoneRooms(rooms);
+                break;
+              case 'player_actions':
+                entity = await api.get(`/player_actions/${entityId}`);
+                setSelectedAction(entity);
+                setSelectedEntity(ENTITY_CONFIGS.find(c => c.endpoint === 'player_actions') || ENTITY_CONFIGS[0]);
+                break;
+              case 'npcs':
+                entity = await api.get(`/npcs/${entityId}`);
+                setSelectedNPC(entity);
+                setSelectedEntity(ENTITY_CONFIGS.find(c => c.endpoint === 'npcs') || ENTITY_CONFIGS[0]);
+                break;
+              case 'items':
+                entity = await api.get(`/items/${entityId}`);
+                setSelectedItem(entity);
+                setSelectedEntity(ENTITY_CONFIGS.find(c => c.endpoint === 'items') || ENTITY_CONFIGS[0]);
+                break;
+              case 'spells':
+                entity = await api.get(`/spells/${entityId}`);
+                setSelectedSpell(entity);
+                setSelectedEntity(ENTITY_CONFIGS.find(c => c.endpoint === 'spells') || ENTITY_CONFIGS[0]);
+                break;
+              case 'classes':
+                entity = await api.get(`/classes/${entityId}`);
+                setSelectedClass(entity);
+                setSelectedEntity(ENTITY_CONFIGS.find(c => c.endpoint === 'classes') || ENTITY_CONFIGS[0]);
+                // Load class proficiencies
+                const proficiencies = await api.get(`/class_proficiencies?class_id=${entityId}`);
+                proficiencies.sort((a: any, b: any) => {
+                  if (a.level_required !== b.level_required) {
+                    return a.level_required - b.level_required;
+                  }
+                  return a.name.localeCompare(b.name);
+                });
+                setClassProficiencies(proficiencies);
+                break;
+              case 'help_entries':
+                entity = await api.get(`/help_entries/${entityId}`);
+                setSelectedHelpEntry(entity);
+                setSelectedEntity(ENTITY_CONFIGS.find(c => c.endpoint === 'help_entries') || ENTITY_CONFIGS[0]);
+                break;
+            }
+
+            // Load related data if needed
+            if (['rooms', 'zones'].includes(entityType)) {
+              await loadRoomRelatedData();
+            }
+          } catch (error) {
+            console.error('Error loading entity from URL:', error);
+            // Navigate back to admin if entity not found
+            navigate('/admin');
+          }
+        };
+
+        loadEntityFromUrl();
+      }
+    }
   }, [location.pathname]);
 
   // Reset sort when changing entity types
@@ -168,25 +251,11 @@ function Admin() {
   };
 
   const handleZoneClick = async (zone: Entity) => {
-    setSelectedZone(zone);
-    try {
-      const rooms = await api.get(`/rooms?zone_id=${zone.id}`);
-      setZoneRooms(rooms);
-      setAllRooms(rooms);
-      
-      // Load room-related data if not already loaded
-      if (allZones.length === 0 || roomExits.length === 0) {
-        await loadRoomRelatedData();
-      }
-    } catch (error) {
-      console.error('Error loading zone rooms:', error);
-      setZoneRooms([]);
-    }
+    navigate(`/admin/zones/${zone.id}`);
   };
 
   const handleBackToZones = () => {
-    setSelectedZone(null);
-    setZoneRooms([]);
+    navigate('/admin');
   };
 
   const handleAddRoomToZone = () => {
@@ -212,88 +281,51 @@ function Admin() {
   };
 
   const handleRoomClick = async (room: Entity) => {
-    setSelectedRoom(room);
-    // Clear zone selection when navigating to a room
-    setSelectedZone(null);
-    // Set context based on whether we're viewing a zone
-    if (selectedZone) {
-      setRoomBackContext('zone');
-    } else {
-      setRoomBackContext('rooms');
-    }
-    
-    // Load room-related data if not already loaded
-    if (allZones.length === 0 || roomExits.length === 0) {
-      await loadRoomRelatedData();
-    }
-    
-    // Add this room to allRooms if not already there
-    setAllRooms(prev => {
-      if (!prev.find(r => r.id === room.id)) {
-        return [...prev, room];
-      }
-      return prev;
-    });
+    navigate(`/admin/rooms/${room.id}`);
   };
 
   const handleBackToRooms = () => {
-    setSelectedRoom(null);
-    // Don't reset context here - let it persist for next room click
+    navigate('/admin');
   };
 
   const handleActionClick = (action: Entity) => {
-    setSelectedAction(action);
+    navigate(`/admin/player_actions/${action.id}`);
   };
 
   const handleBackToActions = () => {
-    setSelectedAction(null);
+    navigate('/admin');
   };
 
   const handleNPCClick = (npc: Entity) => {
-    setSelectedNPC(npc);
+    navigate(`/admin/npcs/${npc.id}`);
   };
 
   const handleBackToNPCs = () => {
-    setSelectedNPC(null);
+    navigate('/admin');
   };
 
   const handleItemClick = (item: Entity) => {
-    setSelectedItem(item);
+    navigate(`/admin/items/${item.id}`);
   };
 
   const handleBackToItems = () => {
-    setSelectedItem(null);
+    navigate('/admin');
   };
 
   const handleSpellClick = (spell: Entity) => {
-    setSelectedSpell(spell);
+    navigate(`/admin/spells/${spell.id}`);
   };
 
   const handleBackToSpells = () => {
-    setSelectedSpell(null);
+    navigate('/admin');
   };
 
   const handleClassClick = async (classEntity: Entity) => {
-    setSelectedClass(classEntity);
-    try {
-      const proficiencies = await api.get(`/class_proficiencies?class_id=${classEntity.id}`);
-      // Sort by level_required, then by name
-      proficiencies.sort((a: any, b: any) => {
-        if (a.level_required !== b.level_required) {
-          return a.level_required - b.level_required;
-        }
-        return a.name.localeCompare(b.name);
-      });
-      setClassProficiencies(proficiencies);
-    } catch (error) {
-      console.error('Error loading class proficiencies:', error);
-      setClassProficiencies([]);
-    }
+    navigate(`/admin/classes/${classEntity.id}`);
   };
 
   const handleBackToClasses = () => {
-    setSelectedClass(null);
-    setClassProficiencies([]);
+    navigate('/admin');
   };
 
   const handleEntityClick = (entity: Entity) => {
@@ -317,11 +349,11 @@ function Admin() {
   };
 
   const handleHelpEntryClick = (helpEntry: Entity) => {
-    setSelectedHelpEntry(helpEntry);
+    navigate(`/admin/help_entries/${helpEntry.id}`);
   };
 
   const handleBackToHelpEntries = () => {
-    setSelectedHelpEntry(null);
+    navigate('/admin');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -458,7 +490,7 @@ function Admin() {
           ENTITY_CONFIGS={ENTITY_CONFIGS}
           setSelectedEntity={setSelectedEntity}
           handleZoneClick={handleZoneClick}
-          backButtonText={roomBackContext === 'zone' ? `← Back to ${selectedZone?.name || 'Zone'}` : '← Back to Rooms'}
+          backButtonText="← Back to Admin"
           setSelectedRoom={setSelectedRoom}
           onRoomExitsChange={loadRoomRelatedData}
           zoneConnections={zoneConnections}

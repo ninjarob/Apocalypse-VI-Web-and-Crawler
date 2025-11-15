@@ -1,20 +1,9 @@
-import { BrowserRouter, Routes, Route, NavLink, useLocation } from 'react-router-dom';
-import { useState } from 'react';
+import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import Admin from './pages/Admin';
 import './index.css';
 
 function AppContent() {
-  const location = useLocation();
-  const [adminKey, setAdminKey] = useState(0);
-
-  const handleAdminClick = (e: React.MouseEvent) => {
-    // If already on admin page, force remount by changing key
-    if (location.pathname === '/admin') {
-      e.preventDefault();
-      setAdminKey(prev => prev + 1);
-    }
-  };
 
   return (
     <div className="app">
@@ -25,7 +14,7 @@ function AppContent() {
             MUD Map
           </NavLink>
           <hr style={{ margin: '10px 0', border: '1px solid #333' }} />
-          <NavLink to="/admin" onClick={handleAdminClick}>
+          <NavLink to="/admin">
             ⚙️ Admin
           </NavLink>
         </nav>
@@ -34,7 +23,15 @@ function AppContent() {
       <div className="main-content">
         <Routes>
           <Route path="/" element={<Dashboard />} />
-          <Route path="/admin" element={<Admin key={adminKey} />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/rooms/:id" element={<Admin />} />
+          <Route path="/admin/zones/:id" element={<Admin />} />
+          <Route path="/admin/player_actions/:id" element={<Admin />} />
+          <Route path="/admin/npcs/:id" element={<Admin />} />
+          <Route path="/admin/items/:id" element={<Admin />} />
+          <Route path="/admin/spells/:id" element={<Admin />} />
+          <Route path="/admin/classes/:id" element={<Admin />} />
+          <Route path="/admin/help_entries/:id" element={<Admin />} />
         </Routes>
       </div>
     </div>

@@ -1,6 +1,6 @@
 # Development Status - Apocalypse VI MUD
 
-**Last Updated**: November 11, 2025
+**Last Updated**: November 12, 2025
 
 ## 🎯 Current Focus
 
@@ -24,6 +24,29 @@
 - Ollama AI: http://localhost:11434 (Local AI models)
 
 ## ✅ Recently Completed
+
+### Admin Deep Linking Implementation (2025-11-12) ✅ COMPLETED
+- **Feature**: All admin pages are now deep linkable with URL-based navigation
+- **Implementation**:
+  1. **React Router Integration**: Added nested routes for all admin detail views (`/admin/rooms/:id`, `/admin/zones/:id`, etc.)
+  2. **URL State Management**: Modified Admin component to read URL parameters on mount and restore appropriate view state
+  3. **Navigation Updates**: Replaced state-based navigation with router navigation for all entity clicks
+  4. **Back Navigation**: Updated all back buttons to use router navigation instead of state changes
+- **Benefits**:
+  - ✅ Refreshing on any admin detail page stays on that page (no more reverting to main admin)
+  - ✅ Direct links to specific rooms, zones, actions, etc. work correctly
+  - ✅ Browser back/forward buttons work properly
+  - ✅ Bookmarkable URLs for all admin content
+  - ✅ Clean URL structure reflecting the admin hierarchy
+- **Technical Details**:
+  - Routes: `/admin`, `/admin/rooms/:id`, `/admin/zones/:id`, `/admin/player_actions/:id`, `/admin/npcs/:id`, `/admin/items/:id`, `/admin/spells/:id`, `/admin/classes/:id`, `/admin/help_entries/:id`
+  - State restoration loads entity data from API based on URL parameters
+  - Automatic loading of related data (zone rooms, class proficiencies, etc.) when navigating via URL
+  - Error handling: Invalid URLs redirect back to `/admin`
+- **Files Modified**:
+  - `frontend/src/App.tsx`: Added nested admin routes
+  - `frontend/src/pages/Admin.tsx`: URL parameter reading, router navigation, state restoration
+- **Testing**: Frontend builds successfully, TypeScript compilation passes
 
 ### Automated Seed with Room Data & Coordinates (2025-11-11) ✅ COMPLETED
 - **Feature**: Integrated coordinate calculation and room/exit seeding into main seed script
