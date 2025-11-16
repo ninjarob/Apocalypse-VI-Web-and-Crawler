@@ -1,6 +1,6 @@
 # Development Status - Apocalypse VI MUD
 
-**Last Updated**: November 12, 2025
+**Last Updated**: November 15, 2025
 
 ## 🎯 Current Focus
 
@@ -25,7 +25,25 @@
 
 ## ✅ Recently Completed
 
-### Admin Deep Linking Implementation (2025-11-12) ✅ COMPLETED
+### Astyll Hills Zone Coordinate Calculation (2025-11-15) ✅ COMPLETED
+- **Feature**: Successfully calculated and assigned geographical coordinates to all rooms in the Astyll Hills zone
+- **Implementation**:
+  1. **Zone-Specific Script**: Modified `calculate-coordinates.js` to accept zone ID parameter and reset coordinates for that zone before calculation
+  2. **Coordinate Reset**: Added `resetZoneCoordinates()` function to clear existing coordinates for zone 9 before recalculating
+  3. **Zone Filtering**: Updated all database queries to filter by `zone_id = 9` for rooms and exits
+  4. **Collision Resolution**: Maintained intelligent collision avoidance with iterative halving algorithm
+- **Results**:
+  - ✅ **104 rooms** assigned coordinates in zone 9
+  - ✅ **218 exits** processed for coordinate calculation
+  - ✅ **Coordinate range**: X: -100 to 1300, Y: -700 to 189
+  - ✅ **6 collision avoidance** successes through smart positioning
+  - ✅ **8 unavoidable collisions** in dense areas (acceptable)
+- **Technical Details**:
+  - Command: `node calculate-coordinates.js 9`
+  - Database updates: 104 rooms with x,y coordinates set
+  - Collision threshold: 40px horizontal, 30px vertical gaps
+  - Node spacing: 100px horizontal, 70px vertical for comfortable viewing
+- **Impact**: Astyll Hills zone now has proper geographical coordinates for map visualization and navigation
 - **Feature**: All admin pages are now deep linkable with URL-based navigation
 - **Implementation**:
   1. **React Router Integration**: Added nested routes for all admin detail views (`/admin/rooms/:id`, `/admin/zones/:id`, etc.)

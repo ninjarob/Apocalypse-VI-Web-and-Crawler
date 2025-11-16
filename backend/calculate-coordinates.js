@@ -1,6 +1,25 @@
 // Calculate room coordinates based on directional exits
 const sqlite3 = require('sqlite3');
 const path = require('path');
+
+// Parse command line arguments
+const args = process.argv.slice(2);
+let zoneId = null;
+
+if (args.length === 0) {
+  console.error('❌ Usage: node calculate-coordinates.js <zone-id>');
+  console.error('   Example: node calculate-coordinates.js 9');
+  process.exit(1);
+}
+
+zoneId = parseInt(args[0]);
+if (isNaN(zoneId)) {
+  console.error('❌ Invalid zone ID. Must be a number.');
+  process.exit(1);
+}
+
+console.log(`🎯 Calculating coordinates for zone ID: ${zoneId}`);
+
 const db = new sqlite3.Database(path.join(__dirname, '..', 'data', 'mud-data.db'));
 
 // Card dimensions (adjusted for better spacing)
@@ -67,18 +86,23 @@ function resolveCollision(coordinates, idealX, idealY, roomId, originX, originY)
 }
 
 async function calculateCoordinates() {
-  console.log('🗺️  Calculating room coordinates based on exits...\n');
+  console.log(`🗺️  Calculating room coordinates for zone ${zoneId} based on exits...\n`);
 
-  // Get all rooms and exits
-  const rooms = await getAllRooms();
-  const exits = await getAllExits();
+  // First, reset all coordinates for rooms in this zone
+  console.log(`🔄 Resetting coordinates for all rooms in zone ${zoneId}...`);
+  await resetZoneCoordinates(zoneId);
+  console.log(`✓ Coordinates reset to null for zone ${zoneId}\n`);
+
+  // Get all rooms and exits for this zone
+  const rooms = await getZoneRooms(zoneId);
+  const exits = await getZoneExits(zoneId);
 
   if (rooms.length === 0) {
-    console.log('❌ No rooms found!');
+    console.log(`❌ No rooms found in zone ${zoneId}!`);
     return;
   }
 
-  console.log(`📍 Processing ${rooms.length} rooms and ${exits.length} exits\n`);
+  console.log(`📍 Processing ${rooms.length} rooms and ${exits.length} exits in zone ${zoneId}\n`);
 
   // Create room lookup map
   const roomMap = new Map();
@@ -153,7 +177,7 @@ async function calculateCoordinates() {
     componentOffset.x += COMPONENT_SPACING * NODE_WIDTH;
   }
 
-  console.log(`✅ Assigned coordinates to ${coordinates.size} rooms\n`);
+  console.log(`✅ Assigned coordinates to ${coordinates.size} rooms in zone ${zoneId}\n`);
 
   // Update database with coordinates
   let updated = 0;
@@ -162,7 +186,7 @@ async function calculateCoordinates() {
     updated++;
   }
 
-  console.log(`💾 Updated ${updated} rooms with coordinates\n`);
+  console.log(`💾 Updated ${updated} rooms with coordinates in zone ${zoneId}\n`);
 
   // Show coordinate range
   let minX = Infinity, maxX = -Infinity;
@@ -182,7 +206,7 @@ async function calculateCoordinates() {
   // Check for rooms without coordinates
   const roomsWithoutCoords = rooms.filter(room => !coordinates.has(room.id));
   if (roomsWithoutCoords.length > 0) {
-    console.log(`\n⚠️  ${roomsWithoutCoords.length} rooms have no coordinates (not connected to main graph):`);
+    console.log(`\n⚠️  ${roomsWithoutCoords.length} rooms in zone ${zoneId} have no coordinates (not connected to main graph):`);
     roomsWithoutCoords.slice(0, 10).forEach(room => {
       console.log(`   - ${room.name} (ID: ${room.id})`);
     });
@@ -191,7 +215,7 @@ async function calculateCoordinates() {
     }
   }
 
-  console.log('\n✨ Coordinate calculation complete!');
+  console.log(`\n✨ Coordinate calculation complete for zone ${zoneId}!`);
 }
 
 function getAllRooms() {
@@ -203,11 +227,43 @@ function getAllRooms() {
   });
 }
 
+function getZoneRooms(zoneId) {
+  return new Promise((resolve, reject) => {
+    db.all('SELECT id, name FROM rooms WHERE zone_id = ? ORDER BY id', [zoneId], (err, rows) => {
+      if (err) reject(err);
+      else resolve(rows);
+    });
+  });
+}
+
 function getAllExits() {
   return new Promise((resolve, reject) => {
     db.all('SELECT from_room_id, to_room_id, direction FROM room_exits WHERE to_room_id IS NOT NULL', (err, rows) => {
       if (err) reject(err);
       else resolve(rows);
+    });
+  });
+}
+
+function getZoneExits(zoneId) {
+  return new Promise((resolve, reject) => {
+    db.all(`
+      SELECT re.from_room_id, re.to_room_id, re.direction 
+      FROM room_exits re
+      JOIN rooms r ON re.from_room_id = r.id
+      WHERE r.zone_id = ? AND re.to_room_id IS NOT NULL
+    `, [zoneId], (err, rows) => {
+      if (err) reject(err);
+      else resolve(rows);
+    });
+  });
+}
+
+function resetZoneCoordinates(zoneId) {
+  return new Promise((resolve, reject) => {
+    db.run('UPDATE rooms SET x = NULL, y = NULL WHERE zone_id = ?', [zoneId], function(err) {
+      if (err) reject(err);
+      else resolve(this.changes);
     });
   });
 }
