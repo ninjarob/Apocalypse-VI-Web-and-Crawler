@@ -1,12 +1,12 @@
 # Development Status - Apocalypse VI MUD
 
-**Last Updated**: November 15, 2025
+**Last Updated**: November 17, 2025
 
 ## 🎯 Current Focus
 
-**Active Development**: Automated seed process with room data and coordinate calculation
+**Active Development**: Database query tools and parser bug fixes
 
-**Priority**: Streamline database initialization with pre-parsed room data
+**Priority**: Fix room self-deletion bug and improve database inspection tools
 
 ## Project Architecture
 
@@ -24,6 +24,89 @@
 - Ollama AI: http://localhost:11434 (Local AI models)
 
 ## ✅ Recently Completed
+
+### 4-Character Portal Key Support (2025-11-17) ✅ COMPLETED
+- **Issue**: Third "A muddy corridor" room with portal key `lnoq` (4 characters) was being filtered out
+- **Symptoms**: 
+  - Only 2 of 3 muddy corridor rooms appeared in database despite all 3 being in exploration log
+  - Room with `lnoq` portal key never saved - filtered during parsing
+  - Parser regex required minimum 5-character portal keys: `/'([a-z]{5,})'/`
+- **Root Cause**: Portal key validation regex patterns hardcoded to require 5+ character keys
+  - Line 104: `const portalKeyMatch = cleanLine.match(/'([a-z]{5,})' briefly appears/);`
+  - Line 588: `if (cleanDesc.match(/'[a-z]{5,}' briefly appears/)) {`
+  - Valid 4-character keys like `lnoq` were rejected and rooms not saved
+- **Solution**: Updated both regex patterns to accept 4+ character portal keys
+  - Changed `{5,}` to `{4,}` in both locations
+  - Now accepts portal keys with 4 or more lowercase letters
+- **Testing Results**:
+  - ✅ Re-parsed Astyll Hills exploration log
+  - ✅ 105 rooms saved (up from 103)
+  - ✅ All 3 muddy corridor rooms now in database:
+    - `cdeflnoq`: "Crammed between..." [north, south] ✅
+    - `cfhilnoq`: "Not unlike..." [north, south, west] ✅  
+    - `lnoq`: "Not unlike..." [east, west] ✅ NEW
+  - ✅ 222 exits saved
+  - ✅ Coordinates calculated for zone 9
+- **Database Verification**: `SELECT * FROM rooms WHERE portal_key = 'lnoq'` returns room ID 183
+- **Files Modified**: `crawler/src/mudLogParser.ts` lines 104, 588
+- **Impact**: Parser now recognizes all valid portal keys regardless of length (4+ characters)
+- **Note**: `cfhilnoq` still has extra west exit - separate issue with exploration log data quality
+
+### Database Query Utility Rewrite (2025-11-17) ✅ COMPLETED
+- **Issue**: `query-db.js` was hardcoded to a specific query, making database inspection difficult
+- **Solution**: Rewrote as full-featured CLI utility accepting SQL queries as arguments
+- **Features**:
+  - Accepts any SQL query as command-line argument
+  - JSON output mode (`--json` flag)
+  - Alternate database path (`--db` flag)
+  - Comprehensive help system (`--help`)
+  - Pretty table output for results
+  - Support for SELECT, INSERT, UPDATE, DELETE queries
+  - Read-only mode for safety
+- **Documentation**: Created `backend/DATABASE_QUERY_GUIDE.md` with:
+  - Complete database schema reference
+  - Common query patterns for rooms, exits, zones
+  - Advanced queries for debugging
+  - Data quality checks
+  - Troubleshooting guide
+- **Usage Examples**:
+  ```powershell
+  node query-db.js "SELECT * FROM rooms WHERE portal_key = 'cfhilnoq'"
+  node query-db.js "SELECT COUNT(*) as total FROM rooms"
+  node query-db.js "SELECT * FROM zones" --json
+  ```
+- **Impact**: Database inspection now straightforward and well-documented
+
+### Parser Room Self-Deletion Bug Fix (2025-11-17) ✅ COMPLETED
+- **Issue**: Rooms with portal keys were being deleted when revisited and bound again
+- **Symptoms**: 
+  - `cfhilnoq` and `cdeflnoq` rooms showed in parse logs but missing from database
+  - Parse reported "56 saved" but only 52 rooms found in zone 9
+  - Error: "Merging duplicate room entry: portal:cfhilnoq... -> portal:cfhilnoq" (merging room with itself!)
+- **Root Cause**: Duplicate detection logic at lines 130-160 in `mudLogParser.ts`
+  - When a portal-bound room was revisited and binding reattempted
+  - Code detected portal key already existed (`alreadyAssociated = true`)
+  - Tried to "merge" the room with itself
+  - Deleted the room at line 153: `this.state.rooms.delete(this.state.bindingAttemptRoomKey)`
+  - Result: Room completely removed from Map before database save
+- **Solution**: Added check to skip merge when binding room IS the existing room
+  ```typescript
+  if (this.state.bindingAttemptRoomKey === existingRoomKey) {
+    console.log(`  ✅ Portal key already associated with this room (revisit)`);
+    // Just update tracking, no merge needed
+    this.state.currentRoomKey = existingRoomKey;
+    this.state.currentRoom = existingRoomWithSameKey;
+  } else {
+    // Proceed with merge logic for actual duplicates
+  }
+  ```
+- **Testing Results**:
+  - ✅ 103 rooms saved (up from 52 in zone 9)
+  - ✅ `cfhilnoq` and `cdeflnoq` both present in database
+  - ✅ No more "merging with self" errors
+  - ✅ 217 exits saved correctly
+- **Files Modified**: `crawler/src/mudLogParser.ts` lines 130-135
+- **Impact**: Rooms no longer accidentally deleted during parse, all portal-bound rooms save correctly
 
 ### Astyll Hills Zone Coordinate Calculation (2025-11-15) ✅ COMPLETED
 - **Feature**: Successfully calculated and assigned geographical coordinates to all rooms in the Astyll Hills zone
