@@ -46,6 +46,8 @@ interface ParserState {
   portalRetryCount: number; // Track consecutive portal binding failures for retry logic
   bindingAttemptRoomKey: string | null; // Track which room the binding attempt was made in
   usedNamedescKeys: Set<string>; // Track all namedesc: keys ever used, even after moving to portal:
+  inDeathRoom: boolean; // Track if we're in a death room - skip creating exits from it
+  pendingRespawn: boolean; // Track if we just respawned - next room parse should update currentRoomKey
 }
 
 export class MudLogParser {
@@ -68,7 +70,9 @@ export class MudLogParser {
       noMagicRooms: new Set(),
       portalRetryCount: 0,
       bindingAttemptRoomKey: null,
-      usedNamedescKeys: new Set()
+      usedNamedescKeys: new Set(),
+      inDeathRoom: false,
+      pendingRespawn: false
     };
   }
 
@@ -562,6 +566,28 @@ export class MudLogParser {
         continue;
       }
       
+      // Detect death - mark that we're in a death room
+      if (cleanLine.match(/\[Info\].*entered a death room/i)) {
+        console.log(`   💀 Death room detected - will skip exit creation`);
+        this.state.inDeathRoom = true;
+        i++;
+        continue;
+      }
+      
+      // Detect respawn - we're out of death state
+      if (cleanLine.match(/spun out of the darkness/i)) {
+        console.log(`   ✨ Respawn detected - clearing death state, next room parse will update position`);
+        this.state.inDeathRoom = false;
+        this.state.pendingRespawn = true;
+        // Clear currentRoomKey so respawn room becomes new starting point
+        this.state.currentRoomKey = null;
+        this.state.currentRoom = null;
+        // Don't clear lastDirection - we want to track movement FROM respawn room
+        pendingFlee = false;
+        i++;
+        continue;
+      }
+      
       // FIX #17: Detect "flee" command (before seeing direction)
       if (cleanLine.match(/^flee$/i)) {
         pendingFlee = true;
@@ -850,8 +876,10 @@ export class MudLogParser {
           // (e.g., NPC movement notifications, look commands, etc.)
           // Even with lastDirection, we must validate the room has the reverse exit
           // FIX #17: Also treat pendingFlee as movement (flee displays room before showing direction)
-          if (lastDirection || pendingFlee) {
+          // FIX: Also treat pendingRespawn as movement (respawn shows room without direction)
+          if (lastDirection || pendingFlee || this.state.pendingRespawn) {
             // FIX #17: For pending flee, we don't know the direction yet, so skip exit validation
+            // FIX: For pending respawn, there is no direction (teleported), so skip exit validation
             if (pendingFlee) {
               console.log(`  🏃 Pending flee - updating current room without direction validation`);
               
@@ -869,6 +897,12 @@ export class MudLogParser {
               
               this.state.currentRoom = existingRoom;
               this.state.currentRoomKey = existingRoomKey;
+              console.log(`  🔑 CURRENT ROOM KEY UPDATED TO: ${existingRoomKey.substring(0, 60)}...`);
+            } else if (this.state.pendingRespawn) {
+              console.log(`  ✨ Respawned at existing room - updating current room tracking`);
+              this.state.currentRoom = existingRoom;
+              this.state.currentRoomKey = existingRoomKey;
+              this.state.pendingRespawn = false;
               console.log(`  🔑 CURRENT ROOM KEY UPDATED TO: ${existingRoomKey.substring(0, 60)}...`);
             } else {
               // Normal movement with direction
@@ -929,8 +963,10 @@ export class MudLogParser {
           // FIX #9: Apply same validation as existing rooms when updating currentRoomKey
           // Only update if player actually moved here (not incidental parsing)
           // FIX #17: Also treat pendingFlee as movement
-          if (lastDirection || pendingFlee) {
+          // FIX: Also treat pendingRespawn as movement
+          if (lastDirection || pendingFlee || this.state.pendingRespawn) {
             // FIX #17: For pending flee, skip exit validation
+            // FIX: For pending respawn, skip exit validation (teleported)
             if (pendingFlee) {
               console.log(`  🏃 Pending flee to new room - updating current room without direction validation`);
               
@@ -948,6 +984,12 @@ export class MudLogParser {
               
               this.state.currentRoom = room;
               this.state.currentRoomKey = roomKey;
+              console.log(`  🔑 CURRENT ROOM KEY UPDATED TO: ${roomKey.substring(0, 60)}...`);
+            } else if (this.state.pendingRespawn) {
+              console.log(`  ✨ Respawned at new room - updating current room tracking`);
+              this.state.currentRoom = room;
+              this.state.currentRoomKey = roomKey;
+              this.state.pendingRespawn = false;
               console.log(`  🔑 CURRENT ROOM KEY UPDATED TO: ${roomKey.substring(0, 60)}...`);
             } else {
               // Normal movement with direction
@@ -987,7 +1029,16 @@ export class MudLogParser {
         
         // Record exit if we just moved here AND it's a different room
         // previousRoomKey and previousRoom were captured BEFORE any room updates
+        // Skip exit creation if previous room was a death room
         if (lastDirection && previousRoomKey && previousRoom && this.state.currentRoomKey !== previousRoomKey) {
+          // Check if we should skip this exit (death room)
+          if (this.state.inDeathRoom) {
+            console.log(`   ⚠️  Skipping exit creation - previous room was a death room`);
+            lastDirection = '';
+            i = j;
+            continue;
+          }
+          
           // FIX #10: Enhanced logging to trace spurious exit creation
           console.log(`\n  🔍 EXIT CREATION CHECK:`);
           console.log(`     lastDirection: ${lastDirection}`);

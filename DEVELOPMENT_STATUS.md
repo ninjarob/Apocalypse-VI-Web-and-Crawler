@@ -4,10 +4,115 @@
 
 ## 🎯 Current Focus
 
-**Active Development**: 🗺️ **MULTI-LEVEL MAP VISUALIZATION** - Coordinate Separation Optimized  
-**Status**: ✅ **COMPLETE** - Cave system properly offset from surface level
+**Active Development**: 🐛 **PARSER BUG FIXES** - Death/Respawn Handling  
+**Status**: ✅ **COMPLETE** - Parser now correctly handles player death and respawn
 
 ## ✅ Recently Completed
+
+### Astyll Hills Zone 9j Data Pipeline Execution (2025-11-18) ✅ COMPLETED
+**Status**: ✅ **SUCCESS** - Full seed → parse → coords pipeline executed for Astyll Hills (zone 9j)
+
+**Complete Pipeline Execution**:
+1. ✅ **Database Seed** - 543 help entries, 476 class proficiencies, 262 exits (seed data), 125 rooms, 73 zones
+2. ✅ **Log Parse** - Parsed "Exploration - Astyll Hills.txt" (11,230 lines)
+   - 119 rooms found, 330 exits found
+   - 103 rooms saved (103 with portal keys)
+   - 216 exits saved, 112 skipped (referencing deduplicated rooms)
+   - 8 rooms marked as zone exits
+   - 14 cross-zone exits identified
+3. ✅ **Coordinate Calculation** - Zone 9 coordinate assignment
+   - 105 rooms assigned coordinates
+   - 213 exits processed for coordinate calculation
+   - Coordinate range: X: 0 to 2250, Y: -560 to 679
+   - 3 down transitions detected (cave system sub-level)
+   - Collision resolution: 7 collisions avoided, 1 unavoidable
+
+**Database State After Pipeline**:
+- **Total rooms**: 228 (125 seed + 103 parsed)
+- **Total exits**: 429 (262 seed + 167 parsed)
+- **Zone 9 rooms**: 105 with coordinates
+- **Zone exits**: 8 rooms correctly marked
+- **Cross-zone connections**: 14 exits to adjacent zones
+
+**Technical Details**:
+- Parser handled multi-level cave system with offset coordinates
+- Zone exit detection working correctly for cross-zone navigation
+- Coordinate algorithm properly separated surface and cave levels
+- All data ready for map visualization and navigation
+
+**Files Processed**:
+- `backend/seed.ts` - Database initialization
+- `crawler/parse-logs.ts` - Log parsing with zone 9 filtering
+- `backend/calculate-coordinates.js` - Coordinate assignment for zone 9
+
+**Impact**: Astyll Hills zone now fully mapped with coordinates, exits, and zone connections ready for frontend visualization
+
+## ✅ Recently Completed
+
+### Parser Death/Respawn Handling (2024-12-20) 🎉 **PRODUCTION READY**
+**Status**: ✅ **FIXED** - Spurious exits from death rooms eliminated
+
+**Problem**:
+- Room "Surrounded by grasslands" (cefmnoq) had incorrect west exit to death room "Standing at the edge of a deep crevasse" (cdijlnoq)
+- Should have west exit to respawn room "North end of the grasslands" (cdeghjklmoq)
+- Player died in death room, respawned elsewhere, but parser didn't handle the state transition
+
+**Root Cause**:
+1. Player entered death room (cdijlnoq) → died
+2. Respawn message appeared, followed by respawn room description (cdeghjklmoq)
+3. Parser detected respawn but didn't properly establish respawn room as new currentRoomKey
+4. When player moved east to cefmnoq, previousRoomKey was null
+5. No exit created from respawn room to cefmnoq
+6. Later room navigation created spurious connections
+
+**Solution - Three-Part Fix**:
+
+1. **Death Detection** (`inDeathRoom` flag):
+   ```typescript
+   if (cleanLine.match(/\[Info\].*entered a death room/i)) {
+     this.state.inDeathRoom = true;
+   }
+   ```
+
+2. **Exit Skipping** (death rooms don't create exits):
+   ```typescript
+   if (this.state.inDeathRoom) {
+     console.log(`⚠️ Skipping exit creation - previous room was a death room`);
+     lastDirection = '';
+     continue;
+   }
+   ```
+
+3. **Respawn Handling** (`pendingRespawn` flag):
+   ```typescript
+   if (cleanLine.match(/spun out of the darkness/i)) {
+     this.state.inDeathRoom = false;
+     this.state.pendingRespawn = true;
+     this.state.currentRoomKey = null;
+   }
+   
+   // In room parsing logic:
+   if (this.state.pendingRespawn) {
+     this.state.currentRoom = room;
+     this.state.currentRoomKey = roomKey;
+     this.state.pendingRespawn = false;
+   }
+   ```
+
+**Results**:
+- ✅ cefmnoq now has correct exits: east → efgmnoq, west → cdeghjklmoq
+- ✅ No spurious exit to death room (cdijlnoq)
+- ✅ Parser correctly tracks player position across death/respawn
+- ✅ 330 total exits created (was 328 before fix)
+
+**Files Modified**:
+- `crawler/src/mudLogParser.ts`: Added `inDeathRoom` and `pendingRespawn` state flags
+- Death detection, exit skipping, and respawn handling logic
+
+**Testing**:
+- Parsed "Exploration - Astyll Hills.txt" (11,230 lines)
+- Verified room cefmnoq exits via database query
+- Confirmed no exits created from death rooms
 
 ### Multi-Level Map Coordinate Separation (2025-11-18) 🎉 **PRODUCTION READY**
 **Status**: ✅ **OPTIMIZED** - Cave system visually separated from surface level
