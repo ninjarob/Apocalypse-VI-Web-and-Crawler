@@ -85,6 +85,114 @@ function resolveCollision(coordinates, idealX, idealY, roomId, originX, originY)
   return { x: idealX, y: idealY };
 }
 
+/**
+ * Identify vertical sub-levels (accessed via up/down) and calculate offsets
+ * Returns a map of room IDs to their level offsets
+ */
+function identifySubLevels(rooms, exits, graph, originRoomId) {
+  const SUB_LEVEL_THRESHOLD = 5; // Min rooms to trigger offset
+  const OFFSET_MULTIPLIER = 6; // Rooms distance multiplier for offset (1.5x larger than 4x)
+  
+  const levelOffsets = new Map(); // roomId -> {x, y} offset
+  const processed = new Set();
+  
+  // Find all down transitions (only down creates sub-levels, up typically returns to main level)
+  const verticalTransitions = exits.filter(e => 
+    e.direction === 'down'
+  );
+  
+  console.log(`🔍 Found ${verticalTransitions.length} down transitions\n`);
+  
+  for (const transition of verticalTransitions) {
+    const entryRoomId = transition.to_room_id;
+    
+    if (!entryRoomId || processed.has(entryRoomId)) continue;
+    
+    // BFS to explore all rooms reachable via down/compass from the entry point
+    // Don't traverse back up - only explore downward and horizontally
+    const subLevelRooms = new Set();
+    const queue = [entryRoomId];
+    const visited = new Set();
+    
+    while (queue.length > 0) {
+      const currentId = queue.shift();
+      if (visited.has(currentId)) continue;
+      visited.add(currentId);
+      subLevelRooms.add(currentId);
+      
+      const connections = graph.get(currentId) || [];
+      
+      for (const conn of connections) {
+        // Don't traverse back up
+        if (conn.direction === 'up') continue;
+        
+        if (!visited.has(conn.to)) {
+          queue.push(conn.to);
+        }
+      }
+    }
+    
+    // Skip this sub-level if it contains the origin room (it's the main level, not a sub-level)
+    if (originRoomId && subLevelRooms.has(originRoomId)) {
+      console.log(`⏭️  Skipping ${transition.direction} transition - contains origin room ${originRoomId} (main level)`);
+      console.log(`   Sub-level rooms: ${Array.from(subLevelRooms).slice(0, 5).join(', ')}...`);
+      continue;
+    }
+    
+    // Don't apply offset if the entry room is reachable from the origin via non-vertical paths
+    // (This means it's part of the main level, just accessed via a down exit for convenience)
+    if (originRoomId) {
+      const mainLevelRooms = new Set();
+      const queue = [originRoomId];
+      const visited = new Set();
+      
+      while (queue.length > 0) {
+        const currentId = queue.shift();
+        if (visited.has(currentId)) continue;
+        visited.add(currentId);
+        mainLevelRooms.add(currentId);
+        
+        const connections = graph.get(currentId) || [];
+        for (const conn of connections) {
+          // Only follow non-vertical connections
+          if (conn.direction !== 'up' && conn.direction !== 'down' && !visited.has(conn.to)) {
+            queue.push(conn.to);
+          }
+        }
+      }
+      
+      // If the entry room is reachable from main level via compass directions, skip this sub-level
+      if (mainLevelRooms.has(entryRoomId)) {
+        console.log(`⏭️  Skipping ${transition.direction} transition - entry room ${entryRoomId} reachable via non-vertical paths (part of main level)`);
+        continue;
+      }
+    }
+    
+    // If sub-level is significant, apply offset
+    if (subLevelRooms.size >= SUB_LEVEL_THRESHOLD) {
+      // Move cave system down-left (negative X, positive Y) to balance with surface entry
+      const offsetX = transition.direction === 'down' 
+        ? -OFFSET_MULTIPLIER * NODE_WIDTH  // Left for down transitions
+        : OFFSET_MULTIPLIER * NODE_WIDTH;  // Right for up transitions
+      const offsetY = transition.direction === 'down'
+        ? OFFSET_MULTIPLIER * NODE_HEIGHT  // Down for down transitions
+        : -OFFSET_MULTIPLIER * NODE_HEIGHT; // Up for up transitions
+      
+      console.log(`📍 Sub-level detected via ${transition.direction} (${subLevelRooms.size} rooms)`);
+      console.log(`   Entry: Room ${entryRoomId}`);
+      console.log(`   Offset: (${offsetX}, ${offsetY})\n`);
+      
+      // Mark all rooms in this sub-level
+      for (const roomId of subLevelRooms) {
+        levelOffsets.set(roomId, { x: offsetX, y: offsetY });
+        processed.add(roomId);
+      }
+    }
+  }
+  
+  return levelOffsets;
+}
+
 async function calculateCoordinates() {
   console.log(`🗺️  Calculating room coordinates for zone ${zoneId} based on exits...\n`);
 
@@ -122,6 +230,11 @@ async function calculateCoordinates() {
     }
   });
 
+  // Identify sub-levels and calculate offsets
+  // Use the first room with connections as origin (typically the zone entrance)
+  const originRoomId = rooms.find(room => graph.has(room.id))?.id;
+  const levelOffsets = identifySubLevels(rooms, exits, graph, originRoomId);
+
   // Find all connected components and assign coordinates to each
   const visited = new Set();
   const coordinates = new Map();
@@ -137,8 +250,13 @@ async function calculateCoordinates() {
     console.log(`🎯 Processing component starting from room ${startRoom.id} (${startRoom.name})`);
 
     // BFS for this component
-    const queue = [{ id: startRoom.id, x: componentOffset.x, y: componentOffset.y }];
-    coordinates.set(startRoom.id, { x: componentOffset.x, y: componentOffset.y });
+    // Apply level offset if this room is in a sub-level
+    const startOffset = levelOffsets.get(startRoom.id) || { x: 0, y: 0 };
+    const startX = componentOffset.x + startOffset.x;
+    const startY = componentOffset.y + startOffset.y;
+    
+    const queue = [{ id: startRoom.id, x: startX, y: startY }];
+    coordinates.set(startRoom.id, { x: startX, y: startY });
 
     while (queue.length > 0) {
       const current = queue.shift();
@@ -160,8 +278,24 @@ async function calculateCoordinates() {
 
         if (!coordinates.has(neighborId)) {
           const delta = DIRECTION_DELTAS[direction];
-          const idealX = current.x + delta.x;
-          const idealY = current.y + delta.y;
+          
+          // Check if crossing into a different level
+          const currentLevelOffset = levelOffsets.get(currentId) || { x: 0, y: 0 };
+          const neighborLevelOffset = levelOffsets.get(neighborId) || { x: 0, y: 0 };
+          
+          // Calculate ideal position with level offset
+          let idealX = current.x + delta.x;
+          let idealY = current.y + delta.y;
+          
+          // If transitioning between levels, apply the offset difference
+          if (currentLevelOffset.x !== neighborLevelOffset.x || currentLevelOffset.y !== neighborLevelOffset.y) {
+            const offsetDiff = {
+              x: neighborLevelOffset.x - currentLevelOffset.x,
+              y: neighborLevelOffset.y - currentLevelOffset.y
+            };
+            idealX += offsetDiff.x;
+            idealY += offsetDiff.y;
+          }
 
           // Use collision detection to find the best position
           // Pass the current (origin) position so we can halve the distance if needed

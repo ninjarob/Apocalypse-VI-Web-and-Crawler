@@ -1,5 +1,14 @@
 # Quick Reference Guide
 
+## 🚨 CURRENT STATUS: PARSER BUG UNDER INVESTIGATION
+
+**Active Issue**: Spurious exit creation (cfhilnoq → lnoq)  
+**Investigation Doc**: `crawler/PARSER_BUG_INVESTIGATION.md`  
+**Status**: Root cause identified, 5 fixes attempted (all failed), ready for Fix #6  
+**Modified File**: `crawler/src/mudLogParser.ts` (extensive debug logging in place)
+
+---
+
 ## 🚀 Starting the System
 
 ```powershell
@@ -21,6 +30,32 @@ cd crawler && npm run dev    # Terminal 3
 | Ollama | http://localhost:11434 | Local AI |
 
 ## 🔧 Common Commands
+
+### 🐛 Parser Bug Investigation Workflow
+```powershell
+# 1. Clean database
+cd backend
+npm run seed
+
+# 2. Parse Astyll Hills with debug output
+cd ../crawler
+npx tsx parse-logs.ts "sessions/Exploration - Astyll Hills.txt" --zone-id 9
+
+# 3. Verify bug status
+cd ../backend
+node query-db.js "SELECT r.id, r.name, r.portal_key, GROUP_CONCAT(re.direction || ' -> ' || t.name, ', ') as exits FROM rooms r LEFT JOIN room_exits re ON r.id = re.from_room_id LEFT JOIN rooms t ON re.to_room_id = t.id WHERE r.portal_key = 'cfhilnoq' GROUP BY r.id"
+# Expected: 2 exits (north, south)
+# Bug present if: 3 exits (includes west)
+
+# 4. Search debug logs
+Select-String -Path "crawler\parse-output.txt" -Pattern "MUDDY EXIT CREATED"
+Select-String -Path "crawler\parse-output.txt" -Pattern "No movement - room parse is incidental"
+
+# 5. Check all muddy corridors
+node query-db.js "SELECT r.id, r.name, r.portal_key, GROUP_CONCAT(re.direction, ', ') as exits FROM rooms r LEFT JOIN room_exits re ON r.id = re.from_room_id WHERE r.name = 'A muddy corridor' AND r.zone_id = 9 GROUP BY r.id"
+```
+
+**See**: `crawler/PARSER_BUG_INVESTIGATION.md` for complete analysis and next steps
 
 ### Crawler Operations
 ```powershell

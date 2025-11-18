@@ -45,6 +45,7 @@ interface ParserState {
   noMagicRooms: Set<string>; // Track rooms where portal binding permanently fails
   portalRetryCount: number; // Track consecutive portal binding failures for retry logic
   bindingAttemptRoomKey: string | null; // Track which room the binding attempt was made in
+  usedNamedescKeys: Set<string>; // Track all namedesc: keys ever used, even after moving to portal:
 }
 
 export class MudLogParser {
@@ -66,7 +67,8 @@ export class MudLogParser {
       pendingPortalKey: null,
       noMagicRooms: new Set(),
       portalRetryCount: 0,
-      bindingAttemptRoomKey: null
+      bindingAttemptRoomKey: null,
+      usedNamedescKeys: new Set()
     };
   }
 
@@ -82,6 +84,7 @@ export class MudLogParser {
     
     let i = 0;
     let lastDirection = '';
+    let pendingFlee = false; // FIX #17: Track if next room is a flee destination
     
     while (i < lines.length) {
       const line = lines[i];
@@ -172,7 +175,87 @@ export class MudLogParser {
             console.log(`DEBUG: Associating portal key ${this.state.pendingPortalKey} with binding attempt room key: ${this.state.bindingAttemptRoomKey}`);
             const bindingRoom = this.state.rooms.get(this.state.bindingAttemptRoomKey);
             if (bindingRoom && !bindingRoom.portal_key) { // Only associate if room doesn't already have a portal key
+              
+              // FIX #11: Validate portal binding against existing room portal key
+              // If bindingAttemptRoomKey is a portal: key, check if we're trying to bind a DIFFERENT portal key
+              // This means exit signature matching incorrectly identified this as an existing room
+              const existingPortalKey = bindingRoom.portal_key || 
+                (this.state.bindingAttemptRoomKey.startsWith('portal:') ? 
+                  this.state.bindingAttemptRoomKey.replace('portal:', '') : null);
+              
+              if (existingPortalKey && existingPortalKey !== this.state.pendingPortalKey) {
+                console.log(`\n  ⚠️⚠️⚠️ PORTAL KEY CONFLICT DETECTED ⚠️⚠️⚠️`);
+                console.log(`     Trying to bind: ${this.state.pendingPortalKey}`);
+                console.log(`     But room already has: ${existingPortalKey}`);
+                console.log(`     bindingAttemptRoomKey: ${this.state.bindingAttemptRoomKey}`);
+                console.log(`     currentRoomKey: ${this.state.currentRoomKey}`);
+                console.log(`     This means exit signature matching incorrectly identified this room!`);
+                
+                const wronglyMatchedRoom = this.state.rooms.get(this.state.bindingAttemptRoomKey);
+                console.log(`     Room: ${wronglyMatchedRoom?.name}`);
+                console.log(`     Room exits: [${wronglyMatchedRoom?.exits.join(', ')}]`);
+                
+                // Find and remove exits involving the wrongly matched room that were created recently
+                const exitsToCheck: ParsedExit[] = [];
+                for (const exit of this.state.exits) {
+                  // Find exits from the wrongly matched room to any namedesc: room (unbound rooms)
+                  // These are likely the most recent incorrect exits
+                  if ((exit.from_room_key === this.state.bindingAttemptRoomKey && exit.to_room_key.startsWith('namedesc:')) ||
+                      (exit.to_room_key === this.state.bindingAttemptRoomKey && exit.from_room_key.startsWith('namedesc:'))) {
+                    exitsToCheck.push(exit);
+                  }
+                  // Also check exits between two portal: rooms that might be wrong
+                  if (exit.from_room_key === this.state.bindingAttemptRoomKey && exit.to_room_key.startsWith('portal:')) {
+                    // This could be a legitimately created exit OR a wrong one
+                    // Only flag it if it was created recently (hard to determine)
+                    // For now, log it but don't remove
+                    console.log(`     ⚠️  Suspicious exit: ${exit.from_room_name} --[${exit.direction}]--> ${exit.to_room_name}`);
+                  }
+                }
+                
+                if (exitsToCheck.length > 0) {
+                  console.log(`     🗑️  Removing ${exitsToCheck.length} likely invalid exit(s)...`);
+                  for (const invalidExit of exitsToCheck) {
+                    const index = this.state.exits.indexOf(invalidExit);
+                    if (index > -1) {
+                      console.log(`        ❌ Removed: ${invalidExit.from_room_name} --[${invalidExit.direction}]--> ${invalidExit.to_room_name}`);
+                      this.state.exits.splice(index, 1);
+                    }
+                  }
+                }
+                
+                // Create a new room for this portal key since we're in a different place
+                const newRoomKey = `portal:${this.state.pendingPortalKey}`;
+                const newRoom: ParsedRoom = {
+                  name: wronglyMatchedRoom?.name || 'Unknown',
+                  description: wronglyMatchedRoom?.description || 'Unknown',
+                  exits: wronglyMatchedRoom?.exits || [],
+                  npcs: wronglyMatchedRoom?.npcs || [],
+                  items: wronglyMatchedRoom?.items || [],
+                  portal_key: this.state.pendingPortalKey
+                };
+                this.state.rooms.set(newRoomKey, newRoom);
+                this.state.currentRoomKey = newRoomKey;
+                this.state.currentRoom = newRoom;
+                
+                console.log(`     ✅ Created new room with portal key: ${this.state.pendingPortalKey}`);
+                console.log(`     Updated currentRoomKey to: ${newRoomKey}\n`);
+                
+                this.state.pendingPortalKey = null;
+                return; // Exit early
+              }
+              
               bindingRoom.portal_key = this.state.pendingPortalKey;
+              
+              // FIX #10: Track when bug rooms get portal keys
+              if (this.state.pendingPortalKey === 'cfhilnoq' || this.state.pendingPortalKey === 'lnoq') {
+                console.log(`\n  🐛🐛🐛 BUG ROOM PORTAL BINDING 🐛🐛🐛`);
+                console.log(`     Portal key: ${this.state.pendingPortalKey}`);
+                console.log(`     Room name: ${bindingRoom.name}`);
+                console.log(`     Room exits: [${bindingRoom.exits.join(', ')}]`);
+                console.log(`     Room key: ${this.state.bindingAttemptRoomKey}`);
+                console.log(`     currentRoomKey before: ${this.state.currentRoomKey}`);
+              }
               
               // If the room key is namedesc:, change it to portal: key for better deduplication
               if (this.state.bindingAttemptRoomKey.startsWith('namedesc:')) {
@@ -180,20 +263,44 @@ export class MudLogParser {
                 const portalKey = `portal:${this.state.pendingPortalKey}`;
                 this.state.rooms.delete(oldKey);
                 this.state.rooms.set(portalKey, bindingRoom);
-                this.state.currentRoomKey = portalKey;
+                
+                // CRITICAL: Only update currentRoomKey if we're binding the current room
+                // If the player has moved to a different room since the bind attempt, don't overwrite currentRoomKey
+                if (this.state.currentRoomKey === oldKey) {
+                  this.state.currentRoomKey = portalKey;
+                  console.log(`  🔑 CURRENT ROOM KEY UPDATED (binding): ${oldKey.substring(0, 30)}... -> ${portalKey}`);
+                  
+                  // FIX #10: Track currentRoomKey updates for bug rooms
+                  if (this.state.pendingPortalKey === 'cfhilnoq' || this.state.pendingPortalKey === 'lnoq') {
+                    console.log(`     🐛 BUG ROOM currentRoomKey updated to: ${portalKey}`);
+                  }
+                }
+                
                 this.state.bindingAttemptRoomKey = portalKey;
                 
-                // IMPORTANT: Update all exits that reference the old key OR any namedesc: variant
-                // This handles cases where the same room was visited multiple times before binding
-                const roomName = bindingRoom.name;
-                const roomDesc = bindingRoom.description;
-                const namedescPattern = `namedesc:${roomName}|||`;
+                // IMPORTANT: Update all exits that reference the EXACT old key ONLY
+                // DO NOT update exits to OTHER rooms with the same name/description!
+                // Multiple different rooms can have identical names and descriptions but different portal keys.
+                // Only update exits that point to THIS specific room (using exact oldKey match).
+                
+                // DEBUG: Log all muddy corridor room updates
+                if (bindingRoom.name === 'A muddy corridor') {
+                  console.log(`    🐛 BINDING MUDDY CORRIDOR: ${this.state.pendingPortalKey}`);
+                  console.log(`    🐛 Old key: ${oldKey.substring(0, 50)}...`);
+                  console.log(`    🐛 New key: ${portalKey}`);
+                  console.log(`    🐛 Checking ${this.state.exits.length} exits for updates...`);
+                }
                 
                 for (const exit of this.state.exits) {
                   // Update exits with exact old key match
                   if (exit.from_room_key === oldKey) {
                     exit.from_room_key = portalKey;
                     console.log(`    🔄 Updated exit from_room_key: ${oldKey.substring(0, 30)}... -> ${portalKey}`);
+                    
+                    // DEBUG: Extra logging for muddy corridors
+                    if (bindingRoom.name === 'A muddy corridor') {
+                      console.log(`    🐛 MUDDY EXIT UPDATE: ${exit.direction} to ${exit.to_room_name} (to_key: ${exit.to_room_key.substring(0, 30)}...)`);
+                    }
                   }
                   if (exit.to_room_key === oldKey) {
                     // CRITICAL: Don't update to_room_key if from_room_key was also updated (would create self-reference)
@@ -201,32 +308,13 @@ export class MudLogParser {
                     if (!wouldCreateSelfReference) {
                       exit.to_room_key = portalKey;
                       console.log(`    🔄 Updated exit to_room_key: ${oldKey.substring(0, 30)}... -> ${portalKey}`);
+                      
+                      // DEBUG: Extra logging for muddy corridors
+                      if (bindingRoom.name === 'A muddy corridor') {
+                        console.log(`    🐛 MUDDY EXIT TO UPDATE: from ${exit.from_room_name} [${exit.direction}] (from_key: ${exit.from_room_key.substring(0, 30)}...)`);
+                      }
                     } else {
                       console.log(`    ⚠️  Skipped updating to_room_key to prevent self-reference: ${exit.from_room_key} -> ${exit.to_room_key}`);
-                    }
-                  }
-                  
-                  // Also update exits pointing to OTHER namedesc: versions of the same room
-                  // (same name and description but different key)
-                  if (exit.from_room_key && exit.from_room_key.startsWith(namedescPattern)) {
-                    const fromRoom = this.state.rooms.get(exit.from_room_key);
-                    if (fromRoom && fromRoom.name === roomName && fromRoom.description === roomDesc) {
-                      exit.from_room_key = portalKey;
-                      console.log(`    🔄 Updated exit from_room_key (variant): ${exit.from_room_key.substring(0, 30)}... -> ${portalKey}`);
-                    }
-                  }
-                  if (exit.to_room_key && exit.to_room_key.startsWith(namedescPattern)) {
-                    const toRoom = this.state.rooms.get(exit.to_room_key);
-                    if (toRoom && toRoom.name === roomName && toRoom.description === roomDesc) {
-                      // CRITICAL: Don't update to_room_key if it would create a self-referencing exit
-                      // This happens when from_room_key and to_room_key are both namedesc variants of the same room
-                      const wouldCreateSelfReference = exit.from_room_key === portalKey;
-                      if (!wouldCreateSelfReference) {
-                        exit.to_room_key = portalKey;
-                        console.log(`    🔄 Updated exit to_room_key (variant): ${exit.to_room_key.substring(0, 30)}... -> ${portalKey}`);
-                      } else {
-                        console.log(`    ⚠️  Skipped updating to_room_key to prevent self-reference: ${exit.from_room_key} -> ${exit.to_room_key}`);
-                      }
                     }
                   }
                 }
@@ -474,11 +562,33 @@ export class MudLogParser {
         continue;
       }
       
+      // FIX #17: Detect "flee" command (before seeing direction)
+      if (cleanLine.match(/^flee$/i)) {
+        pendingFlee = true;
+        console.log(`   🏃 Flee command detected - next room will be flee destination`);
+        i++;
+        continue;
+      }
+      
       // Detect movement commands (single letters or full directions)
       const movementMatch = cleanLine.match(/^(n|s|e|w|u|d|north|south|east|west|up|down|northeast|northwest|southeast|southwest|ne|nw|se|sw)$/i);
       if (movementMatch) {
         lastDirection = this.expandDirection(movementMatch[1]);
         console.log(`   ➡️  Moving ${lastDirection}`);
+        i++;
+        continue;
+      }
+      
+      // FIX #16: Detect flee commands with direction
+      // Example: "In a total panic, you flee west, head over heels."
+      const fleeMatch = cleanLine.match(/you flee\s+(north|south|east|west|up|down|northeast|northwest|southeast|southwest)/i);
+      if (fleeMatch) {
+        lastDirection = this.expandDirection(fleeMatch[1]);
+        console.log(`   🏃 Fled ${lastDirection}`);
+        
+        // FIX #17: Clear the pending flee flag since we now have the direction
+        pendingFlee = false;
+        
         i++;
         continue;
       }
@@ -537,15 +647,35 @@ export class MudLogParser {
       if (line.includes('color="#00FFFF"')) {
         console.log(`DEBUG: Found potential room title line: ${line.substring(0, 100)}...`);
         // Extract room name from cyan colored text using regex
+        // FIX #12: Handle both standalone and inline formats
+        // Inline: <prompt></font><font color="#00FFFF">Room Name
+        // Standalone: <font color="#00FFFF">Room Name
         const roomTitleMatch = line.match(/color="#00FFFF"[^>]*>([^<]*)/);
-        const roomName = roomTitleMatch ? roomTitleMatch[1].trim() : this.stripHtml(line).trim();
+        let roomName = roomTitleMatch ? roomTitleMatch[1].trim() : this.stripHtml(line).trim();
+        
+        // FIX #12: If room name is empty or looks like XP/stats, try extracting after the last >
+        // This handles: <prompt> Room Name where Room Name has no color tags
+        if (!roomName || roomName.match(/^\d+[HMV]/) || roomName.match(/\d+X/)) {
+          const afterPrompt = line.split('&gt;</font>').pop();
+          if (afterPrompt) {
+            const cleanAfterPrompt = this.stripHtml(afterPrompt).trim();
+            // Check if this looks more like a room name (has letters, not just stats)
+            if (cleanAfterPrompt && cleanAfterPrompt.length > 2 && cleanAfterPrompt.match(/[a-zA-Z]/)) {
+              roomName = cleanAfterPrompt;
+              console.log(`DEBUG: Extracted room name from after-prompt: "${roomName}"`);
+            }
+          }
+        }
+        
         console.log(`DEBUG: Extracted room name: "${roomName}"`);
         
         if (!roomName || 
             roomName.length < 2 || 
             roomName.match(/^</) ||
-            roomName.match(/\d+H/) ||  // Status line with health
-            roomName.match(/\d+X/)) {   // Status line with XP
+            roomName.match(/^\d+H/) ||  // Status line with health
+            roomName.match(/\d+X/) ||   // Status line with XP
+            roomName.match(/^Obvious Exits:/i) ||   // FIX #13: Don't treat "Obvious Exits:" as a room name
+            roomName.match(/^(north|south|east|west|up|down|northeast|northwest|southeast|southwest)\s*-\s*/i)) {   // FIX #15: Skip "Obvious Exits:" format lines like "south - A muddy corridor"
           console.log(`DEBUG: Skipping room name "${roomName}" - validation failed`);
           i++;
           continue;
@@ -671,11 +801,13 @@ export class MudLogParser {
         }
         
         // Create room key - use portal key if available, fall back to name + description
+        console.log(`🎯 PARSING ROOM: "${roomName}" with exits [${exits.join(',')}]`);
         const roomKey = this.getRoomKey(roomName, description, this.state.pendingPortalKey);
         console.log(`DEBUG: Room key for "${roomName}": ${roomKey}`);
         
         // Store previous room info BEFORE any updates
         // This ensures we capture the correct keys for exit creation
+        console.log(`📍 PREVIOUS ROOM CAPTURE: previousRoomKey will be set to currentRoomKey = ${this.state.currentRoomKey?.substring(0, 50) || 'null'}...`);
         const previousRoomKey = this.state.currentRoomKey;
         const previousRoom = this.state.currentRoom;
         
@@ -683,8 +815,10 @@ export class MudLogParser {
         // The portal key comes AFTER visiting (when bind portal is cast)
         // So we ONLY search by exact description match, never by pendingPortalKey here
         // Pass the exits array so we can match by exit signature
+        console.log(`🔍 CALLING findExistingRoomKey with exits: [${exits.join(',')}]`);
         let existingRoomKey = this.findExistingRoomKey(roomName, description, null, exits);
         console.log(`DEBUG: Existing room key check for "${roomName}": ${existingRoomKey}`);
+        console.log(`🔍 FIND RESULT: findExistingRoomKey returned ${existingRoomKey ? existingRoomKey.substring(0, 50) + '...' : 'null'} for "${roomName}" with exits [${exits.join(',')}]`);
         console.log(`DEBUG: Current description hash: ${this.hashString(description.substring(0, 100))}...`);
         
         if (existingRoomKey) {
@@ -694,8 +828,13 @@ export class MudLogParser {
           const existingRoom = this.state.rooms.get(existingRoomKey)!;
           
           // Update exits if we have more/different exits
-          if (exits.length > existingRoom.exits.length) {
+          // BUT: Never update exits for rooms that already have portal keys!
+          // Portal-bound rooms are "complete" and their exits should not change
+          if (exits.length > existingRoom.exits.length && !existingRoom.portal_key) {
+            console.log(`  📊 Updating exits: [${existingRoom.exits.join(',')}] -> [${exits.join(',')}]`);
             existingRoom.exits = exits;
+          } else if (existingRoom.portal_key) {
+            console.log(`  🔒 Not updating exits - room has portal key ${existingRoom.portal_key}`);
           }
           
           // Update NPCs/items if we found more
@@ -706,9 +845,69 @@ export class MudLogParser {
             existingRoom.items = items;
           }
           
-          // Update current room tracking
-          this.state.currentRoom = existingRoom;
-          this.state.currentRoomKey = existingRoomKey;
+          // CRITICAL FIX #6: Only update currentRoomKey if player actually moved AND the room is valid!
+          // If no lastDirection, this room parse is from something other than player movement
+          // (e.g., NPC movement notifications, look commands, etc.)
+          // Even with lastDirection, we must validate the room has the reverse exit
+          // FIX #17: Also treat pendingFlee as movement (flee displays room before showing direction)
+          if (lastDirection || pendingFlee) {
+            // FIX #17: For pending flee, we don't know the direction yet, so skip exit validation
+            if (pendingFlee) {
+              console.log(`  🏃 Pending flee - updating current room without direction validation`);
+              
+              // FIX #10: Track bug room updates
+              if (existingRoomKey.includes('cfhilnoq') || existingRoomKey.includes('lnoq') ||
+                  previousRoomKey?.includes('cfhilnoq') || previousRoomKey?.includes('lnoq')) {
+                console.log(`\n  🐛🐛🐛 BUG ROOM IN EXISTING ROOM UPDATE (FLEE) 🐛🐛🐛`);
+                console.log(`     previousRoomKey: ${previousRoomKey}`);
+                console.log(`     previousRoom.name: ${previousRoom?.name}`);
+                console.log(`     existingRoomKey: ${existingRoomKey}`);
+                console.log(`     existingRoom.name: ${existingRoom.name}`);
+                console.log(`     pendingFlee: true`);
+                console.log(`     Will update currentRoomKey from ${this.state.currentRoomKey} to ${existingRoomKey}`);
+              }
+              
+              this.state.currentRoom = existingRoom;
+              this.state.currentRoomKey = existingRoomKey;
+              console.log(`  🔑 CURRENT ROOM KEY UPDATED TO: ${existingRoomKey.substring(0, 60)}...`);
+            } else {
+              // Normal movement with direction
+              // Get the direction we came from (reverse of lastDirection)
+              const expectedExit = getOppositeDirection(lastDirection);
+              
+              // Validate: the room we found should have an exit in the direction we came from
+              // Example: if we moved "south" to get here, this room should have a "north" exit back
+              if (existingRoom.exits && existingRoom.exits.includes(expectedExit)) {
+                console.log(`  ✅ Exit validation PASSED - room has ${expectedExit} exit (reverse of ${lastDirection})`);
+                console.log(`  🚶 Player moved ${lastDirection} to existing room - updating current room tracking`);
+                
+                // FIX #10: Track bug room updates
+                if (existingRoomKey.includes('cfhilnoq') || existingRoomKey.includes('lnoq') ||
+                    previousRoomKey?.includes('cfhilnoq') || previousRoomKey?.includes('lnoq')) {
+                  console.log(`\n  🐛🐛🐛 BUG ROOM IN EXISTING ROOM UPDATE 🐛🐛🐛`);
+                  console.log(`     previousRoomKey: ${previousRoomKey}`);
+                  console.log(`     previousRoom.name: ${previousRoom?.name}`);
+                  console.log(`     existingRoomKey: ${existingRoomKey}`);
+                  console.log(`     existingRoom.name: ${existingRoom.name}`);
+                  console.log(`     lastDirection: ${lastDirection}`);
+                  console.log(`     Will update currentRoomKey from ${this.state.currentRoomKey} to ${existingRoomKey}`);
+                }
+                
+                this.state.currentRoom = existingRoom;
+                this.state.currentRoomKey = existingRoomKey;
+                console.log(`  🔑 CURRENT ROOM KEY UPDATED TO: ${existingRoomKey.substring(0, 60)}...`);
+              } else {
+                console.log(`  ❌ Exit validation FAILED - room missing ${expectedExit} exit (reverse of ${lastDirection})`);
+                console.log(`     Expected: [${expectedExit}] to be in [${existingRoom.exits?.join(', ') || 'no exits'}]`);
+                console.log(`     This is likely a FALSE MATCH - keeping currentRoomKey=${this.state.currentRoomKey?.substring(0, 50) || 'null'}...`);
+                // Don't update currentRoomKey - this room match is wrong
+                // Player is still in the room they were in before this parse
+              }
+            }
+          } else {
+            console.log(`  ⏸️  No movement - room parse is incidental, keeping currentRoomKey=${this.state.currentRoomKey?.substring(0, 50) || 'null'}...`);
+            // Don't update currentRoom or currentRoomKey - player hasn't moved
+          }
           
         } else {
           console.log(`DEBUG: Creating new room: ${roomName}`);
@@ -727,14 +926,88 @@ export class MudLogParser {
           
           console.log(`  📦 Room: ${roomName} (${exits.length} exits, ${npcs.length} NPCs, ${items.length} items) [awaiting portal key]`);
           
-          // Update current room tracking
-          this.state.currentRoom = room;
-          this.state.currentRoomKey = roomKey;
+          // FIX #9: Apply same validation as existing rooms when updating currentRoomKey
+          // Only update if player actually moved here (not incidental parsing)
+          // FIX #17: Also treat pendingFlee as movement
+          if (lastDirection || pendingFlee) {
+            // FIX #17: For pending flee, skip exit validation
+            if (pendingFlee) {
+              console.log(`  🏃 Pending flee to new room - updating current room without direction validation`);
+              
+              // FIX #10: Track bug room updates
+              if (roomKey.includes('cfhilnoq') || roomKey.includes('lnoq') ||
+                  previousRoomKey?.includes('cfhilnoq') || previousRoomKey?.includes('lnoq')) {
+                console.log(`\n  🐛🐛🐛 BUG ROOM IN NEW ROOM CREATION (FLEE) 🐛🐛🐛`);
+                console.log(`     previousRoomKey: ${previousRoomKey}`);
+                console.log(`     previousRoom.name: ${previousRoom?.name}`);
+                console.log(`     new roomKey: ${roomKey}`);
+                console.log(`     new room.name: ${roomName}`);
+                console.log(`     pendingFlee: true`);
+                console.log(`     Will update currentRoomKey from ${this.state.currentRoomKey} to ${roomKey}`);
+              }
+              
+              this.state.currentRoom = room;
+              this.state.currentRoomKey = roomKey;
+              console.log(`  🔑 CURRENT ROOM KEY UPDATED TO: ${roomKey.substring(0, 60)}...`);
+            } else {
+              // Normal movement with direction
+              // Verify this new room has an exit back in the direction we came from
+              const expectedExit = getOppositeDirection(lastDirection);
+              if (exits.includes(expectedExit)) {
+                console.log(`  ✅ Exit validation PASSED - new room has ${expectedExit} exit (reverse of ${lastDirection})`);
+                console.log(`  🚶 Player moved ${lastDirection} to new room - updating current room tracking`);
+                
+                // FIX #10: Track bug room updates
+                if (roomKey.includes('cfhilnoq') || roomKey.includes('lnoq') ||
+                    previousRoomKey?.includes('cfhilnoq') || previousRoomKey?.includes('lnoq')) {
+                  console.log(`\n  🐛🐛🐛 BUG ROOM IN NEW ROOM CREATION 🐛🐛🐛`);
+                  console.log(`     previousRoomKey: ${previousRoomKey}`);
+                  console.log(`     previousRoom.name: ${previousRoom?.name}`);
+                  console.log(`     new roomKey: ${roomKey}`);
+                  console.log(`     new room.name: ${roomName}`);
+                  console.log(`     lastDirection: ${lastDirection}`);
+                  console.log(`     Will update currentRoomKey from ${this.state.currentRoomKey} to ${roomKey}`);
+                }
+                
+                this.state.currentRoom = room;
+                this.state.currentRoomKey = roomKey;
+                console.log(`  🔑 CURRENT ROOM KEY UPDATED TO: ${roomKey.substring(0, 60)}...`);
+              } else {
+                console.log(`  ❌ Exit validation FAILED - new room missing ${expectedExit} exit (reverse of ${lastDirection})`);
+                console.log(`     Expected: [${expectedExit}] to be in [${exits.join(', ')}]`);
+                console.log(`     This new room parse is incidental (not player's destination) - keeping currentRoomKey=${this.state.currentRoomKey?.substring(0, 50) || 'null'}...`);
+                // Don't update currentRoomKey - player hasn't actually moved to this room
+              }
+            }
+          } else {
+            console.log(`  ⏸️  No movement command - new room parse is incidental, keeping currentRoomKey=${this.state.currentRoomKey?.substring(0, 50) || 'null'}...`);
+            // Don't update - this room appeared without player movement
+          }
         }
         
         // Record exit if we just moved here AND it's a different room
         // previousRoomKey and previousRoom were captured BEFORE any room updates
         if (lastDirection && previousRoomKey && previousRoom && this.state.currentRoomKey !== previousRoomKey) {
+          // FIX #10: Enhanced logging to trace spurious exit creation
+          console.log(`\n  🔍 EXIT CREATION CHECK:`);
+          console.log(`     lastDirection: ${lastDirection}`);
+          console.log(`     previousRoomKey: ${previousRoomKey}`);
+          console.log(`     previousRoom.name: ${previousRoom.name}`);
+          console.log(`     previousRoom.exits: [${previousRoom.exits.join(', ')}]`);
+          console.log(`     this.state.currentRoomKey: ${this.state.currentRoomKey}`);
+          console.log(`     currentRoom.name: ${roomName}`);
+          console.log(`     currentRoom.exits: [${exits.join(', ')}]`);
+          
+          // Special tracking for the bug rooms
+          if (previousRoomKey.includes('cfhilnoq') || this.state.currentRoomKey.includes('cfhilnoq') ||
+              previousRoomKey.includes('lnoq') || this.state.currentRoomKey.includes('lnoq')) {
+            console.log(`\n  🐛🐛🐛 BUG ROOM DETECTED IN EXIT CREATION 🐛🐛🐛`);
+            console.log(`     previousRoomKey: ${previousRoomKey}`);
+            console.log(`     this.state.currentRoomKey: ${this.state.currentRoomKey}`);
+            console.log(`     About to create: ${previousRoom.name} --[${lastDirection}]--> ${roomName}`);
+          }
+          
+          console.log(`  🚶 EXIT CREATION: ${lastDirection.toUpperCase()} from ${previousRoomKey.substring(0, 30)}... to ${this.state.currentRoomKey.substring(0, 30)}...`);
           const exit: ParsedExit = {
             from_room_key: previousRoomKey,
             from_room_name: previousRoom.name,
@@ -748,20 +1021,44 @@ export class MudLogParser {
           this.state.exits.push(exit);
           console.log(`    🚪 ${previousRoom.name} --[${exit.direction}]--> ${roomName}`);
           
+          // DEBUG: Track muddy corridor exits
+          if (previousRoom.name === 'A muddy corridor' || roomName === 'A muddy corridor') {
+            console.log(`    🐛 MUDDY EXIT CREATED: from_key=${exit.from_room_key.substring(0, 30)}... to_key=${exit.to_room_key.substring(0, 30)}...`);
+          }
+          
           // AUTOMATIC REVERSE EXIT: Create the opposite direction exit
           // This works 99% of the time - if you go north to a room, south takes you back
           const oppositeDirection = getOppositeDirection(lastDirection);
-          const reverseExit: ParsedExit = {
-            from_room_key: this.state.currentRoomKey, // Use the UPDATED current room key
-            from_room_name: roomName,
-            from_room_description: description,
-            direction: oppositeDirection,
-            to_room_key: previousRoomKey,
-            to_room_name: previousRoom.name,
-            is_blocked: false // Assume reverse is also traversable
-          };
-          this.state.exits.push(reverseExit);
-          console.log(`    🔄 Auto-reverse: ${roomName} --[${oppositeDirection}]--> ${previousRoom.name}`);
+          
+          // FIX #14: Check for existing exit before creating auto-reverse
+          // If there's already an exit from this room in this direction, don't overwrite it
+          const existingReverseExit = this.state.exits.find(e => 
+            e.from_room_key === this.state.currentRoomKey && 
+            e.direction === oppositeDirection
+          );
+          
+          if (existingReverseExit) {
+            console.log(`    ⚠️  Auto-reverse SKIPPED: ${roomName} already has ${oppositeDirection} exit to ${existingReverseExit.to_room_name}`);
+            console.log(`       Would have created: ${roomName} --[${oppositeDirection}]--> ${previousRoom.name}`);
+            console.log(`       Keeping existing:   ${roomName} --[${oppositeDirection}]--> ${existingReverseExit.to_room_name}`);
+          } else {
+            const reverseExit: ParsedExit = {
+              from_room_key: this.state.currentRoomKey, // Use the UPDATED current room key
+              from_room_name: roomName,
+              from_room_description: description,
+              direction: oppositeDirection,
+              to_room_key: previousRoomKey,
+              to_room_name: previousRoom.name,
+              is_blocked: false // Assume reverse is also traversable
+            };
+            this.state.exits.push(reverseExit);
+            console.log(`    🔄 Auto-reverse: ${roomName} --[${oppositeDirection}]--> ${previousRoom.name}`);
+            
+            // DEBUG: Track muddy corridor reverse exits
+            if (previousRoom.name === 'A muddy corridor' || roomName === 'A muddy corridor') {
+              console.log(`    🐛 MUDDY REVERSE EXIT CREATED: from_key=${reverseExit.from_room_key.substring(0, 30)}... to_key=${reverseExit.to_room_key.substring(0, 30)}...`);
+            }
+          }
         }
         
         lastDirection = ''; // Clear after processing
@@ -779,6 +1076,17 @@ export class MudLogParser {
     console.log(`\n✅ Parsing complete!`);
     console.log(`   Rooms found: ${this.state.rooms.size}`);
     console.log(`   Exits found: ${this.state.exits.length}`);
+    
+    // DEBUG: Summary of all muddy corridor exits
+    console.log(`\n🐛 MUDDY CORRIDOR EXIT SUMMARY:`);
+    const muddyExits = this.state.exits.filter(e => 
+      e.from_room_name === 'A muddy corridor' || e.to_room_name === 'A muddy corridor'
+    );
+    for (const exit of muddyExits) {
+      const fromKey = exit.from_room_key.startsWith('portal:') ? exit.from_room_key : exit.from_room_key.substring(0, 40) + '...';
+      const toKey = exit.to_room_key.startsWith('portal:') ? exit.to_room_key : exit.to_room_key.substring(0, 40) + '...';
+      console.log(`   ${exit.from_room_name} (${fromKey}) --[${exit.direction}]--> ${exit.to_room_name} (${toKey})`);
+    }
   }
   
   /**
@@ -812,22 +1120,19 @@ export class MudLogParser {
     // If so, we need to create a unique namedesc: key because this might be a different room
     const baseKey = `namedesc:${name}|||${description}`;
     
-    // Count how many rooms with this exact name+description already exist (with or without portal keys)
-    let existingRoomCount = 0;
-    for (const [key, room] of this.state.rooms) {
-      if (room.name === name && room.description === description) {
-        existingRoomCount++;
-      }
+    // CRITICAL: Count ALL namedesc: keys ever used for this name+description,
+    // even if the room has since been moved to a portal: key.
+    // This prevents key reuse when rooms have identical names/descriptions.
+    let counter = 1;
+    let candidateKey = baseKey;
+    while (this.state.usedNamedescKeys.has(candidateKey)) {
+      counter++;
+      candidateKey = `${baseKey}|||${counter}`;
     }
     
-    // If no rooms exist yet, use base key
-    if (existingRoomCount === 0) {
-      return baseKey;
-    }
-    
-    // Otherwise, add a counter starting from 2
-    const counter = existingRoomCount + 1;
-    return `${baseKey}|||${counter}`;
+    // Mark this key as used
+    this.state.usedNamedescKeys.add(candidateKey);
+    return candidateKey;
   }
 
   /**
@@ -868,24 +1173,36 @@ export class MudLogParser {
     
     // If we found portal-bound rooms with matching name+desc, check if exits match
     // This allows us to identify which specific room we're in without needing portal binding
+    // BUT ONLY if we're pretty certain - require exact match and valid movement context
     if (portalMatches.length > 0 && currentExits && currentExits.length > 0) {
       console.log(`DEBUG: Found ${portalMatches.length} portal-bound room(s) with same name+desc, checking exit signature [${currentExits.join(' ')}]`);
+      console.log(`🐛 EXIT SIGNATURE CHECK: Looking for room "${name}" with exits [${currentExits.join(',')}]`);
       
-      // Try to match by exit signature - rooms with different exits are different rooms
-      for (const {key, room} of portalMatches) {
-        // Sort both exit arrays for comparison
-        const sortedRoomExits = [...room.exits].sort().join(',');
+      // FIX #10: Re-enable exit signature matching ONLY when multiple portal-bound rooms exist
+      // If there's only ONE portal-bound room, don't match it - might be a false positive
+      // But if there are MULTIPLE rooms with same name+desc, use exits to distinguish them
+      if (portalMatches.length >= 2) {
+        console.log(`🔍 Multiple portal-bound rooms found - using exit signature to distinguish`);
+        
+        // Sort exits for consistent comparison
         const sortedCurrentExits = [...currentExits].sort().join(',');
         
-        if (sortedRoomExits === sortedCurrentExits) {
-          console.log(`DEBUG: EXIT SIGNATURE MATCH! Room exits [${sortedCurrentExits}] match portal room ${room.portal_key}`);
-          console.log(`DEBUG: Reusing portal-bound room ${key} based on exit signature`);
-          return key;
+        for (const {key, room} of portalMatches) {
+          const sortedRoomExits = [...room.exits].sort().join(',');
+          if (sortedRoomExits === sortedCurrentExits) {
+            console.log(`✅ EXIT SIGNATURE MATCH: Room "${name}" (${room.portal_key}) has matching exits [${room.exits.join(',')}]`);
+            return key;
+          }
         }
+        
+        console.log(`❌ No exit signature match found among ${portalMatches.length} portal-bound rooms`);
+        return null;
+      } else {
+        // Only one portal-bound room - don't use exit signature matching (too risky)
+        console.log(`DEBUG: Only one portal-bound room - skipping exit signature matching`);
+        console.log(`DEBUG: Will wait for portal binding to determine if revisiting same room or encountering new room`);
+        return null;
       }
-      
-      console.log(`DEBUG: No exit signature match found among ${portalMatches.length} portal room(s) - will wait for binding to determine if same room`);
-      // Don't return any key yet - let binding attempt determine if it's the same room
     }
     
     // Check for EXACT name+description match (using keys)
@@ -1309,10 +1626,11 @@ export class MudLogParser {
           toRoomId = roomIdMap.get(`portal:${exit.portal_key}`);
         }
         
-        // Method 3: Name lookup
-        if (!toRoomId && exit.to_room_name) {
-          toRoomId = roomIdMap.get(`name:${exit.to_room_name}`);
-        }
+        // Method 3: Name lookup - DISABLED to prevent incorrect room matching
+        // DO NOT lookup by name alone when multiple rooms share the same name
+        // The to_room_key should be the definitive identifier
+        // If the to_room_key doesn't match any saved room, the exit shouldn't be saved
+        // This prevents connecting "A muddy corridor" rooms that are actually different locations
         
         // Skip exits that don't have a destination room
         // We only save exits if:

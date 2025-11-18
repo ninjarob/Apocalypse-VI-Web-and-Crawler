@@ -11,6 +11,7 @@ interface Room {
   terrain?: string;
   flags?: string;
   zone_exit?: boolean;
+  portal_key?: string;
   x?: number;
   y?: number;
 }
@@ -457,6 +458,11 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick }) => {
               {selectedRoom.zone_exit && (
                 <div>
                   <strong>Zone Exit:</strong> Yes
+                </div>
+              )}
+              {(selectedRoom as any).portal_key && (
+                <div>
+                  <strong>Portal Key:</strong> <span style={{ fontFamily: 'monospace', color: '#4fc3f7' }}>{(selectedRoom as any).portal_key}</span>
                 </div>
               )}
             </div>
