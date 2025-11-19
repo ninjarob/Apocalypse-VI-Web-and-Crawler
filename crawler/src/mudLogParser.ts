@@ -49,6 +49,7 @@ interface ParserState {
   inDeathRoom: boolean; // Track if we're in a death room - skip creating exits from it
   pendingRespawn: boolean; // Track if we just respawned - next room parse should update currentRoomKey
   pendingLook: boolean; // Track if next room title is from a "look" command
+  lastBoundRoom: string | null; // Track the last room that was successfully bound
 }
 
 export class MudLogParser {
@@ -74,7 +75,8 @@ export class MudLogParser {
       usedNamedescKeys: new Set(),
       inDeathRoom: false,
       pendingRespawn: false,
-      pendingLook: false
+      pendingLook: false,
+      lastBoundRoom: null
     };
   }
 
@@ -339,6 +341,9 @@ export class MudLogParser {
               
               console.log(`  🔗 Associated portal key ${this.state.pendingPortalKey} with binding attempt room: ${bindingRoom.name}`);
               
+              // Track the last bound room for "Obvious Exits" parsing
+              this.state.lastBoundRoom = this.state.bindingAttemptRoomKey;
+              
               // Debug: Log all rooms with portal keys
               console.log(`DEBUG: Current portal key associations:`);
               for (const [key, room] of this.state.rooms) {
@@ -393,6 +398,91 @@ export class MudLogParser {
         this.state.pendingPortalKey = null;
         
         i++;
+        continue;
+      }
+      
+      // Detect "Obvious Exits:" lines and parse exits for current room
+      if (line.includes('color="#008080"') && cleanLine.startsWith('Obvious Exits:')) {
+        console.log(`  📋 Found "Obvious Exits:" line for current room: ${this.state.currentRoom?.name || 'unknown'}`);
+        
+        // Use last bound room if available, otherwise current room
+        const targetRoomKey = this.state.lastBoundRoom || this.state.currentRoomKey;
+        const targetRoom = targetRoomKey ? this.state.rooms.get(targetRoomKey) : null;
+        
+        if (!targetRoomKey || !targetRoom) {
+          console.log(`  ⚠️  No target room set - skipping "Obvious Exits" parsing`);
+          i++;
+          continue;
+        }
+        
+        console.log(`  📋 Using target room: ${targetRoom.name} (${targetRoomKey.substring(0, 50)}...)`);
+        
+        // Collect exit lines following "Obvious Exits:"
+        let exitLines: string[] = [];
+        let j = i + 1;
+        
+        while (j < lines.length) {
+          const exitLine = lines[j];
+          const cleanExitLine = this.stripHtml(exitLine).trim();
+          
+          // Stop at prompts, room titles, or other commands
+          if (exitLine.includes('&lt;') && exitLine.includes('&gt;') || // Prompt
+              exitLine.includes('color="#00FFFF"') || // Room title
+              cleanExitLine.match(/^(look|exits|cast|who|The last remnants|Lightning begins|arrives from|leaves|says|orates)/i) ||
+              cleanExitLine.match(/^\[EXITS:/i) || // Exit list
+              cleanExitLine.match(/^\[Current Zone:/i)) { // Zone info
+            break;
+          }
+          
+          // Collect lines that look like exit descriptions (contain " - ")
+          if (cleanExitLine.includes(' - ')) {
+            exitLines.push(cleanExitLine);
+          }
+          
+          j++;
+          
+          // Don't go too far
+          if (j - i > 20) break;
+        }
+        
+        console.log(`  📋 Collected ${exitLines.length} exit lines: ${exitLines.join('; ')}`);
+        
+        // Parse each exit line
+        for (const exitLine of exitLines) {
+          const match = exitLine.match(/^(\w+(?:\s+\w+)*)\s*-\s*(.+)$/);
+          if (match) {
+            const directionStr = match[1].trim();
+            const destName = match[2].trim();
+            
+            // Expand direction
+            const direction = this.expandDirection(directionStr.replace(/\s+/g, ''));
+            
+            console.log(`    📍 Parsed obvious exit: ${direction} -> "${destName}"`);
+            
+            // Add to target room's exits array if not already there
+            if (!targetRoom.exits.includes(direction)) {
+              targetRoom.exits.push(direction);
+              console.log(`      ➕ Added ${direction} to room exits`);
+            }
+            
+            // Create a ParsedExit for this listed exit
+            const listedExit: ParsedExit = {
+              from_room_key: targetRoomKey,
+              from_room_name: targetRoom.name,
+              from_room_description: targetRoom.description,
+              direction: normalizeDirection(direction),
+              to_room_name: destName,
+              is_blocked: false
+            };
+            
+            this.state.exits.push(listedExit);
+            console.log(`    🚪 Created listed exit: ${targetRoom.name} --[${direction}]--> ${destName}`);
+          } else {
+            console.log(`    ⚠️  Could not parse exit line: "${exitLine}"`);
+          }
+        }
+        
+        i = j;
         continue;
       }
       
@@ -1083,6 +1173,50 @@ export class MudLogParser {
           }
         }
         
+        // Parse "Obvious Exits:" from description and create exits
+        const obviousExitsMatch = description.match(/Obvious Exits:\s*(.*?)(?:\n|$)/i);
+        if (obviousExitsMatch) {
+          const obviousExitsText = obviousExitsMatch[1];
+          console.log(`  📋 Found "Obvious Exits:" section: "${obviousExitsText.substring(0, 100)}..."`);
+          
+          // Parse lines like "east      - Towards the edge of the grasslands"
+          const exitLines = obviousExitsText.split('\n').map(line => line.trim()).filter(line => line && !line.match(/^\s*$/));
+          
+          for (const line of exitLines) {
+            const match = line.match(/^(\w+(?:\s+\w+)*)\s*-\s*(.+)$/);
+            if (match) {
+              const directionStr = match[1].trim();
+              const destName = match[2].trim();
+              
+              // Expand direction (handle "north east" -> "northeast", etc.)
+              const direction = this.expandDirection(directionStr.replace(/\s+/g, ''));
+              
+              console.log(`    📍 Parsed obvious exit: ${direction} -> "${destName}"`);
+              
+              // Add to room's exits array if not already there
+              if (!exits.includes(direction)) {
+                exits.push(direction);
+                console.log(`      ➕ Added ${direction} to room exits`);
+              }
+              
+              // Create a ParsedExit for this listed exit
+              const listedExit: ParsedExit = {
+                from_room_key: existingRoomKey || roomKey,
+                from_room_name: roomName,
+                from_room_description: description,
+                direction: normalizeDirection(direction),
+                to_room_name: destName,
+                is_blocked: false
+              };
+              
+              this.state.exits.push(listedExit);
+              console.log(`    🚪 Created listed exit: ${roomName} --[${direction}]--> ${destName}`);
+            } else {
+              console.log(`    ⚠️  Could not parse exit line: "${line}"`);
+            }
+          }
+        }
+        
         // Record exit if we just moved here AND it's a different room
         // previousRoomKey and previousRoom were captured BEFORE any room updates
         // Skip exit creation if previous room was a death room
@@ -1263,11 +1397,10 @@ export class MudLogParser {
     }
     
     // NO PORTAL KEY YET - Check if a portal: version exists first
-    // CRITICAL: Don't reuse rooms with portal keys yet! We won't know if it's the same room
-    // until we try to bind. Multiple distinct rooms can have identical names/descriptions
+    // CRITICAL: Don't reuse rooms with portal keys! Multiple distinct rooms can have identical names/descriptions
     // but DIFFERENT portal keys (e.g., 3 different "Bridge Road" rooms).
     // The portal binding attempt will tell us if this is the same room or a new one.
-    // HOWEVER: If we're revisiting and the exits match, we can identify the correct room!
+    // We should NOT match portal rooms here to prevent overwriting existing portal keys.
     const portalMatches: Array<{key: string, room: any}> = [];
     for (const [key, room] of this.state.rooms) {
       if (room.portal_key && room.name === name && room.description === description) {
@@ -1276,37 +1409,11 @@ export class MudLogParser {
       }
     }
     
-    // If we found portal-bound rooms with matching name+desc, check if exits match
-    // This allows us to identify which specific room we're in without needing portal binding
-    // BUT ONLY if we're pretty certain - require exact match and valid movement context
-    if (portalMatches.length > 0 && currentExits && currentExits.length > 0) {
-      console.log(`DEBUG: Found ${portalMatches.length} portal-bound room(s) with same name+desc, checking exit signature [${currentExits.join(' ')}]`);
-      console.log(`🐛 EXIT SIGNATURE CHECK: Looking for room "${name}" with exits [${currentExits.join(',')}]`);
-      
-      if (portalMatches.length >= 2) {
-        console.log(`🔍 Multiple portal-bound rooms found - using exit signature to distinguish`);
-        
-        // Sort exits for consistent comparison
-        const sortedCurrentExits = [...currentExits].sort().join(',');
-        
-        for (const {key, room} of portalMatches) {
-          const sortedRoomExits = [...room.exits].sort().join(',');
-          if (sortedRoomExits === sortedCurrentExits) {
-            console.log(`✅ EXIT SIGNATURE MATCH: Room "${name}" (${room.portal_key}) has matching exits [${room.exits.join(',')}]`);
-            return key;
-          }
-        }
-        
-        console.log(`❌ No exit signature match found among ${portalMatches.length} portal-bound rooms`);
-        return null;
-      } else {
-        // Only one portal-bound room - assume it's the same room even if exits don't match
-        // This handles cases where exits were not fully captured on first visit due to && isNewRoom
-        const {key, room} = portalMatches[0];
-        console.log(`✅ SINGLE PORTAL MATCH: Room "${name}" (${room.portal_key}) - assuming same room despite exit differences`);
-        console.log(`   Existing exits: [${room.exits.join(',')}] vs Current exits: [${currentExits.join(',')}]`);
-        return key;
-      }
+    // DO NOT match portal rooms to prevent overwriting existing portal keys
+    // Each room creation should create a new room, and binding assigns the key
+    if (portalMatches.length > 0) {
+      console.log(`DEBUG: Found ${portalMatches.length} portal-bound room(s) with same name+desc, but NOT matching to prevent key overwriting`);
+      // Continue to check for namedesc matches instead
     }
     
     // Check for EXACT name+description match (using keys)
@@ -1730,11 +1837,15 @@ export class MudLogParser {
           toRoomId = roomIdMap.get(`portal:${exit.portal_key}`);
         }
         
-        // Method 3: Name lookup - DISABLED to prevent incorrect room matching
-        // DO NOT lookup by name alone when multiple rooms share the same name
-        // The to_room_key should be the definitive identifier
-        // If the to_room_key doesn't match any saved room, the exit shouldn't be saved
-        // This prevents connecting "A muddy corridor" rooms that are actually different locations
+        // Method 3: Name lookup as fallback when direct lookup fails
+        // This is used when the to_room_key doesn't match (e.g., due to key changes)
+        // but the to_room_name matches a saved room
+        if (!toRoomId) {
+          toRoomId = roomIdMap.get(`name:${exit.to_room_name}`);
+          if (toRoomId) {
+            console.log(`   ℹ️  Found to_room_id by name lookup: ${exit.to_room_name} -> ${toRoomId}`);
+          }
+        }
         
         // Skip exits that don't have a destination room
         // We only save exits if:
