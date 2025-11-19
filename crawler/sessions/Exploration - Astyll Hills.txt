@@ -2,6 +2,1879 @@
 <table border=0 cellpadding=5 bgcolor="#000000">
 <tr><td>
 <pre><code><font size=2 face="FixedSys, Lucida Console, Courier New, Courier"><font color="#0">
+</font><font color="#C0C0C0">look
+</font><font color="#00FFFF">Surrounded by grasslands
+</font><font color="#C0C0C0">    The grasslands surround you on all sides.  Tall grasses of all kinds are
+growing.  Shorter grasses with a goldenrod fluff at their tips.  Grasses
+with green and yellow variegated leaves, and tall stalks of a deep green
+with a bamboo like appearance.  The grasslands continue to the north, east,
+and south.
+</font><font color="#008080">[EXITS: n e s ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: n, e, s
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+An Astyll Ranger                              : 1 move north
+An Astyll Ranger                              : 1 move north
+An Astyll Scout                               : 2 moves north
+An Astyll Ranger                              : 3 moves north
+The Astyll Officer                            : 3 moves north
+An Astyll Scout                               : 3 moves north
+An Astyll Ranger                              : 1 move east
+An Astyll Ranger                              : 3 moves east
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 5 o'clock am, on the Day of the Bull.
+The 22nd Day of the Month of the Sun, Year 1173.
+The moon is in phase [19/25] and looks like:
+</font><font color="#FFFF00">   _..._
+ .'  ::::.
+:     :::::
+:     :::::
+`.   :::::'
+  `-.:::'
+
+</font><font color="#C0C0C0">The light intensity here is: 7
+
+Tick Counter:  17826 ticks since the last reboot
+Tick Timer:       58 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">north     - Surrounded by grasslands
+east      - Surrounded by grasslands
+south     - Grasslands near the walls of Midgaard
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Astyll Hills]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+It's Bonus Time! Type bonus to see the current bonuses.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look n
+</font><font color="#0080FF">Looking n...
+</font><font color="#C0C0C0">The grasslands continue to the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look e
+</font><font color="#0080FF">Looking e...
+</font><font color="#C0C0C0">The grasslands continue to the east.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look s
+</font><font color="#0080FF">Looking s...
+
+</font><font color="#C0C0C0">You have been fully healed by Zealot!
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> The grasslands continue to the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'ghklmoq' briefly appears as a portal shimmers into view and then disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">286M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+</font><font color="#C0C0C0">e
+</font><font color="#00FFFF">Surrounded by grasslands
+</font><font color="#C0C0C0">   The grasslands surround you on all sides.  Tall grasses of all kinds are
+growing.  Shorter grasses with a goldenrod fluff at their tips.  Grasses with
+green and yellow variegated leaves, and tall stalks of a deep green with a
+bamboo like appearance.  The grasslands continues in all directions.  
+</font><font color="#008080">[EXITS: n e s w ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: n, e, s, w
+</font><font color="#C0C0C0">An Astyll Ranger is here patrolling the grasslands.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">286M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+An Astyll Ranger                              : immediate area 
+An Astyll Scout                               : 2 moves north
+An Astyll Ranger                              : 2 moves east
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">286M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 5 o'clock am, on the Day of the Bull.
+The 22nd Day of the Month of the Sun, Year 1173.
+The moon is in phase [19/25] and looks like:
+</font><font color="#FFFF00">   _..._
+ .'  ::::.
+:     :::::
+:     :::::
+`.   :::::'
+  `-.:::'
+
+</font><font color="#C0C0C0">The light intensity here is: 7
+
+Tick Counter:  17826 ticks since the last reboot
+Tick Timer:       50 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">286M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">north     - Surrounded by grasslands
+east      - A path through the tall grass
+south     - South end of the Grasslands
+west      - Surrounded by grasslands
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">286M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Astyll Hills]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+It's Bonus Time! Type bonus to see the current bonuses.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">286M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look n
+</font><font color="#0080FF">Looking n...
+</font><font color="#C0C0C0">The grasslands continue to the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">286M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look e
+</font><font color="#0080FF">Looking e...
+</font><font color="#C0C0C0">The grasslands continue to the east.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">286M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look s
+</font><font color="#0080FF">Looking s...
+</font><font color="#C0C0C0">The grasslands continue to the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">286M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look w
+</font><font color="#0080FF">Looking w...
+</font><font color="#C0C0C0">The grasslands continue to the west.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">286M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'cdefghklmoq' briefly appears as a portal shimmers into view and then
+ disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">276M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+</font><font color="#C0C0C0">e
+</font><font color="#00FFFF">A path through the tall grass
+</font><font color="#C0C0C0">   You are on a path that has been trambled and cut through the tall grass.  It
+leads east towards the base of tall cliff.  Towards the west are vast acres of
+tall grasslands.  
+</font><font color="#008080">[EXITS: e w ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: e, w
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">276M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+An Astyll Ranger                              : 1 move east
+An Astyll Ranger                              : 1 move west
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">276M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 5 o'clock am, on the Day of the Bull.
+The 22nd Day of the Month of the Sun, Year 1173.
+The moon is in phase [19/25] and looks like:
+</font><font color="#FFFF00">   _..._
+ .'  ::::.
+:     :::::
+:     :::::
+`.   :::::'
+  `-.:::'
+
+</font><font color="#C0C0C0">The light intensity here is: 7
+
+Tick Counter:  17826 ticks since the last reboot
+Tick Timer:       35 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">276M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">east      - A path through the tall grass
+west      - Surrounded by grasslands
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">276M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Astyll Hills]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+It's Bonus Time! Type bonus to see the current bonuses.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">276M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look e
+</font><font color="#0080FF">Looking e...
+</font><font color="#C0C0C0">The grasslands continue to the east.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">276M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look w
+</font><font color="#0080FF">Looking w...
+</font><font color="#C0C0C0">The grasslands continue to the west.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">276M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'cegijklmoq' briefly appears as a portal shimmers into view and then disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">266M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+</font><font color="#C0C0C0">w
+</font><font color="#00FFFF">Surrounded by grasslands
+</font><font color="#C0C0C0">   The grasslands surround you on all sides.  Tall grasses of all kinds are
+growing.  Shorter grasses with a goldenrod fluff at their tips.  Grasses with
+green and yellow variegated leaves, and tall stalks of a deep green with a
+bamboo like appearance.  The grasslands continues in all directions.  
+</font><font color="#008080">[EXITS: n e s w ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: n, e, s, w
+</font><font color="#C0C0C0">An Astyll Ranger is here patrolling the grasslands.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">266M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+An Astyll Ranger                              : immediate area 
+An Astyll Scout                               : 2 moves north
+The Astyll Officer                            : 3 moves north
+An Astyll Scout                               : 3 moves north
+An Astyll Ranger                              : 2 moves east
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">266M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 5 o'clock am, on the Day of the Bull.
+The 22nd Day of the Month of the Sun, Year 1173.
+The moon is in phase [19/25] and looks like:
+</font><font color="#FFFF00">   _..._
+ .'  ::::.
+:     :::::
+:     :::::
+`.   :::::'
+  `-.:::'
+
+</font><font color="#C0C0C0">The light intensity here is: 7
+
+Tick Counter:  17826 ticks since the last reboot
+Tick Timer:       28 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">266M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">north     - Surrounded by grasslands
+east      - A path through the tall grass
+south     - South end of the Grasslands
+west      - Surrounded by grasslands
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">266M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Astyll Hills]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+It's Bonus Time! Type bonus to see the current bonuses.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">266M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look n
+</font><font color="#0080FF">Looking n...
+</font><font color="#C0C0C0">The grasslands continue to the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">266M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look e
+</font><font color="#0080FF">Looking e...
+</font><font color="#C0C0C0">The grasslands continue to the east.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">266M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look s
+</font><font color="#0080FF">Looking s...
+</font><font color="#C0C0C0">The grasslands continue to the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">266M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look w
+</font><font color="#0080FF">Looking w...
+</font><font color="#C0C0C0">The grasslands continue to the west.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">266M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'cdefghklmoq' briefly appears as a portal shimmers into view and then
+ disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">256M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+</font><font color="#C0C0C0">w
+</font><font color="#00FFFF">Surrounded by grasslands
+</font><font color="#C0C0C0">    The grasslands surround you on all sides.  Tall grasses of all kinds are
+growing.  Shorter grasses with a goldenrod fluff at their tips.  Grasses
+with green and yellow variegated leaves, and tall stalks of a deep green
+with a bamboo like appearance.  The grasslands continue to the north, east,
+and south.
+</font><font color="#008080">[EXITS: n e s ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: n, e, s
+</font><font color="#C0C0C0">An Astyll Scout is here watching over the grasslands.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">256M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+An Astyll Scout                               : immediate area 
+An Astyll Ranger                              : 1 move north
+An Astyll Ranger                              : 3 moves north
+An Astyll Ranger                              : 1 move east
+An Astyll Ranger                              : 3 moves east
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">256M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 5 o'clock am, on the Day of the Bull.
+The 22nd Day of the Month of the Sun, Year 1173.
+The moon is in phase [19/25] and looks like:
+</font><font color="#FFFF00">   _..._
+ .'  ::::.
+:     :::::
+:     :::::
+`.   :::::'
+  `-.:::'
+
+</font><font color="#C0C0C0">The light intensity here is: 7
+
+Tick Counter:  17826 ticks since the last reboot
+Tick Timer:       21 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">256M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">north     - Surrounded by grasslands
+east      - Surrounded by grasslands
+south     - Grasslands near the walls of Midgaard
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">256M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Astyll Hills]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+It's Bonus Time! Type bonus to see the current bonuses.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">256M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look n
+</font><font color="#0080FF">Looking n...
+</font><font color="#C0C0C0">The grasslands continue to the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">256M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look e
+</font><font color="#0080FF">Looking e...
+</font><font color="#C0C0C0">The grasslands continue to the east.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">256M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look s
+</font><font color="#0080FF">Looking s...
+</font><font color="#C0C0C0">The grasslands continue to the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">256M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'ghklmoq' briefly appears as a portal shimmers into view and then disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+</font><font color="#C0C0C0">n
+</font><font color="#00FFFF">Surrounded by grasslands
+</font><font color="#C0C0C0">   The grasslands surround you on all sides.  Tall grasses of all kinds are
+growing.  Shorter grasses with a goldenrod fluff at their tips.  Grasses with
+green and yellow variegated leaves, and tall stalks of a deep green with a
+bamboo like appearance.  The grasslands continue to the north, east, south, and
+west.  
+</font><font color="#008080">[EXITS: n e s w ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: n, e, s, w
+</font><font color="#C0C0C0">An Astyll Ranger is here patrolling the grasslands.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+An Astyll Ranger                              : immediate area 
+An Astyll Ranger                              : 2 moves north
+An Astyll Scout                               : 1 move south
+An Astyll Ranger                              : 1 move west
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 5 o'clock am, on the Day of the Bull.
+The 22nd Day of the Month of the Sun, Year 1173.
+The moon is in phase [19/25] and looks like:
+</font><font color="#FFFF00">   _..._
+ .'  ::::.
+:     :::::
+:     :::::
+`.   :::::'
+  `-.:::'
+
+</font><font color="#C0C0C0">The light intensity here is: 7
+
+Tick Counter:  17826 ticks since the last reboot
+Tick Timer:       16 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">north     - Surrounded by grasslands
+east      - Surrounded by grasslands
+south     - Surrounded by grasslands
+west      - A path leading towards the forest
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Astyll Hills]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+It's Bonus Time! Type bonus to see the current bonuses.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look n
+</font><font color="#0080FF">Looking n...
+</font><font color="#C0C0C0">The grasslands continue to the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look e
+</font><font color="#0080FF">Looking e...
+</font><font color="#C0C0C0">The grasslands continue to the east.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look s
+</font><font color="#0080FF">Looking s...
+</font><font color="#C0C0C0">The grasslands continue to the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look w
+</font><font color="#0080FF">Looking w...
+</font><font color="#C0C0C0">The grasslands continue to the west.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'efhiklmoq' briefly appears as a portal shimmers into view and then disappears.
+</font><font color="#008080">[Info] : Zir killed by an unfortunate event.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">236M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+An Astyll Scout arrives from the south.
+An Astyll Ranger leaves north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">236M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+
+</font><font color="#800080">[Gossip] someone: ooops
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">236M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+w
+</font><font color="#00FFFF">A path leading towards the forest
+</font><font color="#C0C0C0">   You are on a path through the tall grass.  It leads towards a large forest in
+the west, and towards the grasslands in the east.  
+</font><font color="#008080">[EXITS: e w ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: e, w
+</font><font color="#C0C0C0">An Astyll Ranger is here patrolling the grasslands.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">236M</font><font color="#C0C0C0"> </font><font color="#FFFF00">128V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+An Astyll Ranger                              : immediate area 
+An Astyll Scout                               : 1 move east
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">236M</font><font color="#C0C0C0"> </font><font color="#FFFF00">128V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 5 o'clock am, on the Day of the Bull.
+The 22nd Day of the Month of the Sun, Year 1173.
+The moon is in phase [19/25] and looks like:
+</font><font color="#FFFF00">   _..._
+ .'  ::::.
+:     :::::
+:     :::::
+`.   :::::'
+  `-.:::'
+
+</font><font color="#C0C0C0">The light intensity here is: 7
+
+Tick Counter:  17826 ticks since the last reboot
+Tick Timer:        3 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">236M</font><font color="#C0C0C0"> </font><font color="#FFFF00">128V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">east      - Surrounded by grasslands
+west      - The edge of a large forest
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">236M</font><font color="#C0C0C0"> </font><font color="#FFFF00">128V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Astyll Hills]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+It's Bonus Time! Type bonus to see the current bonuses.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">236M</font><font color="#C0C0C0"> </font><font color="#FFFF00">128V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look e
+</font><font color="#0080FF">Looking e...
+</font><font color="#C0C0C0">Surrounded by tall grass.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">236M</font><font color="#C0C0C0"> </font><font color="#FFFF00">128V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look w
+</font><font color="#0080FF">Looking w...
+</font><font color="#C0C0C0">The edge of the forest.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">236M</font><font color="#C0C0C0"> </font><font color="#FFFF00">128V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#800080">[Gossip] Zir: oh no
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">236M</font><font color="#C0C0C0"> </font><font color="#FFFF00">128V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'dfjklmoq' briefly appears as a portal shimmers into view and then disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">226M</font><font color="#C0C0C0"> </font><font color="#FFFF00">128V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+
+</font><font color="#C0C0C0">The last remnants of night disappear as the day begins.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">266M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#800080">[Gossip] someone: trap ?
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">266M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+e
+</font><font color="#00FFFF">Surrounded by grasslands
+</font><font color="#C0C0C0">   The grasslands surround you on all sides.  Tall grasses of all kinds are
+growing.  Shorter grasses with a goldenrod fluff at their tips.  Grasses with
+green and yellow variegated leaves, and tall stalks of a deep green with a
+bamboo like appearance.  The grasslands continue to the north, east, south, and
+west.  
+</font><font color="#008080">[EXITS: n e s w ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: n, e, s, w
+</font><font color="#C0C0C0">An Astyll Scout is here watching over the grasslands.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">266M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+An Astyll Scout                               : immediate area 
+An Astyll Scout                               : 1 move north
+An Astyll Ranger                              : 1 move north
+An Astyll Ranger                              : 1 move west
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">266M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 6 o'clock am, on the Day of the Bull.
+The 22nd Day of the Month of the Sun, Year 1173.
+
+The light intensity here is: 7
+
+Tick Counter:  17827 ticks since the last reboot
+Tick Timer:       56 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">266M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">north     - Surrounded by grasslands
+east      - Surrounded by grasslands
+south     - Surrounded by grasslands
+west      - A path leading towards the forest
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">266M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Astyll Hills]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+It's Bonus Time! Type bonus to see the current bonuses.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">266M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look n
+</font><font color="#0080FF">Looking n...
+</font><font color="#C0C0C0">The grasslands continue to the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">266M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look e
+</font><font color="#0080FF">Looking e...
+</font><font color="#C0C0C0">The grasslands continue to the east.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">266M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look s
+</font><font color="#0080FF">Looking s...
+</font><font color="#C0C0C0">The grasslands continue to the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">266M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look w
+</font><font color="#0080FF">Looking w...
+</font><font color="#C0C0C0">The grasslands continue to the west.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">266M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'efhiklmoq' briefly appears as a portal shimmers into view and then disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">256M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+</font><font color="#C0C0C0">e
+</font><font color="#00FFFF">Surrounded by grasslands
+</font><font color="#C0C0C0">    The grasslands surround you on all sides.  Tall grasses of all kinds are
+growing.  Shorter grasses with a goldenrod fluff at their tips.  Grasses
+with green and yellow variegated leaves, and tall stalks of a deep green
+with a bamboo like appearance.  The grasslands continue to the north, west,
+and south.
+</font><font color="#008080">[EXITS: n s w ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: n, s, w
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">256M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+The Astyll Officer                            : 1 move north
+An Astyll Ranger                              : 2 moves north
+An Astyll Ranger                              : 1 move south
+An Astyll Scout                               : 1 move west
+An Astyll Ranger                              : 2 moves west
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">256M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 6 o'clock am, on the Day of the Bull.
+The 22nd Day of the Month of the Sun, Year 1173.
+
+The light intensity here is: 7
+
+Tick Counter:  17827 ticks since the last reboot
+Tick Timer:       49 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">256M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">north     - Surrounded by grasslands
+south     - Surrounded by grasslands
+west      - Surrounded by grasslands
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">256M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Astyll Hills]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+It's Bonus Time! Type bonus to see the current bonuses.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">256M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#800080">[Gossip] Zir: hell vent in Ashefall
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">256M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look n
+</font><font color="#0080FF">Looking n...
+</font><font color="#C0C0C0">The grasslands continue to the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">256M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look s
+</font><font color="#0080FF">Looking s...
+</font><font color="#C0C0C0">The grasslands continue to the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">256M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look w
+</font><font color="#0080FF">Looking w...
+</font><font color="#C0C0C0">The grasslands continue to the west.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">256M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'cdfghiklmoq' briefly appears as a portal shimmers into view and then
+ disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+</font><font color="#C0C0C0">w
+</font><font color="#00FFFF">Surrounded by grasslands
+</font><font color="#C0C0C0">   The grasslands surround you on all sides.  Tall grasses of all kinds are
+growing.  Shorter grasses with a goldenrod fluff at their tips.  Grasses with
+green and yellow variegated leaves, and tall stalks of a deep green with a
+bamboo like appearance.  The grasslands continue to the north, east, south, and
+west.  
+</font><font color="#008080">[EXITS: n e s w ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: n, e, s, w
+</font><font color="#C0C0C0">An Astyll Scout is here watching over the grasslands.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+An Astyll Scout                               : immediate area 
+An Astyll Scout                               : 1 move north
+An Astyll Ranger                              : 1 move north
+An Astyll Ranger                              : 1 move west
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 6 o'clock am, on the Day of the Bull.
+The 22nd Day of the Month of the Sun, Year 1173.
+
+The light intensity here is: 7
+
+Tick Counter:  17827 ticks since the last reboot
+Tick Timer:       34 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">north     - Surrounded by grasslands
+east      - Surrounded by grasslands
+south     - Surrounded by grasslands
+west      - A path leading towards the forest
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Astyll Hills]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+It's Bonus Time! Type bonus to see the current bonuses.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look n
+</font><font color="#0080FF">Looking n...
+</font><font color="#C0C0C0">The grasslands continue to the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look e
+</font><font color="#0080FF">Looking e...
+</font><font color="#C0C0C0">The grasslands continue to the east.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look s
+</font><font color="#0080FF">Looking s...
+</font><font color="#C0C0C0">The grasslands continue to the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look w
+</font><font color="#0080FF">Looking w...
+</font><font color="#C0C0C0">The grasslands continue to the west.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'efhiklmoq' briefly appears as a portal shimmers into view and then disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">236M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+</font><font color="#C0C0C0">n
+</font><font color="#00FFFF">Surrounded by grasslands
+</font><font color="#C0C0C0">    The grasslands surround you on all sides.  Tall grasses of all kinds are
+growing.  Shorter grasses with a goldenrod fluff at their tips.  Grasses
+with green and yellow variegated leaves, and tall stalks of a deep green
+with a bamboo like appearance.  The grasslands continue to the north, east,
+and south.
+</font><font color="#008080">[EXITS: n e s ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: n, e, s
+</font><font color="#C0C0C0">An Astyll Scout is here watching over the grasslands.
+An Astyll Ranger is here patrolling the grasslands.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">236M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+An Astyll Scout                               : immediate area 
+An Astyll Ranger                              : immediate area 
+An Astyll Scout                               : 1 move south
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">236M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 6 o'clock am, on the Day of the Bull.
+The 22nd Day of the Month of the Sun, Year 1173.
+
+The light intensity here is: 7
+
+Tick Counter:  17827 ticks since the last reboot
+Tick Timer:       26 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">236M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">north     - North end of the grasslands
+east      - Surrounded by grasslands
+south     - Surrounded by grasslands
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">236M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Astyll Hills]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+It's Bonus Time! Type bonus to see the current bonuses.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">236M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look n
+</font><font color="#0080FF">Looking n...
+</font><font color="#C0C0C0">The grasslands continue to the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">236M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look e
+</font><font color="#0080FF">Looking e...
+</font><font color="#C0C0C0">The grasslands continue to the east.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">236M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look s
+</font><font color="#0080FF">Looking s...
+</font><font color="#C0C0C0">The grasslands continue to the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">236M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'cfgjklmoq' briefly appears as a portal shimmers into view and then disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">226M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+</font><font color="#C0C0C0">e
+</font><font color="#00FFFF">Surrounded by grasslands
+</font><font color="#C0C0C0">   The grasslands surround you on all sides.  Tall grasses of all kinds are
+growing.  Shorter grasses with a goldenrod fluff at their tips.  Grasses with
+green and yellow variegated leaves, and tall stalks of a deep green with a
+bamboo like appearance.  The grasslands continue to the north, south, west.  
+</font><font color="#008080">[EXITS: n s w ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: n, s, w
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">226M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+An Astyll Ranger                              : 2 moves north
+The Astyll Officer                            : 1 move south
+An Astyll Ranger                              : 2 moves south
+An Astyll Scout                               : 1 move west
+An Astyll Ranger                              : 1 move west
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">226M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 6 o'clock am, on the Day of the Bull.
+The 22nd Day of the Month of the Sun, Year 1173.
+
+The light intensity here is: 7
+
+Tick Counter:  17827 ticks since the last reboot
+Tick Timer:       13 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">226M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">north     - North end of the grasslands
+south     - Surrounded by grasslands
+west      - Surrounded by grasslands
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">226M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Astyll Hills]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+It's Bonus Time! Type bonus to see the current bonuses.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">226M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look n
+</font><font color="#0080FF">Looking n...
+</font><font color="#C0C0C0">The grasslands continue to the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">226M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look s
+</font><font color="#0080FF">Looking s...
+</font><font color="#C0C0C0">The grasslands continue to the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">226M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look w
+</font><font color="#0080FF">Looking w...
+</font><font color="#C0C0C0">The grasslands continue to the west.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">226M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'deijklmoq' briefly appears as a portal shimmers into view and then disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">216M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+</font><font color="#C0C0C0">s
+</font><font color="#00FFFF">Surrounded by grasslands
+</font><font color="#C0C0C0">    The grasslands surround you on all sides.  Tall grasses of all kinds are
+growing.  Shorter grasses with a goldenrod fluff at their tips.  Grasses
+with green and yellow variegated leaves, and tall stalks of a deep green
+with a bamboo like appearance.  The grasslands continue to the north, west,
+and south.
+</font><font color="#008080">[EXITS: n s w ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: n, s, w
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">216M</font><font color="#C0C0C0"> </font><font color="#FFFF00">128V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+An Astyll Ranger                              : 3 moves north
+An Astyll Ranger                              : 1 move south
+An Astyll Ranger                              : 1 move west
+The Astyll Officer                            : 1 move west
+An Astyll Scout                               : 1 move west
+An Astyll Ranger                              : 2 moves west
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">216M</font><font color="#C0C0C0"> </font><font color="#FFFF00">128V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 6 o'clock am, on the Day of the Bull.
+The 22nd Day of the Month of the Sun, Year 1173.
+
+The light intensity here is: 7
+
+Tick Counter:  17827 ticks since the last reboot
+Tick Timer:        3 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">216M</font><font color="#C0C0C0"> </font><font color="#FFFF00">128V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">north     - Surrounded by grasslands
+south     - Surrounded by grasslands
+west      - Surrounded by grasslands
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">216M</font><font color="#C0C0C0"> </font><font color="#FFFF00">128V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Astyll Hills]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+It's Bonus Time! Type bonus to see the current bonuses.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">216M</font><font color="#C0C0C0"> </font><font color="#FFFF00">128V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look n
+</font><font color="#0080FF">Looking n...
+</font><font color="#C0C0C0">The grasslands continue to the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">216M</font><font color="#C0C0C0"> </font><font color="#FFFF00">128V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look s
+</font><font color="#0080FF">Looking s...
+</font><font color="#C0C0C0">The grasslands continue to the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">216M</font><font color="#C0C0C0"> </font><font color="#FFFF00">128V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look w
+</font><font color="#0080FF">Looking w...
+</font><font color="#C0C0C0">The grasslands continue to the west.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">216M</font><font color="#C0C0C0"> </font><font color="#FFFF00">128V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'cdfghiklmoq' briefly appears as a portal shimmers into view and then
+ disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">206M</font><font color="#C0C0C0"> </font><font color="#FFFF00">128V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+
+</font><font color="#C0C0C0">An Astyll Ranger arrives from the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+s
+</font><font color="#00FFFF">Surrounded by grasslands
+</font><font color="#C0C0C0">   The grasslands surround you on all sides.  Tall grasses of all kinds are
+growing.  Shorter grasses with a goldenrod fluff at their tips.  Grasses with
+green and yellow variegated leaves, and tall stalks of a deep green with a
+bamboo like appearance.  The grasslands continues in all directions.  
+</font><font color="#008080">[EXITS: n e s w ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: n, e, s, w
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+An Astyll Ranger                              : 1 move north
+An Astyll Scout                               : 3 moves north
+An Astyll Ranger                              : 2 moves east
+The Astyll Officer                            : 1 move west
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 7 o'clock am, on the Day of the Bull.
+The 22nd Day of the Month of the Sun, Year 1173.
+
+The light intensity here is: 8
+
+Tick Counter:  17828 ticks since the last reboot
+Tick Timer:       62 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">north     - Surrounded by grasslands
+east      - A path through the tall grass
+south     - South end of the Grasslands
+west      - Surrounded by grasslands
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Astyll Hills]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+It's Bonus Time! Type bonus to see the current bonuses.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look n
+</font><font color="#0080FF">Looking n...
+</font><font color="#C0C0C0">The grasslands continue to the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look e
+</font><font color="#0080FF">Looking e...
+</font><font color="#C0C0C0">The grasslands continue to the east.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look s
+</font><font color="#0080FF">Looking s...
+</font><font color="#C0C0C0">The grasslands continue to the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look w
+</font><font color="#0080FF">Looking w...
+</font><font color="#C0C0C0">The grasslands continue to the west.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'cdefghklmoq' briefly appears as a portal shimmers into view and then
+ disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">236M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+</font><font color="#C0C0C0">s
+</font><font color="#00FFFF">South end of the Grasslands
+</font><font color="#C0C0C0">   The grasslands surround you on all sides.  Tall grasses of all kinds are
+growing.  Shorter grasses with a goldenrod fluff at their tips.  Grasses with
+green and yellow variegated leaves, and tall stalks of a deep green with a
+bamboo like appearance.  The grasslands continue to the north, and west.  
+</font><font color="#008080">[EXITS: n w ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: n, w
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">236M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+An Astyll Ranger                              : 2 moves north
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">236M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 7 o'clock am, on the Day of the Bull.
+The 22nd Day of the Month of the Sun, Year 1173.
+
+The light intensity here is: 8
+
+Tick Counter:  17828 ticks since the last reboot
+Tick Timer:       54 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">236M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">north     - Surrounded by grasslands
+west      - Grasslands near the walls of Midgaard
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">236M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Astyll Hills]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+It's Bonus Time! Type bonus to see the current bonuses.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">236M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look n
+</font><font color="#0080FF">Looking n...
+</font><font color="#C0C0C0">The grasslands continue to the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">236M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look w
+</font><font color="#0080FF">Looking w...
+</font><font color="#C0C0C0">The grasslands continue to the west.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">236M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'defiklmoq' briefly appears as a portal shimmers into view and then disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">226M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+</font><font color="#C0C0C0">n
+</font><font color="#00FFFF">Surrounded by grasslands
+</font><font color="#C0C0C0">   The grasslands surround you on all sides.  Tall grasses of all kinds are
+growing.  Shorter grasses with a goldenrod fluff at their tips.  Grasses with
+green and yellow variegated leaves, and tall stalks of a deep green with a
+bamboo like appearance.  The grasslands continues in all directions.  
+</font><font color="#008080">[EXITS: n e s w ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: n, e, s, w
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">226M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+An Astyll Ranger                              : 1 move north
+An Astyll Scout                               : 3 moves north
+An Astyll Ranger                              : 2 moves east
+An Astyll Scout                               : 1 move west
+The Astyll Officer                            : 1 move west
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">226M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 7 o'clock am, on the Day of the Bull.
+The 22nd Day of the Month of the Sun, Year 1173.
+
+The light intensity here is: 8
+
+Tick Counter:  17828 ticks since the last reboot
+Tick Timer:       48 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">226M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">north     - Surrounded by grasslands
+east      - A path through the tall grass
+south     - South end of the Grasslands
+west      - Surrounded by grasslands
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">226M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Astyll Hills]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+It's Bonus Time! Type bonus to see the current bonuses.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">226M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look n
+</font><font color="#0080FF">Looking n...
+</font><font color="#C0C0C0">The grasslands continue to the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">226M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look e
+</font><font color="#0080FF">Looking e...
+</font><font color="#C0C0C0">The grasslands continue to the east.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">226M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look s
+</font><font color="#0080FF">Looking s...
+</font><font color="#C0C0C0">The grasslands continue to the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">226M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look w
+</font><font color="#0080FF">Looking w...
+</font><font color="#C0C0C0">The grasslands continue to the west.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">226M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'cdefghklmoq' briefly appears as a portal shimmers into view and then
+ disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">216M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+</font><font color="#C0C0C0">s
+</font><font color="#00FFFF">South end of the Grasslands
+</font><font color="#C0C0C0">   The grasslands surround you on all sides.  Tall grasses of all kinds are
+growing.  Shorter grasses with a goldenrod fluff at their tips.  Grasses with
+green and yellow variegated leaves, and tall stalks of a deep green with a
+bamboo like appearance.  The grasslands continue to the north, and west.  
+</font><font color="#008080">[EXITS: n w ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: n, w
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">216M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+An Astyll Ranger                              : 2 moves north
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">216M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 7 o'clock am, on the Day of the Bull.
+The 22nd Day of the Month of the Sun, Year 1173.
+
+The light intensity here is: 8
+
+Tick Counter:  17828 ticks since the last reboot
+Tick Timer:       40 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">216M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">north     - Surrounded by grasslands
+west      - Grasslands near the walls of Midgaard
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">216M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Astyll Hills]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+It's Bonus Time! Type bonus to see the current bonuses.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">216M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look n
+</font><font color="#0080FF">Looking n...
+</font><font color="#C0C0C0">The grasslands continue to the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">216M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look w
+</font><font color="#0080FF">Looking w...
+</font><font color="#C0C0C0">The grasslands continue to the west.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">216M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'defiklmoq' briefly appears as a portal shimmers into view and then disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">206M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+</font><font color="#C0C0C0">w
+</font><font color="#00FFFF">Grasslands near the walls of Midgaard
+</font><font color="#C0C0C0">   The grasslands surround you on all sides.  Tall grasses of all kinds are
+growing.  Shorter grasses with a goldenrod fluff at their tips.  Grasses with
+green and yellow variegated leaves, and tall stalks of a deep green with a
+bamboo like appearance.  The grasslands continue to the north, east, and south.
+</font><font color="#008080">[EXITS: n e s ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: n, e, s
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">206M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+An Astyll Scout                               : 1 move north
+An Astyll Scout                               : 1 move north
+The Astyll Officer                            : 1 move north
+An Astyll Ranger                              : 3 moves north
+Nodri                                         : 3 moves south
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">206M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 7 o'clock am, on the Day of the Bull.
+The 22nd Day of the Month of the Sun, Year 1173.
+
+The light intensity here is: 8
+
+Tick Counter:  17828 ticks since the last reboot
+Tick Timer:       35 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">206M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">north     - Surrounded by grasslands
+east      - South end of the Grasslands
+south     - Outside the City Walls
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">206M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Astyll Hills]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+It's Bonus Time! Type bonus to see the current bonuses.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">206M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look n
+</font><font color="#0080FF">Looking n...
+</font><font color="#C0C0C0">The grasslands continue to the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">206M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The Astyll Officer arrives from the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">206M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look e
+</font><font color="#0080FF">Looking e...
+</font><font color="#C0C0C0">The grasslands continue to the east.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">206M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look s
+</font><font color="#0080FF">Looking s...
+</font><font color="#C0C0C0">The grasslands continue to the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">206M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'chklmoq' briefly appears as a portal shimmers into view and then disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">196M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+</font><font color="#C0C0C0">n
+</font><font color="#00FFFF">Surrounded by grasslands
+</font><font color="#C0C0C0">    The grasslands surround you on all sides.  Tall grasses of all kinds are
+growing.  Shorter grasses with a goldenrod fluff at their tips.  Grasses
+with green and yellow variegated leaves, and tall stalks of a deep green
+with a bamboo like appearance.  The grasslands continue to the north, east,
+and south.
+</font><font color="#008080">[EXITS: n e s ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: n, e, s
+</font><font color="#C0C0C0">An Astyll Scout is here watching over the grasslands.
+An Astyll Scout is here watching over the grasslands.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">196M</font><font color="#C0C0C0"> </font><font color="#FFFF00">128V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+An Astyll Scout                               : immediate area 
+An Astyll Scout                               : immediate area 
+An Astyll Ranger                              : 2 moves north
+An Astyll Ranger                              : 3 moves east
+The Astyll Officer                            : 1 move south
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">196M</font><font color="#C0C0C0"> </font><font color="#FFFF00">128V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 7 o'clock am, on the Day of the Bull.
+The 22nd Day of the Month of the Sun, Year 1173.
+
+The light intensity here is: 8
+
+Tick Counter:  17828 ticks since the last reboot
+Tick Timer:       29 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">196M</font><font color="#C0C0C0"> </font><font color="#FFFF00">128V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">north     - Surrounded by grasslands
+east      - Surrounded by grasslands
+south     - Grasslands near the walls of Midgaard
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">196M</font><font color="#C0C0C0"> </font><font color="#FFFF00">128V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Astyll Hills]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+It's Bonus Time! Type bonus to see the current bonuses.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">196M</font><font color="#C0C0C0"> </font><font color="#FFFF00">128V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look n
+</font><font color="#0080FF">Looking n...
+</font><font color="#C0C0C0">The grasslands continue to the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">196M</font><font color="#C0C0C0"> </font><font color="#FFFF00">128V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look e
+</font><font color="#0080FF">Looking e...
+</font><font color="#C0C0C0">The grasslands continue to the east.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">196M</font><font color="#C0C0C0"> </font><font color="#FFFF00">128V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look s
+</font><font color="#0080FF">Looking s...
+</font><font color="#C0C0C0">The grasslands continue to the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">196M</font><font color="#C0C0C0"> </font><font color="#FFFF00">128V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'ghklmoq' briefly appears as a portal shimmers into view and then disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">186M</font><font color="#C0C0C0"> </font><font color="#FFFF00">128V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+</font><font color="#C0C0C0">n
+</font><font color="#00FFFF">Surrounded by grasslands
+</font><font color="#C0C0C0">   The grasslands surround you on all sides.  Tall grasses of all kinds are
+growing.  Shorter grasses with a goldenrod fluff at their tips.  Grasses with
+green and yellow variegated leaves, and tall stalks of a deep green with a
+bamboo like appearance.  The grasslands continue to the north, east, south, and
+west.  
+</font><font color="#008080">[EXITS: n e s w ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: n, e, s, w
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">186M</font><font color="#C0C0C0"> </font><font color="#FFFF00">127V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+An Astyll Ranger                              : 1 move north
+An Astyll Ranger                              : 1 move east
+An Astyll Scout                               : 1 move south
+An Astyll Scout                               : 1 move south
+The Astyll Officer                            : 2 moves south
+An Astyll Ranger                              : 1 move west
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">186M</font><font color="#C0C0C0"> </font><font color="#FFFF00">127V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 7 o'clock am, on the Day of the Bull.
+The 22nd Day of the Month of the Sun, Year 1173.
+
+The light intensity here is: 8
+
+Tick Counter:  17828 ticks since the last reboot
+Tick Timer:       23 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">186M</font><font color="#C0C0C0"> </font><font color="#FFFF00">127V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">north     - Surrounded by grasslands
+east      - Surrounded by grasslands
+south     - Surrounded by grasslands
+west      - A path leading towards the forest
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">186M</font><font color="#C0C0C0"> </font><font color="#FFFF00">127V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Astyll Hills]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+It's Bonus Time! Type bonus to see the current bonuses.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">186M</font><font color="#C0C0C0"> </font><font color="#FFFF00">127V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look n
+</font><font color="#0080FF">Looking n...
+</font><font color="#C0C0C0">The grasslands continue to the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">186M</font><font color="#C0C0C0"> </font><font color="#FFFF00">127V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look e
+</font><font color="#0080FF">Looking e...
+</font><font color="#C0C0C0">The grasslands continue to the east.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">186M</font><font color="#C0C0C0"> </font><font color="#FFFF00">127V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look s
+</font><font color="#0080FF">Looking s...
+</font><font color="#C0C0C0">The grasslands continue to the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">186M</font><font color="#C0C0C0"> </font><font color="#FFFF00">127V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look w
+</font><font color="#0080FF">Looking w...
+</font><font color="#C0C0C0">The grasslands continue to the west.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">186M</font><font color="#C0C0C0"> </font><font color="#FFFF00">127V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'efhiklmoq' briefly appears as a portal shimmers into view and then disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">176M</font><font color="#C0C0C0"> </font><font color="#FFFF00">127V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+</font><font color="#C0C0C0">n
+</font><font color="#00FFFF">Surrounded by grasslands
+</font><font color="#C0C0C0">    The grasslands surround you on all sides.  Tall grasses of all kinds are
+growing.  Shorter grasses with a goldenrod fluff at their tips.  Grasses
+with green and yellow variegated leaves, and tall stalks of a deep green
+with a bamboo like appearance.  The grasslands continue to the north, east,
+and south.
+</font><font color="#008080">[EXITS: n e s ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: n, e, s
+</font><font color="#C0C0C0">An Astyll Ranger is here patrolling the grasslands.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">176M</font><font color="#C0C0C0"> </font><font color="#FFFF00">126V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+An Astyll Ranger                              : immediate area 
+An Astyll Scout                               : 2 moves south
+An Astyll Scout                               : 2 moves south
+The Astyll Officer                            : 3 moves south
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">176M</font><font color="#C0C0C0"> </font><font color="#FFFF00">126V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 7 o'clock am, on the Day of the Bull.
+The 22nd Day of the Month of the Sun, Year 1173.
+
+The light intensity here is: 8
+
+Tick Counter:  17828 ticks since the last reboot
+Tick Timer:       17 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">176M</font><font color="#C0C0C0"> </font><font color="#FFFF00">126V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">north     - North end of the grasslands
+east      - Surrounded by grasslands
+south     - Surrounded by grasslands
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">176M</font><font color="#C0C0C0"> </font><font color="#FFFF00">126V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Astyll Hills]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+It's Bonus Time! Type bonus to see the current bonuses.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">176M</font><font color="#C0C0C0"> </font><font color="#FFFF00">126V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look n
+</font><font color="#0080FF">Looking n...
+</font><font color="#C0C0C0">The grasslands continue to the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">176M</font><font color="#C0C0C0"> </font><font color="#FFFF00">126V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look e
+</font><font color="#0080FF">Looking e...
+</font><font color="#C0C0C0">The grasslands continue to the east.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">176M</font><font color="#C0C0C0"> </font><font color="#FFFF00">126V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look s
+</font><font color="#0080FF">Looking s...
+</font><font color="#C0C0C0">The grasslands continue to the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">176M</font><font color="#C0C0C0"> </font><font color="#FFFF00">126V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Info] : Zir killed by an unfortunate event.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">176M</font><font color="#C0C0C0"> </font><font color="#FFFF00">126V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'cfgjklmoq' briefly appears as a portal shimmers into view and then disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">166M</font><font color="#C0C0C0"> </font><font color="#FFFF00">126V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+</font><font color="#C0C0C0">n
+</font><font color="#00FFFF">North end of the grasslands
+</font><font color="#C0C0C0">   You are at the northern end of the grasslands.  Tall grasses of all kinds are
+growing.  Shorter grasses with a goldenrod fluff at their tips.  Grasses with
+green and yellow varigated leaves, and tall stalks of a deep green with a bamboo
+like appearance.  The grasslands continue to the east and south.  To the north
+is a range of hills.  
+</font><font color="#008080">[EXITS: e s ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: e, s
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">166M</font><font color="#C0C0C0"> </font><font color="#FFFF00">125V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+An Astyll Ranger                              : 1 move south
+An Astyll Scout                               : 3 moves south
+An Astyll Scout                               : 3 moves south
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">166M</font><font color="#C0C0C0"> </font><font color="#FFFF00">125V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 7 o'clock am, on the Day of the Bull.
+The 22nd Day of the Month of the Sun, Year 1173.
+
+The light intensity here is: 8
+
+Tick Counter:  17828 ticks since the last reboot
+Tick Timer:       11 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">166M</font><font color="#C0C0C0"> </font><font color="#FFFF00">125V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">east      - North end of the grasslands
+south     - Surrounded by grasslands
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">166M</font><font color="#C0C0C0"> </font><font color="#FFFF00">125V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Astyll Hills]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+It's Bonus Time! Type bonus to see the current bonuses.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">166M</font><font color="#C0C0C0"> </font><font color="#FFFF00">125V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look e
+</font><font color="#0080FF">Looking e...
+</font><font color="#C0C0C0">The grasslands continue east.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">166M</font><font color="#C0C0C0"> </font><font color="#FFFF00">125V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look s
+</font><font color="#0080FF">Looking s...
+</font><font color="#C0C0C0">The grasslands continue south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">166M</font><font color="#C0C0C0"> </font><font color="#FFFF00">125V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'fhjklmoq' briefly appears as a portal shimmers into view and then disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">156M</font><font color="#C0C0C0"> </font><font color="#FFFF00">125V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+</font><font color="#C0C0C0">e
+</font><font color="#00FFFF">North end of the grasslands
+</font><font color="#C0C0C0">   You are at the northern end of the grasslands.  Tall grasses of all kinds are
+growing.  Shorter grasses with a goldenrod fluff at their tips.  Grasses with
+green and yellow variegated leaves, and tall stalks of a deep green with a
+ bamboo
+like appearance.  A small path cuts through the hills to the north.  The
+grasslands continue to the west and south.
+</font><font color="#008080">[EXITS: n e s w ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: n, e, s, w
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">156M</font><font color="#C0C0C0"> </font><font color="#FFFF00">124V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+An Astyll Ranger                              : 1 move north
+An Astyll Scout                               : 1 move south
+An Astyll Ranger                              : 2 moves south
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">156M</font><font color="#C0C0C0"> </font><font color="#FFFF00">124V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 7 o'clock am, on the Day of the Bull.
+The 22nd Day of the Month of the Sun, Year 1173.
+
+The light intensity here is: 8
+
+Tick Counter:  17828 ticks since the last reboot
+Tick Timer:        5 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">156M</font><font color="#C0C0C0"> </font><font color="#FFFF00">124V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">north     - A dimly lit path
+east      - Surrounded by grasslands
+south     - Surrounded by grasslands
+west      - North end of the grasslands
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">156M</font><font color="#C0C0C0"> </font><font color="#FFFF00">124V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Astyll Hills]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+It's Bonus Time! Type bonus to see the current bonuses.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">156M</font><font color="#C0C0C0"> </font><font color="#FFFF00">124V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look n
+</font><font color="#0080FF">Looking n...
+</font><font color="#C0C0C0">North leads to a dimly lit path into more hills.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">156M</font><font color="#C0C0C0"> </font><font color="#FFFF00">124V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look e
+</font><font color="#0080FF">Looking e...
+</font><font color="#C0C0C0">A large cliff peaks over the grasslands.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">156M</font><font color="#C0C0C0"> </font><font color="#FFFF00">124V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look s
+</font><font color="#0080FF">Looking s...
+</font><font color="#C0C0C0">The grasslands continue south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">156M</font><font color="#C0C0C0"> </font><font color="#FFFF00">124V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look w
+</font><font color="#0080FF">Looking w...
+</font><font color="#C0C0C0">The grasslands continue west.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">156M</font><font color="#C0C0C0"> </font><font color="#FFFF00">124V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'cdeghjklmoq' briefly appears as a portal shimmers into view and then
+ disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">146M</font><font color="#C0C0C0"> </font><font color="#FFFF00">124V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+</font><font color="#C0C0C0">s
+</font><font color="#00FFFF">Surrounded by grasslands
+</font><font color="#C0C0C0">   The grasslands surround you on all sides.  Tall grasses of all kinds are
+growing.  Shorter grasses with a goldenrod fluff at their tips.  Grasses with
+green and yellow variegated leaves, and tall stalks of a deep green with a
+bamboo like appearance.  The grasslands continue to the north, south, west.  
+</font><font color="#008080">[EXITS: n s w ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: n, s, w
+</font><font color="#C0C0C0">An Astyll Scout is here watching over the grasslands.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">186M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+An Astyll Scout                               : immediate area 
+An Astyll Ranger                              : 2 moves north
+An Astyll Ranger                              : 1 move south
+The Astyll Officer                            : 3 moves south
+An Astyll Ranger                              : 1 move west
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">186M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 8 o'clock am, on the Day of the Bull.
+The 22nd Day of the Month of the Sun, Year 1173.
+
+The light intensity here is: 11
+
+Tick Counter:  17829 ticks since the last reboot
+Tick Timer:       65 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">186M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">north     - North end of the grasslands
+south     - Surrounded by grasslands
+west      - Surrounded by grasslands
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">186M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Astyll Hills]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+It's Bonus Time! Type bonus to see the current bonuses.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">186M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look n
+</font><font color="#0080FF">Looking n...
+</font><font color="#C0C0C0">The grasslands continue to the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">186M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look s
+</font><font color="#0080FF">Looking s...
+</font><font color="#C0C0C0">The grasslands continue to the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">186M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look w
+</font><font color="#0080FF">Looking w...
+</font><font color="#C0C0C0">The grasslands continue to the west.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">186M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'deijklmoq' briefly appears as a portal shimmers into view and then disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">176M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+
+</font><font color="#800080">[Gossip] Zir: ah, i think i may need 75 fire_res
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">176M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+w
+</font><font color="#00FFFF">Surrounded by grasslands
+</font><font color="#C0C0C0">    The grasslands surround you on all sides.  Tall grasses of all kinds are
+growing.  Shorter grasses with a goldenrod fluff at their tips.  Grasses
+with green and yellow variegated leaves, and tall stalks of a deep green
+with a bamboo like appearance.  The grasslands continue to the north, east,
+and south.
+</font><font color="#008080">[EXITS: n e s ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: n, e, s
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">176M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+An Astyll Scout                               : 1 move east
+An Astyll Ranger                              : 1 move south
+An Astyll Scout                               : 2 moves south
+An Astyll Scout                               : 2 moves south
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">176M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 8 o'clock am, on the Day of the Bull.
+The 22nd Day of the Month of the Sun, Year 1173.
+
+The light intensity here is: 11
+
+Tick Counter:  17829 ticks since the last reboot
+Tick Timer:       57 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">176M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">north     - North end of the grasslands
+east      - Surrounded by grasslands
+south     - Surrounded by grasslands
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">176M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Astyll Hills]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+It's Bonus Time! Type bonus to see the current bonuses.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">176M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look n
+</font><font color="#0080FF">Looking n...
+</font><font color="#C0C0C0">The grasslands continue to the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">176M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look e
+</font><font color="#0080FF">Looking e...
+</font><font color="#C0C0C0">The grasslands continue to the east.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">176M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look s
+</font><font color="#0080FF">Looking s...
+</font><font color="#C0C0C0">The grasslands continue to the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">176M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'cfgjklmoq' briefly appears as a portal shimmers into view and then disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">166M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+</font><font color="#C0C0C0">e
+</font><font color="#00FFFF">Surrounded by grasslands
+</font><font color="#C0C0C0">   The grasslands surround you on all sides.  Tall grasses of all kinds are
+growing.  Shorter grasses with a goldenrod fluff at their tips.  Grasses with
+green and yellow variegated leaves, and tall stalks of a deep green with a
+bamboo like appearance.  The grasslands continue to the north, south, west.  
+</font><font color="#008080">[EXITS: n s w ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: n, s, w
+</font><font color="#C0C0C0">An Astyll Scout is here watching over the grasslands.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">166M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+An Astyll Scout                               : immediate area 
+An Astyll Ranger                              : 2 moves north
+An Astyll Ranger                              : 1 move south
+The Astyll Officer                            : 2 moves south
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">166M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 8 o'clock am, on the Day of the Bull.
+The 22nd Day of the Month of the Sun, Year 1173.
+
+The light intensity here is: 11
+
+Tick Counter:  17829 ticks since the last reboot
+Tick Timer:       48 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">166M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">north     - North end of the grasslands
+south     - Surrounded by grasslands
+west      - Surrounded by grasslands
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">166M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Astyll Hills]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+It's Bonus Time! Type bonus to see the current bonuses.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">166M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look n
+</font><font color="#0080FF">Looking n...
+</font><font color="#C0C0C0">The grasslands continue to the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">166M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look s
+</font><font color="#0080FF">Looking s...
+</font><font color="#C0C0C0">The grasslands continue to the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">166M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look w
+</font><font color="#0080FF">Looking w...
+</font><font color="#C0C0C0">The grasslands continue to the west.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">166M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#800080">[Gossip] someone: oh no
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">166M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'deijklmoq' briefly appears as a portal shimmers into view and then disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">156M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+</font><font color="#C0C0C0">n
+</font><font color="#00FFFF">North end of the grasslands
+</font><font color="#C0C0C0">   You are at the northern end of the grasslands.  Tall grasses of all kinds are
+growing.  Shorter grasses with a goldenrod fluff at their tips.  Grasses with
+green and yellow variegated leaves, and tall stalks of a deep green with a
+ bamboo
+like appearance.  A small path cuts through the hills to the north.  The
+grasslands continue to the west and south.
+</font><font color="#008080">[EXITS: n e s w ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: n, e, s, w
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">156M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+An Astyll Ranger                              : 1 move north
+An Astyll Scout                               : 1 move south
+An Astyll Ranger                              : 2 moves south
+The Astyll Officer                            : 3 moves south
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">156M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 8 o'clock am, on the Day of the Bull.
+The 22nd Day of the Month of the Sun, Year 1173.
+
+The light intensity here is: 11
+
+Tick Counter:  17829 ticks since the last reboot
+Tick Timer:       42 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">156M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">north     - A dimly lit path
+east      - Surrounded by grasslands
+south     - Surrounded by grasslands
+west      - North end of the grasslands
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">156M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Astyll Hills]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+It's Bonus Time! Type bonus to see the current bonuses.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">156M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look n
+</font><font color="#0080FF">Looking n...
+</font><font color="#C0C0C0">North leads to a dimly lit path into more hills.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">156M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look e
+</font><font color="#0080FF">Looking e...
+</font><font color="#C0C0C0">A large cliff peaks over the grasslands.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">156M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look s
+</font><font color="#0080FF">Looking s...
+</font><font color="#C0C0C0">The grasslands continue south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">156M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look w
+</font><font color="#0080FF">Looking w...
+</font><font color="#C0C0C0">The grasslands continue west.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">156M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#800080">[Gossip] Zir: any chance you have a potion? :D
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">156M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'cdeghjklmoq' briefly appears as a portal shimmers into view and then
+ disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">146M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+</font></font></code></pre>
+</td></tr></table>
+
+=== UPDATED EXPLORATION ===
+
+
+<!-- Produced by MUSHclient v 5.06 - www.mushclient.com -->
+<table border=0 cellpadding=5 bgcolor="#000000">
+<tr><td>
+<pre><code><font size=2 face="FixedSys, Lucida Console, Courier New, Courier"><font color="#0">
 </font><font color="#C0C0C0">By what name do you wish to be known? Password: 
 Reconnecting.
 
