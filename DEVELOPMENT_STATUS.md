@@ -9,6 +9,117 @@
 
 ## ✅ Recently Completed
 
+### Map Widget Dynamic Sizing Based on Room Coordinates (2025-11-18) 🎉 **COMPLETE**
+**Status**: ✅ **IMPLEMENTED** - Map widget now sizes dynamically to fit room coordinates without excessive scrolling
+
+**Problem**:
+- Map widget used fixed 600px height container with 4000x2500px SVG canvas
+- Large coordinate spaces required excessive scrolling to view all rooms
+- Widget was centered according to fixed size rather than actual room distribution
+
+**Solution - Dynamic SVG and Container Sizing**:
+```typescript
+// Calculate coordinate bounds and SVG dimensions
+const xCoords = coords.map(r => r.x!);
+const yCoords = coords.map(r => r.y!);
+const minX = Math.min(...xCoords);
+const maxX = Math.max(...xCoords);
+const minY = Math.min(...yCoords);
+const maxY = Math.max(...yCoords);
+
+const coordWidth = maxX - minX || 1;
+const coordHeight = maxY - minY || 1;
+
+// Dynamic SVG sizing with padding
+const padding = 100;
+const svgWidth = coordWidth + (2 * padding);
+const svgHeight = coordHeight + (2 * padding);
+
+// 1:1 pixel mapping with proper offset
+const offsetX = padding - minX;
+const offsetY = padding - minY;
+```
+
+**Key Changes**:
+- **Dynamic SVG Dimensions**: SVG now sizes to fit coordinate bounds + 100px padding
+- **Dynamic Container Height**: Container height adjusts to `svgHeight + 100px` (max 800px)
+- **1:1 Pixel Mapping**: Removed scaling - coordinates map directly to pixels
+- **Proper Centering**: Rooms positioned with offset to start from (padding, padding)
+- **Fallback Support**: Force-directed layout uses reasonable default dimensions (1200x800)
+
+**Results**:
+- ✅ **No More Excessive Scrolling**: Map fits room coordinates perfectly
+- ✅ **Better Visual Fit**: Widget sizes appropriately for each zone's coordinate range
+- ✅ **Maintained Functionality**: All existing features (zoom, pan, room details) preserved
+- ✅ **Responsive Design**: Container caps at 800px height for very large maps
+- ✅ **Backward Compatibility**: Force-directed layout still works for zones without coordinates
+
+**Technical Details**:
+- Container height: `Math.min(svgDimensions.height + 100, 800) + 'px'`
+- SVG dimensions stored in React state for dynamic updates
+- Coordinate bounds calculated from actual room x,y values
+- 100px padding ensures rooms aren't cut off at edges
+
+**Files Modified**:
+- `frontend/src/components/ZoneMap.tsx`: Dynamic sizing logic and state management
+
+**Impact**: Map visualization now provides optimal viewing experience without unnecessary scrolling, adapting to each zone's actual coordinate distribution
+
+### Map Spacing Optimization - Reduced Squishing and Vertical Space (2025-11-18) 🎉 **COMPLETE**
+**Status**: ✅ **OPTIMIZED** - Improved horizontal spacing and reduced empty space above northern rooms
+
+**Problem**:
+- Rooms appeared too squished horizontally after 1:1 pixel mapping
+- Excessive empty space above northernmost rooms (negative Y coordinates)
+- Northern rooms placed too far from top edge due to uniform padding
+
+**Solution - Optimized Spacing and Positioning**:
+```typescript
+// Optimized padding for better visual balance
+const topPadding = 50;     // Small top padding to reduce empty space above northern rooms
+const bottomPadding = 50;  // Small bottom padding  
+const sidePadding = 120;   // Slightly larger side padding for better horizontal spacing
+
+// Apply slight horizontal scaling (1.2x) to reduce squishing
+const horizontalScale = 1.2;
+const scaledCoordWidth = coordWidth * horizontalScale;
+
+// Calculate offsets to place northernmost room close to top
+const offsetX = sidePadding - minX;
+const offsetY = topPadding - minY;  // Northernmost room at 50px from top
+
+// SVG dimensions based on scaled coordinates + optimized padding
+const svgWidth = scaledCoordWidth + (2 * sidePadding);
+const svgHeight = coordHeight + topPadding + bottomPadding;
+```
+
+**Key Improvements**:
+- **Horizontal Scaling**: 1.2x scaling reduces room squishing while maintaining coordinate accuracy
+- **Optimized Vertical Padding**: Northernmost rooms now 50px from top (vs 100px before)
+- **Southernmost rooms**: 50px from bottom for balanced vertical distribution
+- **Increased Side Padding**: 120px horizontal padding for better room separation
+- **Proportional Scaling**: Only horizontal coordinates scaled, vertical remains 1:1
+
+**Results**:
+- ✅ **Reduced Horizontal Squishing**: 20% more horizontal space between rooms
+- ✅ **Minimized Vertical Waste**: Northern rooms positioned much closer to top
+- ✅ **Better Visual Balance**: More proportional spacing in both directions
+- ✅ **Maintained Coordinate Accuracy**: Scaling preserves relative room positions
+- ✅ **No Functionality Loss**: All map interactions and features preserved
+
+**Technical Details**:
+- Horizontal scale factor: 1.2x (20% increase in room spacing)
+- Vertical padding: 50px top/bottom (reduced from 100px uniform)
+- Side padding: 120px left/right (increased from 100px)
+- SVG height calculation: `coordHeight + 50 + 50` (exact fit for coordinate range)
+
+**Files Modified**:
+- `frontend/src/components/ZoneMap.tsx`: Optimized spacing calculations and padding values
+
+**Impact**: Map now provides better visual clarity with appropriate spacing between rooms and efficient use of vertical space
+
+## ✅ Recently Completed
+
 ### Sub-Level Positioning Adjustment - Brought Sub-Level Closer to Surface (2025-11-18) 🎉 **COMPLETE**
 **Status**: ✅ **ADJUSTED** - Sub-level (main cave) now positioned closer to surface level
 

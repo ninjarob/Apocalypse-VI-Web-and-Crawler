@@ -48,6 +48,7 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick }) => {
   const [exits, setExits] = useState<RoomExit[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
+  const [svgDimensions, setSvgDimensions] = useState({ width: 4000, height: 2500 });
   const svgRef = useRef<SVGSVGElement>(null);
 
   // Load zones on component mount
@@ -108,10 +109,6 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick }) => {
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove(); // Clear previous render
 
-    // Use much larger canvas for coordinate-based layout
-    const width = 4000;  // Increased to accommodate large coordinate space
-    const height = 2500;  // Increased to accommodate large coordinate space
-
     // Check if rooms have coordinates
     const hasCoordinates = rooms.some(room => room.x !== undefined && room.y !== undefined);
     console.log('🔍 ZoneMap: Checking coordinates for', rooms.length, 'rooms');
@@ -143,25 +140,46 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick }) => {
       const coordWidth = maxX - minX || 1;
       const coordHeight = maxY - minY || 1;
 
-      // Scale coordinates to fit the SVG - use 1:1 pixel mapping (no artificial scaling limit)
-      const scaleX = (width - 200) / coordWidth; // Leave margin
-      const scaleY = (height - 200) / coordHeight; // Leave margin
-      const scale = Math.min(scaleX, scaleY); // Use natural scale, no artificial limit
+      // Calculate SVG size with optimized padding
+      const topPadding = 50;     // Small top padding to reduce empty space above northern rooms
+      const bottomPadding = 50;  // Small bottom padding
+      const sidePadding = 120;   // Slightly larger side padding for better horizontal spacing
+      
+      // Apply slight horizontal scaling (1.2x) to reduce squishing while maintaining readability
+      const horizontalScale = 1.2;
+      const scaledCoordWidth = coordWidth * horizontalScale;
+      
+      // Calculate offsets to place northernmost room close to top, southernmost close to bottom
+      const offsetX = sidePadding - minX;
+      const offsetY = topPadding - minY;
+      
+      // SVG dimensions based on scaled coordinates + padding
+      const svgWidth = scaledCoordWidth + (2 * sidePadding);
+      const svgHeight = coordHeight + topPadding + bottomPadding;
 
-      const offsetX = width / 2 - ((minX + maxX) / 2) * scale;
-      const offsetY = height / 2 - ((minY + maxY) / 2) * scale;
+      // Update SVG dimensions state
+      setSvgDimensions({ width: svgWidth, height: svgHeight });
 
       nodes = rooms.map(room => ({
         id: room.id,
         name: room.name,
         roomData: room,
-        x: room.x !== undefined ? room.x * scale + offsetX : width / 2,
-        y: room.y !== undefined ? room.y * scale + offsetY : height / 2
+        x: room.x !== undefined ? (room.x + offsetX) * horizontalScale : svgWidth / 2,
+        y: room.y !== undefined ? room.y + offsetY : svgHeight / 2
       }));
+
+      // Update SVG dimensions
+      svg.attr('width', svgWidth).attr('height', svgHeight);
     } else {
       // Fall back to force-directed layout
       console.log('🔗 Using force-directed layout (no coordinates available)');
       console.log('🔗 Rooms without coordinates:', rooms.filter(r => r.x === undefined || r.y === undefined).length);
+
+      // Set default dimensions for force-directed layout
+      const defaultWidth = 1200;
+      const defaultHeight = 800;
+      setSvgDimensions({ width: defaultWidth, height: defaultHeight });
+      svg.attr('width', defaultWidth).attr('height', defaultHeight);
 
       // Create basic nodes
       const basicNodes = rooms.map(room => ({
@@ -173,7 +191,7 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick }) => {
       // Create force simulation as fallback
       const simulation = d3.forceSimulation(basicNodes as d3.SimulationNodeDatum[])
         .force('charge', d3.forceManyBody().strength(-300))
-        .force('center', d3.forceCenter(width / 2, height / 2))
+        .force('center', d3.forceCenter(defaultWidth / 2, defaultHeight / 2))
         .force('collision', d3.forceCollide().radius(50));  // Reduced from 60 to match smaller nodes
 
       // Let simulation run briefly
@@ -185,8 +203,8 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick }) => {
         id: node.id,
         name: node.name,
         roomData: node.roomData,
-        x: node.x || width / 2,
-        y: node.y || height / 2
+        x: node.x || defaultWidth / 2,
+        y: node.y || defaultHeight / 2
       }));
     }
 
@@ -326,7 +344,7 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick }) => {
   }
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '600px', border: '1px solid #444', borderRadius: '8px', backgroundColor: '#1a1a1a' }}>
+    <div style={{ position: 'relative', width: '100%', height: `${Math.min(svgDimensions.height + 100, 800)}px`, border: '1px solid #444', borderRadius: '8px', backgroundColor: '#1a1a1a' }}>
 
       {/* Zone Selection Dropdown - Upper Right */}
       <div style={{
@@ -383,8 +401,8 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick }) => {
         ) : (
           <svg
             ref={svgRef}
-            width="4000"
-            height="2500"
+            width={svgDimensions.width}
+            height={svgDimensions.height}
             style={{ border: '1px solid #444', backgroundColor: '#1a1a1a' }}
           />
         )}
