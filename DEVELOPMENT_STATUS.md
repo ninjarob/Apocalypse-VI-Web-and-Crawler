@@ -9,6 +9,28 @@
 
 ## ✅ Recently Completed
 
+### Sub-Level Positioning Adjustment - Brought Sub-Level Closer to Surface (2025-11-18) 🎉 **COMPLETE**
+**Status**: ✅ **ADJUSTED** - Sub-level (main cave) now positioned closer to surface level
+
+**Problem**:
+- Sub-level (main cave) was positioned too far from surface at (-600, 420)
+- Additional sub-level (shallow shaft) was correctly positioned but base level needed adjustment
+
+**Solution**:
+- Reduced `OFFSET_MULTIPLIER` from 6 to 4 in `calculate-coordinates.js`
+- This moves base sub-level from (-600, 420) to (-400, 280), bringing it closer to surface
+- Additional levels still use the adjusted diff value (3/3 = 600px separation)
+
+**Results**:
+- ✅ Sub-level now at (-400, 280) instead of (-600, 420)
+- ✅ Additional sub-level positioned at (200, 880) with proper diagonal separation
+- ✅ Coordinate calculation completed successfully for zone 9 with 105 rooms updated
+
+**Files Modified**:
+- `backend/calculate-coordinates.js`: Reduced OFFSET_MULTIPLIER from 6 to 4
+
+**Impact**: Sub-level rooms are now visually closer to the surface level while maintaining proper separation for deeper levels
+
 ### Initial Room Loading Fix - Parser Now Captures All Logged Movements (2025-11-18) 🎉 **PRODUCTION READY**
 **Status**: ✅ **FIXED** - Parser now correctly handles initial room in exploration logs
 
@@ -153,50 +175,65 @@ if (!this.state.bindingAttemptRoomKey) {
 - Verified room cefmnoq exits via database query
 - Confirmed no exits created from death rooms
 
-### Multi-Level Map Coordinate Separation (2025-11-18) 🎉 **PRODUCTION READY**
-**Status**: ✅ **OPTIMIZED** - Cave system visually separated from surface level
+### Recursive Sub-Level Coordinate Offsetting (2025-11-18) 🎉 **PRODUCTION READY**
+**Status**: ✅ **COMPLETED** - Shallow shaft area now gets additional offset to lower left
 
-**Final Configuration**:
-- **Offset Multiplier**: 6x (optimized from initial 15x → 4x → 6x)
-- **Offset Values**: (-600, 420) for down sub-levels
-- **Algorithm**: Only "down" transitions create sub-levels (up transitions return to main level)
-- **Main Level Detection**: Sub-levels containing origin room excluded (prevents surface from getting offset)
+**Problem**:
+- "Standing above a shallow shaft" room segment didn't get offset to lower left despite being a "3rd level" with down transitions
+- Current algorithm only applied base offset (-600, 420) to sub-levels, but nested sub-levels within large areas weren't getting additional separation
+- Shallow shaft rooms (160-162) were connected via horizontal paths to main cave system, so treated as part of same component
 
-**Coordinate Results**:
-- **Surface Level**: X: 0 to 1910, Y: -350 to 623
-- **Cave System**: Starts at (930, 399) - Room 145 "At the bottom of a deep shaft"
-- **Separation Distance**: ~840 pixels from surface entry (1600, -70) to cave (930, 399)
-- **Visual Quality**: Cave clearly separated southwest of surface without excessive spread
+**Root Cause**:
+- Algorithm identified sub-levels via down transitions but didn't recursively offset areas not reachable from parent via horizontal paths
+- Shallow shaft was reachable from main cave via horizontal paths, so no additional offset applied
+- No mechanism to detect and offset "deep sub-levels" within larger sub-level areas
 
-**Technical Implementation**:
+**Solution - 45-Degree Alternating East-West Recursive Sub-Level Detection**:
 ```javascript
-// Only down transitions create sub-levels
-const verticalTransitions = exits.filter(e => e.direction === 'down');
+// Diagonal 45-degree offsets for visual separation
+// Level 0: southwest (-600, 420) 
+// Level 1: southeast (+600, 1620) - 45° from level 0
+// Level 2: southwest (-600, 2820) - 45° from level 1
+// etc.
 
-// Check if entry room reachable from origin via non-vertical paths
-// If yes, skip (part of main level)
-if (mainLevelRooms.has(entryRoomId)) {
-  console.log('Skipping - entry room reachable via non-vertical paths');
-  continue;
+const levelOffsets = new Map(); // roomId -> {x, y, level}
+
+for (const roomId of subLevelRooms) {
+  levelOffsets.set(roomId, { x: offsetX, y: offsetY, level: 0 });
 }
 
-// Apply offset: -6 * NODE_WIDTH, +6 * NODE_HEIGHT
-const offsetX = -OFFSET_MULTIPLIER * NODE_WIDTH;  // -600
-const offsetY = OFFSET_MULTIPLIER * NODE_HEIGHT;   // +420
+// Apply 45-degree diagonal offset to unreachable rooms
+const additionalLevel = 1;
+const additionalOffsetX = (additionalLevel % 2 === 0 ? -1 : 1) * OFFSET_MULTIPLIER * NODE_WIDTH;
+const additionalOffsetY = OFFSET_MULTIPLIER * NODE_HEIGHT + additionalLevel * (2 * OFFSET_MULTIPLIER * NODE_WIDTH);
+
+for (const roomId of subLevelRooms) {
+  if (!parentReachableRooms.has(roomId)) {
+    levelOffsets.set(roomId, { x: additionalOffsetX, y: additionalOffsetY, level: additionalLevel });
+  }
+}
 ```
 
-**Database State**:
-- 228 total rooms (103 Astyll Hills + 125 seed)
-- 429 total exits
-- 105 rooms with coordinates in zone 9
-- 84-room cave sub-level properly offset
+**Results**:
+- ✅ **Level 0 (main cave)**: Southwest offset (-70 to 434 range)
+- ✅ **Level 1 (shallow shaft)**: 45° southeast offset (1060, 1613-1683 range)
+- ✅ **Diagonal separation**: X diff 1130, Y diff 1249 (nearly equal for 45° angle)
+- ✅ **Coordinate range**: Y expanded to 1683 (from 609 previously)
+- ✅ **Visual clarity**: Sub-levels now clearly separated at 45-degree angles
 
-**Shaft Verification**:
-- Room 144 (top): (1600, -70)
-- Room 145 (bottom): (930, 399)
-- Diagonal distance: ~840 pixels southwest
+**Database Verification**:
+```sql
+SELECT id, name, x, y FROM rooms WHERE zone_id = 9 AND id IN (145,160,161,162) ORDER BY id;
+-- Room 145 (main cave): (-70, 329) - level 0 southwest
+-- Room 160 (reachable): (-70, 434) - level 0 southwest  
+-- Room 161 (shallow shaft): (1060, 1683) - level 1 45° southeast ✅
+-- Room 162 (shallow shaft): (1060, 1613) - level 1 45° southeast ✅
+```
 
-### Full Data Pipeline Validation (2024-12-22) 🎉 **PRODUCTION READY**
+**Files Modified**:
+- `backend/calculate-coordinates.js`: Added recursive sub-level detection logic to identify and offset areas not reachable from parent entry via horizontal paths
+
+**Impact**: Coordinate algorithm now properly handles nested cave systems with visual separation for all sub-level branches, ensuring clear map visualization of complex underground structures
 **Status**: ✅ **VERIFIED** - Seed → Parse → Calc → Query → Map
 
 **Complete Pipeline Test**:
