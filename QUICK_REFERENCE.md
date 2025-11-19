@@ -1,14 +1,5 @@
 # Quick Reference Guide
 
-## 🚨 CURRENT STATUS: PARSER BUG UNDER INVESTIGATION
-
-**Active Issue**: Spurious exit creation (cfhilnoq → lnoq)  
-**Investigation Doc**: `crawler/PARSER_BUG_INVESTIGATION.md`  
-**Status**: Root cause identified, 5 fixes attempted (all failed), ready for Fix #6  
-**Modified File**: `crawler/src/mudLogParser.ts` (extensive debug logging in place)
-
----
-
 ## 🚀 Starting the System
 
 ```powershell
@@ -31,31 +22,34 @@ cd crawler && npm run dev    # Terminal 3
 
 ## 🔧 Common Commands
 
-### 🐛 Parser Bug Investigation Workflow
+### ✅ Data Processing Pipeline (RECOMMENDED WORKFLOW)
 ```powershell
-# 1. Clean database
+# 1. Reset database with seed data
 cd backend
 npm run seed
 
-# 2. Parse Astyll Hills with debug output
+# 2. Parse exploration logs (creates rooms & exits)
 cd ../crawler
 npx tsx parse-logs.ts "sessions/Exploration - Astyll Hills.txt" --zone-id 9
 
-# 3. Verify bug status
+# 3. Calculate geographical coordinates
 cd ../backend
-node query-db.js "SELECT r.id, r.name, r.portal_key, GROUP_CONCAT(re.direction || ' -> ' || t.name, ', ') as exits FROM rooms r LEFT JOIN room_exits re ON r.id = re.from_room_id LEFT JOIN rooms t ON re.to_room_id = t.id WHERE r.portal_key = 'cfhilnoq' GROUP BY r.id"
-# Expected: 2 exits (north, south)
-# Bug present if: 3 exits (includes west)
+node calculate-coordinates.js 9
 
-# 4. Search debug logs
-Select-String -Path "crawler\parse-output.txt" -Pattern "MUDDY EXIT CREATED"
-Select-String -Path "crawler\parse-output.txt" -Pattern "No movement - room parse is incidental"
-
-# 5. Check all muddy corridors
-node query-db.js "SELECT r.id, r.name, r.portal_key, GROUP_CONCAT(re.direction, ', ') as exits FROM rooms r LEFT JOIN room_exits re ON r.id = re.from_room_id WHERE r.name = 'A muddy corridor' AND r.zone_id = 9 GROUP BY r.id"
+# Result: 102 rooms with coordinates, 214 exits saved
 ```
 
-**See**: `crawler/PARSER_BUG_INVESTIGATION.md` for complete analysis and next steps
+### 🐛 Parser Bug Investigation (RESOLVED)
+**Status**: ✅ FIXED - pendingLook mechanism implemented  
+**Issue**: Parser wasn't creating exits for movements from rooms observed via "look" commands  
+**Solution**: Added pendingLook flag to treat observed rooms as valid current rooms  
+**Verification**: North exit from "Outside the City Walls" now correctly created
+
+```powershell
+# Verify fix (should show 2 exits: north, south)
+cd backend
+node query-db.js "SELECT r.id, r.name, r.portal_key, GROUP_CONCAT(re.direction || ' -> ' || t.name, ', ') as exits FROM rooms r LEFT JOIN room_exits re ON r.id = re.from_room_id LEFT JOIN rooms t ON re.to_room_id = t.id WHERE r.portal_key = 'cfhilnoq' GROUP BY r.id"
+```
 
 ### Crawler Operations
 ```powershell
@@ -250,6 +244,7 @@ notepad crawler\ai-knowledge.md
 - **Parser is fast**: Manual exploration + parsing beats live crawling
 - **Use --dry-run**: Test parser changes without DB writes
 - **Backup database**: `Copy-Item backend\mud-data.db backup.db`
+- **Pipeline works**: Seed → Parse → Calculate coordinates for reliable data processing
 
 ---
 
