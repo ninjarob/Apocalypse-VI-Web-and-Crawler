@@ -879,6 +879,8 @@ export class MudLogParser {
         console.log(`🔍 FIND RESULT: findExistingRoomKey returned ${existingRoomKey ? existingRoomKey.substring(0, 50) + '...' : 'null'} for "${roomName}" with exits [${exits.join(',')}]`);
         console.log(`DEBUG: Current description hash: ${this.hashString(description.substring(0, 100))}...`);
         
+        let isNewRoom = false;
+        
         if (existingRoomKey) {
           console.log(`DEBUG: Updating existing room: ${roomName}`);
           console.log(`DEBUG: Existing room description hash: ${this.hashString(this.state.rooms.get(existingRoomKey)!.description.substring(0, 100))}...`);
@@ -989,6 +991,7 @@ export class MudLogParser {
           };
           
           this.state.rooms.set(roomKey, room);
+          isNewRoom = true;
           
           console.log(`  📦 Room: ${roomName} (${exits.length} exits, ${npcs.length} NPCs, ${items.length} items) [awaiting portal key]`);
           
@@ -1059,10 +1062,10 @@ export class MudLogParser {
           }
         }
         
-        // Record exit if we just moved here AND it's a different room
+        // Record exit if we just moved here AND it's a different room AND it's a new room
         // previousRoomKey and previousRoom were captured BEFORE any room updates
         // Skip exit creation if previous room was a death room
-        if (lastDirection && previousRoomKey && previousRoom && this.state.currentRoomKey !== previousRoomKey) {
+        if (lastDirection && previousRoomKey && previousRoom && this.state.currentRoomKey !== previousRoomKey && isNewRoom) {
           // Check if we should skip this exit (death room)
           if (this.state.inDeathRoom) {
             console.log(`   ⚠️  Skipping exit creation - previous room was a death room`);

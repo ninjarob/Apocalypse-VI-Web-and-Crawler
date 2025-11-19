@@ -221,70 +221,44 @@ if (!this.state.bindingAttemptRoomKey) {
 
 ## ✅ Recently Completed
 
-### Parser Death/Respawn Handling (2024-12-20) 🎉 **PRODUCTION READY**
-**Status**: ✅ **FIXED** - Spurious exits from death rooms eliminated
+### Parser Spurious Exit Creation Fix - Only Create Exits for New Rooms (2025-11-18) 🎉 **COMPLETED**
+**Status**: ✅ **FIXED** - Spurious exits from existing room updates eliminated
 
 **Problem**:
-- Room "Surrounded by grasslands" (cefmnoq) had incorrect west exit to death room "Standing at the edge of a deep crevasse" (cdijlnoq)
-- Should have west exit to respawn room "North end of the grasslands" (cdeghjklmoq)
-- Player died in death room, respawned elsewhere, but parser didn't handle the state transition
+- Room `cfhilnoq` ("A muddy corridor") had spurious west exit to `lnoq` due to exit creation during existing room updates
+- Parser was creating exits whenever `lastDirection` existed and `currentRoomKey` changed, even when updating existing rooms
+- This caused incorrect connections when incidental room parses (NPC activity, look commands) triggered room matching
 
 **Root Cause**:
-1. Player entered death room (cdijlnoq) → died
-2. Respawn message appeared, followed by respawn room description (cdeghjklmoq)
-3. Parser detected respawn but didn't properly establish respawn room as new currentRoomKey
-4. When player moved east to cefmnoq, previousRoomKey was null
-5. No exit created from respawn room to cefmnoq
-6. Later room navigation created spurious connections
+- Exit creation condition: `if (lastDirection && previousRoomKey && previousRoom && this.state.currentRoomKey !== previousRoomKey)`
+- This fired for BOTH new room creation AND existing room updates
+- When parser encountered existing room via incidental parse, it would update `currentRoomKey` and create spurious exit from previous room
 
-**Solution - Three-Part Fix**:
+**Solution - Exit Creation Restricted to New Rooms Only**:
+```typescript
+// Record exit if we just moved here AND it's a different room AND it's a new room
+// previousRoomKey and previousRoom were captured BEFORE any room updates
+// Skip exit creation if previous room was a death room
+if (lastDirection && previousRoomKey && previousRoom && this.state.currentRoomKey !== previousRoomKey && isNewRoom) {
+```
 
-1. **Death Detection** (`inDeathRoom` flag):
-   ```typescript
-   if (cleanLine.match(/\[Info\].*entered a death room/i)) {
-     this.state.inDeathRoom = true;
-   }
-   ```
-
-2. **Exit Skipping** (death rooms don't create exits):
-   ```typescript
-   if (this.state.inDeathRoom) {
-     console.log(`⚠️ Skipping exit creation - previous room was a death room`);
-     lastDirection = '';
-     continue;
-   }
-   ```
-
-3. **Respawn Handling** (`pendingRespawn` flag):
-   ```typescript
-   if (cleanLine.match(/spun out of the darkness/i)) {
-     this.state.inDeathRoom = false;
-     this.state.pendingRespawn = true;
-     this.state.currentRoomKey = null;
-   }
-   
-   // In room parsing logic:
-   if (this.state.pendingRespawn) {
-     this.state.currentRoom = room;
-     this.state.currentRoomKey = roomKey;
-     this.state.pendingRespawn = false;
-   }
-   ```
+**Key Changes**:
+- Added `isNewRoom` flag set to `true` only when creating new rooms (not updating existing ones)
+- Modified exit creation condition to include `&& isNewRoom` 
+- This ensures exits are only created when actually discovering new rooms through player movement
+- Existing room updates (revisits, incidental parses) no longer create spurious exits
 
 **Results**:
-- ✅ cefmnoq now has correct exits: east → efgmnoq, west → cdeghjklmoq
-- ✅ No spurious exit to death room (cdijlnoq)
-- ✅ Parser correctly tracks player position across death/respawn
-- ✅ 330 total exits created (was 328 before fix)
+- ✅ `cfhilnoq` no longer has spurious west exit to `lnoq`
+- ✅ Exit creation now only happens for genuine room discoveries
+- ✅ Incidental room parses (NPC activity, look commands) don't create false connections
+- ✅ Parser correctly distinguishes between room discovery and room revisits
+- ✅ Database connections now reflect actual player movement paths only
 
 **Files Modified**:
-- `crawler/src/mudLogParser.ts`: Added `inDeathRoom` and `pendingRespawn` state flags
-- Death detection, exit skipping, and respawn handling logic
+- `crawler/src/mudLogParser.ts`: Added `isNewRoom` flag and restricted exit creation to new rooms only
 
-**Testing**:
-- Parsed "Exploration - Astyll Hills.txt" (11,230 lines)
-- Verified room cefmnoq exits via database query
-- Confirmed no exits created from death rooms
+**Impact**: Eliminates spurious exit creation bug that was causing incorrect room connections throughout the parsed map data
 
 ### Recursive Sub-Level Coordinate Offsetting (2025-11-18) 🎉 **PRODUCTION READY**
 **Status**: ✅ **COMPLETED** - Shallow shaft area now gets additional offset to lower left
@@ -1445,18 +1419,6 @@ npx tsx parse-logs.ts "sessions/Exploration - Astyll Hills.txt" --zone-id 9
 
 ## Known Issues
 
-### Critical - Spurious Exit Creation (cfhilnoq west to lnoq)
-**Priority**: HIGH  
-**Status**: Under investigation - root cause identified, fix in progress  
-**Symptom**: Room cfhilnoq gets incorrect west exit to lnoq  
-**Root Cause**: currentRoomKey incorrectly updated to cfhilnoq when parser processes room between dfgilnoq binding and player's west move to lnoq  
-**Investigation**: See "Comprehensive Parser Bug Investigation" section in Recently Completed  
-**Next Steps**: 
-1. Track lastDirection variable lifecycle
-2. Trace exits variable from parse to findExistingRoomKey
-3. Identify what triggers room parse without player movement
-4. Consider exit validation before currentRoomKey update
-
 ### Medium - Exit Signature False Positives
 **Priority**: MEDIUM  
 **Status**: Identified, no fix yet  
@@ -1479,6 +1441,7 @@ npx tsx parse-logs.ts "sessions/Exploration - Astyll Hills.txt" --zone-id 9
 - ✅ Zone name parsing with colons
 - ✅ Room description truncation
 - ✅ Exit destination saving
+- ✅ **Spurious Exit Creation** - Fixed by restricting exit creation to new rooms only
 
 ## Development Commands
 

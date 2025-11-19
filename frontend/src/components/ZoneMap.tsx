@@ -492,17 +492,25 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick }) => {
                 <ul style={{ margin: '5px 0', paddingLeft: '20px' }}>
                   {exits
                     .filter(exit => exit.from_room_id === selectedRoom.id)
-                    .map(exit => (
-                      <li key={exit.id} style={{ color: '#ccc' }}>
-                        {exit.direction}
-                        {exit.description && ` - ${exit.description}`}
-                        {exit.to_room_id && rooms.find(r => r.id === exit.to_room_id) && (
-                          <span style={{ color: '#4fc3f7' }}>
-                            {' '}→ {rooms.find(r => r.id === exit.to_room_id)?.name}
-                          </span>
-                        )}
-                      </li>
-                    ))}
+                    .map(exit => {
+                      const destinationRoom = exit.to_room_id ? rooms.find(r => r.id === exit.to_room_id) : null;
+                      return (
+                        <li key={exit.id} style={{ color: '#ccc' }}>
+                          {exit.direction}
+                          {exit.description && ` - ${exit.description}`}
+                          {destinationRoom && (
+                            <span style={{ color: '#4fc3f7' }}>
+                              {' '}→ {destinationRoom.name}
+                              {destinationRoom.portal_key && (
+                                <span style={{ fontFamily: 'monospace', color: '#81c784' }}>
+                                  {' ('}{destinationRoom.portal_key}{')'}
+                                </span>
+                              )}
+                            </span>
+                          )}
+                        </li>
+                      );
+                    })}
                 </ul>
               </div>
             )}
