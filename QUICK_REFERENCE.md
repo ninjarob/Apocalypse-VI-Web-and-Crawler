@@ -72,6 +72,7 @@ npx tsx parse-logs.ts "sessions/log.txt" --dry-run --export output.json
 ### Database Operations
 ```powershell
 # Seed/reset database
+# ⚠️  IMPORTANT: This will COMPLETELY RESET the database with seeded data!
 cd backend
 npm run seed
 

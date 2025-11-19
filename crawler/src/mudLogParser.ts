@@ -349,7 +349,39 @@ export class MudLogParser {
               console.log(`  ⚠️  No binding attempt room found for portal key ${this.state.pendingPortalKey}`);
             }
           } else {
+            // No binding attempt room - this might be the initial room in the log
             console.log(`  ⚠️  No binding attempt room recorded for portal key ${this.state.pendingPortalKey}`);
+            
+            // Check if this portal key exists in the database (for initial room)
+            try {
+              const response = await axios.get(`${this.apiBaseUrl}/rooms?portal_key=${this.state.pendingPortalKey}`);
+              if (response.data && response.data.length > 0) {
+                const dbRoom = response.data[0];
+                console.log(`  🔍 Found existing room in database with portal key ${this.state.pendingPortalKey}: ${dbRoom.name}`);
+                
+                // Load this room into our state as the current room
+                const roomKey = `portal:${this.state.pendingPortalKey}`;
+                const parsedRoom: ParsedRoom = {
+                  name: dbRoom.name,
+                  description: dbRoom.description,
+                  exits: [], // We'll get these from the database if needed
+                  npcs: [],
+                  items: [],
+                  portal_key: this.state.pendingPortalKey,
+                  zone_id: dbRoom.zone_id
+                };
+                
+                this.state.rooms.set(roomKey, parsedRoom);
+                this.state.currentRoomKey = roomKey;
+                this.state.currentRoom = parsedRoom;
+                
+                console.log(`  ✅ Loaded initial room from database: ${dbRoom.name} (key: ${roomKey})`);
+              } else {
+                console.log(`  ⚠️  Portal key ${this.state.pendingPortalKey} not found in database - initial room not loaded`);
+              }
+            } catch (error) {
+              console.log(`  ⚠️  Failed to query database for portal key ${this.state.pendingPortalKey}: ${error}`);
+            }
           }
         }
         

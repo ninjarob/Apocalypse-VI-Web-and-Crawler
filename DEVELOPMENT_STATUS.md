@@ -9,7 +9,46 @@
 
 ## ✅ Recently Completed
 
-### Astyll Hills Zone 9j Data Pipeline Execution (2025-11-18) ✅ COMPLETED
+### Initial Room Loading Fix - Parser Now Captures All Logged Movements (2025-11-18) 🎉 **PRODUCTION READY**
+**Status**: ✅ **FIXED** - Parser now correctly handles initial room in exploration logs
+
+**Problem**:
+- Room 14 "Outside the City Walls" (portal dgklmoq) was isolated with only south exit despite logged north movement on line 95 to "Grasslands near the walls of Midgaard"
+- Parser couldn't associate portal key with room because log starts without room title, leaving currentRoomKey null
+- When portal binding occurred, no room was associated with the key, preventing exit creation
+
+**Root Cause**:
+- Exploration logs start with player already in a room, showing exits and description without room title
+- Parser expected room titles to set currentRoomKey, but initial room lacked this
+- Portal binding failed to associate key with room, blocking exit creation for initial movements
+
+**Solution - Database Lookup for Initial Room**:
+```typescript
+// In portal key detection logic:
+if (!this.state.bindingAttemptRoomKey) {
+  // No binding attempt room - this is initial room in log
+  // Query database for room with this portal key
+  const existingRoom = await this.queryRoomByPortalKey(portalKey);
+  if (existingRoom) {
+    // Load initial room into state
+    this.state.rooms.set(`portal:${portalKey}`, existingRoom);
+    this.state.currentRoomKey = `portal:${portalKey}`;
+    this.state.currentRoom = existingRoom;
+    console.log(`✅ Loaded initial room from database: ${existingRoom.name}`);
+  }
+}
+```
+
+**Results**:
+- ✅ Room 14 now has both north exit to grasslands (room 126) and south exit to temple (room 13)
+- ✅ Parser captures all logged movements including initial room scenarios
+- ✅ 120 rooms found, 332 exits found, 104 rooms saved, 2 exits saved (328 skipped due to deduplication)
+- ✅ Database query confirms north exit: `to_room_id 126, to_room_name 'Grasslands near the walls of Midgaard'`
+
+**Files Modified**:
+- `crawler/src/mudLogParser.ts`: Added database lookup in portal key detection for initial room loading
+
+**Impact**: Parser now handles exploration logs that start mid-session, ensuring complete room connectivity and navigation data
 **Status**: ✅ **SUCCESS** - Full seed → parse → coords pipeline executed for Astyll Hills (zone 9j)
 
 **Complete Pipeline Execution**:
