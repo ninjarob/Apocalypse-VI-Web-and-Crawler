@@ -866,6 +866,7 @@ function seedReferenceTables(callback: () => void) {
 }
 
 function seedData() {
+  const skipRoomsSeeding = process.env.SKIP_ROOMS_SEEDING === 'true';
   let completed = 0;
   const totalTasks = 23; // abilities + races + strength_scores + int_scores + wis_scores + dex_scores + con_scores + cha_scores + saving_throws + spell_modifiers + elemental_resistances + physical_resistances + class_groups + classes + proficiencies + perks + zones + zone_areas + zone_connections + rooms + room_exits + player_actions + help_entries
 
@@ -1901,7 +1902,7 @@ function seedData() {
 
   // Seed rooms from JSON file
   const roomsDataPath = path.resolve(__dirname, '..', 'data', 'rooms.json');
-  if (fs.existsSync(roomsDataPath)) {
+  if (fs.existsSync(roomsDataPath) && !skipRoomsSeeding) {
     const roomsData = JSON.parse(fs.readFileSync(roomsDataPath, 'utf-8'));
     
     const insertRoom = db.prepare(`INSERT INTO rooms (
@@ -1942,13 +1943,14 @@ function seedData() {
       checkComplete();
     });
   } else {
-    console.log('  ✓ Rooms table created (empty - rooms.json not found)');
+    const reason = skipRoomsSeeding ? 'SKIP_ROOMS_SEEDING=true' : 'rooms.json not found';
+    console.log(`  ✓ Rooms table created (empty - ${reason})`);
     checkComplete();
   }
 
   // Seed room exits from JSON file
   const roomExitsDataPath = path.resolve(__dirname, '..', 'data', 'room_exits.json');
-  if (fs.existsSync(roomExitsDataPath)) {
+  if (fs.existsSync(roomExitsDataPath) && !skipRoomsSeeding) {
     const roomExitsData = JSON.parse(fs.readFileSync(roomExitsDataPath, 'utf-8'));
     
     const insertRoomExit = db.prepare(`INSERT INTO room_exits (
@@ -1982,7 +1984,8 @@ function seedData() {
       checkComplete();
     });
   } else {
-    console.log('  ✓ Room exits table created (empty - room_exits.json not found)');
+    const reason = skipRoomsSeeding ? 'SKIP_ROOMS_SEEDING=true' : 'room_exits.json not found';
+    console.log(`  ✓ Room exits table created (empty - ${reason})`);
     checkComplete();
   }
 

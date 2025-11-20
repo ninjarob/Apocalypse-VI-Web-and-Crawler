@@ -48,6 +48,9 @@ Type `/bye` to exit the test chat.
 PORT=3002
 NODE_ENV=development
 # SQLite database will be created automatically at backend/mud-data.db
+
+# Optional: Skip room seeding during database initialization
+# SKIP_ROOMS_SEEDING=true
 ```
 
 **Crawler** - Create `crawler/.env`:

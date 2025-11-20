@@ -1,6 +1,79 @@
 ## ✅ Recently Completed
 
-### Room Exit Corrections - cefmnoq and cdeghjklmoq Connections Fixed (2025-11-19) ✅ **VERIFIED**
+### Optional Room Seeding with SKIP_ROOMS_SEEDING Environment Variable (2025-11-19) ✅ **VERIFIED**
+**Status**: ✅ **COMPLETE** - Room seeding can now be optionally skipped via environment variable control
+
+**Problem**:
+- Database seeding always loaded room data from JSON files when present
+- No way to seed database without rooms for testing or deployment scenarios
+- Room seeding was tightly coupled to file existence checks
+
+**Root Cause Analysis**:
+- `seedData()` function in `backend/seed.ts` checked `fs.existsSync('../data/rooms.json')` and loaded rooms if file existed
+- No environment variable control over seeding behavior
+- All deployments required room data, even when not needed
+
+**Solution - SKIP_ROOMS_SEEDING Environment Variable**:
+```typescript
+// Added environment variable control at function top
+const skipRoomsSeeding = process.env.SKIP_ROOMS_SEEDING === 'true';
+
+// Modified room seeding logic to check both file existence AND environment variable
+if (fs.existsSync('../data/rooms.json') && !skipRoomsSeeding) {
+  // Load and seed rooms from JSON file
+  const roomsData = JSON.parse(fs.readFileSync('../data/rooms.json', 'utf8'));
+  // ... room seeding logic
+}
+
+// Applied same pattern to room_exits seeding
+if (fs.existsSync('../data/room_exits.json') && !skipRoomsSeeding) {
+  // Load and seed room exits from JSON file
+}
+```
+
+**Key Changes**:
+- Added `SKIP_ROOMS_SEEDING` environment variable check (`'true'` to skip)
+- Room seeding now requires both JSON file existence AND `SKIP_ROOMS_SEEDING !== 'true'`
+- Same logic applied to room_exits seeding for consistency
+- Environment variable checked once at function top for performance
+
+**Testing Results**:
+- ✅ **With SKIP_ROOMS_SEEDING=true**: Rooms table created empty, exits table created empty
+- ✅ **Without environment variable**: Normal seeding with 125 rooms and 262 exits
+- ✅ **File existence still required**: Variable only controls seeding when files exist
+- ✅ **TypeScript compilation**: No errors, proper variable scoping
+
+**Database State Comparison**:
+```sql
+-- Normal seeding (SKIP_ROOMS_SEEDING not set)
+SELECT COUNT(*) FROM rooms;     -- 125 rooms
+SELECT COUNT(*) FROM room_exits; -- 262 exits
+
+-- Skip rooms seeding (SKIP_ROOMS_SEEDING=true)  
+SELECT COUNT(*) FROM rooms;     -- 0 rooms
+SELECT COUNT(*) FROM room_exits; -- 0 exits
+```
+
+**Usage**:
+```powershell
+# Skip room seeding for testing
+$env:SKIP_ROOMS_SEEDING="true" ; node seed.ts
+
+# Normal seeding (default behavior)
+node seed.ts
+```
+
+**Technical Details**:
+- Environment variable checked as string comparison to `'true'`
+- Variable declared at function scope to avoid redeclaration issues
+- Maintains backward compatibility - existing deployments unchanged
+- Useful for testing database schema without world data
+- Enables deployment scenarios where room data comes from crawler instead of seed files
+
+**Files Modified**:
+- `backend/seed.ts`: Added SKIP_ROOMS_SEEDING environment variable control for room seeding (lines ~1902-1950 for rooms, ~1943-1980 for exits)
+
+**Impact**: Provides flexible seeding control for different deployment and testing scenarios while maintaining existing behavior by default
 **Status**: ✅ **COMPLETE** - Room connections now properly link cefmnoq west to cdeghjklmoq and cdeghjklmoq east to cefmnoq
 
 **Problem**:
