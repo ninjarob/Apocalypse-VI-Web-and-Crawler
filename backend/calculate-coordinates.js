@@ -24,8 +24,8 @@ const db = new sqlite3.Database(path.join(__dirname, '..', 'data', 'mud-data.db'
 
 // Card dimensions (adjusted for better spacing)
 // Spacing should be larger than the visual node size (60x40)
-const NODE_WIDTH = 100;  // Comfortable horizontal spacing (node is 60px)
-const NODE_HEIGHT = 70;  // Comfortable vertical spacing (node is 40px)
+const NODE_WIDTH = 150;  // Comfortable horizontal spacing (node is 60px) - increased 1.5x
+const NODE_HEIGHT = 105;  // Comfortable vertical spacing (node is 40px) - increased 1.5x
 
 // Direction to coordinate mapping with proper spacing
 // Each move should shift by at least one full card dimension
@@ -309,31 +309,38 @@ async function calculateCoordinates() {
           continue;
         }
 
-        if (!coordinates.has(neighborId)) {
-          const delta = DIRECTION_DELTAS[direction];
-          
-          // Check if crossing into a different level
-          const currentLevelOffset = levelOffsets.get(currentId) || { x: 0, y: 0, level: 0 };
-          const neighborLevelOffset = levelOffsets.get(neighborId) || { x: 0, y: 0, level: 0 };
-          
-          // Calculate ideal position with level offset
-          let idealX = current.x + delta.x;
-          let idealY = current.y + delta.y;
-          
-          // If transitioning between levels, apply the offset difference
-          if (currentLevelOffset.x !== neighborLevelOffset.x || currentLevelOffset.y !== neighborLevelOffset.y) {
-            const offsetDiff = {
-              x: neighborLevelOffset.x - currentLevelOffset.x,
-              y: neighborLevelOffset.y - currentLevelOffset.y
-            };
-            idealX += offsetDiff.x;
-            idealY += offsetDiff.y;
-          }
+        // Always calculate position, even if room already has coordinates
+        // This handles cases where a room is reached via multiple paths
+        const delta = DIRECTION_DELTAS[direction];
+        
+        // Check if crossing into a different level
+        const currentLevelOffset = levelOffsets.get(currentId) || { x: 0, y: 0, level: 0 };
+        const neighborLevelOffset = levelOffsets.get(neighborId) || { x: 0, y: 0, level: 0 };
+        
+        // Calculate ideal position with level offset
+        let idealX = current.x + delta.x;
+        let idealY = current.y + delta.y;
+        
+        // If transitioning between levels, apply the offset difference
+        if (currentLevelOffset.x !== neighborLevelOffset.x || currentLevelOffset.y !== neighborLevelOffset.y) {
+          const offsetDiff = {
+            x: neighborLevelOffset.x - currentLevelOffset.x,
+            y: neighborLevelOffset.y - currentLevelOffset.y
+          };
+          idealX += offsetDiff.x;
+          idealY += offsetDiff.y;
+        }
 
-          // Use collision detection to find the best position
-          // Pass the current (origin) position so we can halve the distance if needed
-          const newCoords = resolveCollision(coordinates, idealX, idealY, neighborId, current.x, current.y);
-
+        let newCoords;
+        if (coordinates.has(neighborId)) {
+          // Room already has coordinates - try to find a compromise position
+          const existing = coordinates.get(neighborId);
+          newCoords = resolveCollision(coordinates, idealX, idealY, neighborId, existing.x, existing.y);
+          coordinates.set(neighborId, newCoords);
+          // Don't re-queue if already processed
+        } else {
+          // First time placing this room
+          newCoords = resolveCollision(coordinates, idealX, idealY, neighborId, current.x, current.y);
           coordinates.set(neighborId, newCoords);
           queue.push({ id: neighborId, ...newCoords });
         }

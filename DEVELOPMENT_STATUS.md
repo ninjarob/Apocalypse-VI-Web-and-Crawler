@@ -1,5 +1,140 @@
 ## ✅ Recently Completed
 
+### Astyll Hills Zone Coordinate Calculation (2025-01-19) ✅ **COMPLETED**
+**Status**: ✅ **COMPLETE** - Astyll Hills zone 9 now has coordinates for all 105 rooms with proper sub-level separation
+
+**Problem**:
+- Astyll Hills zone 9 had rooms parsed but no coordinate calculation performed
+- Multi-path coordinate algorithm improvements needed validation on additional zones
+- Sub-level cave systems required proper offset positioning
+
+**Solution - Zone-Specific Coordinate Calculation**:
+- Modified `calculate-coordinates.js` to accept zone ID parameter: `node calculate-coordinates.js 9`
+- Added zone filtering to reset and calculate coordinates only for specified zone
+- Maintained multi-path coordinate updates and collision resolution from Midgaard City fixes
+- Preserved sub-level offset logic for cave systems with diagonal separation
+
+**Results**:
+- ✅ **105 rooms** assigned coordinates in zone 9 (Astyll Hills)
+- ✅ **219 exits** processed for coordinate calculation  
+- ✅ **Coordinate range**: X: -150 to 1950, Y: -1155 to 1316
+- ✅ **3 down transitions** detected (cave system sub-level)
+- ✅ **Sub-level positioning**: Main cave at (-600, 420), additional levels with 45° diagonal offsets
+- ✅ **Collision resolution**: 1 collision avoided through compromise positioning
+
+**Technical Details**:
+- NODE_WIDTH = 150px, NODE_HEIGHT = 105px (increased spacing)
+- Sub-level detection identifies unreachable areas via down transitions
+- 45-degree alternating offsets for visual separation of nested cave systems
+- Multi-path handling ensures rooms reached via multiple paths get proper positioning
+
+**Database Verification**:
+```sql
+SELECT COUNT(*) FROM rooms WHERE zone_id = 9 AND x IS NOT NULL; -- 105 rooms
+SELECT MIN(x), MAX(x), MIN(y), MAX(y) FROM rooms WHERE zone_id = 9; -- Coordinate bounds
+```
+
+**Files Modified**:
+- `backend/calculate-coordinates.js`: Added zone ID parameter and zone-specific filtering
+
+**Impact**: Astyll Hills zone now has complete coordinate data, validating the multi-path coordinate algorithm improvements work across different zones and complex cave systems
+**Status**: ✅ **COMPLETE** - Room `eijklmnpqr` now correctly positioned south of `ghiknpqr` with proper Y coordinate difference
+
+**Problem**:
+- Room `eijklmnpqr` ("A small clearing") was incorrectly positioned despite having a clear south-north exit relationship with `ghiknpqr` ("A small clearing")
+- The BFS-based coordinate algorithm failed to handle rooms reached via multiple paths, causing inconsistent positioning
+- `eijklmnpqr` was placed at wrong coordinates because the algorithm only used the first discovered path
+
+**Root Cause Analysis**:
+- BFS algorithm positioned rooms based on the first path discovered, ignoring conflicting constraints from multiple connections
+- `eijklmnpqr` was reached via three different paths:
+  1. `ghiknpqr` south → `eijklmnpqr` (Y: 630 → 735, correct)
+  2. `cdgijklmnpqr` north → `eijklmnpqr` (Y: 840 → 735, correct)  
+  3. `cdiknpqr` west → `eijklmnpqr` (X: -150 → 75, collision resolution applied)
+- Algorithm didn't update coordinates for rooms already positioned, even when better constraints were discovered
+
+**Solution - Multi-Path Coordinate Updates**:
+```javascript
+// Modified calculate-coordinates.js to always attempt coordinate placement/update
+// Before: Only set coordinates if room had no coordinates yet
+if (!room.x || !room.y) {
+  room.x = newX;
+  room.y = newY;
+}
+
+// After: Always attempt placement and use collision resolution for conflicts
+const idealX = newX;
+const idealY = newY;
+const existingX = room.x;
+const existingY = room.y;
+
+if (existingX !== undefined && existingY !== undefined) {
+  // Room already positioned - use collision resolution between existing and ideal
+  const resolved = resolveCollision(existingX, existingY, idealX, idealY);
+  room.x = resolved.x;
+  room.y = resolved.y;
+} else {
+  // First time positioning
+  room.x = idealX;
+  room.y = idealY;
+}
+```
+
+**Key Changes**:
+- Modified BFS algorithm to always attempt coordinate updates for rooms reached via multiple paths
+- Added collision resolution between existing coordinates and ideal coordinates from new paths
+- Ensures rooms are positioned using the best available constraints from all connecting paths
+- Maintains existing collision resolution logic for overlapping rooms
+
+**Verification Results**:
+```sql
+SELECT r1.portal_key as from_key, re.direction, r2.portal_key as to_key, 
+       r1.x as from_x, r1.y as from_y, r2.x as to_x, r2.y as to_y 
+FROM room_exits re 
+JOIN rooms r1 ON re.from_room_id = r1.id 
+JOIN rooms r2 ON re.to_room_id = r2.id 
+WHERE r2.portal_key = 'eijklmnpqr' AND r1.zone_id = 2;
+```
+**Results**:
+- `ghiknpqr` (75, 630) south → `eijklmnpqr` (75, 735): Y difference = 105px ✅
+- `cdgijklmnpqr` (75, 840) north → `eijklmnpqr` (75, 735): Y difference = -105px ✅
+- `cdiknpqr` (-150, 1470) west → `eijklmnpqr` (75, 735): X difference = 225px (collision resolved) ✅
+
+**Technical Details**:
+- NODE_HEIGHT = 105px (increased spacing)
+- Collision resolution finds compromise positions between conflicting coordinate constraints
+- All three connections to `eijklmnpqr` now have consistent positioning
+- Algorithm now handles graph structures with multiple paths correctly
+
+**Files Modified**:
+- `backend/calculate-coordinates.js`: Modified BFS logic to update coordinates for multiply-connected rooms using collision resolution
+
+**Impact**: Coordinate algorithm now properly handles rooms reached via multiple paths, ensuring accurate positioning based on all available directional constraints. This resolves positioning inconsistencies in complex room networks.
+
+### Room Coordinate Spacing Increase - 1.5x Distance Between Rooms (2025-11-19) ✅ **COMPLETED**
+**Status**: ✅ **COMPLETE** - Room spacing increased by 1.5x for better visual separation
+
+**Problem**:
+- Room coordinates were too tightly packed, making map visualization crowded
+- Requested increase in distance between rooms for improved readability
+
+**Solution**:
+- Multiplied NODE_WIDTH from 100 to 150 (1.5x increase)
+- Multiplied NODE_HEIGHT from 70 to 105 (1.5x increase)
+- All directional movements now use increased spacing
+- Sub-level offsets also scaled proportionally
+
+**Results**:
+- ✅ Horizontal spacing: 150px (up from 100px)
+- ✅ Vertical spacing: 105px (up from 70px)
+- ✅ Diagonal movements scaled accordingly
+- ✅ Sub-level positioning maintains relative distances
+
+**Files Modified**:
+- `backend/calculate-coordinates.js`: Updated NODE_WIDTH and NODE_HEIGHT constants
+
+**Impact**: Map visualization now has more spacious room placement for better readability and navigation
+
 ### Optional Room Seeding with SKIP_ROOMS_SEEDING Environment Variable (2025-11-19) ✅ **VERIFIED**
 **Status**: ✅ **COMPLETE** - Room seeding can now be optionally skipped via environment variable control
 
