@@ -820,19 +820,19 @@ export class MudLogParser {
         
         console.log(`DEBUG: Extracted room name: "${roomName}"`);
         
-        if (!roomName || 
-            roomName.length < 2 || 
-            roomName.match(/^</) ||
-            roomName.match(/^\d+H/) ||  // Status line with health
-            roomName.match(/\d+X/) ||   // Status line with XP
-            roomName.match(/^Obvious Exits:/i) ||   // FIX #13: Don't treat "Obvious Exits:" as a room name
-            roomName.match(/^(north|south|east|west|up|down|northeast|northwest|southeast|southwest)\s*-\s*/i)) {   // FIX #15: Skip "Obvious Exits:" format lines like "south - A muddy corridor"
-          console.log(`DEBUG: Skipping room name "${roomName}" - validation failed`);
-          i++;
-          continue;
-        }
-        
-        // Collect description lines (white/gray colored text following the title)
+  if (!roomName || 
+      roomName.length < 2 || 
+      roomName.match(/^</) ||
+      roomName.match(/^\d+H/) ||  // Status line with health
+      roomName.match(/\d+X/) ||   // Status line with XP
+      roomName.match(/^Obvious Exits:/i) ||   // FIX #13: Don't treat "Obvious Exits:" as a room name
+      roomName.match(/^(north|south|east|west|up|down|northeast|northwest|southeast|southwest)\s*-\s*/i) ||   // FIX #15: Skip "Obvious Exits:" format lines like "south - A muddy corridor"
+      roomName.match(/^It is \d+ o'clock/i) ||   // Skip time output lines
+      roomName.match(/^The \d+(st|nd|rd|th) Day of the Month/i)) {   // Skip date output lines
+    console.log(`DEBUG: Skipping room name "${roomName}" - validation failed`);
+    i++;
+    continue;
+  }        // Collect description lines (white/gray colored text following the title)
         let description = '';
         let j = i + 1;
         let foundDescription = false;
@@ -1844,6 +1844,26 @@ export class MudLogParser {
           toRoomId = roomIdMap.get(`name:${exit.to_room_name}`);
           if (toRoomId) {
             console.log(`   ℹ️  Found to_room_id by name lookup: ${exit.to_room_name} -> ${toRoomId}`);
+          } else {
+            // Create placeholder room for unknown destinations
+            const zoneId = 9; // Astyll Hills zone
+            const placeholderRoom = {
+              name: exit.to_room_name,
+              description: 'Unknown room referenced in exit',
+              zone_id: zoneId,
+              zone_exit: 0,
+              terrain: 'unknown',
+              flags: '',
+              portal_key: null
+            };
+            try {
+              const response = await axios.post(`${this.apiBaseUrl}/rooms`, placeholderRoom);
+              toRoomId = response.data.id;
+              console.log(`   🆕 Created placeholder room for ${exit.to_room_name} in zone ${zoneId}`);
+            } catch (error: any) {
+              console.error(`   ❌ Failed to create placeholder room: ${error.message}`);
+              continue;
+            }
           }
         }
         
