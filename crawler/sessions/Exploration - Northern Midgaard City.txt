@@ -13440,8 +13440,10 @@ look w
 </font><font color="#C0C0C0">Wall road continues west.
 
 </font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">106M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">290536X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">101M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">290536X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
 cast 'bind portal minor'
-You lost your concentration!
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'opqr' briefly appears as a portal shimmers into view and then disappears.
 
 </font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">101M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">290536X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
 </font><font color="#0080FF">Room scan complete!
