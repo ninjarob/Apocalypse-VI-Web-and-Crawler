@@ -721,6 +721,14 @@ export class MudLogParser {
         continue;
       }
       
+      // Detect flee command (without direction)
+      if (cleanLine === 'flee') {
+        pendingFlee = true;
+        console.log(`   🏃 Flee command detected - next room will be flee destination`);
+        i++;
+        continue;
+      }
+      
       // Detect movement commands (single letters or full directions)
       const movementMatch = cleanLine.match(/^(n|s|e|w|u|d|north|south|east|west|up|down|northeast|northwest|southeast|southwest|ne|nw|se|sw)$/i);
       if (movementMatch) {
@@ -734,8 +742,14 @@ export class MudLogParser {
       // Example: "In a total panic, you flee west, head over heels."
       const fleeMatch = cleanLine.match(/you flee\s+(north|south|east|west|up|down|northeast|northwest|southeast|southwest)/i);
       if (fleeMatch) {
-        lastDirection = this.expandDirection(fleeMatch[1]);
-        console.log(`   🏃 Fled ${lastDirection}`);
+        const detectedDirection = this.expandDirection(fleeMatch[1]);
+        // Only set lastDirection if it wasn't already set by room parsing look-ahead
+        if (!lastDirection) {
+          lastDirection = detectedDirection;
+          console.log(`   🏃 Fled ${lastDirection}`);
+        } else {
+          console.log(`   🏃 Flee ${detectedDirection} already detected from room parsing`);
+        }
         
         // FIX #17: Clear the pending flee flag since we now have the direction
         pendingFlee = false;
@@ -908,6 +922,28 @@ export class MudLogParser {
           continue;
         }
         
+        // FIX: Check if this room appearance is due to a flee command
+        // The room title appears before the flee message, so we need to look ahead
+        let fleeDirection = '';
+        for (let lookAhead = i + 1; lookAhead < Math.min(i + 10, lines.length); lookAhead++) {
+          const lookAheadLine = this.stripHtml(lines[lookAhead]).trim();
+          const fleeMatch = lookAheadLine.match(/you flee\s+(north|south|east|west|up|down|northeast|northwest|southeast|southwest)/i);
+          if (fleeMatch) {
+            fleeDirection = this.expandDirection(fleeMatch[1]);
+            console.log(`   🏃 Detected flee command ahead - setting lastDirection to ${fleeDirection}`);
+            break;
+          }
+          // Stop looking if we hit another room title or prompt
+          if (lines[lookAhead].includes('color="#00FFFF"') || lines[lookAhead].includes('&lt;') && lines[lookAhead].includes('&gt;')) {
+            break;
+          }
+        }
+        
+        // If we found a flee direction, use it as lastDirection for this room parse
+        if (fleeDirection) {
+          lastDirection = fleeDirection;
+        }
+        
         // Look for exits line (teal color)
         let exits: string[] = [];
         
@@ -1041,15 +1077,12 @@ export class MudLogParser {
             } else {
               // Normal movement with direction
               // Get the direction we came from (reverse of lastDirection)
-              const expectedExit = getOppositeDirection(lastDirection);
+              const expectedExit = this.getOppositeDirection(lastDirection);
               
               // Validate: the room we found should have an exit in the direction we came from
               // Example: if we moved "south" to get here, this room should have a "north" exit back
-              // EXCEPTION: For portal-bound rooms, skip validation since portal keys make them unique
-              const shouldValidateExits = !existingRoom.portal_key;
-              
-              if (!shouldValidateExits || (existingRoom.exits && existingRoom.exits.includes(expectedExit))) {
-                console.log(`  ✅ Exit validation PASSED - ${shouldValidateExits ? `room has ${expectedExit} exit (reverse of ${lastDirection})` : `skipped for portal-bound room ${existingRoom.portal_key}`}`);
+              if (existingRoom.exits && existingRoom.exits.includes(expectedExit)) {
+                console.log(`  ✅ Exit validation PASSED - room has ${expectedExit} exit (reverse of ${lastDirection})`);
                 console.log(`  🚶 Player moved ${lastDirection} to existing room - updating current room tracking`);
                 
                 // FIX #10: Track bug room updates
@@ -1339,6 +1372,20 @@ export class MudLogParser {
       'se': 'southeast', 'sw': 'southwest'
     };
     return map[dir.toLowerCase()] || dir.toLowerCase();
+  }
+
+  /**
+   * Get the opposite direction
+   */
+  private getOppositeDirection(direction: string): string {
+    const opposites: Record<string, string> = {
+      'north': 'south', 'south': 'north',
+      'east': 'west', 'west': 'east',
+      'up': 'down', 'down': 'up',
+      'northeast': 'southwest', 'southwest': 'northeast',
+      'northwest': 'southeast', 'southeast': 'northwest'
+    };
+    return opposites[direction] || direction;
   }
   
   /**
