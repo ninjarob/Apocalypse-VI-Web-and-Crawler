@@ -21,6 +21,7 @@ Documentation focused on AI efficient indexing and understanding of the applicat
 ### 💬 Development Communication (`development/`)
 Tools for efficient AI ↔ developer communication:
 
+- **[AI_AGENT_REFERENCE.md](development/AI_AGENT_REFERENCE.md)** - 🤖 AI-specific context preservation and commands
 - **[DEVELOPMENT_STATUS.md](development/DEVELOPMENT_STATUS.md)** - Current development status and completed work
 - **[SESSION_HANDOFF.md](development/SESSION_HANDOFF.md)** - Session handoffs and context preservation
 - **[ARCHIVE.md](development/ARCHIVE.md)** - Historical features and implementation details

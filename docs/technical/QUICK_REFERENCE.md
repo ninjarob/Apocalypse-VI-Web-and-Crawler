@@ -1,5 +1,29 @@
 # Quick Reference Guide
 
+## 🤖 AI Agent Section
+
+### Context Preservation
+**CRITICAL**: Always read these before starting work:
+1. `docs/development/AI_AGENT_REFERENCE.md` - Current objectives and commands
+2. Top of `docs/development/DEVELOPMENT_STATUS.md` - AI context summary
+3. `docs/development/SESSION_HANDOFF.md` - Latest session context
+
+### Session Documentation
+**MANDATORY**: After completing work:
+1. Update `docs/development/DEVELOPMENT_STATUS.md` with changes
+2. Update `docs/development/SESSION_HANDOFF.md` using the template
+3. Include test commands and next steps
+
+### Current Investigation (Parser Bug)
+**Objective**: Fix spurious west exit from cfhilnoq to lnoq  
+**Test Command**:
+```powershell
+cd backend; npm run seed; cd ../crawler; npx tsx parse-logs.ts "sessions/Exploration - Astyll Hills.txt" --zone-id 9; cd ../backend; node query-db.js "SELECT r.portal_key, GROUP_CONCAT(re.direction, ', ') as exits FROM rooms r LEFT JOIN room_exits re ON r.id = re.from_room_id WHERE r.portal_key = 'cfhilnoq' GROUP BY r.id"
+```
+**Expected**: `cfhilnoq` exits = 'north, south' (no 'west')
+
+---
+
 ## 🚀 Starting the System
 
 ```powershell

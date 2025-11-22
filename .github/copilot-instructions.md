@@ -10,6 +10,15 @@
 
 This is **non-negotiable** for every completed task.
 
+### 🤖 AI Context Preservation (NEW)
+**MANDATORY**: For AI agents working on complex investigations:
+
+1. **Read AI Context Summary** at top of `DEVELOPMENT_STATUS.md` before starting
+2. **Use AI_AGENT_REFERENCE.md** for current objectives and commands
+3. **Follow SESSION_HANDOFF_TEMPLATE.md** for session documentation
+4. **Update SESSION_HANDOFF.md** with session summary and next steps
+5. **Preserve debug logging** - do not remove existing investigation logs
+
 ### 💻 Terminal & Command Execution
 - **Windows PowerShell**: Use `;` as command separator (not `&&`)
 - **Backend Domain**: `http://localhost:3002`
@@ -23,6 +32,8 @@ This is **non-negotiable** for every completed task.
 
 ### 📁 Key Files
 - `docs/development/DEVELOPMENT_STATUS.md` - Track all completed work here
+- `docs/development/AI_AGENT_REFERENCE.md` - 🤖 AI context and commands
+- `docs/development/SESSION_HANDOFF.md` - Session context preservation
 - `backend/seed.ts` - Database initialization
 - `crawler/src/tasks/` - Task-based MUD automation
 

@@ -1,5 +1,19 @@
 # Development Status
 
+## 🤖 AI Agent Context Summary
+**Current Objective**: Parser bug investigation - spurious west exit from cfhilnoq to lnoq  
+**Status**: Investigation paused, comprehensive documentation complete  
+**Next Steps**: Apply Fix #6 (exit validation before currentRoomKey update)  
+**Critical Commands**:
+- Test: `cd backend; npm run seed; cd ../crawler; npx tsx parse-logs.ts "sessions/Exploration - Astyll Hills.txt" --zone-id 9`
+- Verify: `cd ../backend; node query-db.js "SELECT r.portal_key, GROUP_CONCAT(re.direction, ', ') as exits FROM rooms r LEFT JOIN room_exits re ON r.id = re.from_room_id WHERE r.portal_key = 'cfhilnoq' GROUP BY r.id"`
+
+**Expected Result**: Only 'north, south' exits (no spurious 'west')
+
+---
+
+### API Documentation and Development Guides - Complete Implementation (2025-01-23) ✅ **COMPLETED**
+
 ### API Documentation and Development Guides - Complete Implementation (2025-01-23) ✅ **COMPLETED**
 **Status**: ✅ **COMPLETE** - Created comprehensive API documentation and development workflow guides
 
