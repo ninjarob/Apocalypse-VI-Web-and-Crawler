@@ -1,13 +1,144 @@
 # Development Status
 
 ## 🤖 AI Agent Context Summary
-**Current Objective**: Documentation updated to centralize all data processing commands in scripts/ directory for efficiency
-**Status**: ✅ **COMPLETED** - Updated documentation to eliminate directory navigation requirements, centralizing all operations in scripts/
-**Next Steps**: Continue with game documentation or next development task
+**Current Objective**: Strengthen documentation with reliable command patterns to reduce command failures
+**Status**: ✅ **COMPLETED** - Updated QUICK_REFERENCE.md with PowerShell-native commands and clear working/non-working patterns
+**Next Steps**: Monitor for reduced command failures in future sessions
 **Critical Commands**:
 - Parse logs: `cd scripts ; npm run parse-logs "path/to/log.txt" --zone-id X`
 - Query database: `cd scripts ; npm run query-db "SELECT ..."`
 - Update docs after changes: Update `docs/development/DEVELOPMENT_STATUS.md`
+
+### Documentation Strengthening - Reliable Command Patterns (2025-11-22) ✅ **COMPLETED**
+**Status**: ✅ **COMPLETED** - Updated QUICK_REFERENCE.md to prioritize working commands and clearly separate them from problematic ones
+
+**Problem**:
+- Documentation contained many commands that fail in Windows PowerShell (jq, complex curl, relative paths)
+- Mixed working and non-working commands without clear separation
+- Users spending time on commands that don't work due to environment differences
+
+**Solution - Documentation Cleanup**:
+
+1. **Added Reliable Command Patterns Section**:
+   - Created prominent section at top of Common Commands
+   - Listed working PowerShell patterns (Invoke-RestMethod, Get-Content, Select-String)
+   - Listed problematic patterns to avoid (jq, relative paths, cd && chaining)
+
+2. **Updated API Testing Section**:
+   - Replaced Unix curl commands with PowerShell-native Invoke-RestMethod
+   - Removed complex curl syntax that fails in PowerShell
+
+3. **Updated Data Validation Section**:
+   - Replaced jq commands with PowerShell property access
+   - Used Invoke-RestMethod for API calls
+
+4. **Updated Performance Checks**:
+   - Ensured all commands use PowerShell-native tools
+   - Removed any Unix tool dependencies
+
+5. **Updated Ollama Section**:
+   - Replaced complex curl POST with Invoke-RestMethod
+
+6. **Enhanced Pro Tips**:
+   - Added emphasis on PowerShell-native commands
+   - Prioritized full absolute paths and scripts directory execution
+
+**Key Improvements**:
+- **Clear Separation**: Working commands clearly marked with ✅, problematic with ❌
+- **PowerShell Native**: All commands now work in Windows PowerShell without external tools
+- **Pattern Recognition**: Users can identify reliable patterns vs ones to avoid
+- **Reduced Failures**: Eliminated jq, complex curl, and path resolution issues
+- **Better UX**: Commands that work reliably reduce debugging time
+
+**Impact**: 
+- Users will spend less time on failing commands
+- Clear guidance on what works vs doesn't work in PowerShell
+- Improved development experience with reliable command patterns
+- Documentation now reflects actual working commands in the environment
+
+### Map Loading Optimization - Zone-Specific Data Loading (2025-11-22) ✅ **COMPLETED**
+**Status**: ✅ **COMPLETED** - Optimized ZoneMap component to load only rooms and exits for the selected zone instead of loading all data and filtering client-side
+
+**Problem**:
+- ZoneMap component was loading ALL rooms and ALL exits from the database, then filtering client-side for the selected zone
+- This was inefficient and could cause performance issues with large datasets
+- User requested the map to "only load rooms and room exits for the zone that is selected"
+
+**Solution - API and Frontend Optimization**:
+
+1. **API Enhancement**: Modified backend API routes (`backend/src/routes/api.ts`) to support `zone_id` filtering for `room_exits`:
+   - Added special handling for `zone_id` parameter when querying `room_exits`
+   - When `zone_id` is provided for room_exits, the API first queries rooms in that zone, gets their IDs, then filters exits where `from_room_id` OR `to_room_id` is in the zone's room IDs
+   - This ensures only exits connected to the zone's rooms are returned
+
+2. **Database Query Enhancement**: Updated `BaseRepository.findAll()` method (`backend/src/repositories/BaseRepository.ts`) to support IN clauses:
+   - Added special handling for `room_ids` filter that creates `IN` clauses for both `from_room_id` and `to_room_id` fields
+   - This allows efficient database-level filtering of exits connected to specific rooms
+
+3. **Frontend Optimization**: Modified ZoneMap component (`frontend/src/components/ZoneMap.tsx`):
+   - Changed from loading all rooms/exits and filtering client-side to using API filters
+   - Now calls `api.getAll('rooms', { zone_id: selectedZoneId })` for rooms
+   - Now calls `api.getAll('room_exits', { zone_id: selectedZoneId })` for exits
+   - Removed client-side filtering logic since API now handles zone filtering
+
+**Key Changes**:
+- **API Routes**: Added zone filtering support for room_exits endpoint
+- **BaseRepository**: Enhanced `findAll()` to support IN clauses for complex filtering
+- **ZoneMap Component**: Updated to use API filtering instead of client-side filtering
+- **Performance**: Reduced data transfer and processing by loading only zone-relevant data
+
+**Impact**: 
+- Map loading is now optimized to only fetch data for the selected zone
+- Reduced network traffic and client-side processing
+- Improved performance, especially with large numbers of rooms/exits across multiple zones
+- Maintains all existing functionality while improving efficiency
+
+### Midgaard City Zone 2 Process Pipeline Execution - Complete Data Processing (2025-11-22) ✅ **COMPLETED**
+**Status**: ✅ **COMPLETED** - Full data processing pipeline executed successfully for Midgaard City (zone 2), populating database with complete room, exit, and coordinate data
+
+**Problem**:
+- Midgaard City zone 2 lacked processed room and exit data for map visualization
+- Needed to run the complete data processing pipeline to extract rooms, exits, and coordinates from exploration logs
+
+**Solution - Complete Pipeline Execution**:
+Executed the full data processing pipeline for Midgaard City zone 2:
+
+1. **Database Seeding (SKIP_ROOMS_SEEDING=true)**: `cd scripts ; $env:SKIP_ROOMS_SEEDING="true" ; npm run seed`
+   - Seeded reference data without room data to prepare for log parsing
+   - Loaded 4 class groups, 14 classes, 17 races, 73 zones, and other reference entities
+
+2. **Log Parsing**: `cd scripts ; npm run parse-logs "../scripts/sessions/Exploration - Northern Midgaard City.txt" --zone-id 2`
+   - Parsed 18,527 line exploration log successfully
+   - Extracted 128 rooms and 458 exits from log
+   - Saved 126 rooms and 266 exits to database
+   - Correctly detected zone transitions and marked zone exits
+
+3. **Coordinate Calculation**: `cd scripts ; npm run calculate-coordinates 2`
+   - Calculated coordinates for 119 rooms in zone 2
+   - Applied collision avoidance and proper spacing
+   - Coordinate range: X: -750 to 1800, Y: -315 to 1890
+   - Handled sub-level areas (sewers, spires) with vertical offsets
+
+**Key Results**:
+- ✅ Parser successfully processed Midgaard City exploration log
+- ✅ 126 rooms and 266 exits saved to database for zone 2
+- ✅ 119 rooms assigned geographical coordinates for map visualization
+- ✅ Zone exit detection working correctly (cross-zone exits identified)
+- ✅ Coordinate calculation handled multi-level areas properly
+
+**Database Summary**:
+- **Rooms**: 126 saved (with portal keys for navigation)
+- **Exits**: 266 saved (with zone exit markings)
+- **Coordinates**: 119 rooms positioned with X/Y coordinates
+- **Zone Exits**: Cross-zone exits properly identified for navigation
+
+**Impact**: Midgaard City zone 2 now has complete room, exit, and coordinate data ready for frontend map visualization and navigation. The data processing pipeline works correctly for zone 2 exploration logs.
+
+**Files Processed**:
+- `scripts/sessions/Exploration - Northern Midgaard City.txt` - Exploration log input
+- Database tables: rooms, room_exits populated for zone 2
+
+**Next Steps**: Continue with game documentation or next development task.
 
 ### Astyll Hills Zone 9 Process Pipeline Execution - Complete Data Processing (2025-11-22) ✅ **COMPLETED**
 **Status**: ✅ **COMPLETED** - Full data processing pipeline executed successfully for Astyll Hills (zone 9), populating database with complete room, exit, and coordinate data

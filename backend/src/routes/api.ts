@@ -141,6 +141,19 @@ router.get(
     if (category && type === 'commands') {filters.category = category;}
     if (ability_id && type === 'ability_scores') {filters.ability_id = parseInt(ability_id as string);}
     if (zone_id && type === 'rooms') {filters.zone_id = parseInt(zone_id as string);}
+    if (zone_id && type === 'room_exits') {
+      // For room_exits, zone_id filter requires special handling
+      // We need to get room IDs for the zone and filter exits by those rooms
+      const zoneId = parseInt(zone_id as string);
+      const zoneRooms = await repositories.rooms.findAll({ zone_id: zoneId });
+      const roomIds = zoneRooms.map(r => r.id);
+      if (roomIds.length > 0) {
+        filters.room_ids = roomIds; // Special filter for IN clause
+      } else {
+        // No rooms in zone, return empty result
+        return res.json([]);
+      }
+    }
     if (portal_key && type === 'rooms') {filters.portal_key = portal_key as string;}
     if (class_id && type === 'class_proficiencies') {
       console.log('[API] Adding class_id filter:', class_id);

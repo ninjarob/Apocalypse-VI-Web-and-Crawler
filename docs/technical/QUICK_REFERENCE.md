@@ -46,6 +46,51 @@ cd crawler && npm run dev    # Terminal 3
 
 ## 🔧 Common Commands
 
+### ⚡ RELIABLE COMMAND PATTERNS (Windows PowerShell)
+**🚨 IMPORTANT**: These patterns are tested and work reliably in Windows PowerShell. Use them to avoid command failures:
+
+**✅ RELIABLE PATTERNS:**
+```powershell
+# ✅ Data Processing (RECOMMENDED - from scripts directory)
+cd scripts ; npm run seed
+cd scripts ; npm run parse-logs "../scripts/sessions/Exploration - Astyll Hills.txt" --zone-id 9
+cd scripts ; npm run calculate-coordinates 9
+
+# ✅ Database Queries (RECOMMENDED - full absolute path)
+npx tsx "c:\work\other\Apocalypse VI MUD\scripts\query-db.ts" "SELECT * FROM rooms LIMIT 5"
+
+# ✅ API Calls (PowerShell native - no external tools needed)
+Invoke-RestMethod "http://localhost:3002/api/rooms"
+Invoke-RestMethod "http://localhost:3002/api/stats"
+
+# ✅ File Operations (PowerShell native)
+Get-Content crawler\logs\combined-*.log -Tail 20
+Select-String -Path crawler\logs\*.log -Pattern "ERROR"
+Copy-Item backend\mud-data.db "backup-$(Get-Date -Format 'yyyyMMdd-HHmmss').db"
+
+# ✅ Process Management (PowerShell native)
+Get-Process node
+Stop-Process -Name node -Force
+```
+
+**❌ AVOID THESE PATTERNS (They Fail in PowerShell):**
+```powershell
+# ❌ FAILS: jq command (not available in Windows)
+curl http://localhost:3002/api/stats | jq .rooms
+
+# ❌ FAILS: Relative paths with npx tsx
+npx tsx scripts/query-db.ts "SELECT * FROM rooms"
+
+# ❌ FAILS: cd && command chaining
+cd scripts && npx tsx query-db.ts "SELECT * FROM rooms"
+
+# ❌ FAILS: Direct node execution
+node scripts/query-db.ts "SELECT * FROM rooms"
+
+# ❌ FAILS: Unix-style curl with complex options
+curl -X POST http://localhost:11434/api/generate -H "Content-Type: application/json" -d '{"prompt":"test"}'
+```
+
 ### ⚡ PRIORITY: Auto-Approved Commands (VS Code Settings)
 **🚨 IMPORTANT**: When running commands in VS Code, prioritize the **auto-approved versions** configured in your settings.json. These commands are pre-approved and will execute without additional prompts:
 
@@ -364,33 +409,29 @@ cd frontend && npm run lint
 
 ### API Testing & Debugging
 ```powershell
-# Get all rooms
-curl "http://localhost:3002/api/rooms"
+# Get all rooms (PowerShell native)
+Invoke-RestMethod "http://localhost:3002/api/rooms"
 
-# Get rooms in zone 2
-curl "http://localhost:3002/api/rooms?zone_id=2"
+# Get rooms in zone 2 (PowerShell native)
+Invoke-RestMethod "http://localhost:3002/api/rooms?zone_id=2"
 
-# Get specific room
-curl "http://localhost:3002/api/rooms/123"
+# Get specific room (PowerShell native)
+Invoke-RestMethod "http://localhost:3002/api/rooms/123"
 
-# Get room by name
-curl "http://localhost:3002/api/rooms/by-name/The%20Temple"
+# Get room by name (PowerShell native)
+Invoke-RestMethod "http://localhost:3002/api/rooms/by-name/The%20Temple"
 
-# Get entity types
-curl "http://localhost:3002/api/entity-types"
+# Get entity types (PowerShell native)
+Invoke-RestMethod "http://localhost:3002/api/entity-types"
 
-# Create test room
-curl -X POST "http://localhost:3002/api/rooms" \
-  -H "Content-Type: application/json" \
-  -d '{"name":"Test Room","description":"A test","zone_id":2}'
+# Create test room (PowerShell native)
+Invoke-RestMethod -Method Post -Uri "http://localhost:3002/api/rooms" -Body '{"name":"Test Room","description":"A test","zone_id":2}' -ContentType "application/json"
 
-# Update room
-curl -X PUT "http://localhost:3002/api/rooms/123" \
-  -H "Content-Type: application/json" \
-  -d '{"description":"Updated description"}'
+# Update room (PowerShell native)
+Invoke-RestMethod -Method Put -Uri "http://localhost:3002/api/rooms/123" -Body '{"description":"Updated description"}' -ContentType "application/json"
 
-# Delete room
-curl -X DELETE "http://localhost:3002/api/rooms/123"
+# Delete room (PowerShell native)
+Invoke-RestMethod -Method Delete -Uri "http://localhost:3002/api/rooms/123"
 ```
 
 ### Ollama Setup
@@ -404,10 +445,8 @@ curl http://localhost:11434/api/tags
 # List installed models
 ollama list
 
-# Test AI model
-curl -X POST http://localhost:11434/api/generate \
-  -H "Content-Type: application/json" \
-  -d '{"model":"llama3.2:3b","prompt":"Hello","stream":false}'
+# Test AI model (PowerShell native)
+Invoke-RestMethod -Method Post -Uri "http://localhost:11434/api/generate" -Body '{"model":"llama3.2:3b","prompt":"Hello","stream":false}' -ContentType "application/json"
 ```
 
 ### View Logs
@@ -544,52 +583,41 @@ curl http://localhost:3002/api/stats
 ### Database Access Issues
 **🚨 CRITICAL: USE THE API, NOT DIRECT DATABASE QUERIES 🚨**
 
-Direct database access (sqlite3, query-db.js, etc.) is **HIGHLY PROBLEMATIC** and should be avoided. Use the REST API instead.
+Direct database access in PowerShell is **HIGHLY PROBLEMATIC** due to path escaping and environment issues. Always use the REST API instead.
 
-**✅ ALWAYS DO THIS**:
+**✅ ALWAYS USE THE API (RECOMMENDED)**:
 ```powershell
 # Use the API - it's reliable and consistent
 curl http://localhost:3002/api/rooms
 curl http://localhost:3002/api/room_exits
 curl http://localhost:3002/api/zones
 
-# Or in browser
-# http://localhost:3002/api/rooms
-# http://localhost:3002/api/room_exits?from_room_id=123
+# Or in browser: http://localhost:3002/api/rooms
+# Or with PowerShell: Invoke-RestMethod "http://localhost:3002/api/rooms"
 ```
 
-**❌ NEVER DO THIS**:
-```powershell
-# Direct sqlite3 commands - fail with path/escaping issues
-sqlite3 backend/mud-data.db "SELECT * FROM rooms"
+**Why the API is better:**
+- ✅ Tested, consistent, and handles all edge cases properly
+- ✅ Proper JSON formatting and error handling
+- ✅ No path/escaping issues in PowerShell
+- ✅ Works reliably across different environments
+- ✅ Supports filtering (e.g., `?zone_id=2`)
 
-# query-db.js script - unreliable, often gives wrong results
-node backend/query-db.js "SELECT * FROM rooms"
-
-# Any other direct database access - just don't
-```
-
-**Why?**
-- Direct database access in PowerShell has path/escaping issues
-- query-db.js script is unreliable and often returns incorrect data
-- API is tested, consistent, and handles all edge cases properly
-- API provides proper JSON formatting and error handling
-
-### ✅ CORRECT Database Query Method (query-db.ts)
-**🚨 IMPORTANT: When you MUST query the database directly, use this EXACT method:**
+### ✅ CORRECT Database Query Method (When API Won't Work)
+**🚨 IMPORTANT: Only use direct database queries when the API cannot provide the needed data. Use this EXACT method:**
 
 ```powershell
-# ✅ CORRECT: Use full absolute path with npx tsx
+# ✅ CORRECT: Use full absolute path with npx tsx (RECOMMENDED)
 npx tsx "c:\work\other\Apocalypse VI MUD\scripts\query-db.ts" "SELECT * FROM rooms WHERE portal_key = 'dgklmoq'"
 
 # ✅ CORRECT: With complex queries (use double quotes around entire command)
 npx tsx "c:\work\other\Apocalypse VI MUD\scripts\query-db.ts" "SELECT r.name, GROUP_CONCAT(re.direction, ', ') as exits FROM rooms r LEFT JOIN room_exits re ON r.id = re.from_room_id WHERE r.portal_key = 'dgklmoq' GROUP BY r.id"
 
-# ✅ CORRECT: JSON output
+# ✅ CORRECT: JSON output for PowerShell processing
 npx tsx "c:\work\other\Apocalypse VI MUD\scripts\query-db.ts" "SELECT * FROM rooms LIMIT 5" --json
 ```
 
-**❌ WRONG: These methods will FAIL:**
+**❌ PROBLEMATIC METHODS (Will Fail in PowerShell):**
 ```powershell
 # ❌ FAILS: Relative path issues
 npx tsx scripts/query-db.ts "SELECT * FROM rooms"
@@ -600,37 +628,18 @@ cd scripts && npx tsx query-db.ts "SELECT * FROM rooms"
 # ❌ FAILS: npm run from scripts directory (PowerShell path issues)
 cd scripts && npm run query-db -- "SELECT * FROM rooms"
 
-# ❌ FAILS: Direct node execution
+# ❌ FAILS: Direct node execution (missing dependencies)
 node scripts/query-db.ts "SELECT * FROM rooms"
 
 # ❌ FAILS: Backend query-db.js (different script, unreliable)
 node backend/query-db.js "SELECT * FROM rooms"
+
+# ❌ FAILS: Direct sqlite3 commands (path/escaping issues)
+sqlite3 backend/mud-data.db "SELECT * FROM rooms"
 ```
 
-**✅ CORRECT Coordinate Calculation Method:**
-```powershell
-# ✅ CORRECT: Run from scripts directory (RECOMMENDED)
-cd scripts ; npm run calculate-coordinates 9
-
-# ✅ CORRECT: With npm run from scripts directory
-npm run calculate-coordinates 9
-```
-
-**❌ WRONG: These coordinate calculation methods will FAIL:**
-```powershell
-# ❌ FAILS: Wrong directory (calculate-coordinates.js is in scripts/, not backend/)
-cd backend ; node calculate-coordinates.js 9
-
-# ❌ FAILS: Direct node execution
-node scripts/calculate-coordinates.js 9
-
-# ❌ FAILS: Wrong working directory
-cd crawler ; npm run calculate-coordinates 9
-```
-
-**Why these methods work:**
+**Why the correct method works:**
 - **query-db.ts**: Uses `npx tsx` for TypeScript execution, full absolute path prevents PowerShell path resolution issues, runs from project root where tsx can find node_modules
-- **calculate-coordinates**: Must be run from `scripts/` directory where the script and package.json are located, uses npm run for proper environment setup
 
 ## 📁 Important Files
 
@@ -721,25 +730,25 @@ curl http://localhost:3002/api/stats
 
 ### Performance Checks
 ```powershell
-# API response time
-Measure-Command { curl http://localhost:3002/api/rooms | Out-Null }
+# API response time (PowerShell native)
+Measure-Command { Invoke-RestMethod "http://localhost:3002/api/rooms" | Out-Null }
 
-# Memory usage
+# Memory usage (PowerShell native)
 Get-Process node | Select-Object Name,Id,WorkingSet
 
-# Disk usage
+# Disk usage (PowerShell native)
 Get-ChildItem -Recurse | Measure-Object -Property Length -Sum
 ```
 
 ### Log Analysis
 ```powershell
-# Count errors in logs
+# Count errors in logs (PowerShell native)
 Select-String -Path crawler\logs\*.log -Pattern "ERROR" -CaseSensitive:$false | Measure-Object
 
-# Recent crawler activity
+# Recent crawler activity (PowerShell native)
 Get-Content crawler\logs\combined-*.log -Tail 20
 
-# Search for specific events
+# Search for specific events (PowerShell native)
 Select-String -Path crawler\logs\*.log -Pattern "room.*saved" -CaseSensitive:$false
 ```
 
@@ -769,14 +778,14 @@ curl http://localhost:3002/api/stats > stats.json
 
 ### Data Validation
 ```powershell
-# Check room count
-curl http://localhost:3002/api/stats | jq .rooms
+# Check room count (PowerShell native - no external tools needed)
+(Invoke-RestMethod "http://localhost:3002/api/stats").rooms
 
-# Verify zone assignments
-curl "http://localhost:3002/api/rooms?zone_id=2" | jq length
+# Verify zone assignments (PowerShell native)
+(Invoke-RestMethod "http://localhost:3002/api/rooms?zone_id=2").Count
 
-# Check for orphaned exits
-# (Compare room IDs in exits vs rooms table)
+# Check for orphaned exits (use query-db.ts for complex queries)
+npx tsx "c:\work\other\Apocalypse VI MUD\scripts\query-db.ts" "SELECT COUNT(*) as orphaned FROM room_exits re LEFT JOIN rooms r ON re.from_room_id = r.id WHERE r.id IS NULL"
 ```
 
 ## 📞 Support
@@ -790,13 +799,16 @@ curl "http://localhost:3002/api/rooms?zone_id=2" | jq length
 
 ## 💡 Pro Tips
 
+- **Use PowerShell Native Commands**: Prefer `Invoke-RestMethod`, `Get-Content`, `Select-String` over Unix tools like `jq`, `tail`, `grep`
+- **Full Absolute Paths**: Always use full absolute paths with `npx tsx` commands to avoid PowerShell path resolution issues
+- **Scripts Directory**: Run data processing commands from the `scripts/` directory for reliable npm script execution
+- **API First**: Always use REST API instead of direct database access - it's more reliable in PowerShell
 - **Ollama is FREE**: No API costs, unlimited usage
 - **AI updates knowledge**: Check `ai-knowledge.md` periodically
 - **Parser is fast**: Manual exploration + parsing beats live crawling
 - **Use --dry-run**: Test parser changes without DB writes
 - **Backup database**: `Copy-Item backend\mud-data.db backup.db`
 - **Pipeline works**: Seed → Parse → Calculate coordinates for reliable data processing
-- **API first**: Always use REST API instead of direct database access
 - **Check health**: Use `/health` endpoint for system status
 - **Monitor logs**: Real-time log watching helps catch issues early
 - **Version control**: Commit frequently with descriptive messages

@@ -78,16 +78,11 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick }) => {
       setLoading(true);
       try {
         // Load rooms for selected zone
-        const roomsData = await api.getAll('rooms') as Room[];
-        const zoneRooms = roomsData.filter((room: Room) => room.zone_id === selectedZoneId);
+        const zoneRooms = await api.getAll('rooms', { zone_id: selectedZoneId }) as Room[];
         setRooms(zoneRooms);
 
-        // Load exits for these rooms
-        const exitsData = await api.getAll('room_exits') as RoomExit[];
-        const roomIds = zoneRooms.map((r: Room) => r.id);
-        const zoneExits = exitsData.filter((exit: RoomExit) =>
-          roomIds.includes(exit.from_room_id) && (!exit.to_room_id || roomIds.includes(exit.to_room_id))
-        );
+        // Load exits for rooms in this zone
+        const zoneExits = await api.getAll('room_exits', { zone_id: selectedZoneId }) as RoomExit[];
         setExits(zoneExits);
 
       } catch (error) {
@@ -298,13 +293,13 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick }) => {
     });
 
     // Add hover effects
-    node.on('mouseover', function(event, d) {
+    node.on('mouseover', function(_event, d) {
       d3.select(this).select('rect')
         .attr('fill', '#3a3a3a')
         .attr('stroke', d.roomData.zone_exit ? '#ff6b6b' : '#81c784');
     });
 
-    node.on('mouseout', function(event, d) {
+    node.on('mouseout', function(_event, d) {
       d3.select(this).select('rect')
         .attr('fill', '#2a2a2a')
         .attr('stroke', d.roomData.zone_exit ? '#f44336' : '#4fc3f7');

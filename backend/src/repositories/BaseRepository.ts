@@ -176,9 +176,21 @@ export abstract class BaseRepository<T = any> {
     const params: any[] = [];
 
     if (filters && Object.keys(filters).length > 0) {
-      const conditions = Object.keys(filters).map(key => `${key} = ?`);
+      const conditions: string[] = [];
+      
+      for (const [key, value] of Object.entries(filters)) {
+        if (key === 'room_ids' && Array.isArray(value)) {
+          // Special handling for IN clause with room IDs
+          const placeholders = value.map(() => '?').join(', ');
+          conditions.push(`(from_room_id IN (${placeholders}) OR to_room_id IN (${placeholders}))`);
+          params.push(...value, ...value); // Add IDs twice for both from_room_id and to_room_id
+        } else {
+          conditions.push(`${key} = ?`);
+          params.push(value);
+        }
+      }
+      
       sql += ` WHERE ${conditions.join(' AND ')}`;
-      params.push(...Object.values(filters));
     }
 
     sql += ` ORDER BY ${this.config.sortBy}`;
