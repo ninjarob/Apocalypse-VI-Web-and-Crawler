@@ -1,5 +1,4 @@
 import * as fs from 'fs';
-import * as path from 'path';
 import axios from 'axios';
 import { getOppositeDirection, normalizeDirection } from './directionHelper.js';
 
@@ -1053,12 +1052,10 @@ export class MudLogParser {
         // So we ONLY search by exact description match, never by pendingPortalKey here
         // Pass the exits array so we can match by exit signature
         console.log(`🔍 CALLING findExistingRoomKey with exits: [${exits.join(',')}]`);
-        let existingRoomKey = this.findExistingRoomKey(roomName, description, null, exits);
+        let existingRoomKey = this.findExistingRoomKey(roomName, description, null);
         console.log(`DEBUG: Existing room key check for "${roomName}": ${existingRoomKey}`);
         console.log(`🔍 FIND RESULT: findExistingRoomKey returned ${existingRoomKey ? existingRoomKey.substring(0, 50) + '...' : 'null'} for "${roomName}" with exits [${exits.join(',')}]`);
         console.log(`DEBUG: Current description hash: ${this.hashString(description.substring(0, 100))}...`);
-        
-        let isNewRoom = false;
         
         if (existingRoomKey) {
           console.log(`DEBUG: Updating existing room: ${roomName}`);
@@ -1177,7 +1174,6 @@ export class MudLogParser {
           };
           
           this.state.rooms.set(roomKey, room);
-          isNewRoom = true;
           
           console.log(`  📦 Room: ${roomName} (${exits.length} exits, ${npcs.length} NPCs, ${items.length} items) [awaiting portal key]`);
           
@@ -1473,9 +1469,8 @@ export class MudLogParser {
 
   /**
    * Find existing room key by checking portal key first, then fuzzy name+description matching
-   * @param currentExits - The exits of the room we're trying to match (used for exit signature matching)
    */
-  private findExistingRoomKey(name: string, description: string, portalKey?: string | null, currentExits?: string[]): string | null {
+  private findExistingRoomKey(name: string, description: string, portalKey?: string | null): string | null {
     console.log(`DEBUG: findExistingRoomKey called for "${name}" with portalKey: ${portalKey}`);
     
     // HIGHEST PRIORITY: If we have a portal key, ONLY match rooms with THE SAME portal key

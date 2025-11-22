@@ -1,3 +1,79 @@
+# Development Status
+
+### Full Pipeline Testing: Astyll Hills + Midgaard City Coordinate Calculations (2025-11-21) ✅ **COMPLETED**
+**Status**: ✅ **COMPLETE** - Both zones now have complete coordinate data for map visualization
+
+**Problem**:
+- After reorganizing log parsing components to backend and testing the pipeline on both exploration logs, needed to run coordinate calculations for both zones to complete the data processing pipeline
+- Wanted to verify that the reorganized parser works correctly and produces accurate room positioning for both Astyll Hills and Midgaard City zones
+
+**Solution - Coordinate Calculations for Both Zones**:
+
+**Astyill Hills Zone 9 Coordinate Calculation**:
+- Executed `npx tsx calculate-coordinates.js 9` for zone 9 (Astyll Hills)
+- Processed 101 rooms and 213 exits for coordinate calculation
+- Coordinate range: X: -150 to 1950, Y: -840 to 1526 (width: 2101, height: 2367)
+- 3 down transitions detected (cave system sub-levels)
+- Sub-level positioning with offset (-600, 420) for cave areas
+- Collision resolution applied for overlapping constraints
+- 1 room not connected to main graph (In the Graveyard)
+
+**Midgaard City Zone 2 Coordinate Calculation**:
+- Executed `npx tsx calculate-coordinates.js 2` for zone 2 (Midgaard City)
+- Processed 119 rooms and 251 exits for coordinate calculation
+- Coordinate range: X: -750 to 1800, Y: -315 to 1890 (width: 2551, height: 2206)
+- 3 down transitions detected (sub-level areas)
+- Sub-level positioning with offset (-600, 420) for underground areas
+- Collision resolution applied for overlapping constraints
+- All rooms connected to main graph
+
+**Verification Results**:
+- ✅ **Astyill Hills**: 100 rooms assigned coordinates, 1 isolated room
+- ✅ **Midgaard City**: 119 rooms assigned coordinates, all connected
+- ✅ **Temple Area Positioning**: Verified correct north-south progression with proper spacing
+- ✅ **Cross-Zone Exits**: Preserved for navigation but ignored for positioning constraints
+- ✅ **Zone Isolation**: Each zone's coordinate system operates independently
+
+**Database State After Coordinate Calculations**:
+- **Total rooms with coordinates**: 219 (100 Astyll Hills + 119 Midgaard City)
+- **Coordinate ranges validated**: Both zones have appropriate geographical spread
+- **Sub-level handling**: Cave systems and underground areas properly offset
+- **Collision resolution**: Overlapping constraints resolved without conflicts
+
+**Technical Details**:
+- Zone-specific coordinate calculation prevents cross-zone interference
+- BFS algorithm with collision resolution ensures accurate positioning
+- Sub-level detection and offset positioning for multi-level areas
+- Pipeline execution order independence confirmed
+
+**Files Processed**:
+- `backend/calculate-coordinates.js` - Zone-isolated coordinate assignment algorithm
+
+**Impact**: Both Astyll Hills and Midgaard City zones now have complete room, exit, and coordinate data ready for frontend map visualization. The reorganized backend parser successfully processes exploration logs and generates accurate geographical positioning for comprehensive MUD navigation.
+
+### Code Organization: Move sessions and mudLogParser to Backend (2025-11-21) ✅ **COMPLETED**
+**Status**: ✅ **COMPLETE** - Reorganized code structure for better separation of concerns
+
+**Changes Made**:
+- **Moved `crawler/src/mudLogParser.ts`** → `backend/src/mudLogParser.ts`
+- **Moved `crawler/src/directionHelper.ts`** → `backend/src/directionHelper.ts` (dependency)
+- **Moved `crawler/sessions/`** → `backend/sessions/` (log files for parsing)
+- **Moved `crawler/parse-logs.ts`** → `backend/parse-logs.ts` (parser script)
+- **Updated import paths** in `parse-logs.ts` to reference new locations
+- **Added `parse-logs` script** to `backend/package.json`
+- **Removed `parse-logs` script** from `crawler/package.json`
+
+**Rationale**:
+- Log parsing and session data processing belongs in the backend with the database operations
+- Better separation of concerns: crawler handles exploration, backend handles data processing
+- MudLogParser interacts with the backend API and saves to database, so it fits better in backend
+
+**Verification**:
+- All files moved successfully
+- Import paths updated
+- Scripts reorganized appropriately
+- No broken dependencies
+
 ### Coordinate Calculation Cross-Zone Exit Interference Fix Verification - Full Pipeline Test (2025-11-21) ✅ **COMPLETED**
 **Status**: ✅ **COMPLETE** - Cross-zone exit interference fix verified through complete pipeline execution
 
