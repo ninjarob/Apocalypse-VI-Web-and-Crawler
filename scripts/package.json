@@ -1,0 +1,17 @@
+{
+  "name": "mud-scripts",
+  "version": "1.0.0",
+  "description": "Utility scripts for MUD database operations and parsing",
+  "scripts": {
+    "seed": "tsx seed.ts",
+    "parse-logs": "tsx parse-logs.ts",
+    "calculate-coordinates": "tsx calculate-coordinates.ts",
+    "query-db": "tsx query-db.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.5.5",
+    "@types/sqlite3": "^3.1.11",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.2"
+  }
+}

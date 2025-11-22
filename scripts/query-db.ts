@@ -19,8 +19,8 @@
  *   node query-db.js "SELECT * FROM rooms" --db ./test.db
  */
 
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
+import sqlite3 from 'sqlite3';
+import path from 'path';
 
 // Parse command line arguments
 const args = process.argv.slice(2);
