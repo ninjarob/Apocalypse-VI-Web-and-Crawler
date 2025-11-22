@@ -54,6 +54,16 @@ function resolveCollision(coordinates, idealX, idealY, roomId, originX, originY)
   const COLLISION_THRESHOLD_X = 40;  // Minimum 40px gap between nodes
   const COLLISION_THRESHOLD_Y = 30;  // Minimum 30px gap between nodes
   
+  // If this is a significant repositioning (more than 3 room widths away), 
+  // prioritize the new constraint over the old arbitrary positioning
+  const REPOSITION_THRESHOLD = 3 * NODE_WIDTH; // 3 room widths = significant repositioning
+  const distance = Math.sqrt(Math.pow(idealX - originX, 2) + Math.pow(idealY - originY, 2));
+  
+  if (distance > REPOSITION_THRESHOLD) {
+    console.log(`   🔄 Significant repositioning for room ${roomId}: ${Math.round(distance)}px from (${Math.round(originX)}, ${Math.round(originY)}) to (${Math.round(idealX)}, ${Math.round(idealY)})`);
+    return { x: idealX, y: idealY };
+  }
+  
   let testX = idealX;
   let testY = idealY;
   let attempts = 0;

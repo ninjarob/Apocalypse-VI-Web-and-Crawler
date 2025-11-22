@@ -1,6 +1,6 @@
 #!/usr/bin/env ts-node
 
-import { MudLogParser } from './src/mudLogParser.js';
+import { MudLogParser } from './dist/crawler/src/mudLogParser.js';
 import * as path from 'path';
 
 const args = process.argv.slice(2);
