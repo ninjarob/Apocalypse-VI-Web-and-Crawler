@@ -13,6 +13,38 @@
 - Game docs index: `docs/game/index.md`
 - Update docs after changes: Update `docs/development/DEVELOPMENT_STATUS.md`
 
+### Map Zone Exit Visual Update - Red Outline for Zone Exits (2025-11-22) ✅ **COMPLETED**
+**Status**: ✅ **COMPLETE** - Updated ZoneMap component to display zone exits with red outline for improved visual identification
+
+**Problem**:
+- Zone exits were visually indistinguishable from regular rooms on the map
+- Users had difficulty identifying which rooms served as zone boundaries or portals
+- Map usability was reduced due to lack of visual cues for important navigation points
+
+**Solution - Conditional Stroke Color Logic**:
+Modified `ZoneMap.tsx` to conditionally set stroke color based on `zone_exit` property:
+- Zone exits now display with red outline (`#f44336`) instead of default blue (`#4fc3f7`)
+- Hover effects adjusted to use lighter red (`#ff6b6b`) for zone exits vs green (`#81c784`) for regular rooms
+- Maintains consistent visual feedback while clearly distinguishing zone exits
+
+**Key Changes**:
+- Updated rectangle stroke color: `d.roomData.zone_exit ? '#f44336' : '#4fc3f7'`
+- Modified hover effects to use conditional colors for both mouseover and mouseout events
+- Added event parameters to hover handlers for proper data access
+
+**Results**:
+- ✅ Zone exits now have distinctive red outline for immediate visual identification
+- ✅ Hover effects provide appropriate color feedback (light red for zone exits, light green for regular rooms)
+- ✅ Map navigation improved with clear visual cues for zone boundaries
+- ✅ No impact on existing functionality or performance
+
+**Files Modified**:
+- `frontend/src/components/ZoneMap.tsx`: Added conditional stroke color logic and updated hover effects
+
+**Impact**: Map visualization now provides clear visual distinction for zone exits, improving user experience and navigation efficiency in the MUD world exploration.
+
+---
+
 ### Combat System Documentation - Complete Combat Guide (2025-11-22) ✅ **COMPLETED**
 **Status**: ✅ **COMPLETE** - Created comprehensive combat system documentation covering all combat mechanics and strategies
 

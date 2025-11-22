@@ -46,6 +46,36 @@ cd crawler && npm run dev    # Terminal 3
 
 ## 🔧 Common Commands
 
+### ⚡ PRIORITY: Auto-Approved Commands (VS Code Settings)
+**🚨 IMPORTANT**: When running commands in VS Code, prioritize the **auto-approved versions** configured in your settings.json. These commands are pre-approved and will execute without additional prompts:
+
+**Auto-Approved Commands Include:**
+- `npm install`, `npx` commands
+- `npm run build`, `pm2 restart` commands  
+- `npm run crawl:*` scripts
+- `npm run seed`, `npm run parse-logs`
+- `node calculate-coordinates.js` (with zone IDs)
+- `node query-db.ts` (with full absolute paths)
+- `cd backend ; node calculate-coordinates.js`
+- `cd crawler ; node parse-logs.ts`
+- And many more - see your VS Code settings.json for the complete list
+
+**✅ RECOMMENDED: Use these auto-approved patterns:**
+```powershell
+# ✅ Auto-approved: Full absolute path for query-db.ts
+npx tsx "c:\work\other\Apocalypse VI MUD\scripts\query-db.ts" "SELECT * FROM rooms WHERE portal_key = 'dgklmoq'"
+
+# ✅ Auto-approved: Backend coordinate calculation
+cd backend ; node calculate-coordinates.js 9
+
+# ✅ Auto-approved: Crawler parsing
+cd crawler ; node parse-logs.ts "sessions/Exploration - Astyll Hills.txt" 9
+
+# ✅ Auto-approved: NPM scripts
+npm run seed
+npm run parse-logs "../scripts/sessions/Exploration - Astyll Hills.txt" --zone-id 9
+```
+
 ### ✅ Data Processing Pipeline (RECOMMENDED WORKFLOW)
 ```powershell
 # 1. Reset database with seed data
@@ -375,6 +405,45 @@ node backend/query-db.js "SELECT * FROM rooms"
 - query-db.js script is unreliable and often returns incorrect data
 - API is tested, consistent, and handles all edge cases properly
 - API provides proper JSON formatting and error handling
+
+### ✅ CORRECT Database Query Method (query-db.ts)
+**🚨 IMPORTANT: When you MUST query the database directly, use this EXACT method:**
+
+```powershell
+# ✅ CORRECT: Use full absolute path with npx tsx
+npx tsx "c:\work\other\Apocalypse VI MUD\scripts\query-db.ts" "SELECT * FROM rooms WHERE portal_key = 'dgklmoq'"
+
+# ✅ CORRECT: With complex queries (use double quotes around entire command)
+npx tsx "c:\work\other\Apocalypse VI MUD\scripts\query-db.ts" "SELECT r.name, GROUP_CONCAT(re.direction, ', ') as exits FROM rooms r LEFT JOIN room_exits re ON r.id = re.from_room_id WHERE r.portal_key = 'dgklmoq' GROUP BY r.id"
+
+# ✅ CORRECT: JSON output
+npx tsx "c:\work\other\Apocalypse VI MUD\scripts\query-db.ts" "SELECT * FROM rooms LIMIT 5" --json
+```
+
+**❌ WRONG: These methods will FAIL:**
+```powershell
+# ❌ FAILS: Relative path issues
+npx tsx scripts/query-db.ts "SELECT * FROM rooms"
+
+# ❌ FAILS: cd scripts doesn't work in PowerShell context
+cd scripts && npx tsx query-db.ts "SELECT * FROM rooms"
+
+# ❌ FAILS: npm run from scripts directory (PowerShell path issues)
+cd scripts && npm run query-db -- "SELECT * FROM rooms"
+
+# ❌ FAILS: Direct node execution
+node scripts/query-db.ts "SELECT * FROM rooms"
+
+# ❌ FAILS: Backend query-db.js (different script, unreliable)
+node backend/query-db.js "SELECT * FROM rooms"
+```
+
+**Why this method works:**
+- Uses `npx tsx` for TypeScript execution
+- Full absolute path prevents PowerShell path resolution issues
+- Runs from project root where tsx can find node_modules
+- query-db.ts is the correct script (in scripts/ directory, not backend/)
+- Handles complex SQL queries with proper escaping
 
 ## 📁 Important Files
 

@@ -262,7 +262,7 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick }) => {
       .attr('width', 60)  // Further reduced from 80
       .attr('height', 40)  // Further reduced from 50
       .attr('fill', '#2a2a2a')
-      .attr('stroke', '#4fc3f7')
+      .attr('stroke', (d: any) => d.roomData.zone_exit ? '#f44336' : '#4fc3f7')
       .attr('stroke-width', 2)
       .attr('rx', 8)
       .attr('x', -30)  // Adjusted for new width (60/2)
@@ -298,16 +298,16 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick }) => {
     });
 
     // Add hover effects
-    node.on('mouseover', function() {
+    node.on('mouseover', function(event, d) {
       d3.select(this).select('rect')
         .attr('fill', '#3a3a3a')
-        .attr('stroke', '#81c784');
+        .attr('stroke', d.roomData.zone_exit ? '#ff6b6b' : '#81c784');
     });
 
-    node.on('mouseout', function() {
+    node.on('mouseout', function(event, d) {
       d3.select(this).select('rect')
         .attr('fill', '#2a2a2a')
-        .attr('stroke', '#4fc3f7');
+        .attr('stroke', d.roomData.zone_exit ? '#f44336' : '#4fc3f7');
     });
 
     // Text wrapping function
