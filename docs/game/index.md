@@ -10,7 +10,8 @@ Apocalypse VI is a text-based multiplayer RPG set in a fantasy world with comple
 
 ### Core Systems
 - **[Character Creation](character-creation.md)** - Races, classes, and character building
-- **[Combat System](combat.md)** - Fighting mechanics and battle tactics
+- **[Game Mechanics](game-mechanics.md)** - Complete breakdown of movement, combat, magic, items, and world systems
+- **[Combat System](combat.md)** ✅ - Fighting mechanics and battle tactics
 - **[Magic System](magic.md)** - Spells, mana, and magical abilities
 - **[Time & Environment](time-environment.md)** - Calendar, light cycles, and world mechanics
 
@@ -20,7 +21,7 @@ Apocalypse VI is a text-based multiplayer RPG set in a fantasy world with comple
 - **[Economy](economy.md)** - Shops, inns, currency, and trade
 
 ### Advanced Features
-- **[Player Actions](player-actions.md)** - Commands and abilities
+- **[Player Actions](player-actions.md)** ✅ - Commands and abilities (Complete)
 - **[Zone System](zone-system.md)** - Area-based gameplay and player visibility
 - **[Portal Magic](portal-magic.md)** - Advanced scanning and teleportation
 

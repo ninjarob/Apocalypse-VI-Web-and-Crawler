@@ -1,15 +1,320 @@
 # Development Status
 
 ## 🤖 AI Agent Context Summary
-**Current Objective**: Game documentation creation - comprehensive character creation system documentation completed
-**Status**: Documentation foundation established, character creation fully documented
-**Next Steps**: Continue with combat mechanics, magic systems, world geography documentation
+**Current Objective**: Game documentation creation - combat system documentation completed
+**Status**: Documentation foundation established, character creation, core mechanics, world geography, player actions, and combat system fully documented
+**Next Steps**: Continue with magic system, time & environment, NPCs & social, economy, zone system details documentation
 **Critical Commands**:
 - Character creation docs: `docs/game/character-creation.md`
+- Game mechanics docs: `docs/game/game-mechanics.md`
+- World geography docs: `docs/game/world-geography.md`
+- Player actions docs: `docs/game/player-actions.md`
+- Combat system docs: `docs/game/combat.md`
 - Game docs index: `docs/game/index.md`
 - Update docs after changes: Update `docs/development/DEVELOPMENT_STATUS.md`
 
-**Expected Result**: Complete game documentation for Apocalypse VI MUD covering all major systems
+### Combat System Documentation - Complete Combat Guide (2025-11-22) ✅ **COMPLETED**
+**Status**: ✅ **COMPLETE** - Created comprehensive combat system documentation covering all combat mechanics and strategies
+
+**Problem**:
+- Combat system was only briefly covered in game-mechanics.md with basic information
+- Players lacked detailed understanding of combat mechanics, special attacks, and strategies
+- No comprehensive reference for class-specific combat abilities and tactics
+- Combat commands and damage systems were not fully documented
+
+**Solution - Complete Combat System Guide**:
+Created **`docs/game/combat.md`** with comprehensive coverage of all combat systems:
+
+1. **Basic Combat Mechanics**:
+   - Combat initiation with kill/hit commands
+   - Round-based combat system and timing
+   - Auto-combat and attack resolution
+
+2. **Combat Commands**: Detailed documentation of all combat commands:
+   - **Basic Commands**: kill, flee, rescue
+   - **Offensive Maneuvers**: bash, kick, disarm with detailed mechanics
+   - **Defensive Actions**: parry, dodge with success rates and requirements
+
+3. **Advanced Combat Techniques**:
+   - **Backstab System**: Multipliers, failure rates, lag mechanics
+   - **Area Attacks**: sweep, whirlwind, special class abilities
+   - **Status Effects**: stun, prone, paralyzed states
+
+4. **Special Attacks by Class**:
+   - **Warriors**: Death Strike, Holy Lance, Blitz attacks
+   - **Rogues**: Backstab variations, envenom, circle attacks
+   - **Spellcasters**: Agony, Chakra Disruption, Exploding Palm
+   - **Hybrids**: Monk stances, Bard songs, Druid abilities
+
+5. **Combat Strategy and Tactics**:
+   - Group combat coordination and rescue mechanics
+   - Environmental combat considerations
+   - Resource management during extended fights
+   - Class-specific optimal strategies
+
+6. **Damage and Resistance Systems**:
+   - 13 elemental damage types with detailed descriptions
+   - Saving throw mechanics (Para, Rod, Petr, Breath, Spell)
+   - Resistance calculations and equipment bonuses
+
+7. **Combat States and Positioning**:
+   - Character positions (standing, fighting, resting, sleeping)
+   - Wimpy system and auto-flee mechanics
+   - Status effect durations and recovery
+
+**Data Sources**:
+- `data/player_actions.json` - Combat command details and mechanics
+- `docs/game/game-mechanics.md` - Existing combat system information
+- Game exploration logs and command testing results
+
+**Features Added**:
+- Complete command reference with syntax and examples
+- Class-specific combat abilities and requirements
+- Strategic combat guidance for different playstyles
+- Damage calculation formulas and success rates
+- Integration with existing documentation structure
+
+**Impact**:
+- Players now have comprehensive combat reference for strategic gameplay
+- New players can learn combat mechanics systematically
+- Class-specific combat strategies are clearly documented
+- Combat system complexity is fully explained and accessible
+
+**Next Steps**: Continue with Magic System documentation as the next logical component in the comprehensive game documentation suite.
+
+---
+
+### Player Actions Documentation - Complete Command Reference (2025-01-24) ✅ **COMPLETED**
+**Status**: ✅ **COMPLETE** - Created comprehensive player actions documentation covering all command categories and abilities
+
+**Problem**:
+- Players lacked comprehensive reference for all available commands and abilities in Apocalypse VI MUD
+- No centralized documentation for command syntax, descriptions, and usage examples
+- Complex command system with multiple categories (combat, magic, social, etc.) was undocumented
+- New players and returning players had no reference for available actions
+
+**Solution - Complete Player Actions Guide**:
+Created **`docs/game/player-actions.md`** with comprehensive coverage of all player commands:
+
+1. **Command Categories**: Organized all commands into 9 major categories:
+   - **Clans**: claninfo, clanlist, clanwho
+   - **Combat**: 25+ combat commands including accuracy, assassinate, backstab, berserk, etc.
+   - **Information**: 15+ info commands including affected, attributes, equipment, score, etc.
+   - **Interaction**: 20+ interaction commands including buy, sell, give, take, etc.
+   - **Magic**: cast, chant, meditate, pray, recite spells
+   - **Movement**: 15+ movement commands including all directions, enter, leave, lock, etc.
+   - **Objects**: 10+ object commands including drink, eat, wear, wield, etc.
+   - **Social**: 25+ social commands including all emotes and communications
+   - **Spells**: 50+ spell entries with syntax, levels, and damage calculations
+
+2. **Command Details**: Each command includes:
+   - **Syntax**: Exact command format and parameters
+   - **Description**: Detailed explanation of command function and mechanics
+   - **Level Requirements**: Class and level requirements where applicable
+   - **Usage Examples**: Practical examples of command usage
+   - **Special Notes**: Important mechanics, limitations, or strategic considerations
+
+3. **Spell Documentation**: Comprehensive spell coverage including:
+   - All spell schools (Divine, Arcane, Nature, Shadow, etc.)
+   - Damage calculations and formulas
+   - Duration, range, and save mechanics
+   - Prerequisites and level requirements
+   - Strategic applications and counters
+
+**Data Sources**:
+- `data/player_actions.json` - Authoritative source with 8519 command entries including syntax, descriptions, and test results
+- `data/help_entries.json` - In-game help system content with detailed spell and command information
+- `shared/types.ts` - Type definitions for command structures and spell data
+- Extensive analysis of command metadata and usage patterns
+
+**Key Documentation Features**:
+- **Comprehensive Coverage**: All major command categories with complete command listings
+- **Player-Friendly**: Clear syntax, descriptions, and practical examples
+- **Strategic Guidance**: Level requirements, mechanics, and optimal usage
+- **Developer Reference**: Technical details for implementation and balance
+- **Living Documentation**: Structured for easy updates as game evolves
+- **Indexed Structure**: Table of contents with cross-references to related systems
+
+**Files Created/Modified**:
+- `docs/game/player-actions.md` - 400+ lines comprehensive command reference
+- `docs/game/index.md` - Updated to mark Player Actions as completed
+
+**Benefits**:
+- ✅ **Player Onboarding**: Complete command reference for new players
+- ✅ **Game Transparency**: Clear documentation of all available actions
+- ✅ **Strategic Planning**: Command mechanics enable informed gameplay decisions
+- ✅ **Community Resource**: Foundation for player guides, tutorials, and wikis
+- ✅ **Developer Reference**: Authoritative source for command balance and implementation
+- ✅ **Maintenance**: Structured foundation for command updates and expansions
+
+**Impact**: Player Actions documentation now provides comprehensive coverage of all commands and abilities, enabling players to understand and master the game's command system while providing developers with clear reference materials for maintenance and expansion.
+
+**Next Steps**: Continue with combat system documentation, magic system details, time & environment mechanics, and other planned documentation sections.
+
+---
+
+### Game Mechanics Documentation - Complete System Breakdown (2025-11-22) ✅ **COMPLETED**
+**Status**: ✅ **COMPLETE** - Created comprehensive game mechanics documentation covering all major systems
+
+**Problem**:
+- Game mechanics were scattered across multiple files and sources
+- No centralized reference for movement, combat, magic, items, and world systems
+- Players and developers lacked clear understanding of core gameplay mechanics
+- Complex systems like portal magic, perks, and damage types were undocumented
+
+**Solution - Complete Game Mechanics Guide**:
+Created **`docs/game/game-mechanics.md`** with comprehensive breakdown of all game systems:
+
+1. **Movement and Navigation**:
+   - Basic movement commands (n/s/e/w, up/down, diagonals)
+   - Advanced movement (scan, look, exits, time, recall, track)
+   - Movement points system and regeneration rates
+   - Portal magic system with keys and zone exits
+
+2. **Rooms and Geography**:
+   - Room structure (name, description, exits, entities, terrain, coordinates)
+   - Terrain types and their effects on movement/abilities
+   - Zone system (74 zones, difficulty 1-5, visibility rules)
+   - Geographic features (doors, keys, traps, portals, bridges)
+
+3. **Character System**:
+   - All 24 races with bonuses, penalties, and strategic roles
+   - All 14 classes organized by groups with regen rates and restrictions
+   - Primary attributes (STR/INT/WIS/DEX/CON/CHA) with detailed effects
+   - Combat statistics (HP/mana/moves regen, AC, hitroll/damroll)
+   - Saving throws (5 types: Para/Rod/Petr/Breath/Spell)
+   - Universal perks system (weapon proficiencies, elemental damage, utility bonuses)
+
+4. **Items and Equipment**:
+   - Item types (weapons, armor, containers, lights, consumables, spell items)
+   - Item properties (materials, sizes, wear locations, bindings, flags, restrictions)
+   - Weapon system (damage dice, types, hand requirements, skills)
+   - Armor system (armor points, AC calculation, coverage types)
+   - Magical items (stat modifiers, spell effects, granted abilities, charges)
+
+5. **Combat System**:
+   - Basic combat (attack, flee, rescue)
+   - Advanced combat (backstab, bash, kick, disarm, trip, circle)
+   - Special attacks (rage, berserk, blitz, hamstring, death strike, whirlwind)
+   - Combat states (position, wimpy, stunned, paralyzed, sleeping)
+   - Damage types and resistances (13 elemental types)
+
+6. **Magic and Spells**:
+   - Mana system (regeneration, channeling, vitalize, mana shield)
+   - All 7 spell schools with complete spell lists and mechanics
+   - Spell requirements, prerequisites, costs, and durations
+   - Special mechanics (channeling for Warlocks, ki for Monks, music for Bards)
+
+7. **Social and Economic Systems**:
+   - Communication (say, tell, shout, gossip, group tell, quest channel)
+   - Social commands (100+ emotes, echo, echoall)
+   - Economic system (gold, shops, banks, bartering, rent)
+   - Grouping mechanics (group, follow, order, split)
+   - Player killing (PK flag, alignment effects, safe zones)
+
+8. **Time and Environment**:
+   - Game time system (ticks, day/night cycle, calendar)
+   - Environmental effects (light levels, weather, temperature, terrain hazards)
+   - Real-time systems (NPC movement, regeneration, shop restocking)
+   - Special times (full moon, eclipses, festivals, sieges)
+
+**Data Sources**:
+- `shared/types.ts` - Authoritative type definitions for all game entities
+- `data/class-proficiencies.json` - Complete proficiency trees and level requirements
+- `data/player_actions.json` - Command and action definitions
+- `data/help_entries.json` - In-game help system content
+- `docs/technical/ITEMS_SCHEMA.md` - Comprehensive item system documentation
+- `crawler/ai-knowledge.md` - AI-learned game knowledge and mechanics
+- Extensive analysis of game data and exploration logs
+
+**Key Documentation Features**:
+- **Comprehensive Coverage**: All major game systems documented from authoritative sources
+- **Logical Divisions**: Organized into 8 major sections with clear subsections
+- **Indexed Structure**: Table of contents with cross-references
+- **Player-Friendly**: Clear explanations with examples and strategic context
+- **Developer Reference**: Technical details for implementation and balance
+- **Living Documentation**: Structured for easy updates as game evolves
+
+**Files Created/Modified**:
+- `docs/game/game-mechanics.md` - 400+ lines comprehensive mechanics guide
+- `docs/game/index.md` - Updated to include game mechanics documentation
+
+**Benefits**:
+- ✅ **Player Understanding**: Complete reference for all game mechanics
+- ✅ **Game Transparency**: Clear documentation of complex systems
+- ✅ **Developer Reference**: Authoritative source for game systems
+- ✅ **Strategy Guide**: Enables informed character builds and gameplay decisions
+- ✅ **Community Resource**: Foundation for player guides and tutorials
+- ✅ **Maintenance**: Structured foundation for system updates and expansions
+
+**Impact**: Game documentation now provides comprehensive coverage of all core mechanics, enabling players to understand and master the game systems while providing developers with clear reference materials for maintenance and expansion.
+
+**Next Steps**: Continue with detailed combat mechanics, magic system specifics, world geography guides, and zone-specific documentation.
+
+---
+
+### World Geography Documentation - Complete Zone Guide (2025-01-24) ✅ **COMPLETED**
+**Status**: ✅ **COMPLETE** - Created comprehensive world geography documentation covering all 74 zones with navigation and difficulty information
+
+**Problem**:
+- Players lacked comprehensive information about the world structure, zone difficulty levels, and navigation strategies
+- No centralized reference for understanding zone-based gameplay mechanics and progression paths
+- Complex world with 74 zones required organized documentation for effective exploration and strategy
+
+**Solution - Complete World Geography Guide**:
+Created **`docs/game/world-geography.md`** with comprehensive coverage of all game zones:
+
+1. **Zone Directory**: Complete alphabetical listing of all 74 zones with:
+   - Zone ID, name, and difficulty level (1-5 scale)
+   - Level range recommendations for optimal experience
+   - Key landmarks and notable features
+   - Strategic importance and gameplay focus
+
+2. **Navigation System**: Comprehensive guidance for world traversal:
+   - Portal magic system with zone-specific portal locations
+   - Recall mechanics and safe zone access
+   - Cross-zone movement strategies and transportation options
+   - Zone visibility rules and player interaction mechanics
+
+3. **Terrain Types**: Detailed analysis of environmental effects:
+   - Movement penalties and combat modifiers by terrain
+   - Weather and environmental hazard systems
+   - Terrain-specific strategic considerations
+
+4. **Zone-Based Mechanics**: Advanced gameplay systems:
+   - Zone difficulty scaling and experience rates
+   - PK (player killing) rules and safe zone boundaries
+   - Chat channel visibility and zone-based communication
+   - Economy variations across different zone types
+
+**Data Sources**:
+- `data/rooms.json` - Authoritative room data with 14,260 entries and coordinate mapping
+- `scripts/seed.ts` - Zone definitions and area classifications
+- `data/room_exits.json` - Cross-zone connectivity with 8,281 exit relationships
+- `crawler/ai-knowledge.md` - AI-learned navigation patterns and zone characteristics
+- Extensive coordinate analysis and zone boundary mapping
+
+**Key Documentation Features**:
+- **Complete Coverage**: All 74 zones documented with authoritative data from game sources
+- **Strategic Guidance**: Level recommendations, difficulty assessments, and optimal progression paths
+- **Navigation Focus**: Portal locations, recall points, and cross-zone movement strategies
+- **Player-Friendly**: Clear explanations with practical navigation tips and zone selection advice
+- **Developer Reference**: Technical zone data for implementation and balance verification
+
+**Files Created/Modified**:
+- `docs/game/world-geography.md` - 300+ lines comprehensive zone guide with navigation system
+- `docs/game/index.md` - Updated to include world geography documentation
+
+**Benefits**:
+- ✅ **Player Navigation**: Complete reference for world exploration and zone selection
+- ✅ **Strategic Planning**: Difficulty levels and level ranges enable informed character progression
+- ✅ **Game Transparency**: Clear documentation of zone mechanics and world structure
+- ✅ **Community Resource**: Foundation for player guides, maps, and exploration strategies
+- ✅ **Developer Reference**: Authoritative source for zone balance and world design
+
+**Impact**: World geography documentation now provides comprehensive coverage of all 74 zones, enabling players to understand world structure, plan effective exploration routes, and make strategic decisions about zone progression and difficulty management.
+
+**Next Steps**: Continue with player actions guide, economy system, zone system details, and other planned documentation sections.
 
 ---
 
