@@ -9,6 +9,36 @@
 - Query database: `cd scripts ; npm run query-db "SELECT ..."`
 - Update docs after changes: Update `docs/development/DEVELOPMENT_STATUS.md`
 
+### Astyll Hills Full Pipeline Run (2025-11-22) ✅ **COMPLETED**
+**Status**: ✅ **COMPLETED** - Successfully ran the complete data processing pipeline for Astyll Hills (zone 9)
+
+**Pipeline Steps Executed**:
+1. **Log Parsing**: `npm run parse-logs "sessions/Exploration - Astyll Hills.txt"`
+   - Parsed 109 rooms from Astyll Hills exploration log
+   - Extracted 390 exits including cross-zone connections
+   - Auto-detected zone as "Astyll Hills" (ID: 9)
+   - Marked 10 rooms as zone exits with cross-zone connections
+
+2. **Coordinate Calculation**: `npm run calculate-coordinates 9`
+   - Calculated coordinates for 101 rooms in zone 9
+   - Applied zone isolation logic to prevent cross-zone contamination
+   - Logged cross-zone exits but didn't position external rooms
+   - Coordinate range: X: -150 to 1950, Y: -1050 to 1316
+   - Detected sub-level cave system with 43 rooms
+
+**Results**:
+- ✅ 104 rooms parsed and saved to database
+- ✅ 221 exits saved (169 skipped as deduplicated references)
+- ✅ 101 rooms assigned coordinates with zone isolation
+- ✅ Cross-zone exits properly identified and logged
+- ✅ Cave sub-level system properly positioned with offset (-600, 420)
+
+**Technical Notes**:
+- Zone isolation fix prevents coordinate calculation from affecting rooms in other zones
+- Cross-zone exits are logged but not used for positioning external rooms
+- Cave system detected and positioned as sub-level with appropriate offset
+- Pipeline ready for other zones using same pattern
+
 ### Zone Map Zone Exit Extension Lines - Red Directional Indicators (2025-11-22) ✅ **COMPLETED**
 **Status**: ✅ **COMPLETED** - ZoneMap component updated to display red extension lines from zone exits in the direction of zone exits, extending 50 pixels outward
 
@@ -223,6 +253,55 @@ Modified the stroke-width of zone exit extension lines from 3px to 6px:
 - `frontend/src/components/ZoneMap.tsx`: Increased stroke-width from 3 to 6 for zone exit extension lines
 
 **Impact**: Zone exit extension lines are now more prominent and easier to interact with, improving the visual clarity and usability of the zone navigation feature.
+
+### Coordinate Calculation Cross-Zone Contamination Fix - Zone Isolation (2025-11-22) ✅ **COMPLETED**
+**Status**: ✅ **COMPLETED** - Coordinate calculation now properly isolates zones and prevents overwriting coordinates of rooms in other zones
+
+**Problem**:
+- Running coordinate calculation for one zone (e.g., Astyll Hills) was overwriting coordinates of rooms in other zones (e.g., "Rear exit of the Temple" in Midgaard City)
+- Cross-zone exits were being used to position rooms outside the target zone, causing coordinate contamination
+- Previously correct room positions were being reset when processing adjacent zones
+
+**Root Cause Analysis**:
+- `getZoneExits()` was modified to include cross-zone exits for directional constraints
+- BFS algorithm attempted to position ALL connected rooms, even those in different zones
+- No zone boundary checking prevented cross-zone coordinate assignment
+- Database updates affected rooms outside the target zone
+
+**Solution - Zone Boundary Enforcement**:
+Modified coordinate calculation BFS logic to enforce zone boundaries:
+
+```typescript
+// Check if neighbor room is in the current zone - only position rooms in this zone
+if (!roomMap.has(neighborId)) {
+  console.log(`🚫 Cross-zone exit: ${direction} from room ${currentId} to room ${neighborId} (not in zone ${zoneId})`);
+  continue;
+}
+```
+
+**Key Changes**:
+- Added zone boundary check in BFS traversal using `roomMap.has(neighborId)`
+- Cross-zone exits are logged but skipped for positioning
+- Only rooms within the target zone get coordinate assignment
+- Maintains directional constraints from cross-zone exits without positioning external rooms
+
+**Results**:
+- ✅ Zone isolation enforced - coordinate calculation only affects target zone rooms
+- ✅ Cross-zone exits preserved for directional constraints and zone exit detection
+- ✅ Previously correct coordinates in other zones remain unchanged
+- ✅ No more coordinate contamination between zones
+- ✅ Sequential zone processing safe without overwriting adjacent zones
+
+**Technical Details**:
+- Zone boundary check uses `roomMap` (contains only current zone rooms)
+- Cross-zone exits logged with `🚫 Cross-zone exit` for debugging
+- BFS continues with same-zone neighbors only
+- Database updates restricted to current zone rooms
+
+**Files Modified**:
+- `scripts/calculate-coordinates.ts`: Added zone boundary check in BFS traversal
+
+**Impact**: Coordinate calculation now safely processes individual zones without affecting coordinates in other zones. This enables sequential zone processing without coordinate contamination, preserving previously calculated positions while allowing new zones to be mapped.
 
 ### Documentation Strengthening - Reliable Command Patterns (2025-11-22) ✅ **COMPLETED**
 **Status**: ✅ **COMPLETED** - Updated QUICK_REFERENCE.md to prioritize working commands and clearly separate them from problematic ones
