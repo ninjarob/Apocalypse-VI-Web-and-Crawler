@@ -434,9 +434,10 @@ function getZoneExits(zoneId) {
     db.all(`
       SELECT re.from_room_id, re.to_room_id, re.direction 
       FROM room_exits re
-      JOIN rooms r ON re.from_room_id = r.id
-      WHERE r.zone_id = ? AND re.to_room_id IS NOT NULL
-    `, [zoneId], (err, rows) => {
+      JOIN rooms r1 ON re.from_room_id = r1.id
+      JOIN rooms r2 ON re.to_room_id = r2.id
+      WHERE r1.zone_id = ? AND r2.zone_id = ? AND re.to_room_id IS NOT NULL
+    `, [zoneId, zoneId], (err, rows) => {
       if (err) reject(err);
       else resolve(rows);
     });
