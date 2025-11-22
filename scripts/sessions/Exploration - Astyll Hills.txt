@@ -2,6 +2,213 @@
 <table border=0 cellpadding=5 bgcolor="#000000">
 <tr><td>
 <pre><code><font size=2 face="FixedSys, Lucida Console, Courier New, Courier"><font color="#0">
+</font><font color="#00FFFF">Outside the City Walls
+</font><font color="#C0C0C0">   The stout walls of the City of Midgaard are to the south.  The wall here has
+been carefully constructed to hide a door into the back of the temple.  A plain
+covered in tall grass is to the north.  The blowing wind ripples the tall grass
+in a peaceful manner.  
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: n, s
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317896X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+The Astyll Officer                            : 1 move north
+An Astyll Ranger                              : 2 moves north
+An Astyll Scout                               : 2 moves north
+An Astyll Ranger                              : 3 moves north
+Nodri                                         : 2 moves south
+The Temple Guard                              : 3 moves south
+The Temple Guard                              : 3 moves south
+The Temple Guard                              : 3 moves south
+The Temple Guard                              : 3 moves south
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317896X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 9 o'clock pm, on the Day of Freedom.
+The 4th Day of the Month of the Ancient Darkness, Year 1173.
+The moon is in phase [9/25] and looks like:
+</font><font color="#FFFF00">   _..._
+ .:::::'`.
+::::::    :
+::::::    :
+`::::::  ,'
+  `::::-'
+
+</font><font color="#C0C0C0">The light intensity here is: 7
+
+Tick Counter:    204 ticks since the last reboot
+Tick Timer:       14 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317896X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">north     - Grasslands near the walls of Midgaard
+south     - Rear exit of the Temple
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317896X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Astyll Hills]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317896X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look n
+</font><font color="#0080FF">Looking n...
+</font><font color="#C0C0C0">Beautiful grasslands lie north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317896X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look s
+</font><font color="#0080FF">Looking s...
+</font><font color="#C0C0C0">The rear exit of the Temple.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317896X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'dgklmoq' briefly appears as a portal shimmers into view and then disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">286M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317896X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+</font><font color="#C0C0C0">s
+</font><font color="#00FFFF">Rear exit of the Temple
+</font><font color="#C0C0C0">   You are in a small dank passage with barely enough light to see by.  The
+walls are made from unpolished marble.  Torches are in sconces in the walls, but
+are covered in dust and appear not to have been lit in years.  The wall to the
+north appears to be a carefully constructed doorway that leads outside the
+temple.  A small oaken door stands to the south.
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: n, s
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">286M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317896X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+The Astyll Officer                            : 2 moves north
+
+Nodri                                         : 1 move south
+The Temple Guard                              : 2 moves south
+The Temple Guard                              : 2 moves south
+The Temple Guard                              : 2 moves south
+The Temple Guard                              : 2 moves south
+The Elite Cityguard                           : 3 moves south
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">286M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317896X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 9 o'clock pm, on the Day of Freedom.
+The 4th Day of the Month of the Ancient Darkness, Year 1173.
+
+The light intensity here is: 7
+
+Tick Counter:    204 ticks since the last reboot
+Tick Timer:        9 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">286M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317896X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">north     - Outside the City Walls
+south     - The Temple of Midgaard
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">286M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317896X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Midgaard: City]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+[Cl 29] Bols the High Priest (invis)
+
+2 characters displayed.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">286M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317896X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look n
+</font><font color="#0080FF">Looking n...
+</font><font color="#C0C0C0">Outside the City Walls.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">286M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317896X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look s
+</font><font color="#0080FF">Looking s...
+</font><font color="#C0C0C0">By the Altar in the Temple of Midgaard.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">286M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317896X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+Something prevents you from binding the portal.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">276M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317896X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+</font><font color="#C0C0C0">n
+</font><font color="#00FFFF">Outside the City Walls
+</font><font color="#C0C0C0">   The stout walls of the City of Midgaard are to the south.  The wall here has
+been carefully constructed to hide a door into the back of the temple.  A plain
+covered in tall grass is to the north.  The blowing wind ripples the tall grass
+in a peaceful manner.  
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: n, s
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">276M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317896X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+The Astyll Officer                            : 1 move north
+
+An Astyll Ranger                              : 3 moves north
+An Astyll Ranger                              : 3 moves north
+Nodri                                         : 2 moves south
+The Temple Guard                              : 3 moves south
+The Temple Guard                              : 3 moves south
+The Temple Guard                              : 3 moves south
+The Temple Guard                              : 3 moves south
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">276M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317896X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 9 o'clock pm, on the Day of Freedom.
+The 4th Day of the Month of the Ancient Darkness, Year 1173.
+The moon is in phase [9/25] and looks like:
+</font><font color="#FFFF00">   _..._
+ .:::::'`.
+::::::    :
+::::::    :
+`::::::  ,'
+  `::::-'
+
+</font><font color="#C0C0C0">The light intensity here is: 7
+
+Tick Counter:    204 ticks since the last reboot
+Tick Timer:        2 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">276M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317896X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">north     - Grasslands near the walls of Midgaard
+south     - Rear exit of the Temple
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">276M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317896X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Astyll Hills]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">276M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317896X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look n
+</font><font color="#0080FF">Looking n...
+</font><font color="#C0C0C0">Beautiful grasslands lie north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">276M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317896X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look s
+</font><font color="#0080FF">Looking s...
+</font><font color="#C0C0C0">The rear exit of the Temple.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">276M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317896X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'dgklmoq' briefly appears as a portal shimmers into view and then disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">286M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317896X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+</font></font></code></pre>
+</td></tr></table>
+
+
+=== UPDATED EXPLORATION ===
+
+
+<!-- Produced by MUSHclient v 5.06 - www.mushclient.com -->
+<table border=0 cellpadding=5 bgcolor="#000000">
+<tr><td>
+<pre><code><font size=2 face="FixedSys, Lucida Console, Courier New, Courier"><font color="#0">
 </font><font color="#C0C0C0">look
 </font><font color="#00FFFF">Surrounded by grasslands
 </font><font color="#C0C0C0">    The grasslands surround you on all sides.  Tall grasses of all kinds are

@@ -18,7 +18,7 @@
 **Objective**: Fix spurious west exit from cfhilnoq to lnoq  
 **Test Command**:
 ```powershell
-cd backend; npm run seed; cd ../crawler; npx tsx parse-logs.ts "sessions/Exploration - Astyll Hills.txt" --zone-id 9; cd ../backend; node query-db.js "SELECT r.portal_key, GROUP_CONCAT(re.direction, ', ') as exits FROM rooms r LEFT JOIN room_exits re ON r.id = re.from_room_id WHERE r.portal_key = 'cfhilnoq' GROUP BY r.id"
+cd scripts ; npm run seed ; npm run parse-logs "sessions/Exploration - Astyll Hills.txt" --zone-id 9 ; npx tsx "c:\work\other\Apocalypse VI MUD\scripts\query-db.ts" "SELECT r.portal_key, GROUP_CONCAT(re.direction, ', ') as exits FROM rooms r LEFT JOIN room_exits re ON r.id = re.from_room_id WHERE r.portal_key = 'cfhilnoq' GROUP BY r.id"
 ```
 **Expected**: `cfhilnoq` exits = 'north, south' (no 'west')
 
@@ -65,30 +65,28 @@ cd crawler && npm run dev    # Terminal 3
 # ✅ Auto-approved: Full absolute path for query-db.ts
 npx tsx "c:\work\other\Apocalypse VI MUD\scripts\query-db.ts" "SELECT * FROM rooms WHERE portal_key = 'dgklmoq'"
 
-# ✅ Auto-approved: Backend coordinate calculation
-cd backend ; node calculate-coordinates.js 9
-
-# ✅ Auto-approved: Crawler parsing
-cd crawler ; node parse-logs.ts "sessions/Exploration - Astyll Hills.txt" 9
+# ✅ Auto-approved: Scripts directory commands (RECOMMENDED)
+cd scripts ; npm run seed
+cd scripts ; npm run parse-logs "../scripts/sessions/Exploration - Astyll Hills.txt" --zone-id 9
+cd scripts ; npm run calculate-coordinates 9
 
 # ✅ Auto-approved: NPM scripts
 npm run seed
 npm run parse-logs "../scripts/sessions/Exploration - Astyll Hills.txt" --zone-id 9
+npm run calculate-coordinates 9
 ```
 
 ### ✅ Data Processing Pipeline (RECOMMENDED WORKFLOW)
 ```powershell
 # 1. Reset database with seed data
-cd backend
+cd scripts
 npm run seed
 
 # 2. Parse exploration logs (creates rooms & exits)
-cd ../crawler
-npx tsx parse-logs.ts "sessions/Exploration - Astyll Hills.txt" --zone-id 9
+npm run parse-logs "../scripts/sessions/Exploration - Astyll Hills.txt" --zone-id 9
 
 # 3. Calculate geographical coordinates
-cd ../backend
-node calculate-coordinates.js 9
+npm run calculate-coordinates 9
 
 # Result: 102 rooms with coordinates, 214 exits saved
 ```
@@ -141,8 +139,7 @@ curl -X DELETE "http://localhost:3002/api/room_terrains/1"
 
 ```powershell
 # Verify fix (should show 2 exits: north, south)
-cd backend
-node query-db.js "SELECT r.id, r.name, r.portal_key, GROUP_CONCAT(re.direction || ' -> ' || t.name, ', ') as exits FROM rooms r LEFT JOIN room_exits re ON r.id = re.from_room_id LEFT JOIN rooms t ON re.to_room_id = t.id WHERE r.portal_key = 'cfhilnoq' GROUP BY r.id"
+cd scripts ; npx tsx "c:\work\other\Apocalypse VI MUD\scripts\query-db.ts" "SELECT r.id, r.name, r.portal_key, GROUP_CONCAT(re.direction || ' -> ' || t.name, ', ') as exits FROM rooms r LEFT JOIN room_exits re ON r.id = re.from_room_id LEFT JOIN rooms t ON re.to_room_id = t.id WHERE r.portal_key = 'cfhilnoq' GROUP BY r.id"
 ```
 
 ### Crawler Operations
@@ -161,14 +158,14 @@ npx tsx parse-logs.ts "sessions/log.txt" --dry-run --export output.json
 ```powershell
 # Seed/reset database
 # ⚠️  IMPORTANT: This will COMPLETELY RESET the database with seeded data!
-cd backend
+cd scripts
 npm run seed
 
 # Skip room seeding (for testing or when rooms come from crawler)
-$env:SKIP_ROOMS_SEEDING="true" ; npm run seed
+$env:SKIP_ROOMS_SEEDING="true" ; cd scripts ; npm run seed
 
 # AVOID direct sqlite3 commands - use query-db.js instead
-node query-db.js "SELECT * FROM rooms LIMIT 10"
+npx tsx "c:\work\other\Apocalypse VI MUD\scripts\query-db.ts" "SELECT * FROM rooms LIMIT 10"
 ```
 
 ### Development Workflow
@@ -179,7 +176,7 @@ node query-db.js "SELECT * FROM rooms LIMIT 10"
 # Check system health
 curl http://localhost:3002/health
 
-# View API stats
+# API statistics
 curl http://localhost:3002/api/stats
 
 # Test frontend build
@@ -438,12 +435,30 @@ node scripts/query-db.ts "SELECT * FROM rooms"
 node backend/query-db.js "SELECT * FROM rooms"
 ```
 
-**Why this method works:**
-- Uses `npx tsx` for TypeScript execution
-- Full absolute path prevents PowerShell path resolution issues
-- Runs from project root where tsx can find node_modules
-- query-db.ts is the correct script (in scripts/ directory, not backend/)
-- Handles complex SQL queries with proper escaping
+**✅ CORRECT Coordinate Calculation Method:**
+```powershell
+# ✅ CORRECT: Run from scripts directory (RECOMMENDED)
+cd scripts ; npm run calculate-coordinates 9
+
+# ✅ CORRECT: With npm run from scripts directory
+npm run calculate-coordinates 9
+```
+
+**❌ WRONG: These coordinate calculation methods will FAIL:**
+```powershell
+# ❌ FAILS: Wrong directory (calculate-coordinates.js is in scripts/, not backend/)
+cd backend ; node calculate-coordinates.js 9
+
+# ❌ FAILS: Direct node execution
+node scripts/calculate-coordinates.js 9
+
+# ❌ FAILS: Wrong working directory
+cd crawler ; npm run calculate-coordinates 9
+```
+
+**Why these methods work:**
+- **query-db.ts**: Uses `npx tsx` for TypeScript execution, full absolute path prevents PowerShell path resolution issues, runs from project root where tsx can find node_modules
+- **calculate-coordinates**: Must be run from `scripts/` directory where the script and package.json are located, uses npm run for proper environment setup
 
 ## 📁 Important Files
 
