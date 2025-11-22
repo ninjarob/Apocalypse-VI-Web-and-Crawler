@@ -15,11 +15,14 @@ import { createNotFoundError, BadRequestError } from '../errors/CustomErrors.js'
 
 export class RoomService extends BaseService {
   /**
-   * Get all rooms with optional filtering by zone
+   * Get all rooms with optional filtering by zone or portal key
    */
-  async getRooms(filters?: { zone_id?: number }): Promise<Room[]> {
+  async getRooms(filters?: { zone_id?: number; portal_key?: string }): Promise<Room[]> {
     if (filters?.zone_id) {
       this.validatePositiveInteger(filters.zone_id, 'zone_id');
+    }
+    if (filters?.portal_key) {
+      this.validateNonEmptyString(filters.portal_key, 'portal_key');
     }
 
     const rooms = await repositories.rooms.findAll(filters);

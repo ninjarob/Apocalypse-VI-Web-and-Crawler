@@ -119,7 +119,37 @@ export class MudLogParser {
         this.state.portalRetryCount = 0; // Reset retry count on success
         console.log(`  🔑 Portal key: ${this.state.pendingPortalKey}`);
         
-        // Check if this portal key is already associated with ANY room
+        // CROSS-SESSION CONTAMINATION FIX: Check database for existing portal key
+        // This prevents portal keys from one zone being incorrectly bound in another zone
+        let dbRoomWithKey: any = null;
+        try {
+          const response = await axios.get(`${this.apiBaseUrl}/rooms`, {
+            params: { portal_key: this.state.pendingPortalKey }
+          });
+          console.log(`  🔍 DEBUG: API returned ${response.data.length} rooms for portal_key=${this.state.pendingPortalKey}`);
+          if (response.data && response.data.length > 0) {
+            dbRoomWithKey = response.data[0];
+            console.log(`  🗄️  Portal key ${this.state.pendingPortalKey} found in database: "${dbRoomWithKey.name}" (zone ${dbRoomWithKey.zone_id})`);
+            console.log(`  🔍 DEBUG: Full room data: ${JSON.stringify(dbRoomWithKey).substring(0, 200)}`);
+            
+            // Check if database room is in a different zone than current zone
+            const currentZone = this.state.currentZoneName || this.state.defaultZoneName;
+            const dbZoneName = await this.getZoneNameById(dbRoomWithKey.zone_id);
+            
+            console.log(`  🔍 DEBUG: Comparing zones - current: "${currentZone}", database: "${dbZoneName}"`);
+            if (currentZone && dbZoneName && dbZoneName !== currentZone) {
+              console.log(`  ⚠️  WARNING: Portal key ${this.state.pendingPortalKey} belongs to "${dbRoomWithKey.name}" in zone "${dbZoneName}", but we're in zone "${currentZone}"`);
+              console.log(`  ⚠️  This indicates cross-session contamination or portal key reuse. Skipping binding.`);
+              this.state.pendingPortalKey = null;
+              i++; // Advance past this line to prevent infinite loop
+              continue; // Skip this portal binding entirely
+            }
+          }
+        } catch (error: any) {
+          console.log(`  ⚠️  Could not check database for portal key: ${error.message}`);
+        }
+        
+        // Check if this portal key is already associated with ANY room in current session
         let alreadyAssociated = false;
         let existingRoomWithSameKey: ParsedRoom | null = null;
         let existingRoomKey: string | null = null;
@@ -130,6 +160,26 @@ export class MudLogParser {
         for (const [key, room] of this.state.rooms) {
           console.log(`DEBUG: Checking room ${key.substring(0, 100)}...: portal_key = ${room.portal_key}`);
           if (room.portal_key === this.state.pendingPortalKey) {
+            // ZONE ISOLATION FIX: Only merge if rooms are in the same zone
+            // Get the zone for the existing room
+            const existingRoomZone = this.state.zoneMapping.get(key);
+            
+            // Get the current zone (default zone if not explicitly mapped)
+            const currentZone = this.state.currentZoneName || this.state.defaultZoneName;
+            
+            // If existing room is in a different zone, skip it (treat as different room)
+            if (existingRoomZone && existingRoomZone !== currentZone) {
+              console.log(`DEBUG: Skipping portal key merge - existing room in different zone: ${existingRoomZone} vs ${currentZone}`);
+              continue;
+            }
+            
+            // If current zone is not known, only merge with rooms that also have no zone information
+            // This prevents merging with rooms from previous parsing sessions
+            if (!currentZone && existingRoomZone) {
+              console.log(`DEBUG: Skipping portal key merge - current zone not known, existing room has zone: ${existingRoomZone}`);
+              continue;
+            }
+            
             console.log(`  ⚠️  Portal key ${this.state.pendingPortalKey} already associated with room: ${room.name} (key: ${key})`);
             alreadyAssociated = true;
             existingRoomWithSameKey = room;
@@ -241,7 +291,7 @@ export class MudLogParser {
                   exits: wronglyMatchedRoom?.exits || [],
                   npcs: wronglyMatchedRoom?.npcs || [],
                   items: wronglyMatchedRoom?.items || [],
-                  portal_key: this.state.pendingPortalKey
+                  portal_key: this.state.pendingPortalKey || undefined
                 };
                 this.state.rooms.set(newRoomKey, newRoom);
                 this.state.currentRoomKey = newRoomKey;
@@ -254,7 +304,7 @@ export class MudLogParser {
                 return; // Exit early
               }
               
-              bindingRoom.portal_key = this.state.pendingPortalKey;
+              bindingRoom.portal_key = this.state.pendingPortalKey || undefined;
               
               // FIX #10: Track when bug rooms get portal keys
               if (this.state.pendingPortalKey === 'cfhilnoq' || this.state.pendingPortalKey === 'lnoq') {
@@ -375,7 +425,7 @@ export class MudLogParser {
                   exits: [], // We'll get these from the database if needed
                   npcs: [],
                   items: [],
-                  portal_key: this.state.pendingPortalKey,
+                  portal_key: this.state.pendingPortalKey || undefined,
                   zone_id: dbRoom.zone_id
                 };
                 
@@ -1430,9 +1480,30 @@ export class MudLogParser {
     
     // HIGHEST PRIORITY: If we have a portal key, ONLY match rooms with THE SAME portal key
     // Different portal keys = definitely different rooms, even if name/description similar
+    // CRITICAL: Only match portal keys within the same zone to prevent cross-zone contamination
     if (portalKey) {
       for (const [key, room] of this.state.rooms) {
         if (room.portal_key === portalKey) {
+          // Zone isolation check: Only match portal keys in the same zone
+          // Get the zone for the candidate room
+          const candidateRoomKey = `portal:${room.portal_key}`;
+          const candidateZone = this.state.zoneMapping.get(candidateRoomKey);
+          
+          // Get the current zone (default zone if not explicitly mapped)
+          const currentZone = this.state.currentZoneName || this.state.defaultZoneName;
+          
+          // If current zone is not known, skip all portal key matches to prevent cross-session contamination
+          if (!currentZone) {
+            console.log(`DEBUG: Skipping portal key match - current zone not known (preventing cross-session contamination)`);
+            continue;
+          }
+          
+          // If candidate room is in a different zone, skip it
+          if (candidateZone && candidateZone !== currentZone) {
+            console.log(`DEBUG: Skipping portal key match for room in different zone: ${candidateZone} vs ${currentZone}`);
+            continue;
+          }
+          
           console.log(`DEBUG: Found existing room with SAME portal key ${portalKey}: ${key} (${room.name})`);
           return key;
         }
@@ -1498,8 +1569,36 @@ export class MudLogParser {
     // ONLY do similarity matching for rooms that truly appear to be the same
     // This is for cases where minor description changes occur (NPCs, time of day, etc.)
     // We use a VERY HIGH threshold to avoid false matches
+    // CRITICAL: Only match rooms within the same zone to prevent cross-zone contamination
     for (const [key, room] of this.state.rooms) {
       if (room.name === name && !room.portal_key && key !== checkKey) {
+        // Zone isolation check: Only match rooms in the same zone
+        // Get the zone for the candidate room
+        const candidateRoomKey = room.portal_key ? `portal:${room.portal_key}` : `namedesc:${room.name}|||${room.description}`;
+        const candidateZone = this.state.zoneMapping.get(candidateRoomKey);
+        
+        // Get the current zone (default zone if not explicitly mapped)
+        const currentZone = this.state.currentZoneName || this.state.defaultZoneName;
+        
+        // If candidate room is in a different zone, skip it
+        if (candidateZone && candidateZone !== currentZone) {
+          console.log(`DEBUG: Skipping similarity match for room in different zone: ${candidateZone} vs ${currentZone}`);
+          continue;
+        }
+        
+        // If current zone is not known, skip all matches to prevent cross-session contamination
+        // Only match rooms when we know the current zone
+        if (!currentZone) {
+          console.log(`DEBUG: Skipping similarity match - current zone not known (preventing cross-session contamination)`);
+          continue;
+        }
+        
+        // If candidate room is in a different zone, skip it
+        if (candidateZone && candidateZone !== currentZone) {
+          console.log(`DEBUG: Skipping similarity match for room in different zone: ${candidateZone} vs ${currentZone}`);
+          continue;
+        }
+        
         console.log(`DEBUG: Checking fuzzy match for room without portal: ${key.substring(0, 100)}... (${room.name})`);
         
         // Calculate description similarity (uses normalized descriptions)
@@ -1574,6 +1673,21 @@ export class MudLogParser {
       hash = hash & hash; // Convert to 32-bit integer
     }
     return hash.toString(16);
+  }
+
+  /**
+   * Get zone name by ID from the database
+   */
+  private async getZoneNameById(zoneId: number): Promise<string | null> {
+    try {
+      const response = await axios.get(`${this.apiBaseUrl}/zones/${zoneId}`);
+      if (response.data && response.data.name) {
+        return response.data.name;
+      }
+    } catch (error: any) {
+      console.log(`  ⚠️  Could not fetch zone name for ID ${zoneId}: ${error.message}`);
+    }
+    return null;
   }
 
   /**
@@ -1763,6 +1877,16 @@ export class MudLogParser {
       
     } catch (error) {
       console.error('Failed to fetch zones:', error);
+      
+      // Fallback: assign default zone ID to all rooms if provided
+      if (defaultZoneId) {
+        console.log(`   ⚠️  Using fallback zone ID ${defaultZoneId} for all rooms due to API failure`);
+        for (const room of this.state.rooms.values()) {
+          room.zone_id = defaultZoneId;
+        }
+      } else {
+        console.log(`   ❌ No fallback zone ID provided - rooms will have null zone_id`);
+      }
     }
   }
 
@@ -2009,7 +2133,7 @@ Example:
     }
     
     if (!noSave) {
-      await parser.resolveZones();
+      await parser.resolveZones(zoneId);
       await parser.saveToDatabase(zoneId);
     }
   })();
