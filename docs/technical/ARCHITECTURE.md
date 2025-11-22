@@ -103,8 +103,9 @@ backend/
 **Key Features:**
 - Telnet connection to MUD server
 - AI-powered decision making for exploration
-- Log parsing and data extraction
+- Log parsing and data extraction with zone alias detection
 - Task-based automation system
+- Automatic zone assignment using configurable aliases
 
 **Task Types:**
 - `document-actions` - Discover and document player actions

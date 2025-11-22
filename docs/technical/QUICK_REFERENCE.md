@@ -255,6 +255,40 @@ npm run calculate-coordinates 9
 # Result: Zone 9 ready with rooms, exits, and coordinates
 ```
 
+#### Zone Alias System (Automatic Zone Detection)
+
+**Purpose**: Automatically detects zone transitions during parsing using zone aliases, eliminating manual zone corrections.
+
+**How it works**:
+- Parser reads zone names from `who -z` commands in exploration logs
+- Matches zone names against both primary names and aliases in database
+- Automatically assigns rooms to correct zones during parsing
+- Prevents zone misassignment (e.g., Juris rooms going to Haunted Forest)
+
+**Zone Alias Configuration**:
+- Stored in `scripts/seed.ts` in zone definitions
+- Example: Zone 47 "Juris" has alias "Juris, The City of Law"
+- Allows parser to recognize zone references in various formats
+
+**Benefits**:
+- ✅ Automatic zone assignment during log parsing
+- ✅ Eliminates manual database corrections
+- ✅ Handles zone name variations in logs
+- ✅ Maintains zone boundary integrity
+
+**Example Zone Detection**:
+```
+🗺️  Zone detected: "Juris, The City of Law" (current: "Haunted Forest")
+🗺️  Zone change detected: Haunted Forest → Juris, The City of Law
+🔀 Zone exit (different zone): The West Gate of Juris (Zone 47: Juris, The City of Law)
+```
+
+**Adding New Zone Aliases**:
+1. Edit `scripts/seed.ts` zone definitions
+2. Add `alias: "Zone Name Variation"` to zone object
+3. Re-seed database: `npm run seed`
+4. Re-parse logs for automatic zone assignment
+
 #### 🐛 Troubleshooting Data Processing
 
 **Parser Issues**:

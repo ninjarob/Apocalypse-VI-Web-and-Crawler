@@ -17,8 +17,8 @@ This directory contains plans for future development, feature requests, and proj
 ## 🚀 Future Features
 
 ### Phase 1: Enhanced Exploration
+- [x] **Dynamic Zone Detection**: Automatic zone boundary identification using zone aliases ✅ COMPLETED
 - [ ] **Multi-Character Support**: Simultaneous exploration with multiple characters
-- [ ] **Dynamic Zone Detection**: Automatic zone boundary identification
 - [ ] **Quest Tracking**: Storyline detection and objective mapping
 - [ ] **NPC Relationship Mapping**: Social network analysis of characters
 

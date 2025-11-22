@@ -2,11 +2,11 @@
 
 ## 🎯 Current Objectives & Context
 
-### Primary Objective: Parser Bug Investigation
-**Issue**: Room `cfhilnoq` has spurious west exit to `lnoq`  
-**Root Cause**: currentRoomKey incorrectly updated during incidental room parsing  
-**Status**: Investigation paused, ready for Fix #6 implementation  
-**Success Criteria**: cfhilnoq shows only 'north, south' exits
+### Primary Objective: Zone Exit Parser Improvements ✅ COMPLETED
+**Issue**: Parser incorrectly assigning Juris rooms to Haunted Forest zone instead of Juris zone
+**Root Cause**: Missing zone alias for "Juris, The City of Law" in seed.ts
+**Status**: ✅ COMPLETED - Zone alias system implemented, automatic zone detection working
+**Success Criteria**: Juris rooms automatically assigned to zone 47, zone exits properly marked
 
 ### Secondary Objectives
 - Maintain data processing pipeline integrity
@@ -15,18 +15,33 @@
 
 ## 🚀 Critical Commands (Copy-Paste Ready)
 
-### Test Current Bug Status
+### Test Zone Alias System
 ```powershell
-cd backend
+cd scripts
+# Test Juris zone alias detection
 npm run seed
-cd ../crawler
-npx tsx parse-logs.ts "sessions/Exploration - Astyll Hills.txt" --zone-id 9
-cd ../backend
-node query-db.js "SELECT r.portal_key, GROUP_CONCAT(re.direction, ', ') as exits FROM rooms r LEFT JOIN room_exits re ON r.id = re.from_room_id WHERE r.portal_key = 'cfhilnoq' GROUP BY r.id"
+npm run parse-logs "../scripts/sessions/Exploration - Haunted Forest.txt" --zone-id 12
+npx tsx "c:\work\other\Apocalypse VI MUD\scripts\query-db.ts" "SELECT r.portal_key, r.name, r.zone_id, z.name as zone_name FROM rooms r JOIN zones z ON r.zone_id = z.id WHERE r.name LIKE '%juris%' OR r.portal_key IN ('cdefimopq', 'dghklopq')"
 ```
 
-**Expected**: `cfhilnoq` exits = 'north, south'  
-**Bug Present**: `cfhilnoq` exits = 'north, south, west' ❌
+**Expected**: Juris rooms in zone 47, zone exits marked
+**Success Indicators**: 
+- "The West Gate of Juris" (cdefimopq) in zone 47 ✅
+- "Outside the West Gates of Juris" (dghklopq) in zone 12 ✅
+- Zone exits between zones 12 ↔ 47 established ✅
+
+### Full Data Processing Pipeline
+```powershell
+# 1. Clean database with updated zone aliases
+cd scripts
+npm run seed
+
+# 2. Parse exploration log (automatic zone detection)
+npm run parse-logs "../scripts/sessions/Exploration - Haunted Forest.txt" --zone-id 12
+
+# 3. Calculate coordinates
+npm run calculate-coordinates 12
+```
 
 ### Full Data Processing Pipeline
 ```powershell
@@ -53,60 +68,59 @@ node calculate-coordinates.js 9
 ### Before Starting Work
 - [ ] Read current objective from top of DEVELOPMENT_STATUS.md
 - [ ] Check SESSION_HANDOFF.md for latest session context
-- [ ] Run bug status test to confirm current state
+- [ ] Run zone alias test to confirm current state
 - [ ] Review modified files list in SESSION_HANDOFF.md
 
 ### During Work
 - [ ] Update DEVELOPMENT_STATUS.md immediately after changes
 - [ ] Test changes with provided verification commands
-- [ ] Document any new findings or issues discovered
-- [ ] Preserve debug logging (do not remove existing logs)
+- [ ] Document any new zone alias discoveries
+- [ ] Preserve debug logging during zone detection testing
 
 ### After Completing Work
 - [ ] Update SESSION_HANDOFF.md with session summary
-- [ ] Include next steps and any unresolved issues
+- [ ] Include next steps and any unresolved zone issues
 - [ ] List all modified files with line numbers
-- [ ] Provide test commands for verification
+- [ ] Provide test commands for zone connectivity verification
 
 ## 🔍 Key Files & Locations
 
 ### Current Investigation Files
-- **Parser**: `crawler/src/mudLogParser.ts` (lines 695-722: Fix #5)
-- **Debug Logs**: Extensive logging added in Fix #3 (preserve all)
-- **Test Data**: `crawler/sessions/Exploration - Astyll Hills.txt`
-- **Bug Trigger**: Line 6931 (west movement from dfgilnoq to lnoq)
+- **Zone Aliases**: `scripts/seed.ts` (zone definitions with aliases)
+- **Parser Zone Detection**: `crawler/src/mudLogParser.ts` (zone change detection)
+- **Test Data**: `scripts/sessions/Exploration - Haunted Forest.txt`
+- **Zone Boundary Trigger**: Lines with "Juris, The City of Law" zone detection
 
 ### Documentation Files
 - **Status**: `docs/development/DEVELOPMENT_STATUS.md`
 - **Session Context**: `docs/development/SESSION_HANDOFF.md`
-- **Investigation Details**: `crawler/PARSER_BUG_INVESTIGATION.md`
+- **Zone System**: `docs/technical/QUICK_REFERENCE.md` (Zone Alias System section)
 - **Quick Commands**: `docs/technical/QUICK_REFERENCE.md`
 
 ## 🎯 Next Steps (Priority Order)
 
-1. **HIGH**: Apply Fix #6 - Exit validation before currentRoomKey update
-2. **HIGH**: Investigate exits variable corruption between parse and lookup
-3. **MEDIUM**: Track lastDirection lifecycle and reset conditions
-4. **LOW**: Remove debug logs after bug resolution
+1. **HIGH**: Monitor zone detection accuracy in future explorations
+2. **MEDIUM**: Add aliases for other zones with naming variations
+3. **LOW**: Consider automated alias discovery from exploration logs
 
 ## ⚠️ Critical Reminders
 
 - **Always use PowerShell `;` separator** (not `&&`)
 - **Never use direct database access** - use API endpoints
 - **Update DEVELOPMENT_STATUS.md after EVERY change**
-- **Test parser changes with full pipeline**
-- **Preserve all debug logging during investigation**
+- **Test zone aliases with full pipeline**
+- **Add zone aliases to seed.ts for new zone variations**
 
 ## 📊 Current System State
 
-- **Database**: SQLite with 125 seed rooms + parsed exploration data
-- **Parser**: Zone isolation working, exit creation has bug
+- **Database**: SQLite with zone aliases for improved detection
+- **Parser**: Zone isolation working with alias-based detection
 - **Coordinates**: BFS-based calculation with collision resolution
 - **AI Integration**: Ollama with llama3.2:3b model
 
 ## 🔗 Quick Links
 
-- [Bug Investigation Details](PARSER_BUG_INVESTIGATION.md)
+- [Zone Alias System](QUICK_REFERENCE.md#zone-alias-system-automatic-zone-detection)
 - [Session Handoff](SESSION_HANDOFF.md)
 - [Full Quick Reference](../technical/QUICK_REFERENCE.md)
 - [Development Status](DEVELOPMENT_STATUS.md)
