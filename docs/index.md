@@ -7,6 +7,11 @@ This directory contains organized documentation for the Apocalypse VI MUD projec
 ### 🔍 Technical Documentation (`technical/`)
 Documentation focused on AI efficient indexing and understanding of the application:
 
+- **[ARCHITECTURE.md](technical/ARCHITECTURE.md)** - System architecture and component interactions
+- **[CODE_PATTERNS.md](technical/CODE_PATTERNS.md)** - Code patterns and conventions
+- **[BACKEND_API.md](technical/BACKEND_API.md)** - Backend REST API documentation
+- **[FRONTEND_API.md](technical/FRONTEND_API.md)** - Frontend API client documentation
+- **[CRAWLER_API.md](technical/CRAWLER_API.md)** - Crawler API client documentation
 - **[SETUP.md](technical/SETUP.md)** - Detailed installation and configuration
 - **[OLLAMA_SETUP.md](technical/OLLAMA_SETUP.md)** - Local AI setup guide
 - **[QUICK_REFERENCE.md](technical/QUICK_REFERENCE.md)** - Common commands and troubleshooting
@@ -19,6 +24,9 @@ Tools for efficient AI ↔ developer communication:
 - **[DEVELOPMENT_STATUS.md](development/DEVELOPMENT_STATUS.md)** - Current development status and completed work
 - **[SESSION_HANDOFF.md](development/SESSION_HANDOFF.md)** - Session handoffs and context preservation
 - **[ARCHIVE.md](development/ARCHIVE.md)** - Historical features and implementation details
+- **[COMPONENT_INTERACTIONS.md](development/COMPONENT_INTERACTIONS.md)** - Component communication and data flow
+- **[TESTING_GUIDE.md](development/TESTING_GUIDE.md)** - Testing strategies and procedures
+- **[DEPLOYMENT_CHECKLIST.md](development/DEPLOYMENT_CHECKLIST.md)** - Deployment verification checklist
 
 ### 🗺️ Roadmap & Planning (`roadmap/`)
 Future features, work plans, and project direction.

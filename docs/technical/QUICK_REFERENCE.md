@@ -70,8 +70,64 @@ npx tsx parse-logs.ts "sessions/log.txt" --dry-run --export output.json
 cd backend
 npm run seed
 
+# Skip room seeding (for testing or when rooms come from crawler)
+$env:SKIP_ROOMS_SEEDING="true" ; npm run seed
+
 # AVOID direct sqlite3 commands - use query-db.js instead
 node query-db.js "SELECT * FROM rooms LIMIT 10"
+```
+
+### Development Workflow
+```powershell
+# Start all services (3 terminals)
+.\start.ps1
+
+# Check system health
+curl http://localhost:3002/health
+
+# View API stats
+curl http://localhost:3002/api/stats
+
+# Test frontend build
+cd frontend && npm run build
+
+# Run backend tests (when available)
+cd backend && npm test
+
+# Format code
+cd backend && npm run lint
+cd frontend && npm run lint
+```
+
+### API Testing & Debugging
+```powershell
+# Get all rooms
+curl "http://localhost:3002/api/rooms"
+
+# Get rooms in zone 2
+curl "http://localhost:3002/api/rooms?zone_id=2"
+
+# Get specific room
+curl "http://localhost:3002/api/rooms/123"
+
+# Get room by name
+curl "http://localhost:3002/api/rooms/by-name/The%20Temple"
+
+# Get entity types
+curl "http://localhost:3002/api/entity-types"
+
+# Create test room
+curl -X POST "http://localhost:3002/api/rooms" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Test Room","description":"A test","zone_id":2}'
+
+# Update room
+curl -X PUT "http://localhost:3002/api/rooms/123" \
+  -H "Content-Type: application/json" \
+  -d '{"description":"Updated description"}'
+
+# Delete room
+curl -X DELETE "http://localhost:3002/api/rooms/123"
 ```
 
 ### Ollama Setup
@@ -84,6 +140,11 @@ curl http://localhost:11434/api/tags
 
 # List installed models
 ollama list
+
+# Test AI model
+curl -X POST http://localhost:11434/api/generate \
+  -H "Content-Type: application/json" \
+  -d '{"model":"llama3.2:3b","prompt":"Hello","stream":false}'
 ```
 
 ### View Logs
@@ -93,6 +154,30 @@ Get-Content (Get-ChildItem crawler\logs\combined-*.log | Sort-Object LastWriteTi
 
 # Watch logs in real-time
 Get-Content (Get-ChildItem crawler\logs\combined-*.log | Sort-Object LastWriteTime -Descending | Select-Object -First 1).FullName -Wait
+
+# Search logs for errors
+Select-String -Path crawler\logs\*.log -Pattern "ERROR" -CaseSensitive:$false
+
+# Backend logs (if using file logging)
+Get-Content backend\logs\*.log -Tail 20
+```
+
+### File Operations
+```powershell
+# Backup database
+Copy-Item backend\mud-data.db "backup-$(Get-Date -Format 'yyyyMMdd-HHmmss').db"
+
+# Clean build artifacts
+cd frontend && Remove-Item -Recurse -Force dist,node_modules/.vite
+cd backend && Remove-Item -Recurse -Force dist
+cd crawler && Remove-Item -Recurse -Force dist
+
+# Reset all node_modules
+Remove-Item -Recurse -Force **/node_modules
+npm install
+
+# Check disk usage
+Get-ChildItem -Recurse | Measure-Object -Property Length -Sum
 ```
 
 ## ⚙️ Configuration
@@ -122,6 +207,17 @@ DELAY_BETWEEN_ACTIONS_MS=2000
 ```env
 PORT=3002
 NODE_ENV=development
+DATABASE_PATH=./mud-data.db
+```
+
+### Frontend (vite.config.ts)
+```typescript
+// Development proxy to backend
+server: {
+  proxy: {
+    '/api': 'http://localhost:3002'
+  }
+}
 ```
 
 ## 🔍 Troubleshooting
@@ -133,6 +229,9 @@ telnet apocalypse6.com 6000
 
 # Check .env credentials
 notepad crawler\.env
+
+# Test with verbose logging
+cd crawler && DEBUG=* npm run dev
 ```
 
 ### Ollama Not Responding
@@ -145,6 +244,9 @@ curl http://localhost:11434/api/tags
 
 # Pull model if missing (note :3b tag!)
 ollama pull llama3.2:3b
+
+# Restart Ollama service
+ollama serve
 ```
 
 ### Backend Won't Start
@@ -152,8 +254,28 @@ ollama pull llama3.2:3b
 # Check port availability
 netstat -ano | findstr :3002
 
-# Database is SQLite - no external DB needed
-# Created automatically at backend/mud-data.db
+# Kill process using port
+Stop-Process -Id (Get-NetTCPConnection -LocalPort 3002).OwningProcess
+
+# Check database file
+Test-Path backend\mud-data.db
+
+# Reinitialize database
+cd backend && npm run seed
+```
+
+### Frontend Build Issues
+```powershell
+# Clear cache and rebuild
+cd frontend
+Remove-Item -Recurse -Force node_modules/.vite
+npm run build
+
+# Check for TypeScript errors
+npx tsc --noEmit
+
+# Verify API connectivity
+curl http://localhost:3002/api/stats
 ```
 
 ### Database Access Issues
@@ -200,6 +322,9 @@ node backend/query-db.js "SELECT * FROM rooms"
 | `backend/seed.ts` | Database schema & seed data |
 | `shared/types.ts` | TypeScript interfaces |
 | `shared/entity-config.ts` | Entity configurations |
+| `docs/index.md` | Documentation navigation |
+| `docs/technical/ARCHITECTURE.md` | System architecture |
+| `docs/technical/CODE_PATTERNS.md` | Code conventions |
 
 ## 🎯 Quick Tasks
 
@@ -230,12 +355,118 @@ notepad crawler\ai-knowledge.md
 # Updates every 50 actions
 ```
 
+### Database Queries (via API)
+```powershell
+# Get zone information
+curl "http://localhost:3002/api/zones"
+
+# Get rooms with exits
+curl "http://localhost:3002/api/rooms?zone_id=2&_include=exits"
+
+# Search player actions
+curl "http://localhost:3002/api/player_actions?type=command"
+```
+
+### Development Shortcuts
+```powershell
+# Kill all Node processes
+Stop-Process -Name node -Force
+
+# Find what's using a port
+Get-NetTCPConnection -LocalPort 3002 | Select-Object LocalPort,OwningProcess
+
+# Clean and restart
+.\start.ps1
+
+# Check Git status
+git status --short
+
+# Quick commit
+git add . && git commit -m "Quick update"
+```
+
+## 📊 Monitoring & Metrics
+
+### System Health
+```powershell
+# Backend health
+curl http://localhost:3002/health
+
+# API statistics
+curl http://localhost:3002/api/stats
+
+# Database size
+(Get-Item backend\mud-data.db).Length / 1MB
+```
+
+### Performance Checks
+```powershell
+# API response time
+Measure-Command { curl http://localhost:3002/api/rooms | Out-Null }
+
+# Memory usage
+Get-Process node | Select-Object Name,Id,WorkingSet
+
+# Disk usage
+Get-ChildItem -Recurse | Measure-Object -Property Length -Sum
+```
+
+### Log Analysis
+```powershell
+# Count errors in logs
+Select-String -Path crawler\logs\*.log -Pattern "ERROR" -CaseSensitive:$false | Measure-Object
+
+# Recent crawler activity
+Get-Content crawler\logs\combined-*.log -Tail 20
+
+# Search for specific events
+Select-String -Path crawler\logs\*.log -Pattern "room.*saved" -CaseSensitive:$false
+```
+
+## 🔄 Data Management
+
+### Backup & Restore
+```powershell
+# Create timestamped backup
+$timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
+Copy-Item backend\mud-data.db "backup-$timestamp.db"
+
+# Restore from backup
+Copy-Item backup-20250123-143000.db backend\mud-data.db
+```
+
+### Data Export
+```powershell
+# Export rooms to JSON
+curl http://localhost:3002/api/rooms > rooms.json
+
+# Export player actions
+curl http://localhost:3002/api/player_actions > actions.json
+
+# Export all data
+curl http://localhost:3002/api/stats > stats.json
+```
+
+### Data Validation
+```powershell
+# Check room count
+curl http://localhost:3002/api/stats | jq .rooms
+
+# Verify zone assignments
+curl "http://localhost:3002/api/rooms?zone_id=2" | jq length
+
+# Check for orphaned exits
+# (Compare room IDs in exits vs rooms table)
+```
+
 ## 📞 Support
 
 1. Check logs: `crawler/logs/combined-*.log`
 2. Review config: `crawler/.env` and `backend/.env`
 3. See docs/technical/SETUP.md for detailed configuration
 4. See docs/development/DEVELOPMENT_STATUS.md for current status
+5. Check docs/technical/ARCHITECTURE.md for system understanding
+6. Review docs/technical/CODE_PATTERNS.md for implementation details
 
 ## 💡 Pro Tips
 
@@ -245,9 +476,14 @@ notepad crawler\ai-knowledge.md
 - **Use --dry-run**: Test parser changes without DB writes
 - **Backup database**: `Copy-Item backend\mud-data.db backup.db`
 - **Pipeline works**: Seed → Parse → Calculate coordinates for reliable data processing
+- **API first**: Always use REST API instead of direct database access
+- **Check health**: Use `/health` endpoint for system status
+- **Monitor logs**: Real-time log watching helps catch issues early
+- **Version control**: Commit frequently with descriptive messages
 
 ---
 
 **For detailed setup**: See docs/technical/SETUP.md  
 **For current dev status**: See docs/development/DEVELOPMENT_STATUS.md  
-**For historical features**: See ARCHIVE.md
+**For historical features**: See ARCHIVE.md  
+**For API details**: See docs/technical/BACKEND_API.md, docs/technical/FRONTEND_API.md, docs/technical/CRAWLER_API.md
