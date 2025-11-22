@@ -8,12 +8,12 @@
     "dev": "node dist/backend/src/index.js",
     "start": "node dist/backend/src/index.js",
     "start:prod": "npm run build && npm run start",
-    "seed": "tsx seed.ts",
+    "seed": "tsx ../scripts/seed.ts",
     "db:reset": "node -e \"const fs = require('fs'); if(fs.existsSync('mud_data.db')) fs.unlinkSync('mud_data.db'); console.log('Database deleted');\" && npm run seed",
     "clean": "rimraf dist",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
-    "parse-logs": "tsx parse-logs.ts"
+    "parse-logs": "tsx ../scripts/parse-logs.ts"
   },
   "dependencies": {
     "axios": "^1.13.2",
