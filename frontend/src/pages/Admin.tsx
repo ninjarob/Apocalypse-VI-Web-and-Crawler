@@ -285,7 +285,13 @@ function Admin() {
   };
 
   const handleBackToRooms = () => {
-    navigate('/admin');
+    if (selectedZone) {
+      navigate(`/admin/zones/${selectedZone.id}`);
+    } else if (selectedRoom?.zone_id) {
+      navigate(`/admin/zones/${selectedRoom.zone_id}`);
+    } else {
+      navigate('/admin');
+    }
   };
 
   const handleActionClick = (action: Entity) => {
@@ -490,7 +496,14 @@ function Admin() {
           ENTITY_CONFIGS={ENTITY_CONFIGS}
           setSelectedEntity={setSelectedEntity}
           handleZoneClick={handleZoneClick}
-          backButtonText="← Back to Admin"
+          backButtonText={
+            selectedZone 
+              ? `← Back to ${selectedZone.name}` 
+              : (selectedRoom?.zone_id 
+                  ? `← Back to ${allZones.find(z => z.id === selectedRoom.zone_id)?.name || 'Zone'}` 
+                  : '← Back to Admin'
+                )
+          }
           setSelectedRoom={setSelectedRoom}
           onRoomExitsChange={loadRoomRelatedData}
           zoneConnections={zoneConnections}

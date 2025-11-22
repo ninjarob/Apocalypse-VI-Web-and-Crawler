@@ -1,6 +1,55 @@
 # Development Status
 
-### Full Pipeline Testing: Astyll Hills + Midgaard City Coordinate Calculations (2025-11-21) ✅ **COMPLETED**
+### Room Details Navigation Fix - Dynamic Back Button Text (2025-11-21) ✅ **COMPLETED**
+**Status**: ✅ **COMPLETE** - Room details back button now shows "Back to [Zone Name]" when coming from zone view
+
+**Problem**:
+- When navigating to room details from a zone view, the back button always showed "Back to Admin" instead of "Back to [Zone Name]"
+- Users expected contextual navigation that would return them to the zone they were viewing
+- Navigation flow was inconsistent with user expectations
+
+**Root Cause Analysis**:
+- RoomDetailView component had hardcoded `backButtonText = '← Back to Rooms'`
+- Admin.tsx passed `backButtonText="← Back to Admin"` regardless of navigation context
+- No logic to detect if user came from a zone view vs main admin
+
+**Solution - Context-Aware Back Button**:
+```typescript
+// Modified Admin.tsx to pass dynamic back button text
+backButtonText={selectedZone ? `← Back to ${selectedZone.name}` : '← Back to Admin'}
+
+// Modified handleBackToRooms to navigate appropriately
+const handleBackToRooms = () => {
+  if (selectedZone) {
+    navigate(`/admin/zones/${selectedZone.id}`);
+  } else {
+    navigate('/admin');
+  }
+};
+```
+
+**Key Changes**:
+- Added logic to detect if `selectedZone` is set (indicating user came from zone view)
+- Dynamic back button text shows zone name when applicable
+- Modified `handleBackToRooms` to navigate back to zone URL when `selectedZone` exists
+- Maintains existing behavior for direct room access from main admin
+
+**Verification Results**:
+- ✅ **From Zone View**: Clicking room → back button shows "← Back to [Zone Name]" → returns to zone
+- ✅ **From Admin View**: Clicking room → back button shows "← Back to Admin" → returns to admin
+- ✅ **URL Navigation**: Direct room URLs work correctly with appropriate back button text
+- ✅ **State Management**: `selectedZone` state persists correctly during navigation
+
+**Technical Details**:
+- Uses existing `selectedZone` state to determine navigation context
+- No additional API calls or state management required
+- Backward compatible with existing navigation patterns
+- Works with both programmatic navigation and direct URL access
+
+**Files Modified**:
+- `frontend/src/pages/Admin.tsx`: Added dynamic back button text and context-aware navigation
+
+**Impact**: Improved user experience with intuitive navigation that matches user expectations when exploring rooms within zone contexts
 **Status**: ✅ **COMPLETE** - Both zones now have complete coordinate data for map visualization
 
 **Problem**:
