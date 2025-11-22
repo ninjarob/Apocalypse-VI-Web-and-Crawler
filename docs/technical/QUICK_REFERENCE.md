@@ -91,6 +91,178 @@ npm run calculate-coordinates 9
 # Result: 102 rooms with coordinates, 214 exits saved
 ```
 
+#### 📋 Data Processing Pipeline - Complete Guide
+
+The data processing pipeline converts raw MUD exploration logs into structured, geographically-positioned room data. This three-step process is essential for populating the database with accurate room, exit, and coordinate information.
+
+##### Step 1: Database Seeding (`npm run seed`)
+
+**Purpose**: Initializes the database with reference data and schema, preparing it for room data.
+
+**What it does**:
+- Creates all database tables (rooms, exits, items, classes, races, etc.)
+- Seeds reference data (terrains, flags, classes, races, spells, etc.)
+- Optionally seeds room data (can be skipped with `SKIP_ROOMS_SEEDING=true`)
+
+**Options**:
+- `SKIP_ROOMS_SEEDING=true`: Skip seeding room data (useful when rooms come from parsing logs)
+- Default: Seeds everything including reference data
+
+**Example Commands**:
+```powershell
+# Full seed (includes reference data and any existing rooms)
+cd scripts ; npm run seed
+
+# Skip room seeding (for log parsing workflow)
+$env:SKIP_ROOMS_SEEDING="true" ; cd scripts ; npm run seed
+```
+
+**Output**: Lists counts of seeded entities (abilities, races, classes, zones, etc.)
+
+##### Step 2: Log Parsing (`npm run parse-logs <log-file> --zone-id <id>`)
+
+**Purpose**: Parses raw MUD session logs to extract room and exit information.
+
+**What it does**:
+- Reads exploration log files containing MUD session output
+- Extracts room titles, descriptions, and exit information
+- Creates room and room_exit records in database
+- Detects zone transitions and marks zone exit rooms
+- Associates rooms with portal keys for navigation
+
+**Required Parameters**:
+- `<log-file>`: Path to the exploration log file (e.g., `"../scripts/sessions/Exploration - Astyll Hills.txt"`)
+- `--zone-id <id>`: Zone ID to assign parsed rooms to (e.g., `9` for Astyll Hills)
+
+**Optional Parameters**:
+- `--export <file>`: Export parsed data to JSON file for review
+- `--dry-run`: Parse and show stats only, don't save to database
+
+**Example Commands**:
+```powershell
+# Parse and save to database
+cd scripts ; npm run parse-logs "../scripts/sessions/Exploration - Astyll Hills.txt" --zone-id 9
+
+# Parse and export to JSON for review
+cd scripts ; npm run parse-logs "../scripts/sessions/Exploration - Astyll Hills.txt" --zone-id 9 --export astyll-review.json --dry-run
+
+# Parse and both save and export
+cd scripts ; npm run parse-logs "../scripts/sessions/Exploration - Astyll Hills.txt" --zone-id 9 --export astyll-data.json
+```
+
+**Log File Requirements**:
+- Raw MUD session output with ANSI color codes
+- Room titles in bold cyan (`\u001b[1m\u001b[36mRoom Name\u001b[0m`)
+- Exit lists in format: `Obvious Exits: north, east, south, west`
+- Movement commands and responses
+- Zone transitions (detected by `who -z` command output)
+
+**Output**: Shows parsing statistics (rooms found, exits created, zone exits marked)
+
+##### Step 3: Coordinate Calculation (`npm run calculate-coordinates <zone-id>`)
+
+**Purpose**: Calculates geographical coordinates for rooms based on their exit connections.
+
+**What it does**:
+- Analyzes room exit connections to determine relative positions
+- Assigns X,Y coordinates using graph layout algorithms
+- Handles multi-level areas (up/down transitions)
+- Applies collision avoidance to prevent overlapping rooms
+- Uses configurable spacing (150px horizontal, 105px vertical by default)
+
+**Required Parameters**:
+- `<zone-id>`: Zone ID to calculate coordinates for (e.g., `9`)
+
+**Coordinate System**:
+- Origin (0,0,0) is the starting room
+- North = negative Y (moves up on screen)
+- South = positive Y (moves down on screen)
+- East = positive X (moves right)
+- West = negative X (moves left)
+- Up/Down create sub-levels with vertical offsets
+
+**Example Commands**:
+```powershell
+# Calculate coordinates for Astyll Hills (zone 9)
+cd scripts ; npm run calculate-coordinates 9
+
+# Calculate coordinates for Midgaard City (zone 2)
+cd scripts ; npm run calculate-coordinates 2
+```
+
+**Output**: Shows coordinate ranges and room counts processed
+
+#### 🔄 Complete Pipeline Example
+
+```powershell
+# Astyll Hills Zone 9 Processing
+cd scripts
+
+# 1. Seed database (skip rooms since they'll come from parsing)
+$env:SKIP_ROOMS_SEEDING="true" ; npm run seed
+
+# 2. Parse exploration log
+npm run parse-logs "../scripts/sessions/Exploration - Astyll Hills.txt" --zone-id 9
+
+# 3. Calculate coordinates
+npm run calculate-coordinates 9
+
+# Result: Zone 9 ready with rooms, exits, and coordinates
+```
+
+#### 🐛 Troubleshooting Data Processing
+
+**Parser Issues**:
+- **No rooms found**: Check log file format and ANSI color codes
+- **Zone not detected**: Ensure `who -z` commands are in the log
+- **Missing exits**: Verify exit format matches expected pattern
+
+**Coordinate Issues**:
+- **Overlapping rooms**: Check collision avoidance settings in script
+- **Disconnected areas**: Ensure all rooms are connected via exits
+- **Wrong positioning**: Verify starting room and exit directions
+
+**Database Issues**:
+- **Foreign key errors**: Ensure zones exist before parsing
+- **Duplicate rooms**: Check for existing rooms with same portal keys
+- **Missing reference data**: Run full seed without SKIP_ROOMS_SEEDING
+
+**Verification Commands**:
+```powershell
+# Check zone data
+npx tsx "c:\work\other\Apocalypse VI MUD\scripts\query-db.ts" "SELECT COUNT(*) as rooms FROM rooms WHERE zone_id = 9"
+
+# Check coordinates
+npx tsx "c:\work\other\Apocalypse VI MUD\scripts\query-db.ts" "SELECT MIN(x) as min_x, MAX(x) as max_x, MIN(y) as min_y, MAX(y) as max_y FROM rooms WHERE zone_id = 9 AND x IS NOT NULL"
+
+# Check exits
+npx tsx "c:\work\other\Apocalypse VI MUD\scripts\query-db.ts" "SELECT COUNT(*) as exits FROM room_exits re JOIN rooms r ON re.from_room_id = r.id WHERE r.zone_id = 9"
+```
+
+#### 📊 Expected Results by Zone
+
+| Zone | Zone ID | Expected Rooms | Notes |
+|------|---------|----------------|-------|
+| Midgaard City | 2 | ~119 | Central hub, well explored |
+| Astyll Hills | 9 | ~100 | Northern hills, cave system |
+| Haunted Forest | 12 | ~50-70 | Eastern forest area |
+| Dwarven Kingdom | 11 | ~80-100 | Mountain caverns |
+
+#### 🔧 Advanced Options
+
+**Custom Coordinate Spacing**:
+Edit `scripts/calculate-coordinates.ts` to adjust:
+```typescript
+const NODE_WIDTH = 150;   // Horizontal spacing
+const NODE_HEIGHT = 105; // Vertical spacing
+```
+
+**Zone Detection**:
+The parser auto-detects zones from logs but can be overridden with `--zone-id`.
+
+**Export/Import**:
+Use `--export` for reviewing parsed data before database commit, useful for validation.
+
 ### 📋 Reference Data Management
 **Full Guide**: See `docs/technical/REFERENCE_DATA_MANAGEMENT.md`
 
