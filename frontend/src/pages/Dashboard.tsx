@@ -2,9 +2,15 @@ import { useState, useEffect } from 'react';
 import { api, Stats } from '../api';
 import { Loading, ZoneMap } from '../components';
 
+interface Zone {
+  id: number;
+  name: string;
+}
+
 export default function Dashboard() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [currentZone, setCurrentZone] = useState<Zone | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -26,10 +32,10 @@ export default function Dashboard() {
 
   return (
     <div>
-      <h2>MUD Map</h2>
+      <h2>MUD Map{currentZone ? ` - ${currentZone.name}` : ''}</h2>
 
       {/* Interactive MUD Map */}
-      <ZoneMap />
+      <ZoneMap onZoneChange={setCurrentZone} />
 
       {/* Quick Stats */}
       {stats && (

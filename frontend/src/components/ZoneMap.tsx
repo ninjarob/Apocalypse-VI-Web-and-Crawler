@@ -39,9 +39,10 @@ interface MapNode {
 
 interface ZoneMapProps {
   onRoomClick?: (room: Room) => void;
+  onZoneChange?: (zone: Zone | null) => void;
 }
 
-export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick }) => {
+export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick, onZoneChange }) => {
   const [zones, setZones] = useState<Zone[]>([]);
   const [selectedZoneId, setSelectedZoneId] = useState<number | null>(null);
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -94,6 +95,14 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick }) => {
 
     loadZoneData();
   }, [selectedZoneId]);
+
+  // Notify parent component when zone changes
+  useEffect(() => {
+    if (onZoneChange) {
+      const currentZone = zones.find(zone => zone.id === selectedZoneId) || null;
+      onZoneChange(currentZone);
+    }
+  }, [selectedZoneId, zones, onZoneChange]);
 
   // Coordinate-based layout effect
   useEffect(() => {
@@ -229,6 +238,20 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick }) => {
       .attr('d', 'M0,-5L10,0L0,5')
       .attr('fill', '#666');
 
+    // Direction vectors for extending zone exit lines
+    const directionVectors: { [key: string]: { dx: number, dy: number } } = {
+      north: { dx: 0, dy: -1 },
+      south: { dx: 0, dy: 1 },
+      east: { dx: 1, dy: 0 },
+      west: { dx: -1, dy: 0 },
+      northeast: { dx: 1, dy: -1 },
+      northwest: { dx: -1, dy: -1 },
+      southeast: { dx: 1, dy: 1 },
+      southwest: { dx: -1, dy: 1 },
+      up: { dx: 0, dy: -1 },
+      down: { dx: 0, dy: 1 }
+    };
+
     // Create links
     svg.append('g')
       .attr('class', 'links')
@@ -242,6 +265,57 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick }) => {
       .attr('y1', (d: any) => d.source.y)
       .attr('x2', (d: any) => d.target.x)
       .attr('y2', (d: any) => d.target.y);
+
+    // Create zone exit extension lines
+    const extensionLength = 50; // pixels
+    const zoneExitExtensions = exits
+      .filter(exit => {
+        const fromRoom = rooms.find(r => r.id === exit.from_room_id);
+        return fromRoom && fromRoom.zone_exit && !rooms.find(r => r.id === exit.to_room_id);
+      })
+      .map(exit => {
+        const fromNode = nodes.find(n => n.id === exit.from_room_id);
+        if (!fromNode) return null;
+        const vector = directionVectors[exit.direction.toLowerCase()];
+        if (!vector) return null;
+        // Normalize and scale
+        const length = Math.sqrt(vector.dx * vector.dx + vector.dy * vector.dy);
+        const dx = (vector.dx / length) * extensionLength;
+        const dy = (vector.dy / length) * extensionLength;
+        return {
+          x1: fromNode.x,
+          y1: fromNode.y,
+          x2: fromNode.x + dx,
+          y2: fromNode.y + dy,
+          to_room_id: exit.to_room_id,
+          direction: exit.direction
+        };
+      })
+      .filter(Boolean) as { x1: number; y1: number; x2: number; y2: number; to_room_id: number; direction: string }[];
+
+    svg.append('g')
+      .attr('class', 'zone-exit-extensions')
+      .selectAll('line')
+      .data(zoneExitExtensions)
+      .enter().append('line')
+      .attr('stroke', '#f44336') // red
+      .attr('stroke-width', 6)
+      .attr('x1', d => d.x1)
+      .attr('y1', d => d.y1)
+      .attr('x2', d => d.x2)
+      .attr('y2', d => d.y2)
+      .attr('cursor', 'pointer')
+      .on('click', async (event, d) => {
+        try {
+          const targetRooms = await api.getAll('rooms', { id: d.to_room_id });
+          if (targetRooms.length > 0) {
+            const targetZoneId = targetRooms[0].zone_id;
+            setSelectedZoneId(targetZoneId);
+          }
+        } catch (error) {
+          console.error('Failed to get target room zone:', error);
+        }
+      });
 
     // Create nodes
     const node = svg.append('g')

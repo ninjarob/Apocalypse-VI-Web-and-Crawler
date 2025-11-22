@@ -9,6 +9,221 @@
 - Query database: `cd scripts ; npm run query-db "SELECT ..."`
 - Update docs after changes: Update `docs/development/DEVELOPMENT_STATUS.md`
 
+### Zone Map Zone Exit Extension Lines - Red Directional Indicators (2025-11-22) ✅ **COMPLETED**
+**Status**: ✅ **COMPLETED** - ZoneMap component updated to display red extension lines from zone exits in the direction of zone exits, extending 50 pixels outward
+
+**Problem**:
+- Zone exits on the map were only visually distinguished by red outlines, but users couldn't easily see the direction of exits to other zones
+- Map navigation was less intuitive without visual indicators showing where zone boundaries lead
+- Users requested visual cues to understand zone exit directions for better exploration planning
+
+**Solution - Zone Exit Extension Lines**:
+Modified `ZoneMap.tsx` to draw red extension lines from zone exit rooms in the direction of their zone exits:
+
+1. **Direction Vector Mapping**: Added comprehensive direction-to-vector mapping for all 8 cardinal directions plus up/down:
+   ```typescript
+   const directionVectors: { [key: string]: { dx: number, dy: number } } = {
+     north: { dx: 0, dy: -1 }, south: { dx: 0, dy: 1 },
+     east: { dx: 1, dy: 0 }, west: { dx: -1, dy: 0 },
+     northeast: { dx: 1, dy: -1 }, northwest: { dx: -1, dy: -1 },
+     southeast: { dx: 1, dy: 1 }, southwest: { dx: -1, dy: 1 },
+     up: { dx: 0, dy: -1 }, down: { dx: 0, dy: 1 }
+   };
+   ```
+
+2. **Zone Exit Detection**: Identifies zone exits by finding exits where `to_room_id` is not in the current zone's rooms array (cross-zone exits)
+
+3. **Extension Line Drawing**: For each zone exit direction, draws a 50-pixel red line extending from the room center in that direction:
+   - Normalizes direction vectors for consistent length
+   - Uses red color (`#f44336`) matching zone exit room outlines
+   - 3px stroke width for visibility
+   - Positioned after room nodes but before regular exit links
+
+**Key Changes**:
+- Added direction vector mapping for all MUD movement directions
+- Implemented zone exit detection logic using cross-zone exit identification
+- Added SVG group for zone exit extension lines with red styling
+- Extension lines drawn at 50-pixel length for clear visual indication
+- Integrated with existing D3.js rendering pipeline
+
+**Results**:
+- ✅ Zone exits now show red extension lines indicating exit directions
+- ✅ Visual indicators help users understand where zone boundaries lead
+- ✅ Consistent red color scheme matches existing zone exit styling
+- ✅ Extension lines appear for all directions (north, south, east, west, diagonals, up, down)
+- ✅ No impact on existing map functionality or performance
+
+**Technical Details**:
+- Extension length: 50 pixels for clear visibility without cluttering
+- Direction vectors normalized to ensure consistent extension distance
+- Zone exit detection: `exit.to_room_id` not found in current zone's rooms array
+- Rendering order: Extension lines drawn after nodes, before regular links
+- Color consistency: Uses same red (`#f44336`) as zone exit room outlines
+
+**Files Modified**:
+- `frontend/src/components/ZoneMap.tsx`: Added direction vectors, zone exit detection, and extension line rendering
+
+**Impact**: Zone map now provides clear visual indicators for zone exit directions, improving user navigation and exploration planning in the MUD world. Users can immediately see which direction leads out of zones, enhancing the map's usability for strategic gameplay.
+
+### Zone Map Clickable Extension Lines - Zone Navigation (2025-11-22) ✅ **COMPLETED**
+**Status**: ✅ **COMPLETED** - Zone exit extension lines are now clickable, allowing users to click them to navigate to the target zone and update the map view
+
+**Problem**:
+- Zone exit extension lines provided visual direction indicators but lacked interactivity
+- Users could see where zone exits lead but couldn't easily navigate to those zones
+- Map exploration required manual zone selection from dropdown instead of direct navigation from exit lines
+
+**Solution - Clickable Zone Navigation**:
+Enhanced the zone exit extension lines with click handlers to enable direct zone navigation:
+
+1. **Data Enrichment**: Extended zoneExitExtensions data structure to include `to_room_id` and `direction` for each extension line
+
+2. **Click Handler Implementation**: Added async click event handlers to extension lines:
+   ```typescript
+   .on('click', async (event, d) => {
+     try {
+       const targetRooms = await api.getAll('rooms', { id: d.to_room_id });
+       if (targetRooms.length > 0) {
+         const targetZoneId = targetRooms[0].zone_id;
+         setSelectedZoneId(targetZoneId);
+       }
+     } catch (error) {
+       console.error('Failed to get target room zone:', error);
+     }
+   });
+   ```
+
+3. **Visual Feedback**: Added `cursor: pointer` to indicate clickable lines
+
+**Key Changes**:
+- Extension lines now include target room ID and direction in data binding
+- Click handlers fetch target room data to determine destination zone
+- Automatic zone switching when extension lines are clicked
+- Error handling for API failures during navigation
+
+**Results**:
+- ✅ Extension lines are now clickable with pointer cursor
+- ✅ Clicking an extension line navigates to the target zone automatically
+- ✅ Map updates immediately to show the new zone
+- ✅ Maintains existing visual styling and functionality
+- ✅ Error handling prevents crashes if target room lookup fails
+
+**Technical Details**:
+- Uses existing API infrastructure (`api.getAll('rooms', { id: to_room_id })`)
+- Async click handlers handle API latency gracefully
+- Data binding includes necessary metadata for zone resolution
+- No impact on existing map rendering or performance
+
+**Files Modified**:
+- `frontend/src/components/ZoneMap.tsx`: Added click handlers and data enrichment for extension lines
+
+**Impact**: Zone map navigation is now significantly more intuitive. Users can click on extension lines to instantly jump to connected zones, streamlining exploration and reducing the need for manual zone selection from dropdown menus.
+
+### Zone Map Dynamic Title - Zone Name Display (2025-11-22) ✅ **COMPLETED**
+**Status**: ✅ **COMPLETED** - MUD Map title now dynamically updates with "- <zone name>" when the selected zone changes
+
+**Problem**:
+- Map title remained static as "MUD Map" regardless of which zone was being viewed
+- Users had no clear indication of which zone they were currently exploring
+- Title didn't provide context about the current map view
+
+**Solution - Dynamic Zone Title**:
+Implemented zone-aware title updating through parent-child component communication:
+
+1. **ZoneMap Component Enhancement**: Added `onZoneChange` callback prop to notify parent when zone selection changes:
+   ```typescript
+   interface ZoneMapProps {
+     onRoomClick?: (room: Room) => void;
+     onZoneChange?: (zone: Zone | null) => void;
+   }
+   ```
+
+2. **Zone Change Notification**: Added useEffect to call `onZoneChange` whenever `selectedZoneId` changes:
+   ```typescript
+   useEffect(() => {
+     if (onZoneChange) {
+       const currentZone = zones.find(zone => zone.id === selectedZoneId) || null;
+       onZoneChange(currentZone);
+     }
+   }, [selectedZoneId, zones, onZoneChange]);
+   ```
+
+3. **Dashboard Title Update**: Modified Dashboard component to maintain current zone state and update title dynamically:
+   ```typescript
+   const [currentZone, setCurrentZone] = useState<Zone | null>(null);
+   
+   // Title updates automatically
+   <h2>MUD Map{currentZone ? ` - ${currentZone.name}` : ''}</h2>
+   <ZoneMap onZoneChange={setCurrentZone} />
+   ```
+
+**Key Changes**:
+- Added `onZoneChange` callback prop to ZoneMap component
+- Implemented zone change notification in ZoneMap
+- Added current zone state management in Dashboard
+- Dynamic title formatting with zone name when available
+
+**Results**:
+- ✅ Title shows "MUD Map" when no zone is selected
+- ✅ Title shows "MUD Map - [Zone Name]" when a zone is selected
+- ✅ Title updates immediately when zone changes via dropdown or clickable extension lines
+- ✅ Maintains clean title format without zone name when appropriate
+- ✅ No impact on existing functionality
+
+**Technical Details**:
+- Uses React callback props for parent-child communication
+- Zone data passed from ZoneMap to Dashboard on every zone change
+- Title updates are reactive and immediate
+- Backward compatible - works with existing zone selection methods
+
+**Files Modified**:
+- `frontend/src/components/ZoneMap.tsx`: Added onZoneChange prop and notification logic
+- `frontend/src/pages/Dashboard.tsx`: Added zone state management and dynamic title
+
+**Impact**: Map interface now provides clear context about which zone is being viewed. Users can immediately see the current zone name in the title, improving navigation awareness and overall user experience.
+
+### Zone Map Extension Lines Thickness - Enhanced Visibility (2025-11-22) ✅ **COMPLETED**
+**Status**: ✅ **COMPLETED** - Zone exit extension lines increased from 3px to 6px thickness for better visibility and clickability
+
+**Problem**:
+- Zone exit extension lines were only 3px thick, making them somewhat thin and potentially harder to see
+- Thicker lines would improve visual prominence and make them easier to click
+- User requested the lines be "twice as thick" for better usability
+
+**Solution - Increased Line Thickness**:
+Modified the stroke-width of zone exit extension lines from 3px to 6px:
+
+```typescript
+// Before: 3px thickness
+.attr('stroke-width', 3)
+
+// After: 6px thickness (twice as thick)
+.attr('stroke-width', 6)
+```
+
+**Key Changes**:
+- Increased `stroke-width` from 3 to 6 pixels for zone exit extension lines
+- Maintains red color (`#f44336`) and all other styling
+- No impact on regular exit lines or other map elements
+
+**Results**:
+- ✅ Zone exit extension lines are now twice as thick (6px vs 3px)
+- ✅ Improved visual prominence and easier identification
+- ✅ Better clickability for zone navigation feature
+- ✅ Maintains consistent red color scheme
+- ✅ No performance impact or layout changes
+
+**Technical Details**:
+- SVG stroke-width attribute controls line thickness
+- 6px provides good balance between visibility and not being too overwhelming
+- Consistent with D3.js rendering pipeline
+- Applied only to zone exit extension lines, not regular room connections
+
+**Files Modified**:
+- `frontend/src/components/ZoneMap.tsx`: Increased stroke-width from 3 to 6 for zone exit extension lines
+
+**Impact**: Zone exit extension lines are now more prominent and easier to interact with, improving the visual clarity and usability of the zone navigation feature.
+
 ### Documentation Strengthening - Reliable Command Patterns (2025-11-22) ✅ **COMPLETED**
 **Status**: ✅ **COMPLETED** - Updated QUICK_REFERENCE.md to prioritize working commands and clearly separate them from problematic ones
 

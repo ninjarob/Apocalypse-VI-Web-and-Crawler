@@ -319,6 +319,12 @@ async function calculateCoordinates() {
           continue;
         }
 
+        // Check if neighbor room is in the current zone - only position rooms in this zone
+        if (!roomMap.has(neighborId)) {
+          console.log(`🚫 Cross-zone exit: ${direction} from room ${currentId} to room ${neighborId} (not in zone ${zoneId})`);
+          continue;
+        }
+
         // Always calculate position, even if room already has coordinates
         // This handles cases where a room is reached via multiple paths
         const delta = DIRECTION_DELTAS[direction];
@@ -359,6 +365,24 @@ async function calculateCoordinates() {
 
     // Move offset for next component (with larger spacing to account for new node sizes)
     componentOffset.x += COMPONENT_SPACING * NODE_WIDTH;
+  }
+
+  // Assign default coordinates to any remaining rooms without coordinates
+  // This ensures all rooms have positions for map display, even isolated ones
+  let defaultX = 0;
+  let defaultY = 0;
+  const DEFAULT_SPACING = NODE_WIDTH * 2; // Extra spacing for default positions
+
+  for (const room of rooms) {
+    if (!coordinates.has(room.id)) {
+      coordinates.set(room.id, { x: defaultX, y: defaultY });
+      console.log(`📍 Assigned default coordinates (${defaultX}, ${defaultY}) to isolated room: ${room.name} (ID: ${room.id})`);
+      defaultX += DEFAULT_SPACING; // Spread them out horizontally
+      if (defaultX > DEFAULT_SPACING * 5) { // Wrap to next row after 5 rooms
+        defaultX = 0;
+        defaultY += DEFAULT_SPACING;
+      }
+    }
   }
 
   console.log(`✅ Assigned coordinates to ${coordinates.size} rooms in zone ${zoneId}\n`);
@@ -435,9 +459,9 @@ function getZoneExits(zoneId) {
       SELECT re.from_room_id, re.to_room_id, re.direction 
       FROM room_exits re
       JOIN rooms r1 ON re.from_room_id = r1.id
-      JOIN rooms r2 ON re.to_room_id = r2.id
-      WHERE r1.zone_id = ? AND r2.zone_id = ? AND re.to_room_id IS NOT NULL
-    `, [zoneId, zoneId], (err, rows) => {
+      LEFT JOIN rooms r2 ON re.to_room_id = r2.id
+      WHERE r1.zone_id = ? AND re.to_room_id IS NOT NULL
+    `, [zoneId], (err, rows) => {
       if (err) reject(err);
       else resolve(rows);
     });
