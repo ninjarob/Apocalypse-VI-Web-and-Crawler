@@ -3,7 +3,7 @@
 ## Project-Wide Development Guidelines
 
 ### 🔴 CRITICAL: Documentation Requirements
-**MANDATORY**: After completing each request, IMMEDIATELY update the `DEVELOPMENT_STATUS.md` file to reflect:
+**MANDATORY**: After completing each request, IMMEDIATELY update the `docs/development/DEVELOPMENT_STATUS.md` file to reflect:
 - Changes made
 - Features added
 - Issues resolved
@@ -22,7 +22,7 @@ This is **non-negotiable** for every completed task.
 - **Crawler**: Autonomous MUD exploration with AI agent
 
 ### 📁 Key Files
-- `DEVELOPMENT_STATUS.md` - Track all completed work here
+- `docs/development/DEVELOPMENT_STATUS.md` - Track all completed work here
 - `backend/seed.ts` - Database initialization
 - `crawler/src/tasks/` - Task-based MUD automation
 

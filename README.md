@@ -55,11 +55,13 @@ Access the web interface at **http://localhost:5173**
 
 ## Documentation
 
-- **SETUP.md** - Detailed installation and configuration
-- **QUICK_REFERENCE.md** - Common commands and troubleshooting
-- **DEVELOPMENT_STATUS.md** - Current development status
-- **ARCHIVE.md** - Historical features and implementation details
-- **docs/** - Technical documentation (database, items schema)
+- **[docs/](docs/)** - Organized project documentation
+  - **[Technical](docs/technical/)** - Setup, configuration, and technical guides
+  - **[Development](docs/development/)** - Status updates and communication
+  - **[Roadmap](docs/roadmap/)** - Future features and planning
+- **SETUP.md** → **[docs/technical/SETUP.md](docs/technical/SETUP.md)**
+- **QUICK_REFERENCE.md** → **[docs/technical/QUICK_REFERENCE.md](docs/technical/QUICK_REFERENCE.md)**
+- **DEVELOPMENT_STATUS.md** → **[docs/development/DEVELOPMENT_STATUS.md](docs/development/DEVELOPMENT_STATUS.md)**
 
 ## Support
 

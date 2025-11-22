@@ -234,8 +234,8 @@ notepad crawler\ai-knowledge.md
 
 1. Check logs: `crawler/logs/combined-*.log`
 2. Review config: `crawler/.env` and `backend/.env`
-3. See SETUP.md for detailed configuration
-4. See DEVELOPMENT_STATUS.md for current status
+3. See docs/technical/SETUP.md for detailed configuration
+4. See docs/development/DEVELOPMENT_STATUS.md for current status
 
 ## 💡 Pro Tips
 
@@ -248,6 +248,6 @@ notepad crawler\ai-knowledge.md
 
 ---
 
-**For detailed setup**: See SETUP.md  
-**For current dev status**: See DEVELOPMENT_STATUS.md  
+**For detailed setup**: See docs/technical/SETUP.md  
+**For current dev status**: See docs/development/DEVELOPMENT_STATUS.md  
 **For historical features**: See ARCHIVE.md

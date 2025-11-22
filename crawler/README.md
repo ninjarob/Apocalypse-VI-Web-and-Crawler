@@ -105,8 +105,8 @@ exits: 'north, south, west'
 
 ## 📖 Related Documentation
 
-- **`../DEVELOPMENT_STATUS.md`** - Project-wide status
-- **`../QUICK_REFERENCE.md`** - Common commands
+- **`../docs/development/DEVELOPMENT_STATUS.md`** - Project-wide status
+- **`../docs/technical/QUICK_REFERENCE.md`** - Common commands
 - **`CRAWLER_TASKS.md`** - Task system documentation
 - **`LOG_PARSER_README.md`** - Log parser details
 - **`MAINTENANCE_SYSTEM.md`** - Character maintenance

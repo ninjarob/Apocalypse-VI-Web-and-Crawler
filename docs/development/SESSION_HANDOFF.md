@@ -32,7 +32,7 @@ CALLING findExistingRoomKey with exits: [north,south,west]  ← DIFFERENT EXITS!
 ## 📂 Documentation Created
 
 ### Primary Documents
-1. **`DEVELOPMENT_STATUS.md`** - Updated with current investigation status
+1. **`docs/development/DEVELOPMENT_STATUS.md`** - Updated with current investigation status
    - Changed header from "All parser bugs fixed" to "CRITICAL BUG UNDER INVESTIGATION"
    - Added comprehensive investigation section with all fix attempts
    - Updated Known Issues section with three bug categories
@@ -45,7 +45,7 @@ CALLING findExistingRoomKey with exits: [north,south,west]  ← DIFFERENT EXITS!
    - Next steps with specific investigation tasks
    - Test commands for verification
 
-3. **`QUICK_REFERENCE.md`** - Added bug investigation workflow
+3. **`docs/technical/QUICK_REFERENCE.md`** - Added bug investigation workflow
    - Quick commands for testing bug status
    - Links to comprehensive documentation
 
@@ -160,8 +160,8 @@ After parsing: 105 new rooms, 221 exits saved (bug present)
 - [x] Technical context preserved
 - [x] Key mysteries identified
 - [x] Modified files listed
-- [x] DEVELOPMENT_STATUS.md updated
-- [x] QUICK_REFERENCE.md updated
+- [x] docs/development/DEVELOPMENT_STATUS.md updated
+- [x] docs/technical/QUICK_REFERENCE.md updated
 - [x] New investigation doc created
 
 **Ready for fresh session!** 🚀
@@ -174,8 +174,8 @@ After parsing: 105 new rooms, 221 exits saved (bug present)
 **Visual Diagrams**: `crawler/BUG_VISUAL_DIAGRAM.md` - See the bug flow visually  
 **Complete Analysis**: `crawler/PARSER_BUG_INVESTIGATION.md` - Full investigation details  
 **Session Overview**: `SESSION_HANDOFF.md` (this file)  
-**Current Status**: `DEVELOPMENT_STATUS.md` - Project-wide status  
-**Quick Commands**: `QUICK_REFERENCE.md` - Test workflow  
+**Current Status**: `docs/development/DEVELOPMENT_STATUS.md` - Project-wide status  
+**Quick Commands**: `docs/technical/QUICK_REFERENCE.md` - Test workflow  
 **Modified Parser**: `crawler/src/mudLogParser.ts` (lines 695-722 most recent)  
 **Test Log**: `crawler/sessions/Exploration - Astyll Hills.txt` (line 6931 is bug trigger)
 
