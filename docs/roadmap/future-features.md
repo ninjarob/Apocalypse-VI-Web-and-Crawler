@@ -27,8 +27,26 @@ This directory contains plans for future development, feature requests, and proj
 - [ ] **Pattern Recognition**: Game mechanic discovery and exploitation
 - [ ] **Adaptive Learning**: Behavior adjustment based on game responses
 - [ ] **Natural Language Queries**: Conversational interface for database queries
+- [ ] **Game-Playing AI**: Create an autonomous AI agent that can play Apocalypse VI as a full character (combat, quests, social interactions, economy)
 
 ### Phase 3: Rich Visualization
+- [ ] **3D Map Rendering**: Three-dimensional world representation
+- [ ] **Interactive Timeline**: Exploration history and zone progression
+- [ ] **Faction Territories**: Political boundary visualization
+- [ ] **Resource Mapping**: Item spawn locations and trading routes
+
+### Phase 4: Community Features
+- [ ] **Shared Knowledge Base**: Community-contributed exploration data
+- [ ] **Route Optimization**: Fastest paths between locations
+- [ ] **Character Builds**: Optimal equipment and spell combinations
+- [ ] **Market Analysis**: Item value tracking and trading opportunities
+
+### Phase 5: MMO Development
+- [ ] **MMO Game Creation**: Build a massively multiplayer online game based on Apocalypse VI world data
+- [ ] **Player Systems**: Character creation, progression, and social features
+- [ ] **World Building**: Dynamic world generation using explored MUD data
+- [ ] **Multiplayer Infrastructure**: Server architecture for concurrent players
+- [ ] **Game Balance**: Combat, economy, and progression systems
 - [ ] **3D Map Rendering**: Three-dimensional world representation
 - [ ] **Interactive Timeline**: Exploration history and zone progression
 - [ ] **Faction Territories**: Political boundary visualization
@@ -66,6 +84,7 @@ This directory contains plans for future development, feature requests, and proj
 - [ ] **Complete Midgaard City**: All rooms, NPCs, items mapped
 - [ ] **Major Zone Coverage**: Top 10 zones fully explored
 - [ ] **Cross-Zone Connections**: All zone boundaries documented
+- [ ] **Extended Zone Exploration**: Continue systematic exploration of additional zones beyond current coverage (Astyill Hills, Midgaard City)
 
 ### Performance Targets
 - [ ] **Exploration Speed**: 1000+ commands per hour

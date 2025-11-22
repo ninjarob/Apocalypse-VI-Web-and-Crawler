@@ -16,6 +16,7 @@ Documentation focused on AI efficient indexing and understanding of the applicat
 - **[OLLAMA_SETUP.md](technical/OLLAMA_SETUP.md)** - Local AI setup guide
 - **[QUICK_REFERENCE.md](technical/QUICK_REFERENCE.md)** - Common commands and troubleshooting
 - **[ITEMS_SCHEMA.md](technical/ITEMS_SCHEMA.md)** - Database schema documentation
+- **[REFERENCE_DATA_MANAGEMENT.md](technical/REFERENCE_DATA_MANAGEMENT.md)** - Adding and modifying reference data entities
 - **[analyze-bridge-roads.md](technical/analyze-bridge-roads.md)** - Bridge and road analysis
 
 ### 💬 Development Communication (`development/`)

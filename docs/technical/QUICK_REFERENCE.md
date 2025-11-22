@@ -63,6 +63,46 @@ node calculate-coordinates.js 9
 # Result: 102 rooms with coordinates, 214 exits saved
 ```
 
+### 📋 Reference Data Management
+**Full Guide**: See `docs/technical/REFERENCE_DATA_MANAGEMENT.md`
+
+```powershell
+# View all entity types (room types, classes, races, etc.)
+curl http://localhost:3002/api/entity-types
+
+# Get all room terrains
+curl http://localhost:3002/api/room_terrains
+
+# Add new room terrain
+curl -X POST "http://localhost:3002/api/room_terrains" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Volcano","description":"Lava-filled volcanic terrain"}'
+
+# Get all character classes
+curl http://localhost:3002/api/classes
+
+# Add new character class
+curl -X POST "http://localhost:3002/api/classes" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Necromancer","description":"Master of death magic"}'
+
+# Get all races
+curl http://localhost:3002/api/races
+
+# Add new race
+curl -X POST "http://localhost:3002/api/races" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Elf","description":"Graceful forest dwellers"}'
+
+# Update existing entity
+curl -X PUT "http://localhost:3002/api/room_terrains/1" \
+  -H "Content-Type: application/json" \
+  -d '{"description":"Updated description"}'
+
+# Delete entity (use with caution!)
+curl -X DELETE "http://localhost:3002/api/room_terrains/1"
+```
+
 ### 🐛 Parser Bug Investigation (RESOLVED)
 **Status**: ✅ FIXED - pendingLook mechanism implemented  
 **Issue**: Parser wasn't creating exits for movements from rooms observed via "look" commands  
