@@ -8596,3 +8596,223 @@ cast 'bind portal minor'
 </font><font color="#0080FF">Room scan complete!
 </font></font></code></pre>
 </td></tr></table>
+
+
+=== UPDATED EXPLORATION ===
+
+
+<!-- Produced by MUSHclient v 5.06 - www.mushclient.com -->
+<table border=0 cellpadding=5 bgcolor="#000000">
+<tr><td>
+<pre><code><font size=2 face="FixedSys, Lucida Console, Courier New, Courier"><font color="#0">
+</font><font color="#00FFFF">The store room
+</font><font color="#C0C0C0">   All the normal cooking ingredients abound in here, salt, flour, sugar and
+also various sorts of forest produce.  The bit that brings horror to your eyes
+is the door marked with &quot;HUMAN&quot; in big letters on it.  There's also a well here
+and it looks very, very deep.  
+</font><font color="#008080">[EXITS: w d ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: w, d
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">180H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">87V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+You don't see anyone nearby.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">180H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">87V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 5 o'clock pm, on the Day of the
+ Deception.
+The 9th Day of the Month of the Ancient Darkness, Year 1173.
+
+The light intensity here is: 7
+
+Tick Counter:    320 ticks since the last reboot
+Tick Timer:       37 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">180H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">87V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">west      - The kitchen
+down      - Falling down a well
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">180H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">87V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Haunted Forest]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">180H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">87V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look w
+</font><font color="#0080FF">Looking w...
+</font><font color="#C0C0C0">The cheerier sight of the kitchen.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">180H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">87V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look d
+</font><font color="#0080FF">Looking d...
+</font><font color="#C0C0C0">It's dark, it's deep and the walls are very slippery.  Believe me you probably
+don't want to go down here.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">180H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">87V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'ehlopq' briefly appears as a portal shimmers into view and then disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">180H</font><font color="#C0C0C0"> </font><font color="#00FF00">286M</font><font color="#C0C0C0"> </font><font color="#FFFF00">87V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+</font><font color="#C0C0C0">d
+</font><font color="#00FFFF">Falling down a well
+</font><font color="#C0C0C0">   You slipped.  You're now falling headlong down the well.  The cold air is
+whistling past you - Boy, you're cold!  You're rolling over as well, so you
+can see the top of the well gradually going smaller.  There's the odd finger-
+sized crevice, but just your luck, your fingers are too big.
+</font><font color="#008080">[EXITS: u d ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: u, d
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">180H</font><font color="#C0C0C0"> </font><font color="#00FF00">286M</font><font color="#C0C0C0"> </font><font color="#FFFF00">86V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+You don't see anyone nearby.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">180H</font><font color="#C0C0C0"> </font><font color="#00FF00">286M</font><font color="#C0C0C0"> </font><font color="#FFFF00">86V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 5 o'clock pm, on the Day of the
+ Deception.
+The 9th Day of the Month of the Ancient Darkness, Year 1173.
+
+The light intensity here is: 3
+
+Tick Counter:    320 ticks since the last reboot
+Tick Timer:       29 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">180H</font><font color="#C0C0C0"> </font><font color="#00FF00">286M</font><font color="#C0C0C0"> </font><font color="#FFFF00">86V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">up        - The store room
+down      - Still falling
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">180H</font><font color="#C0C0C0"> </font><font color="#00FF00">286M</font><font color="#C0C0C0"> </font><font color="#FFFF00">86V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Haunted Forest]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">180H</font><font color="#C0C0C0"> </font><font color="#00FF00">286M</font><font color="#C0C0C0"> </font><font color="#FFFF00">86V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look u
+</font><font color="#0080FF">Looking u...
+</font><font color="#C0C0C0">You see nothing special.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">180H</font><font color="#C0C0C0"> </font><font color="#00FF00">286M</font><font color="#C0C0C0"> </font><font color="#FFFF00">86V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look d
+</font><font color="#0080FF">Looking d...
+</font><font color="#C0C0C0">You see nothing special.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">180H</font><font color="#C0C0C0"> </font><font color="#00FF00">286M</font><font color="#C0C0C0"> </font><font color="#FFFF00">86V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'cdghlopq' briefly appears as a portal shimmers into view and then disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">180H</font><font color="#C0C0C0"> </font><font color="#00FF00">276M</font><font color="#C0C0C0"> </font><font color="#FFFF00">86V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+</font><font color="#C0C0C0">d
+</font><font color="#00FFFF">Still falling
+</font><font color="#C0C0C0">   The light from above has gone, it's dark, and you're lucky your lantern's
+still shining.  The crevices are still there, but you're going so fast that
+they just flash by.  You've rolled over again and can now see the bottom of
+the well flashing towards you.  By the way, you're at your terminal velocity
+and the impact with the water below is going to hurt.  You catch sight of a
+ledge above you.  If only you had something to hook on to it.
+</font><font color="#008080">[EXITS: d ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: d
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">180H</font><font color="#C0C0C0"> </font><font color="#00FF00">276M</font><font color="#C0C0C0"> </font><font color="#FFFF00">85V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+You don't see anyone nearby.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">180H</font><font color="#C0C0C0"> </font><font color="#00FF00">276M</font><font color="#C0C0C0"> </font><font color="#FFFF00">85V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 5 o'clock pm, on the Day of the
+ Deception.
+The 9th Day of the Month of the Ancient Darkness, Year 1173.
+
+The light intensity here is: 2
+
+Tick Counter:    320 ticks since the last reboot
+Tick Timer:       22 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">180H</font><font color="#C0C0C0"> </font><font color="#00FF00">276M</font><font color="#C0C0C0"> </font><font color="#FFFF00">85V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">down      - The bottom of the well
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">180H</font><font color="#C0C0C0"> </font><font color="#00FF00">276M</font><font color="#C0C0C0"> </font><font color="#FFFF00">85V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Haunted Forest]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">180H</font><font color="#C0C0C0"> </font><font color="#00FF00">276M</font><font color="#C0C0C0"> </font><font color="#FFFF00">85V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look d
+</font><font color="#0080FF">Looking d...
+</font><font color="#C0C0C0">You see nothing special.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">180H</font><font color="#C0C0C0"> </font><font color="#00FF00">276M</font><font color="#C0C0C0"> </font><font color="#FFFF00">85V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'ciklopq' briefly appears as a portal shimmers into view and then disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">180H</font><font color="#C0C0C0"> </font><font color="#00FF00">266M</font><font color="#C0C0C0"> </font><font color="#FFFF00">85V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+</font><font color="#C0C0C0">d
+You continue falling down the well.
+SPLASH!
+</font><font color="#00FFFF">The bottom of the well
+</font><font color="#C0C0C0">SPLASH!!!
+   Well you've finally reached the bottom.  You're standing up to your neck in
+dark, stagnant water.  The walls are all coated with slippery slime and you
+stand no chance of climbing out.  Better start calling for help.
+</font><font color="#008080">[EXITS: None!]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: None!
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">180H</font><font color="#C0C0C0"> </font><font color="#00FF00">266M</font><font color="#C0C0C0"> </font><font color="#FFFF00">84V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+You don't see anyone nearby.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">180H</font><font color="#C0C0C0"> </font><font color="#00FF00">266M</font><font color="#C0C0C0"> </font><font color="#FFFF00">84V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 5 o'clock pm, on the Day of the
+ Deception.
+The 9th Day of the Month of the Ancient Darkness, Year 1173.
+
+The light intensity here is: 2
+
+Tick Counter:    320 ticks since the last reboot
+Tick Timer:       17 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">180H</font><font color="#C0C0C0"> </font><font color="#00FF00">266M</font><font color="#C0C0C0"> </font><font color="#FFFF00">84V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0"> None.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">180H</font><font color="#C0C0C0"> </font><font color="#00FF00">266M</font><font color="#C0C0C0"> </font><font color="#FFFF00">84V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Haunted Forest]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">180H</font><font color="#C0C0C0"> </font><font color="#00FF00">266M</font><font color="#C0C0C0"> </font><font color="#FFFF00">84V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look None!
+</font><font color="#0080FF">Looking None!...
+</font><font color="#C0C0C0">You do not see that here.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">180H</font><font color="#C0C0C0"> </font><font color="#00FF00">266M</font><font color="#C0C0C0"> </font><font color="#FFFF00">84V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'giklopq' briefly appears as a portal shimmers into view and then disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">180H</font><font color="#C0C0C0"> </font><font color="#00FF00">256M</font><font color="#C0C0C0"> </font><font color="#FFFF00">84V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+
+</font></font></code></pre>
+</td></tr></table>
