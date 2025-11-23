@@ -8594,18 +8594,71 @@ cast 'bind portal minor'
 
 </font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">1M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
 </font><font color="#0080FF">Room scan complete!
-</font></font></code></pre>
-</td></tr></table>
+</font></font>
 
 
 === UPDATED EXPLORATION ===
 
 
-<!-- Produced by MUSHclient v 5.06 - www.mushclient.com -->
-<table border=0 cellpadding=5 bgcolor="#000000">
-<tr><td>
-<pre><code><font size=2 face="FixedSys, Lucida Console, Courier New, Courier"><font color="#0">
-</font><font color="#00FFFF">The store room
+<font color="#00FFFF">The kitchen
+</font><font color="#C0C0C0">   This is obviously where the food to be roasted in the fire in the great hall
+is prepared.  There are animals in cages on the floor and bags of flour and salt
+around the walls.  A table dominates the room on which some elf has
+industriously been slicing a large animal into cuts.  
+</font><font color="#008080">[EXITS: e s ]
+</font><font color="#C0C0C0">scan
+time
+exits
+who -z
+</font><font color="#0080FF">Found exits: e, s
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">216H</font><font color="#C0C0C0"> </font><font color="#00FF00">51M</font><font color="#C0C0C0"> </font><font color="#FFFF00">126V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You quickly scan the area.
+A dark elf citizen                            : 1 move south
+A dark elf citizen                            : 1 move south
+The dark elf Shaman                           : 1 move south
+A dark elf youth                              : 3 moves south
+A dark elf mother                             : 3 moves south
+A dark elf citizen                            : 3 moves south
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">216H</font><font color="#C0C0C0"> </font><font color="#00FF00">51M</font><font color="#C0C0C0"> </font><font color="#FFFF00">126V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> It is 12 o'clock pm, on the Day of the Moon.
+The 7th Day of the Month of the Ancient Darkness, Year 1173.
+
+The light intensity here is: 7
+
+Tick Counter:    267 ticks since the last reboot
+Tick Timer:        7 seconds until the next tick
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">216H</font><font color="#C0C0C0"> </font><font color="#00FF00">51M</font><font color="#C0C0C0"> </font><font color="#FFFF00">126V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> </font><font color="#008080">Obvious Exits:
+</font><font color="#C0C0C0">east      - The store room
+south     - The Great Hall
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">216H</font><font color="#C0C0C0"> </font><font color="#00FF00">51M</font><font color="#C0C0C0"> </font><font color="#FFFF00">126V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Haunted Forest]
+
+[Players]
+---------
+[Ma 19] Pouch the Warlock (invis)
+
+One lonely character displayed.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">216H</font><font color="#C0C0C0"> </font><font color="#00FF00">51M</font><font color="#C0C0C0"> </font><font color="#FFFF00">126V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look e
+</font><font color="#0080FF">Looking e...
+</font><font color="#C0C0C0">A room full of stores.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">216H</font><font color="#C0C0C0"> </font><font color="#00FF00">51M</font><font color="#C0C0C0"> </font><font color="#FFFF00">126V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look s
+</font><font color="#0080FF">Looking s...
+</font><font color="#C0C0C0">The fire beckons you back to the great hall.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">216H</font><font color="#C0C0C0"> </font><font color="#00FF00">51M</font><font color="#C0C0C0"> </font><font color="#FFFF00">126V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'bind portal minor'
+</font><font color="#0000FF">You open up a shimmering blue portal and gaze into it...
+</font><font color="#C0C0C0">'ceglopq' briefly appears as a portal shimmers into view and then disappears.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">216H</font><font color="#C0C0C0"> </font><font color="#00FF00">41M</font><font color="#C0C0C0"> </font><font color="#FFFF00">126V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#0080FF">Room scan complete!
+</font>
+<font color="#00FFFF">The store room
 </font><font color="#C0C0C0">   All the normal cooking ingredients abound in here, salt, flour, sugar and
 also various sorts of forest produce.  The bit that brings horror to your eyes
 is the door marked with &quot;HUMAN&quot; in big letters on it.  There's also a well here
