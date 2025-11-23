@@ -69,3 +69,5 @@ For issues, check:
 1. Logs in `crawler/logs/`
 2. QUICK_REFERENCE.md troubleshooting section
 3. SETUP.md for configuration help
+
+Updated on November 22, 2025.

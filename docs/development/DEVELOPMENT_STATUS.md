@@ -1,3 +1,12 @@
+## README Update (2025-11-22) ✅ **COMPLETED**
+**Status**: ✅ **COMPLETED** - Added update note to README.md
+
+**Changes Made**:
+- Added "Updated on November 22, 2025." to README.md
+
+**Files Modified**:
+- `README.md`
+
 ## Parser Vertical Drop Exception Generic Implementation (2025-01-24) ✅ **COMPLETED**
 **Status**: ✅ **COMPLETED** - Successfully removed room-specific debug code and direction-specific handling from parser's vertical drop exception to make it truly generic
 
