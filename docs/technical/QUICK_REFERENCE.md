@@ -63,6 +63,14 @@ npx tsx "c:\work\other\Apocalypse VI MUD\scripts\query-db.ts" "SELECT * FROM roo
 Invoke-RestMethod "http://localhost:3002/api/rooms"
 Invoke-RestMethod "http://localhost:3002/api/stats"
 
+# ✅ Export Room Data to JSON Files (for seed script)
+Invoke-WebRequest -Uri "http://localhost:3002/api/rooms?zone_id=9" -OutFile "data/rooms_for_zone_9.json"
+Invoke-WebRequest -Uri "http://localhost:3002/api/room_exits?zone_id=9" -OutFile "data/room_exits_for_zone_9.json"
+Invoke-WebRequest -Uri "http://localhost:3002/api/rooms?zone_id=12" -OutFile "data/rooms_for_zone_12.json"
+Invoke-WebRequest -Uri "http://localhost:3002/api/room_exits?zone_id=12" -OutFile "data/room_exits_for_zone_12.json"
+Invoke-WebRequest -Uri "http://localhost:3002/api/rooms?zone_id=2" -OutFile "data/rooms_for_zone_2.json"
+Invoke-WebRequest -Uri "http://localhost:3002/api/room_exits?zone_id=2" -OutFile "data/room_exits_for_zone_2.json"
+
 # ✅ File Operations (PowerShell native)
 Get-Content crawler\logs\combined-*.log -Tail 20
 Select-String -Path crawler\logs\*.log -Pattern "ERROR"
@@ -254,6 +262,32 @@ npm run calculate-coordinates 9
 
 # Result: Zone 9 ready with rooms, exits, and coordinates
 ```
+
+#### 💾 Exporting Room Data to JSON Files
+
+After parsing and calculating coordinates, you can export the room data back to JSON files for the seed script:
+
+```powershell
+# Export all zones at once
+cd "c:\work\other\Apocalypse VI MUD"
+
+Invoke-WebRequest -Uri "http://localhost:3002/api/rooms?zone_id=9" -OutFile "data/rooms_for_zone_9.json"
+Invoke-WebRequest -Uri "http://localhost:3002/api/room_exits?zone_id=9" -OutFile "data/room_exits_for_zone_9.json"
+
+Invoke-WebRequest -Uri "http://localhost:3002/api/rooms?zone_id=12" -OutFile "data/rooms_for_zone_12.json"
+Invoke-WebRequest -Uri "http://localhost:3002/api/room_exits?zone_id=12" -OutFile "data/room_exits_for_zone_12.json"
+
+Invoke-WebRequest -Uri "http://localhost:3002/api/rooms?zone_id=2" -OutFile "data/rooms_for_zone_2.json"
+Invoke-WebRequest -Uri "http://localhost:3002/api/room_exits?zone_id=2" -OutFile "data/room_exits_for_zone_2.json"
+
+# Result: 6 JSON files exported with fresh data including coordinates
+```
+
+**Use Case**: After reprocessing exploration logs, export the data so the seed script can load it in future database rebuilds.
+
+**API Endpoints**:
+- `GET /api/rooms?zone_id=<id>` - Returns all rooms for a zone
+- `GET /api/room_exits?zone_id=<id>` - Returns all exits for rooms in a zone
 
 #### Zone Alias System (Automatic Zone Detection)
 

@@ -12133,7 +12133,7 @@ Tick Timer:       63 seconds until the next tick
 </font><font color="#C0C0C0">east      - The path around the large mountain
 west      - A Narrow Gorge in the Astyll Hills
 
-</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">212H</font><font color="#C0C0C0"> </font><font color="#00FF00">54M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Haunted Forest]
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">212H</font><font color="#C0C0C0"> </font><font color="#00FF00">54M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297376X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> [Current Zone: Caves of the Goblin King]
 
 [Players]
 ---------
