@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import * as d3 from 'd3';
 import { api } from '../api';
 import { Loading } from './Loading';
@@ -44,6 +45,7 @@ interface ZoneMapProps {
 }
 
 export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick, onZoneChange, initialZoneId }) => {
+  const navigate = useNavigate();
   const [zones, setZones] = useState<Zone[]>([]);
   const [selectedZoneId, setSelectedZoneId] = useState<number | null>(null);
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -348,8 +350,11 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick, onZoneChange, ini
       .attr('width', 60)  // Further reduced from 80
       .attr('height', 40)  // Further reduced from 50
       .attr('fill', '#2a2a2a')
-      .attr('stroke', (d: any) => d.roomData.zone_exit ? '#4caf50' : '#4fc3f7')
-      .attr('stroke-width', 2)
+      .attr('stroke', (d: any) => {
+        if (selectedRoom && d.roomData.id === selectedRoom.id) return '#ffd54f'; // yellow for selected
+        return d.roomData.zone_exit ? '#4caf50' : '#4fc3f7';
+      })
+      .attr('stroke-width', (d: any) => selectedRoom && d.roomData.id === selectedRoom.id ? 3 : 2)
       .attr('rx', 8)
       .attr('x', -30)  // Adjusted for new width (60/2)
       .attr('y', -20);  // Adjusted for new height (40/2)
@@ -387,13 +392,19 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick, onZoneChange, ini
     node.on('mouseover', function(_event, d) {
       d3.select(this).select('rect')
         .attr('fill', '#3a3a3a')
-        .attr('stroke', d.roomData.zone_exit ? '#66bb6a' : '#81c784');
+        .attr('stroke', () => {
+          if (selectedRoom && d.roomData.id === selectedRoom.id) return '#ffeb3b'; // brighter yellow on hover
+          return d.roomData.zone_exit ? '#66bb6a' : '#81c784';
+        });
     });
 
     node.on('mouseout', function(_event, d) {
       d3.select(this).select('rect')
         .attr('fill', '#2a2a2a')
-        .attr('stroke', d.roomData.zone_exit ? '#4caf50' : '#4fc3f7');
+        .attr('stroke', () => {
+          if (selectedRoom && d.roomData.id === selectedRoom.id) return '#ffd54f'; // yellow for selected
+          return d.roomData.zone_exit ? '#4caf50' : '#4fc3f7';
+        });
     });
 
     // Text wrapping function
@@ -423,7 +434,7 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick, onZoneChange, ini
       });
     }
 
-  }, [rooms, exits, onRoomClick]);  const currentRooms = rooms;
+  }, [rooms, exits, onRoomClick, selectedRoom]);  const currentRooms = rooms;
 
   if (loading && zones.length === 0) {
     return <Loading />;
@@ -524,7 +535,17 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick, onZoneChange, ini
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-              <h3 style={{ margin: 0, color: '#4fc3f7' }}>{selectedRoom.name}</h3>
+              <h3
+                style={{
+                  margin: 0,
+                  color: '#4fc3f7',
+                  cursor: 'pointer',
+                  textDecoration: 'underline'
+                }}
+                onClick={() => navigate(`/admin/rooms/${selectedRoom.id}`)}
+              >
+                {selectedRoom.name}
+              </h3>
               <button
                 onClick={() => setSelectedRoom(null)}
                 style={{
@@ -571,9 +592,9 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick, onZoneChange, ini
             </div>
 
             {/* Exits for this room */}
-            {exits.filter(exit => exit.from_room_id === selectedRoom.id).length > 0 && (
-              <div>
-                <strong>Exits:</strong>
+            <div>
+              <strong>Exits:</strong>
+              {exits.filter(exit => exit.from_room_id === selectedRoom.id).length > 0 ? (
                 <ul style={{ margin: '5px 0', paddingLeft: '20px' }}>
                   {exits
                     .filter(exit => exit.from_room_id === selectedRoom.id)
@@ -581,10 +602,23 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick, onZoneChange, ini
                       const destinationRoom = exit.to_room_id ? rooms.find(r => r.id === exit.to_room_id) : null;
                       return (
                         <li key={exit.id} style={{ color: '#ccc' }}>
-                          {exit.direction}
+                          {destinationRoom ? (
+                            <span
+                              style={{
+                                color: '#4fc3f7',
+                                cursor: 'pointer',
+                                textDecoration: 'underline'
+                              }}
+                              onClick={() => setSelectedRoom(destinationRoom)}
+                            >
+                              {exit.direction}
+                            </span>
+                          ) : (
+                            exit.direction
+                          )}
                           {exit.description && ` - ${exit.description}`}
                           {destinationRoom && (
-                            <span style={{ color: '#4fc3f7' }}>
+                            <span style={{ color: '#ccc' }}>
                               {' '}→ {destinationRoom.name}
                               {destinationRoom.portal_key && (
                                 <span style={{ fontFamily: 'monospace', color: '#81c784' }}>
@@ -597,8 +631,10 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick, onZoneChange, ini
                       );
                     })}
                 </ul>
-              </div>
-            )}
+              ) : (
+                <p style={{ margin: '5px 0', color: '#f44336', fontWeight: 'bold' }}>No Exits!</p>
+              )}
+            </div>
           </div>
         </div>
       )}
