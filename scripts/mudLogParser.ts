@@ -188,6 +188,15 @@ export class MudLogParser {
         }
         console.log(`DEBUG: alreadyAssociated = ${alreadyAssociated}`);
         
+        // FIX: If portal is already associated and currentRoomKey is null (after exploration boundary),
+        // establish currentRoomKey from the existing room BEFORE processing merges
+        if (alreadyAssociated && existingRoomWithSameKey && existingRoomKey && this.state.currentRoomKey === null) {
+          this.state.currentRoomKey = existingRoomKey;
+          this.state.currentRoom = existingRoomWithSameKey;
+          console.log(`  🎯 Established already-associated room as current (was null after boundary): ${existingRoomWithSameKey.name}`);
+          console.log(`  🔑 CURRENT ROOM KEY UPDATED TO: ${existingRoomKey}`);
+        }
+        
         if (alreadyAssociated && existingRoomWithSameKey && existingRoomKey && this.state.bindingAttemptRoomKey) {
           // CRITICAL: Don't merge a room with itself!
           if (this.state.bindingAttemptRoomKey === existingRoomKey) {
@@ -195,6 +204,14 @@ export class MudLogParser {
             // Just update current room tracking, no merge needed
             this.state.currentRoomKey = existingRoomKey;
             this.state.currentRoom = existingRoomWithSameKey;
+            
+            // FIX: If currentRoomKey was null (after exploration boundary), establish it now
+            if (this.state.currentRoomKey === null || this.state.currentRoomKey !== existingRoomKey) {
+              this.state.currentRoomKey = existingRoomKey;
+              this.state.currentRoom = existingRoomWithSameKey;
+              console.log(`  🎯 Established already-bound room as current (was null/different after boundary): ${existingRoomWithSameKey.name}`);
+              console.log(`  🔑 CURRENT ROOM KEY UPDATED TO: ${existingRoomKey}`);
+            }
           } else {
             // We bound a room and got a portal key that ALREADY EXISTS
             // This means we created a namedesc: entry for a room we'd already bound
@@ -225,6 +242,7 @@ export class MudLogParser {
               this.state.currentRoom = existingRoomWithSameKey;
               
               console.log(`  ✅ Merged duplicate into existing room: ${existingRoomWithSameKey.name}`);
+              console.log(`  🔑 CURRENT ROOM KEY UPDATED TO: ${existingRoomKey}`);
             }
           }
         } else if (!alreadyAssociated) {
@@ -390,6 +408,14 @@ export class MudLogParser {
               
               console.log(`  🔗 Associated portal key ${this.state.pendingPortalKey} with binding attempt room: ${bindingRoom.name}`);
               
+              // FIX: If currentRoomKey is null (e.g., after exploration boundary), establish this bound room as current
+              if (this.state.currentRoomKey === null) {
+                this.state.currentRoomKey = portalKey;
+                this.state.currentRoom = bindingRoom;
+                console.log(`  🎯 Established bound room as current room (was null after boundary): ${bindingRoom.name}`);
+                console.log(`  🔑 CURRENT ROOM KEY UPDATED TO: ${portalKey}`);
+              }
+              
               // Track the last bound room for "Obvious Exits" parsing
               this.state.lastBoundRoom = this.state.bindingAttemptRoomKey;
               
@@ -402,6 +428,25 @@ export class MudLogParser {
               }
             } else if (bindingRoom && bindingRoom.portal_key) {
               console.log(`  ⚠️  Binding attempt room already has portal key: ${bindingRoom.name} has ${bindingRoom.portal_key}`);
+              
+              // FIX: If currentRoomKey is null (e.g., after exploration boundary), establish this already-bound room as current
+              if (this.state.currentRoomKey === null) {
+                const portalKey = `portal:${bindingRoom.portal_key}`;
+                this.state.currentRoomKey = portalKey;
+                this.state.currentRoom = bindingRoom;
+                console.log(`  🎯 Established already-bound room as current room (was null after boundary): ${bindingRoom.name}`);
+                console.log(`  🔑 CURRENT ROOM KEY UPDATED TO: ${portalKey}`);
+              }
+            } else if (alreadyAssociated && existingRoomWithSameKey && existingRoomKey) {
+              // FIX: Portal is already associated but there's no bindingAttemptRoomKey
+              // This happens after exploration boundaries when room appears without movement
+              // If currentRoomKey is null, establish it from the existing room
+              if (this.state.currentRoomKey === null) {
+                this.state.currentRoomKey = existingRoomKey;
+                this.state.currentRoom = existingRoomWithSameKey;
+                console.log(`  🎯 Established already-associated room as current (no binding attempt, was null after boundary): ${existingRoomWithSameKey.name}`);
+                console.log(`  🔑 CURRENT ROOM KEY UPDATED TO: ${existingRoomKey}`);
+              }
             } else {
               console.log(`  ⚠️  No binding attempt room found for portal key ${this.state.pendingPortalKey}`);
             }
@@ -762,6 +807,22 @@ export class MudLogParser {
         continue;
       }
       
+      // Detect exploration session boundary marker
+      if (cleanLine === '=== UPDATED EXPLORATION ===') {
+        console.log(`   🔄 Exploration boundary detected - resetting position tracking (staying in zone: ${this.state.currentZoneName})`);
+        // Clear position tracking so next room with MOVEMENT becomes new starting point
+        this.state.currentRoomKey = null;
+        this.state.currentRoom = null;
+        // Clear movement state to prevent incorrect exit creation
+        lastDirection = null;
+        pendingFlee = false;
+        this.state.pendingLook = false;
+        this.state.pendingRespawn = false;
+        // Keep currentZoneName - we're still in the same zone
+        i++;
+        continue;
+      }
+      
       // Detect plain "look" command (without direction)
       if (cleanLine === 'look') {
         this.state.pendingLook = true;
@@ -1051,14 +1112,53 @@ export class MudLogParser {
         // The portal key comes AFTER visiting (when bind portal is cast)
         // So we ONLY search by exact description match, never by pendingPortalKey here
         // Pass the exits array so we can match by exit signature
+        
+        // FIX: Always check if a portal-bound version exists in the database
+        // This prevents creating duplicate namedesc keys for rooms that already have portal keys
+        // AND ensures we prefer database portal keys over in-memory namedesc keys
+        let dbPortalKey: string | null = null;
+        console.log(`🔍 Checking database for portal-bound room: ${roomName}...`);
+        try {
+          const response = await axios.get(`${this.apiBaseUrl}/rooms?name=${encodeURIComponent(roomName)}`);
+          const dbRooms = response.data;
+          for (const dbRoom of dbRooms) {
+            if (dbRoom.description === description && dbRoom.portal_key) {
+              dbPortalKey = dbRoom.portal_key;
+              console.log(`  ✅ Found portal-bound room in database: ${roomName} (portal:${dbPortalKey})`);
+              break;
+            }
+          }
+          if (!dbPortalKey) {
+            console.log(`  ℹ️  No portal-bound room found in database for: ${roomName}`);
+          }
+        } catch (error) {
+          console.log(`  ⚠️  Database lookup failed: ${error}`);
+        }
+        
         console.log(`🔍 CALLING findExistingRoomKey with exits: [${exits.join(',')}]`);
-        let existingRoomKey = this.findExistingRoomKey(roomName, description, null);
+        let existingRoomKey = dbPortalKey ? `portal:${dbPortalKey}` : this.findExistingRoomKey(roomName, description, null);
         console.log(`DEBUG: Existing room key check for "${roomName}": ${existingRoomKey}`);
         console.log(`🔍 FIND RESULT: findExistingRoomKey returned ${existingRoomKey ? existingRoomKey.substring(0, 50) + '...' : 'null'} for "${roomName}" with exits [${exits.join(',')}]`);
         console.log(`DEBUG: Current description hash: ${this.hashString(description.substring(0, 100))}...`);
         
         if (existingRoomKey) {
           console.log(`DEBUG: Updating existing room: ${roomName}`);
+          
+          // If we got the room key from the database, ensure it's loaded into state.rooms
+          if (dbPortalKey && !this.state.rooms.has(existingRoomKey)) {
+            console.log(`  📥 Loading room from database into state: ${existingRoomKey}`);
+            this.state.rooms.set(existingRoomKey, {
+              name: roomName,
+              description,
+              exits,
+              npcs,
+              items,
+              portal_key: dbPortalKey,
+              zone_name: this.state.currentZoneName || this.state.defaultZoneName || 'Unknown',
+              is_zone_exit: false
+            });
+          }
+          
           console.log(`DEBUG: Existing room description hash: ${this.hashString(this.state.rooms.get(existingRoomKey)!.description.substring(0, 100))}...`);
           // Update existing room with any new information
           const existingRoom = this.state.rooms.get(existingRoomKey)!;
@@ -1120,15 +1220,32 @@ export class MudLogParser {
               console.log(`  👁️  Look command - updating current room without direction validation`);
               this.state.currentRoom = existingRoom;
               this.state.currentRoomKey = existingRoomKey;
+              this.state.pendingLook = false;
               console.log(`  🔑 CURRENT ROOM KEY UPDATED TO: ${existingRoomKey.substring(0, 60)}...`);
             } else {
               // Normal movement with direction
               // Get the direction we came from (reverse of lastDirection)
               const expectedExit = this.getOppositeDirection(lastDirection);
               
+              // Check if this is a one-way vertical drop (well, pit, chasm, etc.)
+              const isVerticalDrop = lastDirection === 'down' && 
+                (existingRoom.name.toLowerCase().includes('well') ||
+                 existingRoom.name.toLowerCase().includes('pit') ||
+                 existingRoom.name.toLowerCase().includes('falling') ||
+                 existingRoom.name.toLowerCase().includes('bottom') ||
+                 existingRoom.name.toLowerCase().includes('drop') ||
+                 existingRoom.name.toLowerCase().includes('chasm') ||
+                 existingRoom.name.toLowerCase().includes('abyss') ||
+                 existingRoom.name.toLowerCase().includes('shaft') ||
+                 existingRoom.name.toLowerCase().includes('plunge'));
+              
               // Validate: the room we found should have an exit in the direction we came from
               // Example: if we moved "south" to get here, this room should have a "north" exit back
-              if (existingRoom.exits && existingRoom.exits.includes(expectedExit)) {
+              // EXCEPTION: One-way vertical drops don't have reverse exits
+              if (isVerticalDrop || (existingRoom.exits && existingRoom.exits.includes(expectedExit))) {
+                if (isVerticalDrop) {
+                  console.log(`  🕳️  Vertical drop detected - skipping reverse exit validation for "${existingRoom.name}"`);
+                }
                 console.log(`  ✅ Exit validation PASSED - room has ${expectedExit} exit (reverse of ${lastDirection})`);
                 console.log(`  🚶 Player moved ${lastDirection} to existing room - updating current room tracking`);
                 
@@ -1156,8 +1273,17 @@ export class MudLogParser {
               }
             }
           } else {
-            console.log(`  ⏸️  No movement - room parse is incidental, keeping currentRoomKey=${this.state.currentRoomKey?.substring(0, 50) || 'null'}...`);
-            // Don't update currentRoom or currentRoomKey - player hasn't moved
+            // FIX: If we found this room from database (after exploration boundary), update currentRoomKey
+            // even without movement, because we know it's the correct portal-bound room
+            if (dbPortalKey) {
+              console.log(`  🎯 No movement but found portal-bound room from database - updating current room`);
+              this.state.currentRoom = existingRoom;
+              this.state.currentRoomKey = existingRoomKey;
+              console.log(`  🔑 CURRENT ROOM KEY UPDATED TO: ${existingRoomKey.substring(0, 60)}...`);
+            } else {
+              console.log(`  ⏸️  No movement - room parse is incidental, keeping currentRoomKey=${this.state.currentRoomKey?.substring(0, 50) || 'null'}...`);
+              // Don't update currentRoom or currentRoomKey - player hasn't moved
+            }
           }
           
         } else {
@@ -1220,8 +1346,24 @@ export class MudLogParser {
               // Normal movement with direction
               // Verify this new room has an exit back in the direction we came from
               const expectedExit = getOppositeDirection(lastDirection);
-              if (exits.includes(expectedExit)) {
-                console.log(`  ✅ Exit validation PASSED - new room has ${expectedExit} exit (reverse of ${lastDirection})`);
+              
+              // Check if this is a one-way vertical drop (well, pit, chasm, etc.)
+              const isVerticalDrop = lastDirection === 'down' && 
+                (roomName.toLowerCase().includes('well') ||
+                 roomName.toLowerCase().includes('pit') ||
+                 roomName.toLowerCase().includes('falling') ||
+                 roomName.toLowerCase().includes('bottom') ||
+                 roomName.toLowerCase().includes('drop') ||
+                 roomName.toLowerCase().includes('chasm') ||
+                 roomName.toLowerCase().includes('abyss') ||
+                 roomName.toLowerCase().includes('shaft') ||
+                 roomName.toLowerCase().includes('plunge'));
+              
+              if (isVerticalDrop || exits.includes(expectedExit)) {
+                if (isVerticalDrop) {
+                  console.log(`  🕳️  Vertical drop detected - skipping reverse exit validation for "${roomName}"`);
+                }
+                console.log(`  ✅ Exit validation PASSED - new room has ${expectedExit} exit (reverse of ${lastDirection}) ${isVerticalDrop ? '(one-way vertical drop exception)' : ''}`);
                 console.log(`  🚶 Player moved ${lastDirection} to new room - updating current room tracking`);
                 
                 // FIX #10: Track bug room updates

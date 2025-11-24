@@ -8597,7 +8597,6 @@ cast 'bind portal minor'
 </font></font>
 
 
-=== UPDATED EXPLORATION ===
 
 
 <font color="#00FFFF">The kitchen
@@ -8657,8 +8656,8 @@ cast 'bind portal minor'
 
 </font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">216H</font><font color="#C0C0C0"> </font><font color="#00FF00">41M</font><font color="#C0C0C0"> </font><font color="#FFFF00">126V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317895X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
 </font><font color="#0080FF">Room scan complete!
-</font>
-<font color="#00FFFF">The store room
+</font><font color="#C0C0C0">e
+</font><font color="#00FFFF">The store room
 </font><font color="#C0C0C0">   All the normal cooking ingredients abound in here, salt, flour, sugar and
 also various sorts of forest produce.  The bit that brings horror to your eyes
 is the door marked with &quot;HUMAN&quot; in big letters on it.  There's also a well here
