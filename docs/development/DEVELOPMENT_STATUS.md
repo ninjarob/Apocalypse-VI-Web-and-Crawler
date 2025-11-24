@@ -1,45 +1,67 @@
-## Parser Fix: Vertical Drop Exception for One-Way Falls (2025-01-XX) ✅ **COMPLETED**
-**Status**: ✅ **COMPLETED** - Vertical drop rooms (wells, pits, chasms) now properly captured by parser
+## Parser Fix: One-Way Passage Detection Based on Actual Exits (2025-01-24) ✅ **COMPLETED**
+**Status**: ✅ **COMPLETED** - One-way passages now properly detected by parser based on actual exit data from MUD
 
 **Problem Solved**:
-- Missing rooms "Still falling" (ciklopq) and "The bottom of the well" (giklopq) in Haunted Forest zone 12 well sequence
-- Parser exit validation was failing for one-way vertical drops because it required bidirectional exits (if you go down, destination must have up exit back)
-- Vertical drops are intentionally one-way - you fall down but cannot climb back up without magic
-- Exit validation error: "Exit validation FAILED - new room missing up exit (reverse of down)"
+1. **Missing Rooms**: "Still falling" (ciklopq) and "The bottom of the well" (giklopq) in Haunted Forest zone 12 well sequence
+2. **Exit Validation Failure**: Parser was failing for one-way passages because it required bidirectional exits
+3. **Auto-Reverse Exit Creation**: Parser was creating reverse exits for one-way passages (wells, slides, traps, etc.)
 
 **Solution Implemented**:
 
-### Vertical Drop Detection & Exception
-- ✅ **Pattern Matching**: Detects vertical drops based on direction='down' + room name keywords (well, pit, falling, bottom, drop, chasm, abyss, shaft, plunge)
-- ✅ **Validation Exception**: Skips reverse exit requirement for vertical drops (allows one-way falls)
-- ✅ **Portal Binding**: Properly associates portal keys with vertical drop rooms for unique identification
-- ✅ **Exit Creation**: Creates down exits from source room → vertical drop destination, plus auto-reverse up exits for navigation
+### Exit-Based One-Way Detection
+- ✅ **Actual Exit Analysis**: Detects one-way passages by checking if destination room has reverse exit in MUD data
+- ✅ **No Name-Based Heuristics**: Uses actual exit data from MUD server, not room name patterns
+- ✅ **Validation Exception**: Accepts rooms without reverse exits (allows one-way passages)
+- ✅ **Auto-Reverse Skip**: Only creates reverse exits when destination room actually has the opposite direction exit
+- ✅ **Universal Detection**: Works for all one-way passages (wells, slides, traps, special passages, etc.)
+- ✅ **Debug Logging**: Shows "🔀 One-way passage detected - room has no [direction] exit back" messages
 
 **Code Changes**:
 ```typescript
-// Location: scripts/mudLogParser.ts (line ~1343-1368, ~1227-1240)
+// Location: scripts/mudLogParser.ts (line ~1250)
+// Exit validation for existing rooms - check if reverse exit exists
+const expectedExit = this.getOppositeDirection(lastDirection);
+const hasReverseExit = existingRoom.exits && existingRoom.exits.includes(expectedExit);
 
-// Vertical drop detection logic
-const isVerticalDrop = lastDirection === 'down' && 
-  (roomName.toLowerCase().includes('well') ||
-   roomName.toLowerCase().includes('pit') ||
-   roomName.toLowerCase().includes('falling') ||
-   roomName.toLowerCase().includes('bottom') ||
-   roomName.toLowerCase().includes('drop') ||
-   roomName.toLowerCase().includes('chasm') ||
-   roomName.toLowerCase().includes('abyss') ||
-   roomName.toLowerCase().includes('shaft') ||
-   roomName.toLowerCase().includes('plunge'));
-
-// Modified exit validation
-if (isVerticalDrop || exits.includes(expectedExit)) {
-  if (isVerticalDrop) {
-    console.log(`  🕳️  Vertical drop detected - skipping reverse exit validation for "${roomName}"`);
-  }
-  // Proceed with room tracking update
+if (hasReverseExit) {
+  console.log(`  ✅ Exit validation PASSED - room has ${expectedExit} exit (reverse of ${lastDirection})`);
 } else {
-  console.error(`  ❌ Exit validation FAILED - new room missing ${expectedExit} exit (reverse of ${lastDirection})`);
-  // Skip room creation
+  console.log(`  🔀 One-way passage detected - room has no ${expectedExit} exit back`);
+}
+// Accept room either way - one-way passages are valid
+```
+
+```typescript
+// Location: scripts/mudLogParser.ts (line ~1370)
+// Exit validation for new rooms - check if reverse exit exists
+const expectedExit = getOppositeDirection(lastDirection);
+const hasReverseExit = exits.includes(expectedExit);
+
+if (hasReverseExit) {
+  console.log(`  ✅ Exit validation PASSED - new room has ${expectedExit} exit (reverse of ${lastDirection})`);
+} else {
+  console.log(`  🔀 One-way passage detected - new room has no ${expectedExit} exit back`);
+}
+// Accept room either way - one-way passages are valid
+```
+
+```typescript
+// Location: scripts/mudLogParser.ts (line ~1510)
+// Auto-reverse exit creation - only create if destination has opposite exit
+const oppositeDirection = getOppositeDirection(lastDirection);
+const currentRoom = this.state.currentRoom;
+const hasOppositeExit = currentRoom && currentRoom.exits && currentRoom.exits.includes(oppositeDirection);
+
+if (!hasOppositeExit) {
+  console.log(`    🔀 Auto-reverse SKIPPED: One-way passage - destination room has no ${oppositeDirection} exit back`);
+} else {
+  // Check for existing exit, then create reverse exit if none exists
+  const existingReverseExit = this.state.exits.find(/* ... */);
+  if (!existingReverseExit) {
+    const reverseExit: ParsedExit = { /* ... */ };
+    this.state.exits.push(reverseExit);
+    console.log(`    🔄 Auto-reverse: ${roomName} --[${oppositeDirection}]--> ${previousRoom.name}`);
+  }
 }
 ```
 
@@ -49,34 +71,58 @@ if (isVerticalDrop || exits.includes(expectedExit)) {
 ❌ Database contained only 1 room: cdghlopq (Falling down a well)
 ❌ Missing: ciklopq (Still falling), giklopq (The bottom of the well)
 ❌ Exit validation failure: "new room missing up exit (reverse of down)"
+❌ Auto-reverse exits created: ciklopq→up→cdghlopq, giklopq→up→ciklopq (impossible climbs)
 
-# After Fix:
-✅ 🕳️ Vertical drop detected - skipping reverse exit validation for "Still falling"
+# After Fix (Exit-Based Detection):
+✅ "Falling down a well" found with exits: [up, down]
+✅ ✅ Exit validation PASSED - room has up exit (bidirectional passage)
+✅ Portal key cdghlopq associated with "Falling down a well"
+✅ Exit created: "The store room" --[down]--> "Falling down a well"
+✅ 🔄 Auto-reverse created: "Falling down a well" --[up]--> "The store room" (has up exit)
+
+✅ "Still falling" found with exits: [down]
+✅ 🔀 One-way passage detected - room has no up exit back
 ✅ Portal key ciklopq associated with "Still falling"
 ✅ Exit created: "Falling down a well" --[down]--> "Still falling"
-✅ 🕳️ Vertical drop detected - skipping reverse exit validation for "The bottom of the well"
+✅ 🔀 Auto-reverse SKIPPED: One-way passage - destination room has no up exit back
+
+✅ "The bottom of the well" found with exits: [none!]
+✅ 🔀 One-way passage detected - room has no up exit back
 ✅ Portal key giklopq associated with "The bottom of the well"
 ✅ Exit created: "Still falling" --[down]--> "The bottom of the well"
-✅ Database now contains all 3 well rooms with complete exit chain
+✅ 🔀 Auto-reverse SKIPPED: One-way passage - destination room has no up exit back
 ```
 
-**Complete Well Sequence**:
+**Complete Well Sequence** (Final Correct Structure):
 ```
 The store room (ehlopq)
     ↓ [down]
-Falling down a well (cdghlopq)
+Falling down a well (cdghlopq) [has up, down] ← BIDIRECTIONAL
+    ↑ [up] (can climb back to store room)
     ↓ [down]
-Still falling (ciklopq)
+Still falling (ciklopq) [has down only] ← ONE-WAY
     ↓ [down]
-The bottom of the well (giklopq)
+The bottom of the well (giklopq) [no exits] ← DEAD END
 
-(Auto-reverse [up] exits created for navigation back)
+✅ EXIT-BASED DETECTION - Uses actual MUD exit data, not room names
 ```
 
-**Impact**: Parser now handles one-way vertical movements correctly, allowing capture of wells, pits, chasms, and similar features where falling is one-way but return requires magic or assistance.
+**Database Verification**:
+```
+The store room       → down → Falling down a well
+Falling down a well  → up   → The store room (has up exit - bidirectional)
+Falling down a well  → down → Still falling
+Still falling        → down → The bottom of the well (no up exit - one-way)
+
+✅ Correct: Auto-reverse created only where destination has reverse exit
+```
+
+**Impact**: Parser now handles **all one-way passages** correctly by checking actual exit data from the MUD server. Works for wells, slides, traps, special passages, and any other one-way movement. No name-based heuristics needed.
 
 **Files Modified**:
-- `scripts/mudLogParser.ts` - Added vertical drop detection and validation exception (line ~1227-1240, ~1343-1368)
+- `scripts/mudLogParser.ts` - Added exit-based one-way passage detection in validation (line ~1250, ~1370)
+- `scripts/mudLogParser.ts` - Added exit-based auto-reverse skip logic (line ~1510)
+- Removed all name-based heuristics - now uses actual MUD exit data exclusively
 
 **Verification**:
 ```bash

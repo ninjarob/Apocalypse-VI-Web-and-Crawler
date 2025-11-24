@@ -1227,27 +1227,20 @@ export class MudLogParser {
               // Get the direction we came from (reverse of lastDirection)
               const expectedExit = this.getOppositeDirection(lastDirection);
               
-              // Check if this is a one-way vertical drop (well, pit, chasm, etc.)
-              const isVerticalDrop = lastDirection === 'down' && 
-                (existingRoom.name.toLowerCase().includes('well') ||
-                 existingRoom.name.toLowerCase().includes('pit') ||
-                 existingRoom.name.toLowerCase().includes('falling') ||
-                 existingRoom.name.toLowerCase().includes('bottom') ||
-                 existingRoom.name.toLowerCase().includes('drop') ||
-                 existingRoom.name.toLowerCase().includes('chasm') ||
-                 existingRoom.name.toLowerCase().includes('abyss') ||
-                 existingRoom.name.toLowerCase().includes('shaft') ||
-                 existingRoom.name.toLowerCase().includes('plunge'));
-              
               // Validate: the room we found should have an exit in the direction we came from
               // Example: if we moved "south" to get here, this room should have a "north" exit back
-              // EXCEPTION: One-way vertical drops don't have reverse exits
-              if (isVerticalDrop || (existingRoom.exits && existingRoom.exits.includes(expectedExit))) {
-                if (isVerticalDrop) {
-                  console.log(`  🕳️  Vertical drop detected - skipping reverse exit validation for "${existingRoom.name}"`);
-                }
+              // If the room doesn't have the reverse exit, it's a one-way passage
+              const hasReverseExit = existingRoom.exits && existingRoom.exits.includes(expectedExit);
+              
+              if (hasReverseExit) {
                 console.log(`  ✅ Exit validation PASSED - room has ${expectedExit} exit (reverse of ${lastDirection})`);
                 console.log(`  🚶 Player moved ${lastDirection} to existing room - updating current room tracking`);
+              } else {
+                console.log(`  🔀 One-way passage detected - room has no ${expectedExit} exit back`);
+                console.log(`  🚶 Player moved ${lastDirection} to existing room (one-way) - updating current room tracking`);
+              }
+              
+              if (hasReverseExit || !hasReverseExit) {
                 
                 // FIX #10: Track bug room updates
                 if ((previousRoomKey && (previousRoomKey.includes('cfhilnoq') || previousRoomKey.includes('lnoq'))) ||
@@ -1347,24 +1340,18 @@ export class MudLogParser {
               // Verify this new room has an exit back in the direction we came from
               const expectedExit = getOppositeDirection(lastDirection);
               
-              // Check if this is a one-way vertical drop (well, pit, chasm, etc.)
-              const isVerticalDrop = lastDirection === 'down' && 
-                (roomName.toLowerCase().includes('well') ||
-                 roomName.toLowerCase().includes('pit') ||
-                 roomName.toLowerCase().includes('falling') ||
-                 roomName.toLowerCase().includes('bottom') ||
-                 roomName.toLowerCase().includes('drop') ||
-                 roomName.toLowerCase().includes('chasm') ||
-                 roomName.toLowerCase().includes('abyss') ||
-                 roomName.toLowerCase().includes('shaft') ||
-                 roomName.toLowerCase().includes('plunge'));
+              // Check if the room actually has an exit back (not all rooms do - one-way passages)
+              const hasReverseExit = exits.includes(expectedExit);
               
-              if (isVerticalDrop || exits.includes(expectedExit)) {
-                if (isVerticalDrop) {
-                  console.log(`  🕳️  Vertical drop detected - skipping reverse exit validation for "${roomName}"`);
-                }
-                console.log(`  ✅ Exit validation PASSED - new room has ${expectedExit} exit (reverse of ${lastDirection}) ${isVerticalDrop ? '(one-way vertical drop exception)' : ''}`);
+              if (hasReverseExit) {
+                console.log(`  ✅ Exit validation PASSED - new room has ${expectedExit} exit (reverse of ${lastDirection})`);
                 console.log(`  🚶 Player moved ${lastDirection} to new room - updating current room tracking`);
+              } else {
+                console.log(`  🔀 One-way passage detected - new room has no ${expectedExit} exit back`);
+                console.log(`  🚶 Player moved ${lastDirection} to new room (one-way) - updating current room tracking`);
+              }
+              
+              if (hasReverseExit || !hasReverseExit) {
                 
                 // FIX #10: Track bug room updates
                 if (roomKey.includes('cfhilnoq') || roomKey.includes('lnoq') ||
@@ -1488,35 +1475,45 @@ export class MudLogParser {
               console.log(`    🐛 MUDDY EXIT CREATED: from_key=${exit.from_room_key.substring(0, 30)}... to_key=${exit.to_room_key?.substring(0, 30) || 'undefined'}...`);
             }          // AUTOMATIC REVERSE EXIT: Create the opposite direction exit
           // This works 99% of the time - if you go north to a room, south takes you back
+          // EXCEPTION: One-way passages don't have reverse exits
           const oppositeDirection = getOppositeDirection(lastDirection);
           
-          // FIX #14: Check for existing exit before creating auto-reverse
-          // If there's already an exit from this room in this direction, don't overwrite it
-          const existingReverseExit = this.state.exits.find(e => 
-            e.from_room_key === this.state.currentRoomKey && 
-            e.direction === oppositeDirection
-          );
+          // Check if the destination room actually has an exit back in the opposite direction
+          // If not, this is a one-way passage (wells, slides, special passages, etc.)
+          const currentRoom = this.state.currentRoom;
+          const hasOppositeExit = currentRoom && currentRoom.exits && currentRoom.exits.includes(oppositeDirection);
           
-          if (existingReverseExit) {
-            console.log(`    ⚠️  Auto-reverse SKIPPED: ${roomName} already has ${oppositeDirection} exit to ${existingReverseExit.to_room_name}`);
-            console.log(`       Would have created: ${roomName} --[${oppositeDirection}]--> ${previousRoom.name}`);
-            console.log(`       Keeping existing:   ${roomName} --[${oppositeDirection}]--> ${existingReverseExit.to_room_name}`);
+          if (!hasOppositeExit) {
+            console.log(`    🔀 Auto-reverse SKIPPED: One-way passage - destination room has no ${oppositeDirection} exit back`);
           } else {
-            const reverseExit: ParsedExit = {
-              from_room_key: this.state.currentRoomKey || '', // Use the UPDATED current room key
-              from_room_name: roomName,
-              from_room_description: description,
-              direction: oppositeDirection,
-              to_room_key: previousRoomKey,
-              to_room_name: previousRoom.name,
-              is_blocked: false // Assume reverse is also traversable
-            };
-            this.state.exits.push(reverseExit);
-            console.log(`    🔄 Auto-reverse: ${roomName} --[${oppositeDirection}]--> ${previousRoom.name}`);
+            // FIX #14: Check for existing exit before creating auto-reverse
+            // If there's already an exit from this room in this direction, don't overwrite it
+            const existingReverseExit = this.state.exits.find(e => 
+              e.from_room_key === this.state.currentRoomKey && 
+              e.direction === oppositeDirection
+            );
             
-            // DEBUG: Track muddy corridor reverse exits
-            if (previousRoom.name === 'A muddy corridor' || roomName === 'A muddy corridor') {
-              console.log(`    🐛 MUDDY REVERSE EXIT CREATED: from_key=${reverseExit.from_room_key.substring(0, 30)}... to_key=${reverseExit.to_room_key?.substring(0, 30) || 'undefined'}...`);
+            if (existingReverseExit) {
+              console.log(`    ⚠️  Auto-reverse SKIPPED: ${roomName} already has ${oppositeDirection} exit to ${existingReverseExit.to_room_name}`);
+              console.log(`       Would have created: ${roomName} --[${oppositeDirection}]--> ${previousRoom.name}`);
+              console.log(`       Keeping existing:   ${roomName} --[${oppositeDirection}]--> ${existingReverseExit.to_room_name}`);
+            } else {
+              const reverseExit: ParsedExit = {
+                from_room_key: this.state.currentRoomKey || '', // Use the UPDATED current room key
+                from_room_name: roomName,
+                from_room_description: description,
+                direction: oppositeDirection,
+                to_room_key: previousRoomKey,
+                to_room_name: previousRoom.name,
+                is_blocked: false // Assume reverse is also traversable
+              };
+              this.state.exits.push(reverseExit);
+              console.log(`    🔄 Auto-reverse: ${roomName} --[${oppositeDirection}]--> ${previousRoom.name}`);
+              
+              // DEBUG: Track muddy corridor reverse exits
+              if (previousRoom.name === 'A muddy corridor' || roomName === 'A muddy corridor') {
+                console.log(`    🐛 MUDDY REVERSE EXIT CREATED: from_key=${reverseExit.from_room_key.substring(0, 30)}... to_key=${reverseExit.to_room_key?.substring(0, 30) || 'undefined'}...`);
+              }
             }
           }
         }
