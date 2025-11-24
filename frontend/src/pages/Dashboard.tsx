@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { api, Stats } from '../api';
 import { Loading, ZoneMap } from '../components';
 
@@ -8,9 +9,21 @@ interface Zone {
 }
 
 export default function Dashboard() {
+  const { zoneId } = useParams<{ zoneId?: string }>();
+  const navigate = useNavigate();
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentZone, setCurrentZone] = useState<Zone | null>(null);
+
+  // Handle zone changes and update URL
+  const handleZoneChange = useCallback((zone: Zone | null) => {
+    setCurrentZone(zone);
+    if (zone) {
+      navigate(`/map/${zone.id}`, { replace: true });
+    } else {
+      navigate('/', { replace: true });
+    }
+  }, [navigate]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -35,7 +48,10 @@ export default function Dashboard() {
       <h2>MUD Map{currentZone ? ` - ${currentZone.name}` : ''}</h2>
 
       {/* Interactive MUD Map */}
-      <ZoneMap onZoneChange={setCurrentZone} />
+      <ZoneMap 
+        onZoneChange={handleZoneChange}
+        initialZoneId={zoneId ? Number(zoneId) : undefined}
+      />
 
       {/* Quick Stats */}
       {stats && (

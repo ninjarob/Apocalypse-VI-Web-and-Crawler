@@ -23,6 +23,7 @@ function AppContent() {
       <div className="main-content">
         <Routes>
           <Route path="/" element={<Dashboard />} />
+          <Route path="/map/:zoneId" element={<Dashboard />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/rooms/:id" element={<Admin />} />
           <Route path="/admin/zones/:id" element={<Admin />} />

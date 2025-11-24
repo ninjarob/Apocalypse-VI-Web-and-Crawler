@@ -1,3 +1,63 @@
+## Frontend: URL-Based Zone Persistence on Map (2025-11-24) ✅ **COMPLETED**
+**Status**: ✅ **COMPLETED** - Map zone selection now persists in URL, allowing page refresh to maintain selected zone
+
+**Problem Solved**:
+- Map zone selection was lost on page refresh
+- No way to share links to specific zones
+- User had to manually re-select zone after each refresh
+
+**Solution Implemented**:
+1. ✅ **URL Parameter Route**: Added `/map/:zoneId` route to App.tsx
+2. ✅ **URL Navigation**: Dashboard component now updates URL when zone changes via `useNavigate`
+3. ✅ **Initial Zone from URL**: ZoneMap component accepts `initialZoneId` prop from URL parameter
+4. ✅ **Seamless Integration**: Zone dropdown and URL stay in sync automatically
+
+**Code Changes**:
+- `frontend/src/App.tsx`: Added route `<Route path="/map/:zoneId" element={<Dashboard />} />`
+- `frontend/src/pages/Dashboard.tsx`: 
+  - Added `useParams` and `useNavigate` hooks
+  - Created `handleZoneChange` to update URL on zone selection
+  - Pass `initialZoneId` from URL to ZoneMap component
+- `frontend/src/components/ZoneMap.tsx`:
+  - Added `initialZoneId?: number` prop to interface
+  - Updated zone loading logic to prioritize URL param over first zone
+  - Zone selection now triggers URL update via parent callback
+
+**Usage**:
+```
+# Direct zone access via URL
+http://localhost:5173/map/9    # Opens Astyll Hills
+http://localhost:5173/map/2    # Opens Midgaard City
+http://localhost:5173/map/12   # Opens Haunted Forest
+
+# Zone selection updates URL automatically
+# Page refresh maintains selected zone
+# Shareable zone-specific links work
+```
+
+**Build Fixes**:
+- Fixed unused `event` parameter (changed to `_event`)
+- Added type assertion for `targetRooms` API response (`as Room[]`)
+- Added undefined check for `targetZoneId` before setting state
+- Memoized `handleZoneChange` callback with `useCallback` to prevent unnecessary re-renders
+- Added null check in ZoneMap's `onZoneChange` effect to ensure zone is selected
+
+**Modal Improvements**:
+- Added ESC key handler to close room details modal
+- Removed click-outside-to-close behavior (prevents accidental closes)
+- Modal now only closes via ESC key or close button (×)
+
+**Testing**:
+- ✅ No TypeScript errors
+- ✅ All components properly typed
+- ✅ Frontend build successful
+- ✅ URL updates when zone changes via dropdown
+- ✅ ESC key closes room modal
+- ✅ Clicking outside modal no longer closes it
+- Ready for testing in browser
+
+---
+
 ## Parser Fix: One-Way Passage Detection Based on Actual Exits (2025-01-24) ✅ **COMPLETED**
 **Status**: ✅ **COMPLETED** - One-way passages now properly detected by parser based on actual exit data from MUD
 

@@ -40,9 +40,10 @@ interface MapNode {
 interface ZoneMapProps {
   onRoomClick?: (room: Room) => void;
   onZoneChange?: (zone: Zone | null) => void;
+  initialZoneId?: number;
 }
 
-export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick, onZoneChange }) => {
+export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick, onZoneChange, initialZoneId }) => {
   const [zones, setZones] = useState<Zone[]>([]);
   const [selectedZoneId, setSelectedZoneId] = useState<number | null>(null);
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -58,8 +59,10 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick, onZoneChange }) =
       try {
         const zonesData = await api.getAll('zones') as Zone[];
         setZones(zonesData);
-        // Auto-select first zone if available
-        if (zonesData.length > 0) {
+        // Use initialZoneId from URL if provided, otherwise auto-select first zone
+        if (initialZoneId && zonesData.some(z => z.id === initialZoneId)) {
+          setSelectedZoneId(initialZoneId);
+        } else if (zonesData.length > 0) {
           setSelectedZoneId(zonesData[0].id);
         }
       } catch (error) {
@@ -67,7 +70,7 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick, onZoneChange }) =
       }
     };
     loadZones();
-  }, []);
+  }, [initialZoneId]);
 
   // Load rooms and exits when zone changes
   useEffect(() => {
@@ -98,11 +101,23 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick, onZoneChange }) =
 
   // Notify parent component when zone changes
   useEffect(() => {
-    if (onZoneChange) {
+    if (onZoneChange && selectedZoneId !== null) {
       const currentZone = zones.find(zone => zone.id === selectedZoneId) || null;
       onZoneChange(currentZone);
     }
   }, [selectedZoneId, zones, onZoneChange]);
+
+  // Handle ESC key to close modal
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && selectedRoom) {
+        setSelectedRoom(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedRoom]);
 
   // Coordinate-based layout effect
   useEffect(() => {
@@ -298,19 +313,21 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick, onZoneChange }) =
       .selectAll('line')
       .data(zoneExitExtensions)
       .enter().append('line')
-      .attr('stroke', '#f44336') // red
+      .attr('stroke', '#4caf50') // green
       .attr('stroke-width', 6)
       .attr('x1', d => d.x1)
       .attr('y1', d => d.y1)
       .attr('x2', d => d.x2)
       .attr('y2', d => d.y2)
       .attr('cursor', 'pointer')
-      .on('click', async (event, d) => {
+      .on('click', async (_event, d) => {
         try {
-          const targetRooms = await api.getAll('rooms', { id: d.to_room_id });
+          const targetRooms = await api.getAll('rooms', { id: d.to_room_id }) as Room[];
           if (targetRooms.length > 0) {
             const targetZoneId = targetRooms[0].zone_id;
-            setSelectedZoneId(targetZoneId);
+            if (targetZoneId !== undefined) {
+              setSelectedZoneId(targetZoneId);
+            }
           }
         } catch (error) {
           console.error('Failed to get target room zone:', error);
@@ -331,7 +348,7 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick, onZoneChange }) =
       .attr('width', 60)  // Further reduced from 80
       .attr('height', 40)  // Further reduced from 50
       .attr('fill', '#2a2a2a')
-      .attr('stroke', (d: any) => d.roomData.zone_exit ? '#f44336' : '#4fc3f7')
+      .attr('stroke', (d: any) => d.roomData.zone_exit ? '#4caf50' : '#4fc3f7')
       .attr('stroke-width', 2)
       .attr('rx', 8)
       .attr('x', -30)  // Adjusted for new width (60/2)
@@ -370,13 +387,13 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick, onZoneChange }) =
     node.on('mouseover', function(_event, d) {
       d3.select(this).select('rect')
         .attr('fill', '#3a3a3a')
-        .attr('stroke', d.roomData.zone_exit ? '#ff6b6b' : '#81c784');
+        .attr('stroke', d.roomData.zone_exit ? '#66bb6a' : '#81c784');
     });
 
     node.on('mouseout', function(_event, d) {
       d3.select(this).select('rect')
         .attr('fill', '#2a2a2a')
-        .attr('stroke', d.roomData.zone_exit ? '#f44336' : '#4fc3f7');
+        .attr('stroke', d.roomData.zone_exit ? '#4caf50' : '#4fc3f7');
     });
 
     // Text wrapping function
@@ -492,7 +509,6 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ onRoomClick, onZoneChange }) =
             justifyContent: 'center',
             zIndex: 1000
           }}
-          onClick={() => setSelectedRoom(null)}
         >
           <div
             style={{
