@@ -366,6 +366,35 @@ Each room contains:
 
 ---
 
+## NPC Interactions
+
+### Limited Dialogue System
+Apocalypse VI features a primarily action-based gameplay model with limited NPC dialogue:
+
+#### NPC Types
+- **Merchants/Shopkeepers**: Functional NPCs for buying/selling (use `list`, `buy`, `sell`, `value`)
+- **Quest Givers**: Some NPCs offer quests, but dialogue is typically automatic/scripted
+- **Mob Enemies**: Combat-focused, no dialogue interaction
+- **Ambient NPCs**: Scenery/flavor characters with minimal or no interaction
+
+#### Interaction Commands
+- **ask <npc> <message>**: Limited functionality; few NPCs respond meaningfully
+- **say <message>**: General communication in room, rarely triggers NPC responses
+- **tell <npc> <message>**: Private communication, not commonly supported by NPCs
+- **give <item> to <npc>**: Functional for quest items and trading
+- **examine <npc>**: View NPC description
+
+#### Important Notes
+- Most gameplay focuses on exploration, combat, and environmental interaction
+- NPCs typically serve functional roles (shops, quest markers) rather than conversational partners
+- Lore and story are discovered through:
+  - Room descriptions and environmental text
+  - Readable items (books, signs, scrolls)
+  - Quest text and objectives
+  - Zone descriptions and area names
+
+---
+
 ## Time and Environment
 
 ### Game Time

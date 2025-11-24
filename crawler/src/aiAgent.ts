@@ -240,10 +240,12 @@ EXPLORATION STRATEGY:
    - "look at [objects]" mentioned in the description (altars, fountains, signs, etc.)
    - "examine [items]" you see
 3. When you encounter NPCs:
-   - "ask [npc] about [topic]" - try: themselves, the area, local factions, quests, rumors
-   - "talk to [npc]" or just their name might trigger dialogue
+   - "examine [npc]" - view their description
+   - Most NPCs don't respond to "ask" commands (limited dialogue system)
+   - Focus on merchants (buy/sell), quest givers (give items), or combat
 4. When you see readable items (books, signs, scrolls):
-   - "read [item]" - these often contain critical lore!
+   - "read [item]" - PRIMARY source of lore and story!
+   - Room descriptions contain most world-building text
 5. Systematic exploration:
    - Try all cardinal directions: north, south, east, west, up, down
    - Map out connections between rooms

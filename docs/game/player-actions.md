@@ -236,6 +236,8 @@ This guide documents all available player commands and abilities in Apocalypse V
 **Syntax:** `ask <person> <message>`  
 **Description:** Asks a question to another player or NPC.
 
+**Note:** Very few NPCs respond to the `ask` command. Most NPCs in Apocalypse VI are functional (merchants, enemies) rather than conversational. For interactive NPCs that do respond, their responses are typically limited to specific keywords or quest-related topics.
+
 ### barter
 **Syntax:** `barter <item> for <item>`  
 **Description:** Trade items with NPCs or players.

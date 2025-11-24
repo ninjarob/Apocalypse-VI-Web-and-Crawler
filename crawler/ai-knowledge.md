@@ -10,6 +10,29 @@ Total Sessions: 1
 - score: View your character stats
 - who: See who else is online
 
+## NPC Interaction - Important Limitations
+**Critical Note**: Apocalypse VI has LIMITED NPC dialogue systems. Most gameplay is action-based.
+
+### What DOESN'T Work Well:
+- **ask <npc> about <topic>**: Very few NPCs respond to this command
+- **Conversational dialogue**: NPCs are not designed for extended conversations
+- **Multiple dialogue options**: No branching conversation trees
+
+### What DOES Work:
+- **examine <npc>**: View NPC description (always works)
+- **give <item> to <npc>**: Quest item delivery and trading
+- **buy/sell/list**: Merchant interactions (functional, not conversational)
+- **kill <npc>**: Combat (primary interaction method for most NPCs)
+
+### Where to Find Lore:
+- **Room descriptions**: Primary source of world-building and story
+- **Readable items**: Books, signs, scrolls (use `read <item>`)
+- **Item descriptions**: examine items for flavor text
+- **Zone/area descriptions**: Use `area` command
+- **Help files**: `help <topic>` for game lore and mechanics
+
+**AI Strategy**: Focus on exploration, environmental interaction, and combat rather than attempting extensive NPC conversations.
+
 ## Help System & Pagination
 The MUD has a comprehensive help system accessible via "help <topic>" commands.
 
