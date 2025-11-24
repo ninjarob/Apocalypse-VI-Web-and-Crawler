@@ -1900,92 +1900,187 @@ function seedData() {
     checkComplete();
   });
 
-  // Seed rooms from JSON file
-  const roomsDataPath = path.resolve(__dirname, '..', 'data', 'rooms.json');
-  if (fs.existsSync(roomsDataPath) && !skipRoomsSeeding) {
-    const roomsData = JSON.parse(fs.readFileSync(roomsDataPath, 'utf-8'));
+  // Seed rooms from individual zone JSON files
+  const dataDir = path.resolve(__dirname, '..', 'data');
+  const zoneFiles = fs.readdirSync(dataDir).filter(file => file.match(/^rooms_for_zone_\d+\.json$/));
+  
+  if (!skipRoomsSeeding) {
     
-    const insertRoom = db.prepare(`INSERT INTO rooms (
-      id, zone_id, vnum, name, description, exits, npcs, items, area, flags, terrain,
-      portal_key, greater_binding_key, zone_exit, x, y, visitCount, firstVisited,
-      lastVisited, rawText, createdAt, updatedAt
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
+    if (zoneFiles.length > 0) {
+      let totalRooms = 0;
+      const insertRoom = db.prepare(`INSERT INTO rooms (
+        id, zone_id, vnum, name, description, exits, npcs, items, area, flags, terrain,
+        portal_key, greater_binding_key, zone_exit, x, y, visitCount, firstVisited,
+        lastVisited, rawText, createdAt, updatedAt
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
 
-    roomsData.forEach((room: any) => {
-      insertRoom.run(
-        room.id,
-        room.zone_id,
-        room.vnum,
-        room.name,
-        room.description,
-        room.exits ? JSON.stringify(room.exits) : null,
-        room.npcs ? JSON.stringify(room.npcs) : null,
-        room.items ? JSON.stringify(room.items) : null,
-        room.area,
-        room.flags,
-        room.terrain,
-        room.portal_key,
-        room.greater_binding_key,
-        room.zone_exit ? 1 : 0,
-        room.x,
-        room.y,
-        room.visitCount || 0,
-        room.firstVisited,
-        room.lastVisited,
-        room.rawText,
-        room.createdAt,
-        room.updatedAt
-      );
-    });
+      zoneFiles.forEach(zoneFile => {
+        const zoneMatch = zoneFile.match(/^rooms_for_zone_(\d+)\.json$/);
+        if (zoneMatch) {
+          const zoneId = parseInt(zoneMatch[1]);
+          const filePath = path.join(dataDir, zoneFile);
+          const fileContent = fs.readFileSync(filePath, 'utf-8').trim();
+          
+          // Skip empty files
+          if (fileContent.length === 0) {
+            console.log(`  ⚠️  Skipping empty file: ${zoneFile}`);
+            return;
+          }
+          
+          try {
+            const roomsData = JSON.parse(fileContent);
+            
+            // Filter to only include rooms that actually belong to this zone
+            const zoneRooms = roomsData.filter((room: any) => room.zone_id === zoneId);
+            
+            zoneRooms.forEach((room: any) => {
+              insertRoom.run(
+                room.id,
+                room.zone_id,
+                room.vnum,
+                room.name,
+                room.description,
+                room.exits ? JSON.stringify(room.exits) : null,
+                room.npcs ? JSON.stringify(room.npcs) : null,
+                room.items ? JSON.stringify(room.items) : null,
+                room.area,
+                room.flags,
+                room.terrain,
+                room.portal_key,
+                room.greater_binding_key,
+                room.zone_exit ? 1 : 0,
+                room.x,
+                room.y,
+                room.visitCount || 0,
+                room.firstVisited,
+                room.lastVisited,
+                room.rawText,
+                room.createdAt,
+                room.updatedAt
+              );
+              totalRooms++;
+            });
+            
+            if (zoneRooms.length < roomsData.length) {
+              console.log(`  ✓ Loaded ${zoneRooms.length} rooms from zone ${zoneId} (filtered ${roomsData.length - zoneRooms.length} rooms from other zones)`);
+            } else {
+              console.log(`  ✓ Loaded ${zoneRooms.length} rooms from zone ${zoneId}`);
+            }
+          } catch (error) {
+            console.error(`  ❌ Error parsing ${zoneFile}:`, error);
+          }
+        }
+      });
 
-    insertRoom.finalize(() => {
-      console.log(`  ✓ Seeded ${roomsData.length} rooms from JSON file`);
+      insertRoom.finalize(() => {
+        console.log(`  ✓ Seeded ${totalRooms} total rooms from ${zoneFiles.length} zone files`);
+        checkComplete();
+      });
+    } else {
+      console.log(`  ✓ Rooms table created (empty - no zone room files found)`);
       checkComplete();
-    });
+    }
   } else {
-    const reason = skipRoomsSeeding ? 'SKIP_ROOMS_SEEDING=true' : 'rooms.json not found';
-    console.log(`  ✓ Rooms table created (empty - ${reason})`);
+    console.log(`  ✓ Rooms table created (empty - SKIP_ROOMS_SEEDING=true)`);
     checkComplete();
   }
 
-  // Seed room exits from JSON file
-  const roomExitsDataPath = path.resolve(__dirname, '..', 'data', 'room_exits.json');
-  if (fs.existsSync(roomExitsDataPath) && !skipRoomsSeeding) {
-    const roomExitsData = JSON.parse(fs.readFileSync(roomExitsDataPath, 'utf-8'));
+  // Seed room exits from individual zone JSON files
+  const exitFiles = fs.readdirSync(dataDir).filter(file => file.match(/^room_exits_for_zone_\d+\.json$/));
+  
+  if (!skipRoomsSeeding) {
     
-    const insertRoomExit = db.prepare(`INSERT INTO room_exits (
-      id, from_room_id, to_room_id, direction, description, exit_description,
-      look_description, door_name, door_description, is_door, is_locked,
-      is_zone_exit, key_vnum, createdAt, updatedAt
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
+    if (exitFiles.length > 0) {
+      let totalExits = 0;
+      let exitIdCounter = 1; // Generate sequential IDs to avoid conflicts
+      const insertRoomExit = db.prepare(`INSERT INTO room_exits (
+        id, from_room_id, to_room_id, direction, description, exit_description,
+        look_description, door_name, door_description, is_door, is_locked,
+        is_zone_exit, key_vnum, createdAt, updatedAt
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
 
-    roomExitsData.forEach((exit: any) => {
-      insertRoomExit.run(
-        exit.id,
-        exit.from_room_id,
-        exit.to_room_id,
-        exit.direction,
-        exit.description,
-        exit.exit_description,
-        exit.look_description,
-        exit.door_name,
-        exit.door_description,
-        exit.is_door ? 1 : 0,
-        exit.is_locked ? 1 : 0,
-        exit.is_zone_exit ? 1 : 0,
-        exit.key_vnum,
-        exit.createdAt,
-        exit.updatedAt
-      );
-    });
+      // First, build a map of room_id -> zone_id from all room files
+      const roomToZone = new Map<number, number>();
+      zoneFiles.forEach(zoneFile => {
+        const zoneMatch = zoneFile.match(/^rooms_for_zone_(\d+)\.json$/);
+        if (zoneMatch) {
+          const zoneId = parseInt(zoneMatch[1]);
+          const filePath = path.join(dataDir, zoneFile);
+          const fileContent = fs.readFileSync(filePath, 'utf-8').trim();
+          if (fileContent.length > 0) {
+            try {
+              const roomsData = JSON.parse(fileContent);
+              roomsData.forEach((room: any) => {
+                roomToZone.set(room.id, room.zone_id);
+              });
+            } catch (error) {
+              // Skip invalid files
+            }
+          }
+        }
+      });
 
-    insertRoomExit.finalize(() => {
-      console.log(`  ✓ Seeded ${roomExitsData.length} room exits from JSON file`);
+      exitFiles.forEach(exitFile => {
+        const zoneMatch = exitFile.match(/^room_exits_for_zone_(\d+)\.json$/);
+        if (zoneMatch) {
+          const zoneId = parseInt(zoneMatch[1]);
+          const filePath = path.join(dataDir, exitFile);
+          const fileContent = fs.readFileSync(filePath, 'utf-8').trim();
+          
+          // Skip empty files
+          if (fileContent.length === 0) {
+            console.log(`  ⚠️  Skipping empty file: ${exitFile}`);
+            return;
+          }
+          
+          try {
+            const exitsData = JSON.parse(fileContent);
+            
+            // Filter to only include exits where from_room belongs to this zone
+            const zoneExits = exitsData.filter((exit: any) => roomToZone.get(exit.from_room_id) === zoneId);
+            
+            zoneExits.forEach((exit: any) => {
+              insertRoomExit.run(
+                exitIdCounter++, // Use sequential ID instead of original ID
+                exit.from_room_id,
+                exit.to_room_id,
+                exit.direction,
+                exit.description,
+                exit.exit_description,
+                exit.look_description,
+                exit.door_name,
+                exit.door_description,
+                exit.is_door ? 1 : 0,
+                exit.is_locked ? 1 : 0,
+                exit.is_zone_exit ? 1 : 0,
+                exit.key_vnum,
+                exit.createdAt,
+                exit.updatedAt
+              );
+              totalExits++;
+            });
+            
+            if (zoneExits.length < exitsData.length) {
+              console.log(`  ✓ Loaded ${zoneExits.length} room exits from zone ${zoneId} (filtered ${exitsData.length - zoneExits.length} exits from other zones)`);
+            } else {
+              console.log(`  ✓ Loaded ${zoneExits.length} room exits from zone ${zoneId}`);
+            }
+          } catch (error) {
+            console.error(`  ❌ Error parsing ${exitFile}:`, error);
+          }
+        }
+      });
+
+      insertRoomExit.finalize(() => {
+        console.log(`  ✓ Seeded ${totalExits} total room exits from ${exitFiles.length} zone files`);
+        checkComplete();
+      });
+    } else {
+      console.log(`  ✓ Room exits table created (empty - no zone exit files found)`);
       checkComplete();
-    });
+    }
   } else {
-    const reason = skipRoomsSeeding ? 'SKIP_ROOMS_SEEDING=true' : 'room_exits.json not found';
-    console.log(`  ✓ Room exits table created (empty - ${reason})`);
+    console.log(`  ✓ Room exits table created (empty - SKIP_ROOMS_SEEDING=true)`);
     checkComplete();
   }
 
