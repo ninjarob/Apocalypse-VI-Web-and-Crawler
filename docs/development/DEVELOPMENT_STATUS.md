@@ -1,51 +1,70 @@
-## Frontend: URL-Based Zone Persistence on Map (2025-11-24) ✅ **COMPLETED**
-**Status**: ✅ **COMPLETED** - Map zone selection now persists in URL, allowing page refresh to maintain selected zone
+## Frontend: Map UI Enhancements (2025-11-24) ✅ **COMPLETED**
+**Status**: ✅ **COMPLETED** - Comprehensive map interface improvements for better navigation and usability
 
+### Features Implemented:
+
+#### 1. URL-Based Zone Persistence
 **Problem Solved**:
 - Map zone selection was lost on page refresh
 - No way to share links to specific zones
 - User had to manually re-select zone after each refresh
 
-**Solution Implemented**:
-1. ✅ **URL Parameter Route**: Added `/map/:zoneId` route to App.tsx
-2. ✅ **URL Navigation**: Dashboard component now updates URL when zone changes via `useNavigate`
-3. ✅ **Initial Zone from URL**: ZoneMap component accepts `initialZoneId` prop from URL parameter
-4. ✅ **Seamless Integration**: Zone dropdown and URL stay in sync automatically
-
-**Code Changes**:
-- `frontend/src/App.tsx`: Added route `<Route path="/map/:zoneId" element={<Dashboard />} />`
-- `frontend/src/pages/Dashboard.tsx`: 
-  - Added `useParams` and `useNavigate` hooks
-  - Created `handleZoneChange` to update URL on zone selection
-  - Pass `initialZoneId` from URL to ZoneMap component
-- `frontend/src/components/ZoneMap.tsx`:
-  - Added `initialZoneId?: number` prop to interface
-  - Updated zone loading logic to prioritize URL param over first zone
-  - Zone selection now triggers URL update via parent callback
+**Solution**:
+- ✅ **URL Parameter Route**: Added `/map/:zoneId` route to App.tsx
+- ✅ **URL Navigation**: Dashboard component updates URL when zone changes via `useNavigate`
+- ✅ **Initial Zone from URL**: ZoneMap component accepts `initialZoneId` prop from URL parameter
+- ✅ **Seamless Integration**: Zone dropdown and URL stay in sync automatically
 
 **Usage**:
 ```
-# Direct zone access via URL
 http://localhost:5173/map/9    # Opens Astyll Hills
 http://localhost:5173/map/2    # Opens Midgaard City
 http://localhost:5173/map/12   # Opens Haunted Forest
-
-# Zone selection updates URL automatically
-# Page refresh maintains selected zone
-# Shareable zone-specific links work
 ```
 
+#### 2. Enhanced Room Modal
+**Modal Controls**:
+- ✅ **ESC Key Handler**: Press ESC to close modal (no more accidental closes)
+- ✅ **No Click-Outside Close**: Clicking outside modal no longer closes it
+- ✅ **Close Button**: × button in header to close modal
+
+**Visual Improvements**:
+- ✅ **Selected Room Highlight**: Active room shows yellow border (`#ffd54f`) with 3px width
+- ✅ **Hover Effect**: Selected room brightens to `#ffeb3b` on hover
+- ✅ **Zone Exit Colors**: Changed from red to green (`#4caf50`) for exits and borders
+- ✅ **Clickable Room Title**: Click title to navigate to admin page for that room
+- ✅ **No Exits Indicator**: Displays "No Exits!" in bold red when room has no exits
+
+**Navigation Features**:
+- ✅ **Clickable Exit Directions**: Click direction (north, south, etc.) to navigate to that room
+- ✅ **Modal Updates**: Opening new room closes current modal and updates yellow highlight
+- ✅ **Exit Display**: Shows direction → room name (portal_key) format
+- ✅ **Admin Navigation**: Click room title to open admin page for editing
+
+#### 3. Code Quality Improvements
 **Build Fixes**:
 - Fixed unused `event` parameter (changed to `_event`)
 - Added type assertion for `targetRooms` API response (`as Room[]`)
 - Added undefined check for `targetZoneId` before setting state
 - Memoized `handleZoneChange` callback with `useCallback` to prevent unnecessary re-renders
 - Added null check in ZoneMap's `onZoneChange` effect to ensure zone is selected
+- Added `selectedRoom` to layout effect dependencies for proper re-rendering
 
-**Modal Improvements**:
-- Added ESC key handler to close room details modal
-- Removed click-outside-to-close behavior (prevents accidental closes)
-- Modal now only closes via ESC key or close button (×)
+**Code Changes**:
+- `frontend/src/App.tsx`: Added route `<Route path="/map/:zoneId" element={<Dashboard />} />`
+- `frontend/src/pages/Dashboard.tsx`: 
+  - Added `useParams`, `useNavigate`, and `useCallback` hooks
+  - Created memoized `handleZoneChange` to update URL on zone selection
+  - Pass `initialZoneId` from URL to ZoneMap component
+- `frontend/src/components/ZoneMap.tsx`:
+  - Added `useNavigate` hook for admin navigation
+  - Added `initialZoneId?: number` prop to interface
+  - Implemented ESC key listener with cleanup
+  - Added selected room highlighting logic with yellow colors
+  - Made exit directions clickable for room navigation
+  - Made room title clickable for admin page navigation
+  - Changed zone exit colors from red to green
+  - Updated hover/mouseout effects to preserve selected room highlighting
 
 **Testing**:
 - ✅ No TypeScript errors
@@ -54,7 +73,10 @@ http://localhost:5173/map/12   # Opens Haunted Forest
 - ✅ URL updates when zone changes via dropdown
 - ✅ ESC key closes room modal
 - ✅ Clicking outside modal no longer closes it
-- Ready for testing in browser
+- ✅ Selected room highlighted in yellow
+- ✅ Exit navigation works seamlessly
+- ✅ Admin page navigation from room title works
+- Ready for production use
 
 ---
 
