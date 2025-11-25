@@ -90,20 +90,151 @@ async function createTables() {
       FOREIGN KEY (zone_id) REFERENCES zones(id) ON DELETE SET NULL
     )`,
 
-    // NPCs table
+    // ===== NPC SYSTEM TABLES =====
+    
+    // NPCs table (Main Table)
     `CREATE TABLE IF NOT EXISTS npcs (
-      id TEXT PRIMARY KEY,
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
+      short_desc TEXT,
+      long_desc TEXT,
       description TEXT,
       location TEXT,
-      dialogue TEXT,
-      hostile INTEGER DEFAULT 0,
+      room_id INTEGER,
+      zone_id INTEGER,
+      
+      -- Stats
+      hp_max INTEGER,
+      mana_max INTEGER,
+      moves_max INTEGER,
       level INTEGER,
+      experience_to_next_level INTEGER,
+      alignment INTEGER,
+      
+      -- Combat Stats
+      attacks_per_round REAL,
+      hit_ability INTEGER,
+      damage_ability INTEGER,
+      magic_ability INTEGER,
+      armor_class INTEGER,
+      
+      -- Character Info
       race TEXT,
       class TEXT,
+      gender TEXT,
+      
+      -- Wealth
+      gold INTEGER DEFAULT 0,
+      
+      -- Behavior
+      is_stationary INTEGER DEFAULT 1,
+      is_aggressive INTEGER DEFAULT 0,
+      aggro_level TEXT,
+      
+      -- Visibility
+      is_invisible INTEGER DEFAULT 0,
+      is_cloaked INTEGER DEFAULT 0,
+      is_hidden INTEGER DEFAULT 0,
+      
+      -- Position (universal character state)
+      position TEXT DEFAULT 'standing',
+      
+      -- Data Collection Info
+      has_been_charmed INTEGER DEFAULT 0,
+      has_been_considered INTEGER DEFAULT 0,
+      has_been_examined INTEGER DEFAULT 0,
+      has_reported_stats INTEGER DEFAULT 0,
+      has_been_in_group INTEGER DEFAULT 0,
+      
+      -- Metadata
+      discovered INTEGER DEFAULT 0,
       rawText TEXT,
+      notes TEXT,
       createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
-      updatedAt TEXT DEFAULT CURRENT_TIMESTAMP
+      updatedAt TEXT DEFAULT CURRENT_TIMESTAMP,
+      
+      FOREIGN KEY (room_id) REFERENCES rooms(id) ON DELETE SET NULL,
+      FOREIGN KEY (zone_id) REFERENCES zones(id) ON DELETE SET NULL
+    )`,
+    
+    // NPC Flags (Reference Table)
+    `CREATE TABLE IF NOT EXISTS npc_flags (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT UNIQUE NOT NULL,
+      description TEXT,
+      category TEXT
+    )`,
+    
+    // NPC Flag Instances (Junction Table)
+    `CREATE TABLE IF NOT EXISTS npc_flag_instances (
+      npc_id INTEGER NOT NULL,
+      flag_id INTEGER NOT NULL,
+      active INTEGER DEFAULT 1,
+      PRIMARY KEY (npc_id, flag_id),
+      FOREIGN KEY (npc_id) REFERENCES npcs(id) ON DELETE CASCADE,
+      FOREIGN KEY (flag_id) REFERENCES npc_flags(id)
+    )`,
+    
+    // NPC Equipment (Templates - defines default equipment placement)
+    `CREATE TABLE IF NOT EXISTS npc_equipment (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      npc_id INTEGER NOT NULL,
+      item_id INTEGER NOT NULL,
+      wear_location_id INTEGER NOT NULL,
+      quantity INTEGER DEFAULT 1,
+      FOREIGN KEY (npc_id) REFERENCES npcs(id) ON DELETE CASCADE,
+      FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE,
+      FOREIGN KEY (wear_location_id) REFERENCES wear_locations(id)
+    )`,
+    
+    // NPC Spells/Skills
+    `CREATE TABLE IF NOT EXISTS npc_spells (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      npc_id INTEGER NOT NULL,
+      spell_name TEXT NOT NULL,
+      spell_type TEXT,
+      mana_cost INTEGER,
+      observed_count INTEGER DEFAULT 1,
+      last_observed TEXT DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (npc_id) REFERENCES npcs(id) ON DELETE CASCADE
+    )`,
+    
+    // NPC Dialogue
+    `CREATE TABLE IF NOT EXISTS npc_dialogue (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      npc_id INTEGER NOT NULL,
+      dialogue_text TEXT NOT NULL,
+      dialogue_type TEXT,
+      trigger_keyword TEXT,
+      context TEXT,
+      recorded_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (npc_id) REFERENCES npcs(id) ON DELETE CASCADE
+    )`,
+    
+    // NPC Paths (Movement Patterns)
+    `CREATE TABLE IF NOT EXISTS npc_paths (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      npc_id INTEGER NOT NULL,
+      room_id INTEGER NOT NULL,
+      sequence_order INTEGER NOT NULL,
+      direction_from_previous TEXT,
+      wait_time_seconds INTEGER,
+      notes TEXT,
+      FOREIGN KEY (npc_id) REFERENCES npcs(id) ON DELETE CASCADE,
+      FOREIGN KEY (room_id) REFERENCES rooms(id) ON DELETE CASCADE
+    )`,
+    
+    // NPC Spawn Info
+    `CREATE TABLE IF NOT EXISTS npc_spawn_info (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      npc_id INTEGER NOT NULL,
+      room_id INTEGER NOT NULL,
+      spawn_rate_minutes INTEGER,
+      max_instances INTEGER DEFAULT 1,
+      last_observed_spawn TEXT,
+      spawn_conditions TEXT,
+      FOREIGN KEY (npc_id) REFERENCES npcs(id) ON DELETE CASCADE,
+      FOREIGN KEY (room_id) REFERENCES rooms(id) ON DELETE CASCADE
     )`,
 
     // ===== ITEM SYSTEM TABLES =====
@@ -163,7 +294,7 @@ async function createTables() {
 
     // Items (Main Table)
     `CREATE TABLE IF NOT EXISTS items (
-      id TEXT PRIMARY KEY,
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
       vnum INTEGER UNIQUE,
       type_id INTEGER NOT NULL,
@@ -187,7 +318,7 @@ async function createTables() {
 
     // Item Flag Instances (Junction Table)
     `CREATE TABLE IF NOT EXISTS item_flag_instances (
-      item_id TEXT NOT NULL,
+      item_id INTEGER NOT NULL,
       flag_id INTEGER NOT NULL,
       PRIMARY KEY (item_id, flag_id),
       FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE,
@@ -196,7 +327,7 @@ async function createTables() {
 
     // Item Wear Locations (Junction Table)
     `CREATE TABLE IF NOT EXISTS item_wear_locations (
-      item_id TEXT NOT NULL,
+      item_id INTEGER NOT NULL,
       location_id INTEGER NOT NULL,
       PRIMARY KEY (item_id, location_id),
       FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE,
@@ -206,7 +337,7 @@ async function createTables() {
     // Item Stat Effects (Junction Table)
     `CREATE TABLE IF NOT EXISTS item_stat_effects (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      item_id TEXT NOT NULL,
+      item_id INTEGER NOT NULL,
       stat_type_id INTEGER NOT NULL,
       modifier INTEGER NOT NULL,
       FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE,
@@ -215,7 +346,7 @@ async function createTables() {
 
     // Item Binding Instances
     `CREATE TABLE IF NOT EXISTS item_binding_instances (
-      item_id TEXT PRIMARY KEY,
+      item_id INTEGER PRIMARY KEY,
       binding_type_id INTEGER NOT NULL,
       bound_to_character TEXT,
       bound_at TEXT DEFAULT CURRENT_TIMESTAMP,
@@ -226,7 +357,7 @@ async function createTables() {
     // Item Restrictions (Class/Race)
     `CREATE TABLE IF NOT EXISTS item_restrictions (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      item_id TEXT NOT NULL,
+      item_id INTEGER NOT NULL,
       restriction_type TEXT NOT NULL,
       restriction_value TEXT NOT NULL,
       is_allowed INTEGER DEFAULT 1,
@@ -235,7 +366,7 @@ async function createTables() {
 
     // Item Weapons (Type-Specific)
     `CREATE TABLE IF NOT EXISTS item_weapons (
-      item_id TEXT PRIMARY KEY,
+      item_id INTEGER PRIMARY KEY,
       damage_dice TEXT,
       average_damage REAL,
       damage_type TEXT,
@@ -246,7 +377,7 @@ async function createTables() {
 
     // Item Armor (Type-Specific)
     `CREATE TABLE IF NOT EXISTS item_armor (
-      item_id TEXT PRIMARY KEY,
+      item_id INTEGER PRIMARY KEY,
       armor_points INTEGER,
       armor_type TEXT,
       FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE
@@ -254,7 +385,7 @@ async function createTables() {
 
     // Item Lights (Type-Specific)
     `CREATE TABLE IF NOT EXISTS item_lights (
-      item_id TEXT PRIMARY KEY,
+      item_id INTEGER PRIMARY KEY,
       light_intensity INTEGER,
       hours_remaining INTEGER,
       max_hours INTEGER,
@@ -264,7 +395,7 @@ async function createTables() {
 
     // Item Containers (Type-Specific)
     `CREATE TABLE IF NOT EXISTS item_containers (
-      item_id TEXT PRIMARY KEY,
+      item_id INTEGER PRIMARY KEY,
       max_weight INTEGER,
       max_items INTEGER,
       container_flags TEXT,
@@ -274,7 +405,7 @@ async function createTables() {
 
     // Item Consumables (Type-Specific)
     `CREATE TABLE IF NOT EXISTS item_consumables (
-      item_id TEXT PRIMARY KEY,
+      item_id INTEGER PRIMARY KEY,
       consumable_type TEXT,
       hunger_restored INTEGER,
       thirst_restored INTEGER,
@@ -286,7 +417,7 @@ async function createTables() {
     // Item Spell Effects
     `CREATE TABLE IF NOT EXISTS item_spell_effects (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      item_id TEXT NOT NULL,
+      item_id INTEGER NOT NULL,
       spell_name TEXT NOT NULL,
       spell_level INTEGER,
       charges_current INTEGER,
@@ -297,7 +428,7 @@ async function createTables() {
     // Item Granted Abilities
     `CREATE TABLE IF NOT EXISTS item_granted_abilities (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      item_id TEXT NOT NULL,
+      item_id INTEGER NOT NULL,
       ability_name TEXT NOT NULL,
       ability_description TEXT,
       FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE
@@ -305,7 +436,7 @@ async function createTables() {
 
     // Item Customizations
     `CREATE TABLE IF NOT EXISTS item_customizations (
-      item_id TEXT PRIMARY KEY,
+      item_id INTEGER PRIMARY KEY,
       is_customizable INTEGER DEFAULT 1,
       custom_name TEXT,
       custom_description TEXT,

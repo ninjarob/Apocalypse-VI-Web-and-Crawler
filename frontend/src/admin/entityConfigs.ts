@@ -135,19 +135,127 @@ export const ENTITY_CONFIGS: EntityConfig[] = [
   {
     name: 'NPCs',
     endpoint: 'npcs',
-    readOnly: true,
+    readOnly: false,
     clickable: true,
     fields: [
       { name: 'id', type: 'number', label: 'ID', hideInTable: true },
       { name: 'name', type: 'text', label: 'Name', required: true },
+      { name: 'short_desc', type: 'text', label: 'Short Desc' },
       { name: 'level', type: 'number', label: 'Level' },
       { name: 'race', type: 'text', label: 'Race' },
       { name: 'class', type: 'text', label: 'Class' },
-      { name: 'hostile', type: 'number', label: 'Hostile' },
-      { name: 'location', type: 'text', label: 'Location' },
-      { name: 'description', type: 'textarea', label: 'Description', hideInTable: true },
-      { name: 'dialogue', type: 'json', label: 'Dialogue', hideInTable: true },
+      { name: 'is_aggressive', type: 'number', label: 'Aggressive', hideInTable: true },
+      { name: 'is_invisible', type: 'number', label: 'Invisible', hideInTable: true },
+      { name: 'is_cloaked', type: 'number', label: 'Cloaked', hideInTable: true },
+      { name: 'is_hidden', type: 'number', label: 'Hidden', hideInTable: true },
+      { name: 'hp_max', type: 'number', label: 'Max HP', hideInTable: true },
+      { name: 'mana_max', type: 'number', label: 'Max Mana', hideInTable: true },
+      { name: 'long_desc', type: 'textarea', label: 'Long Description', hideInTable: true },
+      { name: 'notes', type: 'textarea', label: 'Notes', hideInTable: true },
       { name: 'rawText', type: 'textarea', label: 'Raw Text', hideInTable: true }
+    ]
+  },
+  {
+    name: 'NPC Equipment',
+    endpoint: 'npc_equipment',
+    readOnly: false,
+    fields: [
+      { name: 'id', type: 'number', label: 'ID', hideInTable: true },
+      { name: 'npc_id', type: 'number', label: 'NPC ID', required: true },
+      { name: 'item_name', type: 'text', label: 'Item Name', required: true },
+      { name: 'slot', type: 'text', label: 'Slot' },
+      { name: 'is_wielded', type: 'number', label: 'Wielded' },
+      { name: 'is_worn', type: 'number', label: 'Worn' },
+      { name: 'is_in_inventory', type: 'number', label: 'In Inventory' },
+      { name: 'quantity', type: 'number', label: 'Quantity' },
+      { name: 'identified', type: 'number', label: 'Identified' }
+    ]
+  },
+  {
+    name: 'NPC Spells',
+    endpoint: 'npc_spells',
+    readOnly: false,
+    fields: [
+      { name: 'id', type: 'number', label: 'ID', hideInTable: true },
+      { name: 'npc_id', type: 'number', label: 'NPC ID', required: true },
+      { name: 'spell_name', type: 'text', label: 'Spell Name', required: true },
+      { name: 'spell_type', type: 'text', label: 'Type' },
+      { name: 'mana_cost', type: 'number', label: 'Mana Cost' },
+      { name: 'observed_count', type: 'number', label: 'Times Observed' },
+      { name: 'last_observed', type: 'text', label: 'Last Observed' }
+    ]
+  },
+  {
+    name: 'NPC Dialogue',
+    endpoint: 'npc_dialogue',
+    readOnly: false,
+    fields: [
+      { name: 'id', type: 'number', label: 'ID', hideInTable: true },
+      { name: 'npc_id', type: 'number', label: 'NPC ID', required: true },
+      { name: 'dialogue_text', type: 'textarea', label: 'Dialogue Text', required: true },
+      { name: 'dialogue_type', type: 'text', label: 'Type' },
+      { name: 'trigger_keyword', type: 'text', label: 'Trigger Keyword' },
+      { name: 'context', type: 'text', label: 'Context' },
+      { name: 'recorded_at', type: 'text', label: 'Recorded At' }
+    ]
+  },
+  {
+    name: 'NPC Paths',
+    endpoint: 'npc_paths',
+    readOnly: false,
+    fields: [
+      { name: 'id', type: 'number', label: 'ID', hideInTable: true },
+      { name: 'npc_id', type: 'number', label: 'NPC ID', required: true },
+      { name: 'room_id', type: 'number', label: 'Room ID', required: true },
+      { name: 'sequence_order', type: 'number', label: 'Sequence', required: true },
+      { name: 'direction_from_previous', type: 'text', label: 'Direction' },
+      { name: 'wait_time_seconds', type: 'number', label: 'Wait Time (s)' },
+      { name: 'notes', type: 'text', label: 'Notes' }
+    ]
+  },
+  {
+    name: 'NPC Spawn Info',
+    endpoint: 'npc_spawn_info',
+    readOnly: false,
+    fields: [
+      { name: 'id', type: 'number', label: 'ID', hideInTable: true },
+      { name: 'npc_id', type: 'number', label: 'NPC ID', required: true },
+      { name: 'room_id', type: 'number', label: 'Spawn Room', required: true },
+      { name: 'spawn_rate_minutes', type: 'number', label: 'Spawn Rate (min)' },
+      { name: 'max_instances', type: 'number', label: 'Max Instances' },
+      { name: 'last_observed_spawn', type: 'text', label: 'Last Observed' },
+      { name: 'spawn_conditions', type: 'text', label: 'Spawn Conditions' }
+    ]
+  },
+  {
+    name: 'NPC Flags',
+    endpoint: 'npc_flags',
+    readOnly: false,
+    fields: [
+      { name: 'id', type: 'number', label: 'ID', hideInTable: true },
+      { name: 'name', type: 'text', label: 'Flag Name', required: true },
+      { name: 'description', type: 'textarea', label: 'Description' },
+      { name: 'category', type: 'text', label: 'Category' }
+    ]
+  },
+  {
+    name: 'NPC Flag Instances',
+    endpoint: 'npc_flag_instances',
+    readOnly: false,
+    fields: [
+      { name: 'npc_id', type: 'number', label: 'NPC ID', required: true },
+      { name: 'flag_id', type: 'number', label: 'Flag ID', required: true },
+      { name: 'active', type: 'number', label: 'Active' }
+    ]
+  },
+  {
+    name: 'Character Positions',
+    endpoint: 'character_positions',
+    readOnly: false,
+    fields: [
+      { name: 'id', type: 'number', label: 'ID', hideInTable: true },
+      { name: 'name', type: 'text', label: 'Position Name', required: true },
+      { name: 'description', type: 'textarea', label: 'Description' }
     ]
   },
   {

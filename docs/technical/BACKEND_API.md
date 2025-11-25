@@ -196,27 +196,60 @@ Get zone connections for navigation.
 
 The API supports the following entity types:
 
+### World & Navigation
 - `rooms` - Game locations
+- `zones` - Game zones/areas
+- `room_exits` - Room connections
+- `regions` - World regions
+
+### Characters & NPCs
 - `npcs` - Non-player characters
+- `npc_equipment` - NPC equipment templates
+- `npc_spells` - NPC spells and abilities
+- `npc_dialogue` - NPC conversation data
+- `npc_paths` - NPC movement patterns
+- `npc_spawn_info` - NPC spawn locations and rates
+- `npc_flags` - NPC status flags (reference)
+- `npc_flag_instances` - Active NPC flags
+
+### Items & Equipment
 - `items` - Game items and equipment
-- `spells` - Magic spells
-- `attacks` - Combat attacks
-- `abilities` - Character abilities
+- `item_types` - Item type reference (WEAPON, ARMOR, etc.)
+- `item_materials` - Item material reference (iron, leather, etc.)
+- `item_sizes` - Item size reference (small, large, etc.)
+- `item_flags` - Item flag reference (MAGIC, CURSED, etc.)
+- `wear_locations` - Equipment slot reference (FINGER, NECK, WIELD, etc.)
+- `stat_types` - Stat modifier reference (HITROLL, DAMROLL, etc.)
+- `item_bindings` - Item binding types (BIND_ON_PICKUP, etc.)
+
+### Character Systems
 - `races` - Character races
 - `classes` - Character classes
+- `class_groups` - Class group categories
+- `class_proficiencies` - Class skill proficiencies
+- `class_perks` - Class perk reference
+- `class_perk_availability` - Class-specific perks
+- `abilities` - Character abilities (STR, DEX, etc.)
+- `ability_scores` - Ability score requirements
 - `skills` - Special skills
+- `character_positions` - Character position states (standing, sitting, etc.)
+
+### Combat & Magic
+- `spells` - Magic spells
+- `attacks` - Combat attacks
+- `saving_throws` - Saving throw types
+- `spell_modifiers` - Spell modifier types
+- `elemental_resistances` - Elemental resistance types
+- `physical_resistances` - Physical resistance types
+
+### Game Content
 - `help_entries` - In-game help
 - `player_actions` - Discovered player commands
 - `factions` - Game factions
 - `quests` - Game quests
-- `regions` - World regions
-- `relationships` - Entity relationships
 - `lore` - World lore
-- `room_exits` - Room connections
-- `class_proficiencies` - Class skill proficiencies
-- `ability_scores` - Ability score requirements
+- `relationships` - Entity relationships
 - `commands` - Game commands
-- `zones` - Game zones/areas
 
 ## Validation
 

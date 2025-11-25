@@ -12,7 +12,7 @@ This schema properly normalizes the complex item data from Apocalypse VI MUD, su
 ### 1. items (Main Item Table)
 ```sql
 CREATE TABLE items (
-  id TEXT PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL,
   vnum INTEGER UNIQUE,                    -- MUD virtual number (if available)
   type_id INTEGER NOT NULL,               -- FK to item_types
@@ -127,7 +127,7 @@ INSERT INTO item_flags (name, description, flag_type) VALUES
 ### 6. item_flag_instances (Junction Table)
 ```sql
 CREATE TABLE item_flag_instances (
-  item_id TEXT NOT NULL,
+  item_id INTEGER NOT NULL,
   flag_id INTEGER NOT NULL,
   PRIMARY KEY (item_id, flag_id),
   FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE,
@@ -168,7 +168,7 @@ INSERT INTO wear_locations (name, description, slot_limit) VALUES
 ### 8. item_wear_locations (Junction Table)
 ```sql
 CREATE TABLE item_wear_locations (
-  item_id TEXT NOT NULL,
+  item_id INTEGER NOT NULL,
   location_id INTEGER NOT NULL,
   PRIMARY KEY (item_id, location_id),
   FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE,
@@ -209,7 +209,7 @@ INSERT INTO stat_types (name, description, stat_category) VALUES
 ```sql
 CREATE TABLE item_stat_effects (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  item_id TEXT NOT NULL,
+  item_id INTEGER NOT NULL,
   stat_type_id INTEGER NOT NULL,
   modifier INTEGER NOT NULL,              -- +1, -2, etc.
   FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE,
@@ -235,7 +235,7 @@ INSERT INTO item_bindings (name, description) VALUES
 ### 12. item_binding_instances (Track bound items)
 ```sql
 CREATE TABLE item_binding_instances (
-  item_id TEXT PRIMARY KEY,
+  item_id INTEGER PRIMARY KEY,
   binding_type_id INTEGER NOT NULL,
   bound_to_character TEXT,                -- Character name or ID
   bound_at TEXT DEFAULT CURRENT_TIMESTAMP,
@@ -248,7 +248,7 @@ CREATE TABLE item_binding_instances (
 ```sql
 CREATE TABLE item_restrictions (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  item_id TEXT NOT NULL,
+  item_id INTEGER NOT NULL,
   restriction_type TEXT NOT NULL,         -- 'class' or 'race'
   restriction_value TEXT NOT NULL,        -- Class name or race name
   is_allowed BOOLEAN DEFAULT 1,           -- 1 = allowed, 0 = forbidden
@@ -261,7 +261,7 @@ CREATE TABLE item_restrictions (
 ### 14. item_weapons (Weapon-specific data)
 ```sql
 CREATE TABLE item_weapons (
-  item_id TEXT PRIMARY KEY,
+  item_id INTEGER PRIMARY KEY,
   damage_dice TEXT,                       -- e.g., '2D4'
   average_damage REAL,                    -- e.g., 5.0
   damage_type TEXT,                       -- slash, pierce, bludgeon
@@ -274,7 +274,7 @@ CREATE TABLE item_weapons (
 ### 15. item_armor (Armor-specific data)
 ```sql
 CREATE TABLE item_armor (
-  item_id TEXT PRIMARY KEY,
+  item_id INTEGER PRIMARY KEY,
   armor_points INTEGER,                   -- AP value
   armor_type TEXT,                        -- light, medium, heavy
   FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE
@@ -284,7 +284,7 @@ CREATE TABLE item_armor (
 ### 16. item_lights (Light source-specific data)
 ```sql
 CREATE TABLE item_lights (
-  item_id TEXT PRIMARY KEY,
+  item_id INTEGER PRIMARY KEY,
   light_intensity INTEGER,                -- How much light it provides
   hours_remaining INTEGER,                -- Duration left
   max_hours INTEGER,                      -- Maximum duration
@@ -296,7 +296,7 @@ CREATE TABLE item_lights (
 ### 17. item_containers (Container-specific data)
 ```sql
 CREATE TABLE item_containers (
-  item_id TEXT PRIMARY KEY,
+  item_id INTEGER PRIMARY KEY,
   max_weight INTEGER,                     -- Weight capacity
   max_items INTEGER,                      -- Item count capacity
   container_flags TEXT,                   -- CLOSEABLE, LOCKABLE, etc.
@@ -308,7 +308,7 @@ CREATE TABLE item_containers (
 ### 18. item_consumables (Food/Drink/Potion data)
 ```sql
 CREATE TABLE item_consumables (
-  item_id TEXT PRIMARY KEY,
+  item_id INTEGER PRIMARY KEY,
   consumable_type TEXT,                   -- 'food', 'drink', 'potion'
   hunger_restored INTEGER,                -- For food
   thirst_restored INTEGER,                -- For drink
@@ -322,7 +322,7 @@ CREATE TABLE item_consumables (
 ```sql
 CREATE TABLE item_spell_effects (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  item_id TEXT NOT NULL,
+  item_id INTEGER NOT NULL,
   spell_name TEXT NOT NULL,               -- 'word of recall', 'cure light wounds', etc.
   spell_level INTEGER,                    -- Level at which spell is cast
   charges_current INTEGER,                -- For wands/staves (current charges)
@@ -335,7 +335,7 @@ CREATE TABLE item_spell_effects (
 ```sql
 CREATE TABLE item_granted_abilities (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  item_id TEXT NOT NULL,
+  item_id INTEGER NOT NULL,
   ability_name TEXT NOT NULL,             -- 'infravision', 'detect magic', 'fly', etc.
   ability_description TEXT,
   FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE
@@ -345,7 +345,7 @@ CREATE TABLE item_granted_abilities (
 ### 21. item_customizations (Custom enhancements)
 ```sql
 CREATE TABLE item_customizations (
-  item_id TEXT PRIMARY KEY,
+  item_id INTEGER PRIMARY KEY,
   is_customizable BOOLEAN DEFAULT 1,
   custom_name TEXT,
   custom_description TEXT,

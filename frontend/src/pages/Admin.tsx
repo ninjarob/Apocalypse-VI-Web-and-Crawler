@@ -1,5 +1,5 @@
 ﻿import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { api } from '../api';
 import { SearchBox } from '../components';
 import RoomForm from '../components/RoomForm';
@@ -24,7 +24,21 @@ import {
 function Admin() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [selectedEntity, setSelectedEntity] = useState<EntityConfig>(ENTITY_CONFIGS[0]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  
+  // Initialize selectedEntity from URL parameter or default to first entity
+  const getInitialEntity = () => {
+    const entityParam = searchParams.get('entity');
+    if (entityParam) {
+      const matchingEntity = ENTITY_CONFIGS.find(config => config.endpoint === entityParam);
+      if (matchingEntity) {
+        return matchingEntity;
+      }
+    }
+    return ENTITY_CONFIGS[0];
+  };
+  
+  const [selectedEntity, setSelectedEntity] = useState<EntityConfig>(getInitialEntity());
   const [entities, setEntities] = useState<Entity[]>([]);
   const [loading, setLoading] = useState(false);
   const [editingEntity, setEditingEntity] = useState<Entity | null>(null);
@@ -155,6 +169,26 @@ function Admin() {
       }
     }
   }, [location.pathname]);
+
+  // Update URL when selectedEntity changes (unless we're in a detail view)
+  useEffect(() => {
+    const pathParts = location.pathname.split('/').filter(Boolean);
+    // Only update URL params if we're at the base /admin route (not a detail view)
+    if (pathParts.length === 1 && pathParts[0] === 'admin') {
+      setSearchParams({ entity: selectedEntity.endpoint }, { replace: true });
+    }
+  }, [selectedEntity, location.pathname]);
+
+  // Sync selectedEntity when URL params change
+  useEffect(() => {
+    const entityParam = searchParams.get('entity');
+    if (entityParam) {
+      const matchingEntity = ENTITY_CONFIGS.find(config => config.endpoint === entityParam);
+      if (matchingEntity && matchingEntity.endpoint !== selectedEntity.endpoint) {
+        setSelectedEntity(matchingEntity);
+      }
+    }
+  }, [searchParams]);
 
   // Reset sort when changing entity types
   useEffect(() => {
@@ -573,7 +607,10 @@ function Admin() {
               <button
                 key={config.endpoint}
                 className={`entity-button ${selectedEntity.endpoint === config.endpoint ? 'active' : ''}`}
-                onClick={() => setSelectedEntity(config)}
+                onClick={() => {
+                  // Update URL parameter instead of directly setting state
+                  setSearchParams({ entity: config.endpoint }, { replace: true });
+                }}
               >
                 {config.name}
               </button>

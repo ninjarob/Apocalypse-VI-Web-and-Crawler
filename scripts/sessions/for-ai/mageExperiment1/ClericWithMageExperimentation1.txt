@@ -1,0 +1,543 @@
+<!-- Produced by MUSHclient v 5.06 - www.mushclient.com -->
+<table border=0 cellpadding=5 bgcolor="#000000">
+<tr><td>
+<pre><code><font size=2 face="FixedSys, Lucida Console, Courier New, Courier"><font color="#0">
+
+</font><font color="#0080FF">Welcome to MUSHclient version 5.06!
+Written by Nick Gammon.
+
+Compiled: Mar 29 2019 at 17:21:07.
+Using: Lua 5.1.4, PCRE 8.39, PNG 1.6.23, SQLite3 3.16.2, Zlib 1.2.8
+
+For information and assistance about MUSHclient visit our forum at:
+   </font><font color="#00BFFF"><u>http://www.gammon.com.au/forum/</u>
+</font><font color="#0080FF">Can you trust your plugins?  See: </font><font color="#00BFFF"><u>http://www.gammon.com.au/security</u>
+
+</font><font color="#0080FF">--- Connected on Tuesday, November 25, 2025, 7:19 AM ---
+</font><font color="#C0C0C0">Bols
+</font><font color="#FF0000">.:-~-:._.:-~-:._.:-~-:._.:-~-:._.:-~-:._.:-~-:._.:-~-:._.:-~-:._.:-~-:._.:-~-:.
+
+                                 </font><font color="#FFFFFF">OOOOOOOOOOOOO
+                          O OOOOO             OOOOO O                        
+                    OOOOOOOO        </font><font color="#FF0000">w,</font><font color="#808000">----</font><font color="#FF0000">,O       </font><font color="#FFFFFF">OOOOOOO                 
+                 OOOOO       </font><font color="#FF0000">O</font><font color="#808000">----------</font><font color="#FF0000">Oo </font><font color="#808000">-</font><font color="#FF0000">OOO          </font><font color="#FFFFFF">OOOOO               
+              OOOO       </font><font color="#FF0000">O</font><font color="#808000">- </font><font color="#FF0000">,</font><font color="#808000">-</font><font color="#FF0000">O</font><font color="#808000">-----</font><font color="#FF0000">OOO                     </font><font color="#FFFFFF">OOOOO            
+           OOOOO       </font><font color="#FF0000">O </font><font color="#808000">----------</font><font color="#FF0000">OOO</font><font color="#808000">-</font><font color="#FF0000">O                        </font><font color="#FFFFFF">OOO           
+         OOOO        </font><font color="#FF0000">OOOOOOO</font><font color="#808000">----</font><font color="#FF0000">O      O              O           </font><font color="#FFFFFF">OOO        
+        OOO         </font><font color="#FF0000">Ow</font><font color="#808000">----</font><font color="#FF0000">O</font><font color="#808000">-   </font><font color="#FF0000">w                       OOO          </font><font color="#FFFFFF">OOO      
+      OOOO         </font><font color="#FF0000">w</font><font color="#808000">-</font><font color="#FF0000">O</font><font color="#808000">---</font><font color="#FF0000">,O       </font><font color="#808000">-  </font><font color="#FF0000">O oo Ow             O</font><font color="#808000">-</font><font color="#FF0000">O         </font><font color="#FFFFFF">OOO     
+     OOO          </font><font color="#FF0000">O</font><font color="#808000">--</font><font color="#FF0000">O</font><font color="#808000">--</font><font color="#FF0000">O</font><font color="#808000">-     </font><font color="#FF0000">OOoowOOwOOOwoOo           Ow</font><font color="#808000">-</font><font color="#FF0000">O          </font><font color="#FFFFFF">OOO   
+    OOO          </font><font color="#FF0000">O,</font><font color="#808000">---</font><font color="#FF0000">O</font><font color="#808000">-</font><font color="#FF0000">O</font><font color="#808000">-</font><font color="#FF0000">w  OOowwooOOwO</font><font color="#808000">-</font><font color="#FF0000">ow wO           O</font><font color="#808000">--</font><font color="#FF0000">O           </font><font color="#FFFFFF">OOO  
+   OOO          </font><font color="#FF0000">O</font><font color="#808000">---</font><font color="#FF0000">OOO</font><font color="#808000">-</font><font color="#FF0000">w</font><font color="#808000">- </font><font color="#FF0000">OOoOoOoow</font><font color="#808000">- </font><font color="#FF0000">OOwOwOwoow       O</font><font color="#808000">---</font><font color="#FF0000">O             </font><font color="#FFFFFF">OOO  
+   OOO           </font><font color="#FF0000">O</font><font color="#808000">--</font><font color="#FF0000">O</font><font color="#808000">---</font><font color="#FF0000">OO</font><font color="#808000">--</font><font color="#FF0000">OwooowOoO</font><font color="#808000">-</font><font color="#FF0000">,   OoOowOoo    O</font><font color="#808000">------</font><font color="#FF0000">O           </font><font color="#FFFFFF">OOO 
+  OOO            </font><font color="#FF0000">O</font><font color="#808000">-</font><font color="#FF0000">O</font><font color="#808000">------</font><font color="#FF0000">w</font><font color="#808000">- </font><font color="#FF0000">wwOoooOooO,,  wOo     O</font><font color="#808000">--------</font><font color="#FF0000">OOOwO         </font><font color="#FFFFFF">OOO 
+  O O            </font><font color="#FF0000">OwO</font><font color="#808000">-------</font><font color="#FF0000">O</font><font color="#808000">--</font><font color="#FF0000">wwwoowoOwOO,</font><font color="#808000">-     </font><font color="#FF0000">w</font><font color="#808000">------</font><font color="#FF0000">OO</font><font color="#808000">---</font><font color="#FF0000">O             </font><font color="#FFFFFF">O O
+  O O             </font><font color="#FF0000">wO</font><font color="#808000">--------</font><font color="#FF0000">O</font><font color="#808000">--</font><font color="#FF0000">OwowwO OooO</font><font color="#808000">---</font><font color="#FF0000">O</font><font color="#808000">-</font><font color="#FF0000">OOOOw</font><font color="#808000">------</font><font color="#FF0000">OO              </font><font color="#FFFFFF">O O
+  O O             </font><font color="#FF0000">OOO</font><font color="#808000">-------</font><font color="#FF0000">O</font><font color="#808000">---</font><font color="#FF0000">oo O  Owow,,O</font><font color="#808000">-</font><font color="#FF0000">O</font><font color="#808000">- -</font><font color="#FF0000">O</font><font color="#808000">-</font><font color="#FF0000">OO</font><font color="#808000">-----</font><font color="#FF0000">O              </font><font color="#FFFFFF">O O
+  OOO               </font><font color="#FF0000">O</font><font color="#808000">--------</font><font color="#FF0000">O</font><font color="#808000">--</font><font color="#FF0000">OowO  woowO</font><font color="#808000">--</font><font color="#FF0000">OO</font><font color="#808000">-</font><font color="#FF0000">O</font><font color="#808000">--</font><font color="#FF0000">O</font><font color="#808000">----</font><font color="#FF0000">OO,</font><font color="#808000">--</font><font color="#FF0000">O            </font><font color="#FFFFFF">OOO
+  OOO                </font><font color="#FF0000">OO</font><font color="#808000">-----</font><font color="#FF0000">,</font><font color="#808000">--</font><font color="#FF0000">woOOOOooooww</font><font color="#808000">-</font><font color="#FF0000">O</font><font color="#808000">--</font><font color="#FF0000">w</font><font color="#808000">---</font><font color="#FF0000">O</font><font color="#808000">-----</font><font color="#FF0000">O    w           </font><font color="#FFFFFF">OOO 
+   OOO                </font><font color="#FF0000">OO</font><font color="#808000">---  </font><font color="#FF0000">OOOwwooowoowO</font><font color="#808000">- </font><font color="#FF0000">OOO</font><font color="#808000">-----</font><font color="#FF0000">O</font><font color="#808000">--                  </font><font color="#FFFFFF">OOO 
+    OOOO                </font><font color="#FF0000">O</font><font color="#808000">--        </font><font color="#FF0000">OOwO</font><font color="#808000">-</font><font color="#FF0000">O     </font><font color="#808000">-</font><font color="#FF0000">O</font><font color="#808000">------</font><font color="#FF0000">O</font><font color="#808000">-</font><font color="#FF0000">w              </font><font color="#FFFFFF">OOOO  
+     OOOO               </font><font color="#FF0000">O                      OO</font><font color="#808000">---   -</font><font color="#FF0000">O             </font><font color="#FFFFFF">OOOO   
+      OOOO                                      </font><font color="#FF0000">OO</font><font color="#808000">-                  </font><font color="#FFFFFF">OOO     
+        OOO                                      </font><font color="#FF0000">OO                 </font><font color="#FFFFFF">OOO      
+          OOO              </font><font color="#FF0000">**</font><font color="#FFFF00">=======================</font><font color="#FF0000">**            </font><font color="#FFFFFF">OOO        
+            OOOO           </font><font color="#FFFF00">||  </font><font color="#FF0000">A P O C A L Y P S E  </font><font color="#FFFF00">||         </font><font color="#FFFFFF">OOOO          
+              OOOOO        </font><font color="#FFFF00">||         </font><font color="#FF0000">VI.V          </font><font color="#FFFF00">||       </font><font color="#FFFFFF">OOOO          
+                 OOOOO     </font><font color="#FF0000">**</font><font color="#FFFF00">=======================</font><font color="#FF0000">**    </font><font color="#FFFFFF">OOOOO               
+                     OOOO                              OOOO               
+                           OOOOO OO  OOOOOO  OO OOOOO   
+                              
+</font><font color="#FF0000">.:-~-:._.:-~-:._.:-~-:._.:-~-:._.:-~-:._.:-~-:._.:-~-:._.:-~-:._.:-~-:._.:-~-:
+
+</font><font color="#C0C0C0">By what name do you wish to be known? Password: 
+
+                       
+        </font><font color="#FF0000">o-------------------------------------------------------------o
+        |:                                                           :|
+        |:                                                           :|
+        |:           </font><font color="#FFFF00">A  P  O  C  A  L  Y  P  S  E  :  V  I    </font><font color="#FF0000">       :|
+        |:                                                           :|
+        |:                                                           :|
+        `-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-'
+                         Where Classic Gaming Lives On
+
+                            Based on CircleMUD 3.1,
+                            Created by Jeremy Elson
+
+                      A derivative of DikuMUD (GAMMA 0.0),
+                created by Hans-Henrik Staerfeldt, Katja Nyboe,
+               Tom Madsen, Michael Seifert, and Sebastian Hammer
+
+Welcome to Apocalypse VI!
+
+Make sure you're familiar with the rules to play here. Type rules during
+game play.
+
+*** PRESS ENTER: 
+
+
+</font><font color="#FFFFFF">Welcome to Apocalypse VI!
+
+</font><font color="#00FFFF">0</font><font color="#FFFFFF">)</font><font color="#008000"> Exit from Apocalypse
+</font><font color="#00FFFF">1</font><font color="#FFFFFF">)</font><font color="#008000"> Enter the game
+</font><font color="#00FFFF">2</font><font color="#FFFFFF">)</font><font color="#008000"> Change password
+</font><font color="#00FFFF">3</font><font color="#FFFFFF">)</font><font color="#008000"> Change character description
+</font><font color="#00FFFF">4</font><font color="#FFFFFF">)</font><font color="#008000"> Game rules
+</font><font color="#00FFFF">5</font><font color="#FFFFFF">)</font><font color="#008000"> Delete this character
+
+</font><font color="#C0C0C0">   </font><font color="#FFFFFF">Make your choice:
+</font><font color="#C0C0C0">1
+
+</font><font color="#FFFFFF">You are now entering the world...
+
+</font><font color="#00FFFF">The Temple of Midgaard
+</font><font color="#C0C0C0">   Entering the great halls of the Temple of Midgaard is awe-inspiring, as you
+stand at an ornate entryway spanning nearly thirty feet across.  Huge copper
+braziers at each temple corner bathes the cool, marble walls in a fiery glow.  
+Elaborate tapestries bearing the crests and symbols of nobles who helped
+established the Temple long ago hang gracefully from the walls and ceilings.  A
+set of large stone steps inside the temple lead up to an altar dedicated to the
+heroes and patrons of this age.  The entire temple is elevated prominently above
+all the other buildings of Midgaard, reinforcing its position as the pinnacle
+landmark within the city.  
+</font><font color="#008080">[EXITS: n e s w d ]
+</font><font color="#008000">A large welcome sign hangs before the archway that leads into the city. Perhaps
+ you should read it.
+A marble altar rests at the heart of the temple.
+</font><font color="#C0C0C0">Nodri, the helpful Wizard, sits by the altar welcoming new adventurers. </font><font color="#808000">(QUEST)
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+d
+</font><font color="#00FFFF">Grand Gates of the Temple of Midgaard
+</font><font color="#C0C0C0">   You stand at the base of the huge mound upon which the Temple of Midgaard
+is built within the Grand Gates of the Temple.  The gates are gargantuan in
+size and are made of solid gold with ancient designs of Gods, Giants, Warriors,
+and peasants.
+   Steps hewn from huge marble blocks lead the way up the mound to the actual
+temple itself while south beyond the gates is what is commonly known as the
+Temple Square.
+   Braziers of eternal flame built upon the posts of the foundation of the
+temple wall brightly light up the sky, even in the day.
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#C0C0C0">Pouch the Warlock is here standing. (invisible)
+</font><font color="#FF00FF">(Charmed)</font><font color="#C0C0C0"> A Guard of the Temple stands here eyeing people entering the temple.
+A Guard of the Temple stands here eyeing people entering the temple.
+A Guard of the Temple stands here eyeing people entering the temple.
+A Guard of the Temple stands here eyeing people entering the temple.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">266V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'vitality' pouch
+You lost your concentration!
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">326M</font><font color="#C0C0C0"> </font><font color="#FFFF00">266V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'vitality' pouch
+Pouch has been revitalized.
+Pouch burps loudly.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">316M</font><font color="#C0C0C0"> </font><font color="#FFFF00">266V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'vitality' bols
+You feel your hunger suddenly disappear.
+You burp loudly.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">306M</font><font color="#C0C0C0"> </font><font color="#FFFF00">266V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch invokes the incantation, 'oculoinfra ubzuguvuruhl'.
+Pouch's eyes briefly glow with a white aura.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch invokes the incantation, 'ubygruzuguab'.
+Pouch's eyes glow red.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch looks at The Temple Guard.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+A warm front moves in, pushing the clouds away.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch stares at The Temple Guard and invokes the incantation, 'qpabraw
+ dudasabru'.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch stares at The Temple Guard and invokes the incantation, 'qpabraw
+ dudasabru'.
+The Temple Guard now follows Pouch.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch gives The Temple Guard an order.
+The Temple Guard reports: 276/276H, 100/100M, 100/100V, TNL: 1468750X
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch gives The Temple Guard an order.
+The Temple Guard reports: 283/283H, 100/100M, 100/100V, TNL: 1468750X
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch gives The Temple Guard an order.
+The Temple Guard lies down and falls asleep.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch gives The Temple Guard an order.
+The Temple Guard lies down and falls asleep.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Large clouds begin to form in the heavens above.
+You are hungry.
+You are thirsty.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'vitality' bols
+You feel your hunger suddenly disappear.
+You burp loudly.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">321M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'vitality' pouch
+Pouch has been revitalized.
+Pouch burps loudly.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">311M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch looks at The Temple Guard.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">311M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The sky darkens as the sun slowly sets in the west.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+All light is banished from the sky as night takes over.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch looks at The Temple Guard.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch looks at The Temple Guard.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch looks at The Temple Guard.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch looks at The Temple Guard.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch stares at The Temple Guard and invokes the incantation, 'iqum abrafax'.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look guard
+A big, strong, helpful, trustworthy guard.
+The Temple Guard appears to be a male Human.
+The Temple Guard is in excellent condition.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look
+</font><font color="#00FFFF">Grand Gates of the Temple of Midgaard
+</font><font color="#C0C0C0">   You stand at the base of the huge mound upon which the Temple of Midgaard
+is built within the Grand Gates of the Temple.  The gates are gargantuan in
+size and are made of solid gold with ancient designs of Gods, Giants, Warriors,
+and peasants.
+   Steps hewn from huge marble blocks lead the way up the mound to the actual
+temple itself while south beyond the gates is what is commonly known as the
+Temple Square.
+   Braziers of eternal flame built upon the posts of the foundation of the
+temple wall brightly light up the sky, even in the day.
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#C0C0C0">Pouch the Warlock is here standing. (invisible)
+</font><font color="#FF00FF">(Charmed)</font><font color="#C0C0C0"> A Guard of the Temple stands here eyeing people entering the temple.
+The Temple Guard is here sleeping. (Charmed)
+A Guard of the Temple stands here eyeing people entering the temple.
+A Guard of the Temple stands here eyeing people entering the temple.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch stares at The Temple Guard and invokes the incantation, 'iqum abrafax'.
+Pouch throws bolts of acid at The Temple Guard which dissolve through his body.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look 3.guard
+A big, strong, helpful, trustworthy guard.
+The Temple Guard appears to be a male Human.
+The Temple Guard has some small wounds and bruises.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The Temple Guard hits Pouch very hard.
+Pouch misses The Temple Guard with his hit.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The Temple Guard jumps to the aid of The Temple Guard!
+The Temple Guard misses Pouch with his hit.
+The Temple Guard hits Pouch hard.
+The Temple Guard hits Pouch very hard.
+The Temple Guard hits Pouch very hard.
+Pouch misses The Temple Guard with his hit.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The Temple Guard hits Pouch hard.
+The Temple Guard hits Pouch hard.
+The Temple Guard misses Pouch with his hit.
+Pouch misses The Temple Guard with his hit.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch stares at The Temple Guard and invokes the incantation, 'iqum abrafax'.
+Pouch throws bolts of acid at The Temple Guard which dissolve through his body.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The Temple Guard hits Pouch very hard.
+The Temple Guard hits Pouch hard.
+The Temple Guard hits Pouch hard.
+Pouch misses The Temple Guard with his hit.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch stares at The Temple Guard and invokes the incantation, 'iqum abrafax'.
+Pouch throws bolts of acid at The Temple Guard which dissolve through his body.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The Temple Guard misses Pouch with his hit.
+The Temple Guard hits Pouch hard.
+The Temple Guard hits Pouch very hard.
+Pouch misses The Temple Guard with his hit.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch stares at The Temple Guard and invokes the incantation, 'iqum abrafax'.
+The Temple Guard screams in defiance as Pouch's acid arrow eats through his
+ body.
+The Temple Guard is dead!  R.I.P.
+Your blood freezes as you hear The Temple Guard's death cry.
+</font><font color="#00FFFF">Pouch switches to attack The Temple Guard.
+</font><font color="#C0C0C0">Pouch gets a big pile of gold coins from the corpse of The Temple Guard.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch misses The Temple Guard with his hit.
+The Temple Guard hits Pouch hard.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch misses The Temple Guard with his hit.
+The Temple Guard hits Pouch hard.
+The Temple Guard hits Pouch hard.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch misses The Temple Guard with his hit.
+The Temple Guard misses Pouch with his hit.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch stares at The Temple Guard and invokes the incantation, 'iqum abrafax'.
+Pouch throws bolts of acid at The Temple Guard which dissolve through his body.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch misses The Temple Guard with his hit.
+The Temple Guard misses Pouch with his hit.
+The Temple Guard hits Pouch hard.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch stares at The Temple Guard and invokes the incantation, 'iqum abrafax'.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch misses The Temple Guard with his hit.
+The Temple Guard misses Pouch with his hit.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch stares at The Temple Guard and invokes the incantation, 'iqum abrafax'.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch misses The Temple Guard with his hit.
+The Temple Guard hits Pouch hard.
+The Temple Guard hits Pouch hard.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch misses The Temple Guard with his hit.
+The Temple Guard misses Pouch with his hit.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'heal light' pouh
+Cannot find the target of your spell!
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'heal light' pouch
+You heal Pouch.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch misses The Temple Guard with his hit.
+The Temple Guard misses Pouch with his hit.
+The Temple Guard hits Pouch hard.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch misses The Temple Guard with his hit.
+The Temple Guard hits Pouch hard.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'sanctuary' pouch
+Pouch is surrounded by a white aura.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'heal light' pouch
+
+Pouch misses The Temple Guard with his hit.
+The Temple Guard barely hits Pouch.
+The Temple Guard barely hits Pouch.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">246M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> You heal Pouch.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">211M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch misses The Temple Guard with his hit.
+The Temple Guard hits Pouch.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">211M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch stares at The Temple Guard and invokes the incantation, 'iqum abrafax'.
+Pouch throws bolts of acid at The Temple Guard which dissolve through his body.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">211M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch misses The Temple Guard with his hit.
+The Temple Guard misses Pouch with his hit.
+The Temple Guard barely hits Pouch.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">211M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch stares at The Temple Guard and invokes the incantation, 'iqum abrafax'.
+The Temple Guard screams in defiance as Pouch's acid arrow eats through his
+ body.
+The Temple Guard is dead!  R.I.P.
+Your blood freezes as you hear The Temple Guard's death cry.
+Pouch gets a big pile of gold coins from the corpse of The Temple Guard.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">211M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The dark sky starts to lighten as the sun begins to rise in the east.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">292M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The last remnants of night disappear as the day begins.
+You are hungry.
+You are thirsty.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">301M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+You are hungry.
+You are thirsty.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">310M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+You are hungry.
+You are thirsty.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">319M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+You are hungry.
+You are thirsty.
+A quivering horde of maggots consumes the corpse of The Temple Guard.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">328M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+You are hungry.
+You are thirsty.
+A quivering horde of maggots consumes the corpse of The Temple Guard.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch gives The Temple Guard an order.
+The Temple Guard has an indifferent look.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch gives The Temple Guard an order.
+The Temple Guard has an indifferent look.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+As quickly as they arrived, the clouds above you roll away.
+You are hungry.
+You are thirsty.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch gives The Temple Guard an order.
+The Temple Guard has an indifferent look.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch gives The Temple Guard an order.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch gives The Temple Guard an order.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch gives The Temple Guard an order.
+The Temple Guard reports: 276/276H, 100/100M, 100/100V, TNL: 1468750X
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch gives The Temple Guard an order.
+The Temple Guard reports: 283/283H, 100/100M, 100/100V, TNL: 1468750X
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch leaves south.
+The Temple Guard leaves south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch arrives from the south.
+The Temple Guard arrives from the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch leaves south.
+The Temple Guard leaves south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look
+</font><font color="#00FFFF">Grand Gates of the Temple of Midgaard
+</font><font color="#C0C0C0">   You stand at the base of the huge mound upon which the Temple of Midgaard
+is built within the Grand Gates of the Temple.  The gates are gargantuan in
+size and are made of solid gold with ancient designs of Gods, Giants, Warriors,
+and peasants.
+   Steps hewn from huge marble blocks lead the way up the mound to the actual
+temple itself while south beyond the gates is what is commonly known as the
+Temple Square.
+   Braziers of eternal flame built upon the posts of the foundation of the
+temple wall brightly light up the sky, even in the day.
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#C0C0C0">A Guard of the Temple stands here eyeing people entering the temple.
+A Guard of the Temple stands here eyeing people entering the temple.
+The Temple Guard is here sleeping. (Charmed)
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+You are hungry.
+You are thirsty.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'vitality' bols
+You feel your hunger suddenly disappear.
+You burp loudly.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">321M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch arrives from the south.
+The Temple Guard arrives from the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The Temple Guard says, 'HOLD IT!  Papers please.  Ok, you can pass.'
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'vitality' pouch
+Pouch has been revitalized.
+Pouch burps loudly.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">321M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'vitality' bols
+You feel your hunger suddenly disappear.
+You burp loudly.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">311M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The sky darkens as the sun slowly sets in the west.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+All light is banished from the sky as night takes over.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Pouch has left the game.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The Temple Guard realizes that Pouch is a jerk!
+The Temple Guard realizes that Pouch is a jerk!
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+quit
+You have run out of time to complete the quest.
+Goodbye, friend... Come back soon!
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">173H</font><font color="#C0C0C0"> </font><font color="#00FF00">331M</font><font color="#C0C0C0"> </font><font color="#FFFF00">267V</font><font color="#C0C0C0"> </font><font color="#00FFFF">797393X</font><font color="#C0C0C0"> </font><font color="#808000">17192SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+
+</font><font color="#FFFFFF">Welcome to Apocalypse VI!
+
+</font><font color="#00FFFF">0</font><font color="#FFFFFF">)</font><font color="#008000"> Exit from Apocalypse
+</font><font color="#00FFFF">1</font><font color="#FFFFFF">)</font><font color="#008000"> Enter the game
+</font><font color="#00FFFF">2</font><font color="#FFFFFF">)</font><font color="#008000"> Change password
+</font><font color="#00FFFF">3</font><font color="#FFFFFF">)</font><font color="#008000"> Change character description
+</font><font color="#00FFFF">4</font><font color="#FFFFFF">)</font><font color="#008000"> Game rules
+</font><font color="#00FFFF">5</font><font color="#FFFFFF">)</font><font color="#008000"> Delete this character
+
+</font><font color="#C0C0C0">   </font><font color="#FFFFFF">Make your choice:
+</font><font color="#C0C0C0">0
+
+Goodbye, friend... Come back soon!
+</font></font></code></pre>
+</td></tr></table>

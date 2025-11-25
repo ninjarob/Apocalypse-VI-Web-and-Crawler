@@ -174,21 +174,159 @@ export const roomObjectUpdateSchema = roomObjectSchema.partial().required({ id: 
 // NPC Schemas
 // ============================================================================
 
+// ===== NPC Schemas =====
+
 export const npcSchema = withId
   .merge(withName(255))
   .merge(withDescription(false))
   .merge(withRawText)
   .merge(withTimestamps)
   .extend({
+    short_desc: z.string().max(500).optional().nullable(),
+    long_desc: z.string().max(1000).optional().nullable(),
     location: z.string().max(255).optional().nullable(),
-    dialogue: jsonFieldSchema,
-    hostile: booleanFieldSchema,
+    room_id: z.number().int().optional().nullable(),
+    zone_id: z.number().int().optional().nullable(),
+    
+    // Stats
+    hp_max: z.number().int().optional().nullable(),
+    mana_max: z.number().int().optional().nullable(),
+    moves_max: z.number().int().optional().nullable(),
     level: z.number().int().min(1).max(100).optional().nullable(),
+    experience_to_next_level: z.number().int().optional().nullable(),
+    alignment: z.number().int().optional().nullable(),
+    
+    // Combat Stats
+    attacks_per_round: z.number().optional().nullable(),
+    hit_ability: z.number().int().optional().nullable(),
+    damage_ability: z.number().int().optional().nullable(),
+    magic_ability: z.number().int().optional().nullable(),
+    armor_class: z.number().int().optional().nullable(),
+    
+    // Character Info
     race: z.string().max(100).optional().nullable(),
-    class: z.string().max(100).optional().nullable()
+    class: z.string().max(100).optional().nullable(),
+    gender: z.string().max(20).optional().nullable(),
+    
+    // Wealth
+    gold: z.number().int().optional().nullable(),
+    
+    // Behavior
+    is_stationary: booleanFieldSchema,
+    is_aggressive: booleanFieldSchema,
+    aggro_level: z.string().max(50).optional().nullable(),
+    
+    // Visibility
+    is_invisible: booleanFieldSchema,
+    is_cloaked: booleanFieldSchema,
+    is_hidden: booleanFieldSchema,
+    
+    // Position
+    position: z.string().max(50).optional().nullable(),
+    
+    // Data Collection Info
+    has_been_charmed: booleanFieldSchema,
+    has_been_considered: booleanFieldSchema,
+    has_been_examined: booleanFieldSchema,
+    has_reported_stats: booleanFieldSchema,
+    has_been_in_group: booleanFieldSchema,
+    
+    // Metadata
+    discovered: booleanFieldSchema,
+    notes: z.string().optional().nullable()
   });
 
 export const npcUpdateSchema = createUpdateSchema(npcSchema);
+
+export const npcEquipmentSchema = withId
+  .extend({
+    npc_id: z.number().int(),
+    item_id: z.number().int(),
+    wear_location_id: z.number().int(),
+    quantity: z.number().int().default(1)
+  });
+
+export const npcEquipmentUpdateSchema = createUpdateSchema(npcEquipmentSchema);
+
+export const npcSpellSchema = withId
+  .merge(withTimestamps)
+  .extend({
+    npc_id: z.number().int(),
+    spell_name: z.string().min(1).max(255),
+    spell_type: z.string().max(100).optional().nullable(),
+    mana_cost: z.number().int().optional().nullable(),
+    observed_count: z.number().int().default(1),
+    last_observed: z.string().optional().nullable()
+  });
+
+export const npcSpellUpdateSchema = createUpdateSchema(npcSpellSchema);
+
+export const npcDialogueSchema = withId
+  .merge(withTimestamps)
+  .extend({
+    npc_id: z.number().int(),
+    dialogue_text: z.string().min(1),
+    dialogue_type: z.string().max(100).optional().nullable(),
+    trigger_keyword: z.string().max(255).optional().nullable(),
+    context: z.string().optional().nullable(),
+    recorded_at: z.string().optional().nullable()
+  });
+
+export const npcDialogueUpdateSchema = createUpdateSchema(npcDialogueSchema);
+
+export const npcPathSchema = withId
+  .merge(withTimestamps)
+  .extend({
+    npc_id: z.number().int(),
+    room_id: z.number().int(),
+    sequence_order: z.number().int(),
+    direction_from_previous: z.string().max(20).optional().nullable(),
+    wait_time_seconds: z.number().int().optional().nullable(),
+    notes: z.string().optional().nullable()
+  });
+
+export const npcPathUpdateSchema = createUpdateSchema(npcPathSchema);
+
+export const npcSpawnInfoSchema = withId
+  .merge(withTimestamps)
+  .extend({
+    npc_id: z.number().int(),
+    room_id: z.number().int(),
+    spawn_rate_minutes: z.number().int().optional().nullable(),
+    max_instances: z.number().int().default(1),
+    last_observed_spawn: z.string().optional().nullable(),
+    spawn_conditions: z.string().optional().nullable()
+  });
+
+export const npcSpawnInfoUpdateSchema = createUpdateSchema(npcSpawnInfoSchema);
+
+export const npcFlagSchema = withId
+  .merge(withTimestamps)
+  .extend({
+    name: z.string().min(1).max(100),
+    description: z.string().optional().nullable(),
+    category: z.string().max(100).optional().nullable()
+  });
+
+export const npcFlagUpdateSchema = createUpdateSchema(npcFlagSchema);
+
+export const npcFlagInstanceSchema = z.object({
+  npc_id: z.number().int(),
+  flag_id: z.number().int(),
+  active: booleanFieldSchema
+});
+
+export const npcStateSchema = withId
+  .merge(withTimestamps)
+  .extend({
+    npc_id: z.number().int(),
+    state: z.string().min(1).max(100),
+    description: z.string().optional().nullable(),
+    applied_at: z.string().optional().nullable(),
+    expires_at: z.string().optional().nullable()
+  });
+
+export const npcStateUpdateSchema = createUpdateSchema(npcStateSchema);
 
 // ============================================================================
 // Item Schemas
@@ -207,6 +345,19 @@ export const itemSchema = withId
   });
 
 export const itemUpdateSchema = createUpdateSchema(itemSchema);
+
+// ============================================================================
+// Wear Location Schemas
+// ============================================================================
+
+export const wearLocationSchema = withId
+  .merge(withName(100))
+  .merge(withDescription(false))
+  .extend({
+    slot_limit: z.number().int().default(1)
+  });
+
+export const wearLocationUpdateSchema = createUpdateSchema(wearLocationSchema);
 
 // ============================================================================
 // Spell Schemas
@@ -539,7 +690,16 @@ export const CREATE_SCHEMAS: Record<string, z.ZodSchema> = {
   room_exits: roomExitSchema,
   room_objects: roomObjectSchema,
   npcs: npcSchema,
+  npc_equipment: npcEquipmentSchema,
+  npc_spells: npcSpellSchema,
+  npc_dialogue: npcDialogueSchema,
+  npc_paths: npcPathSchema,
+  npc_spawn_info: npcSpawnInfoSchema,
+  npc_flags: npcFlagSchema,
+  npc_flag_instances: npcFlagInstanceSchema,
+  npc_states: npcStateSchema,
   items: itemSchema,
+  wear_locations: wearLocationSchema,
   spells: spellSchema,
   attacks: attackSchema,
   player_actions: playerActionSchema,
@@ -567,7 +727,15 @@ export const UPDATE_SCHEMAS: Record<string, z.ZodSchema> = {
   room_exits: roomExitUpdateSchema,
   room_objects: roomObjectUpdateSchema,
   npcs: npcUpdateSchema,
+  npc_equipment: npcEquipmentUpdateSchema,
+  npc_spells: npcSpellUpdateSchema,
+  npc_dialogue: npcDialogueUpdateSchema,
+  npc_paths: npcPathUpdateSchema,
+  npc_spawn_info: npcSpawnInfoUpdateSchema,
+  npc_flags: npcFlagUpdateSchema,
+  npc_states: npcStateUpdateSchema,
   items: itemUpdateSchema,
+  wear_locations: wearLocationUpdateSchema,
   spells: spellUpdateSchema,
   attacks: attackUpdateSchema,
   player_actions: playerActionUpdateSchema,
@@ -598,6 +766,14 @@ export type Room = z.infer<typeof roomSchema>;
 export type RoomExit = z.infer<typeof roomExitSchema>;
 export type RoomObject = z.infer<typeof roomObjectSchema>;
 export type NPC = z.infer<typeof npcSchema>;
+export type NPCEquipment = z.infer<typeof npcEquipmentSchema>;
+export type NPCSpell = z.infer<typeof npcSpellSchema>;
+export type NPCDialogue = z.infer<typeof npcDialogueSchema>;
+export type NPCPath = z.infer<typeof npcPathSchema>;
+export type NPCSpawnInfo = z.infer<typeof npcSpawnInfoSchema>;
+export type NPCFlag = z.infer<typeof npcFlagSchema>;
+export type NPCFlagInstance = z.infer<typeof npcFlagInstanceSchema>;
+export type NPCState = z.infer<typeof npcStateSchema>;
 export type Item = z.infer<typeof itemSchema>;
 export type Spell = z.infer<typeof spellSchema>;
 export type Attack = z.infer<typeof attackSchema>;

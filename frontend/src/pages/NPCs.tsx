@@ -25,9 +25,9 @@ const columns: ColumnConfig<NPC>[] = [
   {
     key: 'disposition',
     label: 'Disposition',
-    render: (npc) => npc.hostile !== undefined ? (
-      <span className={`tag ${npc.hostile ? 'hostile' : 'friendly'}`}>
-        {npc.hostile ? 'Hostile' : 'Friendly'}
+    render: (npc) => npc.is_aggressive !== undefined ? (
+      <span className={`tag ${npc.is_aggressive ? 'hostile' : 'friendly'}`}>
+        {npc.is_aggressive ? 'Aggressive' : 'Non-Aggressive'}
       </span>
     ) : '—'
   },

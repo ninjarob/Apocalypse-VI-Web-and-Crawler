@@ -46,14 +46,116 @@ export const ENTITY_CONFIG: Record<string, EntityConfig> = {
     idField: 'id',
     nameField: 'name',
     autoIncrement: true,
-    jsonFields: ['dialogue'],
-    booleanFields: ['hostile'],
+    booleanFields: ['is_stationary', 'is_aggressive', 'is_invisible', 'is_cloaked', 'is_hidden', 
+                    'has_been_charmed', 'has_been_considered', 'has_been_examined', 'has_reported_stats', 
+                    'has_been_in_group', 'discovered'],
     sortBy: 'name',
     display: {
       name: 'NPCs',
       singular: 'NPC',
       icon: '🧙',
       description: 'Non-player characters'
+    }
+  },
+  npc_equipment: {
+    table: 'npc_equipment',
+    idField: 'id',
+    autoIncrement: true,
+    booleanFields: [],
+    sortBy: 'npc_id, wear_location_id',
+    display: {
+      name: 'NPC Equipment',
+      singular: 'NPC Equipment',
+      icon: '⚔️',
+      description: 'Template equipment for NPCs'
+    }
+  },
+  npc_spells: {
+    table: 'npc_spells',
+    idField: 'id',
+    autoIncrement: true,
+    sortBy: 'npc_id, spell_name',
+    display: {
+      name: 'NPC Spells',
+      singular: 'NPC Spell',
+      icon: '✨',
+      description: 'Spells and skills used by NPCs'
+    }
+  },
+  npc_dialogue: {
+    table: 'npc_dialogue',
+    idField: 'id',
+    autoIncrement: true,
+    sortBy: 'npc_id, recorded_at DESC',
+    display: {
+      name: 'NPC Dialogue',
+      singular: 'NPC Dialogue',
+      icon: '💬',
+      description: 'Recorded NPC dialogue'
+    }
+  },
+  npc_paths: {
+    table: 'npc_paths',
+    idField: 'id',
+    autoIncrement: true,
+    sortBy: 'npc_id, sequence_order',
+    display: {
+      name: 'NPC Paths',
+      singular: 'NPC Path',
+      icon: '🚶',
+      description: 'NPC movement patterns'
+    }
+  },
+  npc_spawn_info: {
+    table: 'npc_spawn_info',
+    idField: 'id',
+    autoIncrement: true,
+    sortBy: 'npc_id',
+    display: {
+      name: 'NPC Spawn Info',
+      singular: 'NPC Spawn Info',
+      icon: '🌟',
+      description: 'NPC spawn locations and rates'
+    }
+  },
+  npc_flags: {
+    table: 'npc_flags',
+    idField: 'id',
+    nameField: 'name',
+    autoIncrement: true,
+    uniqueField: 'name',
+    sortBy: 'category, name',
+    display: {
+      name: 'NPC Flags',
+      singular: 'NPC Flag',
+      icon: '🏷️',
+      description: 'Flags and status effects for NPCs'
+    }
+  },
+  npc_flag_instances: {
+    table: 'npc_flag_instances',
+    idField: 'npc_id,flag_id',
+    autoIncrement: false,
+    booleanFields: ['active'],
+    sortBy: 'npc_id, flag_id',
+    display: {
+      name: 'NPC Flag Instances',
+      singular: 'NPC Flag Instance',
+      description: 'Active flags on NPCs'
+    }
+  },
+  character_positions: {
+    table: 'character_positions',
+    idField: 'id',
+    nameField: 'name',
+    autoIncrement: true,
+    uniqueField: 'name',
+    sortBy: 'name',
+    display: {
+      name: 'Character Positions',
+      singular: 'Character Position',
+      icon: '🧍',
+      description: 'Universal character positions (standing, sitting, etc.)'
     }
   },
   items: {
@@ -68,6 +170,20 @@ export const ENTITY_CONFIG: Record<string, EntityConfig> = {
       singular: 'Item',
       icon: '📦',
       description: 'Items and equipment'
+    }
+  },
+  wear_locations: {
+    table: 'wear_locations',
+    idField: 'id',
+    nameField: 'name',
+    autoIncrement: true,
+    uniqueField: 'name',
+    sortBy: 'name',
+    display: {
+      name: 'Wear Locations',
+      singular: 'Wear Location',
+      icon: '👕',
+      description: 'Equipment slots and inventory positions'
     }
   },
   spells: {

@@ -1,3 +1,650 @@
+## Admin Panel URL State Persistence (2025-11-25) ✅ **COMPLETED**
+**Status**: ✅ **COMPLETED** - Entity selection now persists via URL parameters
+
+### Overview
+Implemented URL-based state management for the admin panel to persist selected entity type across page refreshes and enable shareable URLs for specific admin sections.
+
+### Changes Made
+
+#### Frontend (`frontend/src/pages/Admin.tsx`)
+- ✅ **Added**: `useSearchParams` hook from react-router-dom
+- ✅ **Added**: URL parameter reading on component mount (`?entity={type}`)
+- ✅ **Added**: Entity selection updates URL parameter
+- ✅ **Added**: URL state only applies to base `/admin` route (not detail views)
+
+#### User Experience Improvements
+- ✅ **Shareable URLs**: `/admin?entity=npcs` directly loads NPCs section
+- ✅ **Refresh persistence**: Page refresh maintains selected entity type
+- ✅ **Browser navigation**: Back/forward buttons work correctly
+- ✅ **Default behavior**: Falls back to first entity if no parameter present
+
+### Technical Implementation
+```typescript
+// Initialize from URL parameter
+const entityParam = searchParams.get('entity');
+const matchingEntity = ENTITY_CONFIGS.find(config => config.endpoint === entityParam);
+
+// Update URL when entity button clicked
+onClick={() => setSearchParams({ entity: config.endpoint }, { replace: true })}
+
+// Sync when URL changes
+useEffect(() => {
+  const entityParam = searchParams.get('entity');
+  if (entityParam) {
+    const matchingEntity = ENTITY_CONFIGS.find(config => config.endpoint === entityParam);
+    if (matchingEntity) setSelectedEntity(matchingEntity);
+  }
+}, [searchParams]);
+```
+
+### Testing
+✅ Frontend builds successfully  
+✅ No TypeScript errors  
+✅ URL updates when entity selected  
+✅ Page refresh maintains selection  
+
+---
+
+## Item ID Type Change (2025-11-25) ✅ **COMPLETED (Schema)**
+**Status**: ✅ **COMPLETED** - All schemas updated to use INTEGER IDs for items
+
+### Overview
+Converted item IDs from TEXT (string-based like 'silver-cutlass') to INTEGER AUTOINCREMENT for consistency with other entities and better relational integrity.
+
+### Changes Completed
+✅ **Database schema updated** (backend/src/database.ts):
+  - items.id: TEXT → INTEGER PRIMARY KEY AUTOINCREMENT
+  - All item junction tables updated to INTEGER:
+    - item_flag_instances, item_wear_locations, item_stat_effects, item_binding_instances
+    - item_restrictions, item_weapons, item_armor, item_lights, item_containers, item_consumables
+    - item_spell_effects, item_granted_abilities, item_customizations
+  - npc_equipment.item_id: TEXT → INTEGER
+
+✅ **Seed script schema updated** (scripts/seed.ts):
+  - Same changes as backend database schema
+  - All item-related tables now use INTEGER item_id
+
+✅ **TypeScript types updated** (shared/types.ts):
+  - NPCEquipment.item_id: string → number
+  - Item.id already was number
+
+✅ **Validation schemas updated** (backend/src/validation/schemas.ts):
+  - npcEquipmentSchema.item_id: z.string() → z.number().int()
+
+✅ **Database seeding successful**:
+  - All tables created without errors
+  - Item seeding temporarily disabled (needs refactor)
+  - NPC equipment seeding skipped (depends on items)
+
+### Remaining Work
+⚠️ **Item seeding refactor needed** (scripts/seed.ts):
+  - seedExampleItems() function needs complete rewrite
+  - Must remove hardcoded text IDs ('questers-ring', 'bread', 'silver-cutlass', etc.)
+  - Must use INSERT without ID, capture lastID from callback
+  - Must update all junction table inserts to use captured IDs
+  - Must update NPC equipment seeding to look up items by name
+
+**Impact**: System fully functional without example items. Items can be created via API with auto-incrementing INTEGER IDs.
+
+---
+
+## NPC Equipment System Refactor (2025-11-25) ✅ **COMPLETED**
+**Status**: ✅ **COMPLETED** - Refactored NPC equipment to use proper foreign keys and wear location reference table
+
+### Overview
+Refactored the `npc_equipment` table to properly reference the `items` table and use the existing `wear_locations` reference table instead of text-based fields. This enforces referential integrity and provides a cleaner template-based equipment system.
+
+**Key Architecture Changes:**
+- Equipment items now use foreign keys to actual items in `items` table (INTEGER id after ID type change)
+- Wear locations use foreign key to `wear_locations` reference table
+- Removed redundant boolean fields (`is_wielded`, `is_worn`, `is_in_inventory`)
+- Removed text-based `slot` field and `item_name` field
+- Simplified to: npc_id, item_id, wear_location_id, quantity
+- Frontend components now load item and wear_location details via API calls for display
+
+### Changes Made
+
+#### Database Schema (`backend/src/database.ts` and `scripts/seed.ts`)
+- ❌ **Removed**: `item_name TEXT` field (redundant with foreign key)
+- ❌ **Removed**: `slot TEXT` field (replaced with wear_location_id FK)
+- ❌ **Removed**: `is_wielded`, `is_worn`, `is_in_inventory` boolean flags
+- ❌ **Removed**: `identified` field (not relevant for templates)
+- ✅ **Changed**: `item_id` from optional TEXT to required TEXT with CASCADE delete
+- ✅ **Added**: `wear_location_id INTEGER NOT NULL` with FK to wear_locations
+
+#### TypeScript Types (`shared/types.ts`)
+- ❌ **Removed**: `item_name`, `slot`, `is_wielded`, `is_worn`, `is_in_inventory`, `identified` fields
+- ✅ **Updated**: `item_id` to required string
+- ✅ **Added**: `wear_location_id` as required number
+
+#### Validation Schemas (`backend/src/validation/schemas.ts`)
+- ❌ **Removed**: All removed fields from schema
+- ❌ **Removed**: `withTimestamps` merge (not needed for templates)
+- ✅ **Updated**: `npcEquipmentSchema` to only include: npc_id, item_id, wear_location_id, quantity
+- ✅ **Added**: `wearLocationSchema` for wear_locations entity
+- ✅ **Added**: `wear_locations` to CREATE_SCHEMAS and UPDATE_SCHEMAS registries
+
+#### Entity Configuration (`shared/entity-config.ts`)
+- ❌ **Removed**: Boolean fields from npc_equipment config
+- ✅ **Updated**: Sort order to `npc_id, wear_location_id`
+- ✅ **Updated**: Description to "Template equipment for NPCs"
+- ✅ **Added**: `wear_locations` entity config with full display information
+
+#### Seeding (`scripts/seed.ts`)
+- ✅ **Updated**: `seedNPCEquipment()` to use actual item IDs and wear location IDs
+- ✅ **Updated**: Equipment data to reference existing items (silver-cutlass, lantern)
+- ✅ **Updated**: INSERT statement to use new field structure
+
+### Wear Locations Reference Table
+
+18 wear location slots available:
+- **TAKE** (99 slots) - Inventory/can be picked up
+- **FINGER** (2 slots) - Rings
+- **NECK** (1 slot) - Amulets
+- **BODY** (1 slot) - Chest armor
+- **HEAD** (1 slot) - Helmets
+- **LEGS** (1 slot) - Pants
+- **FEET** (1 slot) - Boots
+- **HANDS** (1 slot) - Gloves
+- **ARMS** (1 slot) - Bracers
+- **SHIELD** (1 slot) - Shields
+- **ABOUT** (1 slot) - Cloaks
+- **WAIST** (1 slot) - Belts
+- **WRIST** (2 slots) - Bracelets
+- **WIELD** (1 slot) - Wielded weapons
+- **HOLD** (1 slot) - Held items
+- **FACE** (1 slot) - Masks
+- **EAR** (2 slots) - Earrings
+- **BACK** (1 slot) - Back slot
+
+### Design Philosophy
+
+**Template Equipment System:**
+- NPC equipment defines default loadout for NPC template
+- Uses foreign keys to actual items (enforces item must exist)
+- Uses wear_location reference for valid equipment slots
+- Quantity field for stackable items (potions, arrows, etc.)
+- No "identified" flag - templates define known equipment
+- Clean relational design with referential integrity
+
+**Benefits:**
+- Cannot assign non-existent items to NPCs
+- Cannot use invalid wear locations
+- Single source of truth for wear location names/rules
+- Easy to query: "Which NPCs carry this item?"
+- Easy to update: Change item details in one place
+
+### Verification
+✅ Database seeded with 4 NPC equipment entries  
+✅ Backend built and restarted with new schema  
+✅ API endpoint `/api/wear_locations` working (18 locations)  
+✅ API endpoint `/api/npc_equipment` working (proper FK structure)  
+✅ All entity configs updated
+
+---
+
+## Universal Character Position System (2025-11-25) ✅ **COMPLETED**
+**Status**: ✅ **COMPLETED** - Replaced NPC-specific states with universal character positions and conditions
+
+### Overview
+Removed the NPC-specific `npc_states` table and replaced it with a universal `character_positions` system that applies to all characters (NPCs, players, mobs). Separated concerns between **position** (stored state) and **condition** (calculated from HP percentage).
+
+**Key Architecture Changes:**
+- **Position** (stored): standing, sitting, resting, sleeping, fighting
+- **Condition** (calculated): 7 levels based on HP% - excellent, scratched, slight wounds, quite a few wounds, big nasty wounds, pretty hurt, awful condition
+- **Template Design**: NPCs store only max stats (hp_max, mana_max, moves_max), not current values
+- NPCs are blueprints for instances; actual current stats tracked at runtime
+
+### Changes Made
+
+#### Database Schema
+- ❌ **Removed**: `npc_states` table (npc_id, state, description, timestamps)
+- ✅ **Added**: `character_positions` reference table (id, name, description)
+- ✅ **Added**: `position` field to `npcs` table (TEXT DEFAULT 'standing')
+
+#### TypeScript Types (`shared/types.ts`)
+- ❌ **Removed**: `NPCState` interface with state/description/timestamps
+- ❌ **Removed**: `states?: NPCState[]` from NPC interface
+- ✅ **Added**: `CharacterPosition` interface (id, name, description)
+- ✅ **Added**: `CharacterCondition` interface (description, minHpPercent, maxHpPercent)
+- ✅ **Added**: `position?: string` to NPC interface
+
+#### Validation Schemas (`backend/src/validation/schemas.ts`)
+- ❌ **Removed**: `npcStateSchema`
+- ❌ **Removed**: `npc_states` from CREATE_SCHEMAS and UPDATE_SCHEMAS
+- ✅ **Added**: `characterPositionSchema`
+- ✅ **Added**: `character_positions` to CREATE_SCHEMAS and UPDATE_SCHEMAS
+- ✅ **Added**: `position` field to npcSchema
+
+#### Entity Configuration (`shared/entity-config.ts`)
+- ❌ **Removed**: `npc_states: { primaryKey: 'id', booleanFields: [] }`
+- ✅ **Added**: `character_positions: { primaryKey: 'id', booleanFields: [] }`
+
+#### Seeding (`scripts/seed.ts`)
+- ❌ **Removed**: npc_states DROP TABLE and CREATE TABLE statements
+- ✅ **Added**: character_positions CREATE TABLE statement
+- ✅ **Added**: `seedCharacterPositions()` function with 5 positions
+- ✅ **Populated**: 5 character positions in database
+
+#### Frontend (`frontend/src/`)
+- ❌ **Removed**: States display section from both NPCDetailView components
+- ✅ **Added**: Position and condition display in Behavior sections
+- ✅ **Added**: `getConditionFromHP()` helper - returns 'excellent condition' for templates
+- ✅ **Updated**: Route from `/admin/npc_states/:id` to `/admin/character_positions/:id`
+- ✅ **Updated**: Admin entity config to Character Positions
+
+### Design Philosophy
+
+**Template System:**
+- NPCs store only maximum values (hp_max, mana_max, moves_max)
+- No current stat fields (hp_current, mana_current, moves_current removed entirely)
+- Each NPC record is a blueprint that can spawn multiple instances
+- Actual instance data tracked separately at runtime
+
+**Position vs Condition:**
+- **Position** = stored state applying to all characters
+  - standing, sitting, resting, sleeping, fighting
+  - Universal, not NPC-specific
+  - Stored in database
+- **Condition** = calculated from HP percentage
+  - 7 levels: excellent (100%), scratched (90-99%), slight wounds (75-89%), quite a few wounds (50-74%), big nasty wounds (25-49%), pretty hurt (10-24%), awful (<10%)
+  - Not stored, computed on demand
+  - Templates show "excellent condition" since they have max HP
+
+### Verification
+✅ Database seed successful with character_positions populated  
+✅ Backend rebuilt and restarted with new schema  
+✅ All npc_states references removed from codebase  
+✅ Frontend updated to display position and condition
+
+---
+
+## Comprehensive NPC System Implementation (2025-11-25) ✅ **COMPLETED**
+**Status**: ✅ **COMPLETED** - Full NPC system with stats, equipment, spells, dialogue, paths, and visibility tracking
+
+### Overview
+Implemented a comprehensive NPC (Non-Player Character) system to track all aspects of NPCs in the MUD, including detailed stats, combat abilities, equipment, spells, movement patterns, dialogue, and visibility states. The system supports multiple data collection methods and tracks which methods have been used for each NPC.
+
+**Important Design Decision**: NPCs are stored as **templates** with maximum stats only (no current HP/Mana/Moves). This design choice treats NPCs as blueprints that can be instantiated multiple times, with each instance potentially having different current values during gameplay.
+
+### Database Schema Changes
+
+#### Main NPC Table
+**Table:** `npcs`
+
+Expanded from simple name/description/level to comprehensive tracking system:
+
+**New Stat Fields:**
+- HP, Mana, Moves (max values only - NPCs are templates)
+- Experience to next level (TNL)
+- Alignment (-1000 to +1000)
+- Attacks per round (REAL type for 1.5, 2.5, etc.)
+- Hit ability, Damage ability, Magic ability
+- Armor class
+
+**New Character Fields:**
+- Short description (room display)
+- Long description (examination)
+- Gender
+- Gold carried
+- Room ID and Zone ID foreign keys
+
+**New Behavior Fields:**
+- `is_stationary` - Whether NPC moves or stays in place
+- `is_aggressive` - Whether NPC attacks on sight
+- `aggro_level` - Specific aggression triggers
+
+**New Visibility Fields:**
+- `is_invisible` - Requires detect invisible spell
+- `is_cloaked` - Requires bat sonar in darkness
+- `is_hidden` - Requires AOE attack to reveal
+
+**New Data Collection Tracking:**
+- `has_been_charmed` - Whether charm spell was used
+- `has_been_considered` - Whether consider command was used
+- `has_been_examined` - Whether look/examine was used
+- `has_reported_stats` - Whether "order report" was used
+- `has_been_in_group` - Whether added to player group
+
+**Metadata:**
+- `discovered` - Whether NPC has been encountered
+- `notes` - Research notes about NPC
+- `rawText` - Captured MUD output
+
+#### New Supporting Tables
+
+**`npc_equipment`** - Tracks items equipped, wielded, or carried
+- Supports wielded weapons, worn armor, inventory items
+- Tracks quantity, slot, and identification status
+- Foreign keys to both NPC and items tables
+
+**`npc_spells`** - Tracks observed spells and skills
+- Spell name, type (offensive, healing, buff, debuff)
+- Mana cost, observation count
+- Last observed timestamp
+
+**`npc_dialogue`** - Stores recorded NPC dialogue
+- Dialogue text, type, trigger keywords
+- Context and recording timestamp
+
+**`npc_paths`** - Defines movement patterns
+- Sequence of rooms in patrol path
+- Direction from previous room
+- Wait times at each location
+
+**`npc_spawn_info`** - Tracks spawn mechanics
+- Spawn room, rate in minutes
+- Maximum concurrent instances
+- Last observed spawn time
+- Special spawn conditions
+
+**`npc_flags`** - Reference table for status effects
+- 18 seeded flags across 6 categories:
+  - **Status**: CHARMED, SLEEPING
+  - **Debuff**: BLINDED, SILENCED, POISONED, CURSED
+  - **Behavior**: AGGRESSIVE, SENTINEL, STAY_ZONE, WIMPY, MEMORY, ASSIST
+  - **Ability**: DETECT_INVISIBLE, DETECT_HIDDEN
+  - **Immunity**: NO_CHARM, NO_SLEEP
+  - **Special**: BOSS, UNIQUE
+
+**`npc_flag_instances`** - Junction table for active flags
+- Links NPCs to their current flags
+- Tracks active/inactive state
+
+**`npc_states`** - Temporary conditions
+- State name and description
+- Applied timestamp and expiration
+
+### TypeScript Types Updated
+
+**File:** `shared/types.ts`
+
+Added comprehensive type definitions:
+- `NPC` - Main NPC interface with all fields
+- `NPCStats` - HP, Mana, Moves, Level, Alignment
+- `NPCCombatStats` - Combat-specific stats
+- `NPCVisibility` - Invisibility flags
+- `NPCDataCollection` - Data collection tracking
+- `NPCEquipment` - Equipment item details
+- `NPCSpell` - Spell/skill details
+- `NPCDialogue` - Dialogue records
+- `NPCPath` - Path waypoint
+- `NPCSpawnInfo` - Spawn details
+- `NPCFlag` - Flag definition
+- `NPCFlagInstance` - Active flag on NPC
+- `NPCState` - Temporary state/condition
+
+### Validation Schemas Updated
+
+**File:** `backend/src/validation/schemas.ts`
+
+Added Zod schemas for all NPC-related tables:
+- `npcSchema` - Main NPC validation with all stat fields
+- `npcEquipmentSchema` - Equipment validation
+- `npcSpellSchema` - Spell validation
+- `npcDialogueSchema` - Dialogue validation
+- `npcPathSchema` - Path validation
+- `npcSpawnInfoSchema` - Spawn info validation
+- `npcFlagSchema` - Flag definition validation
+- `npcFlagInstanceSchema` - Flag instance validation
+- `npcStateSchema` - State validation
+
+All schemas include update variants and are registered in `CREATE_SCHEMAS` and `UPDATE_SCHEMAS` registries.
+
+### Entity Configuration Updated
+
+**File:** `shared/entity-config.ts`
+
+Added all NPC-related entities to the shared configuration:
+- `npcs` - Main NPC entity with all boolean fields
+- `npc_equipment` - Equipment management
+- `npc_spells` - Spell tracking
+- `npc_dialogue` - Dialogue management
+- `npc_paths` - Path management
+- `npc_spawn_info` - Spawn tracking
+- `npc_flags` - Flag definitions
+- `npc_flag_instances` - Active flags (composite key)
+- `npc_states` - State tracking
+
+Each entity includes display configuration with icons and descriptions.
+
+### Seed Data
+
+**File:** `scripts/seed.ts`
+
+Added comprehensive seed data for 10 example NPCs showcasing different features:
+
+1. **The Temple Guard** (Level 13 Fighter)
+   - Fully documented with all data collection methods
+   - Charmed for exact stats: 276/276H, 100/100M, 100/100V
+   - Equipment: Steel longsword, chainmail armor, wooden shield
+   - Notes demonstrate "consider" output interpretation
+
+2. **The Mercenary** (Level 5 Fighter)
+   - Lower level example
+   - Stats: 52/52H, 100/100M, 50/50V
+   - Demonstrates group command output
+
+3. **Nodri** (Level 15 Merchant)
+   - Cannot charm (in no-magic room)
+   - Demonstrates limited data collection
+   - Stats mostly unknown, estimated via consider
+
+4. **A Wraith** (Level 12 Necromancer)
+   - Invisible NPC example
+   - Requires detect invisible spell
+   - Spells: Life drain, Fear
+   - Aggressive undead creature
+
+5. **A Cloaked Figure** (Level 10 Rogue)
+   - Cloaked NPC example
+   - Requires bat sonar in darkness
+   - High dexterity, backstab capable
+   - Equipment: Poisoned dagger, leather armor
+
+6. **A Hidden Assassin** (Level 14 Assassin)
+   - Hidden NPC example
+   - Requires AOE attack to reveal
+   - Very high attack speed (3.0 attacks/round)
+   - Aggressive once revealed
+
+7. **A Sleeping Dragon** (Level 50 Dragon)
+   - Boss-level NPC
+   - Massive stats: 2500/2500H, 500/500M
+   - Not aggressive while sleeping
+   - Becomes extremely aggressive when attacked
+
+8. **A Wandering Bard** (Level 8 Bard)
+   - Mobile NPC with path
+   - Low combat stats, high magic ability
+   - Follows path through Market Square → Temple → Guild Hall
+
+9. **The Guard Captain** (Level 25 Paladin)
+   - High-level NPC with spells
+   - Spells: Cure Critical Wounds, Bless, Holy Word
+   - Attacks players flagged as criminals
+   - Equipment: Holy avenger, tower shield, full plate, healing potions
+
+10. **A Goblin Shaman** (Level 7 Shaman)
+    - Spellcaster variation
+    - Low HP, high magic ability
+    - Spells: Lightning bolt, Curse
+    - Aggressive
+
+**Additional Seed Data:**
+- 12 equipment items across multiple NPCs
+- 7 spells with types and mana costs
+- 18 NPC flags across 6 categories
+
+### Data Collection Methods Documented
+
+The system supports and documents multiple methods for gathering NPC information:
+
+1. **Room Entry** - Basic short description and status indicators
+2. **Look/Examine** - Long description, race, gender, condition
+3. **Consider Command** - Comparative stats (level, HP, attacks, abilities)
+4. **Charm + Report** - Exact HP/Mana/Moves, TNL (experience to next level)
+5. **Charm + Group** - Exact level and class
+6. **Combat Observation** - Attacks per round, spells, abilities
+7. **Dialogue Interaction** - Quest info, lore, personality
+
+Each method has limitations documented (e.g., no-magic rooms prevent charm).
+
+### Visibility System
+
+Three types of hidden NPCs are supported:
+
+1. **Invisible** (`is_invisible = 1`)
+   - Requires `detect invisible` spell
+   - Example: Wraith in Haunted Graveyard
+
+2. **Cloaked** (`is_cloaked = 1`)
+   - Requires `bat sonar` in darkness
+   - Example: Cloaked Rogue in Dark Alley
+
+3. **Hidden** (`is_hidden = 1`)
+   - Requires AOE attack or combat to reveal
+   - Once name known, can target directly
+   - Example: Hidden Assassin in Thieves Guild
+
+### Documentation Created
+
+**File:** `docs/technical/NPC_SCHEMA.md`
+
+Comprehensive documentation including:
+- Complete database schema for all 9 tables
+- Field-by-field descriptions
+- Data collection methods with examples
+- Visibility system explanation
+- API endpoint specifications
+- Example NPCs with full details
+- Best practices and workflows
+- Future enhancement plans
+
+### API Endpoints (Generic CRUD)
+
+All NPC-related tables accessible via generic API:
+- `GET /api/npcs` - List NPCs with filtering
+- `GET /api/npcs/:id` - Get single NPC with related data
+- `POST /api/npcs` - Create NPC
+- `PUT /api/npcs/:id` - Update NPC
+- `DELETE /api/npcs/:id` - Delete NPC
+
+Similar endpoints for all related tables:
+- `/api/npc_equipment`
+- `/api/npc_spells`
+- `/api/npc_dialogue`
+- `/api/npc_paths`
+- `/api/npc_spawn_info`
+- `/api/npc_flags`
+- `/api/npc_flag_instances`
+- `/api/npc_states`
+
+Filtering supported via query parameters (zone_id, level_min, level_max, race, class, etc.)
+
+### Design Philosophy: NPCs as Templates
+
+NPCs are intentionally designed as **templates** rather than live instances:
+- Only `hp_max`, `mana_max`, `moves_max` fields stored (no `_current` fields)
+- Each NPC record represents a blueprint that can be instantiated multiple times
+- Actual current stats tracked at runtime or in separate instance tables
+**Type Definitions:**
+- `shared/types.ts` - Added 12 new NPC-related interfaces (template design with max stats only)
+- `shared/entity-config.ts` - Added 9 NPC entities with configuration
+
+**Validation:**
+- `backend/src/validation/schemas.ts` - Added 9 Zod schemas for NPC tables (template design)
+
+**Frontend:**
+- `frontend/src/App.tsx` - Added routes for all NPC-related entities
+- `frontend/src/admin/entityConfigs.ts` - Added entity configurations for 9 NPC tables
+- `frontend/src/admin/detail-views/NPCDetailView.tsx` - Comprehensive NPC detail component
+- `frontend/src/components/detail-views/NPCDetailView.tsx` - Alternative NPC detail view
+- `frontend/src/pages/NPCs.tsx` - Fixed is_aggressive field reference
+- `frontend/src/styles/detail-views.css` - Added NPC-specific styles
+
+**Documentation:**
+- `docs/technical/NPC_SCHEMA.md` - Created comprehensive NPC documentation
+- `docs/development/DEVELOPMENT_STATUS.md` - This entryent)
+- Show combat stats (attacks/round, hit/damage/magic abilities, AC)
+- Display behavior flags (stationary, aggressive, visibility states)
+- List equipment with wielded/worn/inventory status
+- Show observed spells with usage counts and types
+- Display active flags with color-coded categories
+- Show dialogue records with triggers and context
+- Display movement paths with waypoints
+- Show spawn information and conditions
+- Research notes and raw MUD output sections
+
+**Entity Configurations Added:**
+- NPCs (main entity - clickable in admin panel)
+- NPC Equipment
+- NPC Spells
+- NPC Dialogue
+- NPC Paths
+- NPC Spawn Info
+- NPC Flags (reference table)
+- NPC Flag Instances
+- NPC States
+
+**Styling:**
+- Added comprehensive NPC detail view styles to `styles/detail-views.css`
+- Color-coded badges for spell types, equipment status, flags
+- Responsive grid layouts for stat display
+- Formatted dialogue and notes sections
+
+### Files Modified
+
+**Database Schema:**
+- `backend/src/database.ts` - Added comprehensive NPC table definitions (template design)
+- `scripts/seed.ts` - Added NPC table creation, DROP statements, and seed data
+
+**Type Definitions:**
+- `shared/types.ts` - Added 12 new NPC-related interfaces
+- `shared/entity-config.ts` - Added 9 NPC entities with configuration
+
+**Validation:**
+- `backend/src/validation/schemas.ts` - Added 9 Zod schemas for NPC tables
+
+**Documentation:**
+- `docs/technical/NPC_SCHEMA.md` - Created comprehensive NPC documentation
+- `docs/development/DEVELOPMENT_STATUS.md` - This entry
+
+### Testing
+
+✅ Database seed successful with all NPC tables
+✅ 10 example NPCs seeded with comprehensive data
+✅ 12 equipment items linked to NPCs
+✅ 7 spells documented with observation counts
+✅ 18 NPC flags seeded across 6 categories
+✅ All foreign key relationships working
+✅ TypeScript types compile without errors
+✅ Zod validation schemas registered
+
+### Impact
+
+This NPC system provides:
+- **Complete NPC Documentation**: Track every aspect of NPC behavior
+- **Data Collection Tracking**: Know which investigation methods have been used
+- **Visibility Management**: Support for invisible, cloaked, and hidden NPCs
+- **Equipment Tracking**: Full inventory, wielded, and worn items
+- **Spell Documentation**: Record observed spells with usage counts
+- **Movement Patterns**: Document patrol paths and spawn locations
+- **Dialogue Storage**: Preserve NPC conversations and quest info
+- **AI Integration Ready**: Structured data for AI-assisted exploration
+
+### Next Steps
+
+Recommended enhancements:
+1. **Frontend Components**: Create React components for NPC display/editing
+2. **AI Parsing**: Automated consider/report output parsing
+3. **Combat Analysis**: Automated attack pattern detection from logs
+4. **Path Detection**: Crawler-based automatic path discovery
+5. **Relationship System**: Track NPC-to-NPC relationships and factions
+6. **Drop Tables**: Add loot tracking with drop rates
+
+---
+
 ## Zone 19 - Forest of Haon-Dor Exploration & Parsing (2025-11-24) ✅ **COMPLETED**
 **Status**: ✅ **COMPLETED** - Forest of Haon-Dor exploration log successfully parsed with zone alias fix and corrected zone boundary
 

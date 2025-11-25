@@ -60,17 +60,177 @@ export interface Exit {
   hidden?: boolean;
 }
 
-export interface NPC {
-  id: number;  // Changed from string to match database
-  name: string;
-  description: string;
-  location?: string;
-  dialogue?: string[];
-  hostile?: boolean;
+// ===== NPC System Types =====
+
+export interface NPCStats {
+  hp_max?: number;
+  mana_max?: number;
+  moves_max?: number;
   level?: number;
+  experience_to_next_level?: number;
+  alignment?: number;
+}
+
+export interface NPCCombatStats {
+  attacks_per_round?: number;
+  hit_ability?: number;
+  damage_ability?: number;
+  magic_ability?: number;
+  armor_class?: number;
+}
+
+export interface NPCVisibility {
+  is_invisible?: boolean;
+  is_cloaked?: boolean;
+  is_hidden?: boolean;
+}
+
+export interface NPCDataCollection {
+  has_been_charmed?: boolean;
+  has_been_considered?: boolean;
+  has_been_examined?: boolean;
+  has_reported_stats?: boolean;
+  has_been_in_group?: boolean;
+}
+
+export interface NPCEquipment {
+  id: number;
+  npc_id: number;
+  item_id: number;
+  wear_location_id: number;
+  quantity?: number;
+}
+
+export interface NPCSpell {
+  id: number;
+  npc_id: number;
+  spell_name: string;
+  spell_type?: string;
+  mana_cost?: number;
+  observed_count?: number;
+  last_observed?: string;
+}
+
+export interface NPCDialogue {
+  id: number;
+  npc_id: number;
+  dialogue_text: string;
+  dialogue_type?: string;
+  trigger_keyword?: string;
+  context?: string;
+  recorded_at?: string;
+}
+
+export interface NPCPath {
+  id: number;
+  npc_id: number;
+  room_id: number;
+  sequence_order: number;
+  direction_from_previous?: string;
+  wait_time_seconds?: number;
+  notes?: string;
+}
+
+export interface NPCSpawnInfo {
+  id: number;
+  npc_id: number;
+  room_id: number;
+  spawn_rate_minutes?: number;
+  max_instances?: number;
+  last_observed_spawn?: string;
+  spawn_conditions?: string;
+}
+
+export interface NPCFlag {
+  id: number;
+  name: string;
+  description?: string;
+  category?: string;
+}
+
+export interface NPCFlagInstance {
+  npc_id: number;
+  flag_id: number;
+  active?: boolean;
+}
+
+export interface CharacterPosition {
+  id: number;
+  name: string;
+  description?: string;
+}
+
+export interface CharacterCondition {
+  description: string;
+  minHpPercent: number;
+  maxHpPercent: number;
+}
+
+export interface NPC {
+  id: number;
+  name: string;
+  short_desc?: string;
+  long_desc?: string;
+  description?: string;
+  location?: string;
+  room_id?: number;
+  zone_id?: number;
+  
+  // Stats
+  hp_max?: number;
+  mana_max?: number;
+  moves_max?: number;
+  level?: number;
+  experience_to_next_level?: number;
+  alignment?: number;
+  
+  // Combat Stats
+  attacks_per_round?: number;
+  hit_ability?: number;
+  damage_ability?: number;
+  magic_ability?: number;
+  armor_class?: number;
+  
+  // Character Info
   race?: string;
   class?: string;
+  gender?: string;
+  
+  // Wealth
+  gold?: number;
+  
+  // Behavior
+  is_stationary?: boolean;
+  is_aggressive?: boolean;
+  aggro_level?: string;
+  
+  // Visibility
+  is_invisible?: boolean;
+  is_cloaked?: boolean;
+  is_hidden?: boolean;
+  
+  // Data Collection Info
+  has_been_charmed?: boolean;
+  has_been_considered?: boolean;
+  has_been_examined?: boolean;
+  has_reported_stats?: boolean;
+  has_been_in_group?: boolean;
+  
+  // Position (universal character state)
+  position?: string;
+  
+  // Related Data (populated from joins)
+  equipment?: NPCEquipment[];
+  spells?: NPCSpell[];
+  dialogue?: NPCDialogue[];
+  path?: NPCPath[];
+  spawn_info?: NPCSpawnInfo;
+  flags?: NPCFlag[];
+  
+  // Metadata
+  discovered?: boolean;
   rawText?: string;
+  notes?: string;
   createdAt?: string;
   updatedAt?: string;
 }

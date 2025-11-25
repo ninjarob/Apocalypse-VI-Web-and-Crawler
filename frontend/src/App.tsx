@@ -29,6 +29,14 @@ function AppContent() {
           <Route path="/admin/zones/:id" element={<Admin />} />
           <Route path="/admin/player_actions/:id" element={<Admin />} />
           <Route path="/admin/npcs/:id" element={<Admin />} />
+          <Route path="/admin/npc_equipment/:id" element={<Admin />} />
+          <Route path="/admin/npc_spells/:id" element={<Admin />} />
+          <Route path="/admin/npc_dialogue/:id" element={<Admin />} />
+          <Route path="/admin/npc_paths/:id" element={<Admin />} />
+          <Route path="/admin/npc_spawn_info/:id" element={<Admin />} />
+          <Route path="/admin/npc_flags/:id" element={<Admin />} />
+          <Route path="/admin/npc_flag_instances/:id" element={<Admin />} />
+          <Route path="/admin/character_positions/:id" element={<Admin />} />
           <Route path="/admin/items/:id" element={<Admin />} />
           <Route path="/admin/spells/:id" element={<Admin />} />
           <Route path="/admin/classes/:id" element={<Admin />} />

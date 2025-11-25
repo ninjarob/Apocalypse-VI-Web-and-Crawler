@@ -1,0 +1,1451 @@
+<!-- Produced by MUSHclient v 5.06 - www.mushclient.com -->
+<table border=0 cellpadding=5 bgcolor="#000000">
+<tr><td>
+<pre><code><font size=2 face="FixedSys, Lucida Console, Courier New, Courier"><font color="#0">
+</font><font color="#C0C0C0">Pouch
+</font><font color="#FF0000">.:-~-:._.:-~-:._.:-~-:._.:-~-:._.:-~-:._.:-~-:._.:-~-:._.:-~-:._.:-~-:._.:-~-:.
+
+                                 </font><font color="#FFFFFF">OOOOOOOOOOOOO
+                          O OOOOO             OOOOO O                        
+                    OOOOOOOO        </font><font color="#FF0000">w,</font><font color="#808000">----</font><font color="#FF0000">,O       </font><font color="#FFFFFF">OOOOOOO                 
+                 OOOOO       </font><font color="#FF0000">O</font><font color="#808000">----------</font><font color="#FF0000">Oo </font><font color="#808000">-</font><font color="#FF0000">OOO          </font><font color="#FFFFFF">OOOOO               
+              OOOO       </font><font color="#FF0000">O</font><font color="#808000">- </font><font color="#FF0000">,</font><font color="#808000">-</font><font color="#FF0000">O</font><font color="#808000">-----</font><font color="#FF0000">OOO                     </font><font color="#FFFFFF">OOOOO            
+           OOOOO       </font><font color="#FF0000">O </font><font color="#808000">----------</font><font color="#FF0000">OOO</font><font color="#808000">-</font><font color="#FF0000">O                        </font><font color="#FFFFFF">OOO           
+         OOOO        </font><font color="#FF0000">OOOOOOO</font><font color="#808000">----</font><font color="#FF0000">O      O              O           </font><font color="#FFFFFF">OOO        
+        OOO         </font><font color="#FF0000">Ow</font><font color="#808000">----</font><font color="#FF0000">O</font><font color="#808000">-   </font><font color="#FF0000">w                       OOO          </font><font color="#FFFFFF">OOO      
+      OOOO         </font><font color="#FF0000">w</font><font color="#808000">-</font><font color="#FF0000">O</font><font color="#808000">---</font><font color="#FF0000">,O       </font><font color="#808000">-  </font><font color="#FF0000">O oo Ow             O</font><font color="#808000">-</font><font color="#FF0000">O         </font><font color="#FFFFFF">OOO     
+     OOO          </font><font color="#FF0000">O</font><font color="#808000">--</font><font color="#FF0000">O</font><font color="#808000">--</font><font color="#FF0000">O</font><font color="#808000">-     </font><font color="#FF0000">OOoowOOwOOOwoOo           Ow</font><font color="#808000">-</font><font color="#FF0000">O          </font><font color="#FFFFFF">OOO   
+    OOO          </font><font color="#FF0000">O,</font><font color="#808000">---</font><font color="#FF0000">O</font><font color="#808000">-</font><font color="#FF0000">O</font><font color="#808000">-</font><font color="#FF0000">w  OOowwooOOwO</font><font color="#808000">-</font><font color="#FF0000">ow wO           O</font><font color="#808000">--</font><font color="#FF0000">O           </font><font color="#FFFFFF">OOO  
+   OOO          </font><font color="#FF0000">O</font><font color="#808000">---</font><font color="#FF0000">OOO</font><font color="#808000">-</font><font color="#FF0000">w</font><font color="#808000">- </font><font color="#FF0000">OOoOoOoow</font><font color="#808000">- </font><font color="#FF0000">OOwOwOwoow       O</font><font color="#808000">---</font><font color="#FF0000">O             </font><font color="#FFFFFF">OOO  
+   OOO           </font><font color="#FF0000">O</font><font color="#808000">--</font><font color="#FF0000">O</font><font color="#808000">---</font><font color="#FF0000">OO</font><font color="#808000">--</font><font color="#FF0000">OwooowOoO</font><font color="#808000">-</font><font color="#FF0000">,   OoOowOoo    O</font><font color="#808000">------</font><font color="#FF0000">O           </font><font color="#FFFFFF">OOO 
+  OOO            </font><font color="#FF0000">O</font><font color="#808000">-</font><font color="#FF0000">O</font><font color="#808000">------</font><font color="#FF0000">w</font><font color="#808000">- </font><font color="#FF0000">wwOoooOooO,,  wOo     O</font><font color="#808000">--------</font><font color="#FF0000">OOOwO         </font><font color="#FFFFFF">OOO 
+  O O            </font><font color="#FF0000">OwO</font><font color="#808000">-------</font><font color="#FF0000">O</font><font color="#808000">--</font><font color="#FF0000">wwwoowoOwOO,</font><font color="#808000">-     </font><font color="#FF0000">w</font><font color="#808000">------</font><font color="#FF0000">OO</font><font color="#808000">---</font><font color="#FF0000">O             </font><font color="#FFFFFF">O O
+  O O             </font><font color="#FF0000">wO</font><font color="#808000">--------</font><font color="#FF0000">O</font><font color="#808000">--</font><font color="#FF0000">OwowwO OooO</font><font color="#808000">---</font><font color="#FF0000">O</font><font color="#808000">-</font><font color="#FF0000">OOOOw</font><font color="#808000">------</font><font color="#FF0000">OO              </font><font color="#FFFFFF">O O
+  O O             </font><font color="#FF0000">OOO</font><font color="#808000">-------</font><font color="#FF0000">O</font><font color="#808000">---</font><font color="#FF0000">oo O  Owow,,O</font><font color="#808000">-</font><font color="#FF0000">O</font><font color="#808000">- -</font><font color="#FF0000">O</font><font color="#808000">-</font><font color="#FF0000">OO</font><font color="#808000">-----</font><font color="#FF0000">O              </font><font color="#FFFFFF">O O
+  OOO               </font><font color="#FF0000">O</font><font color="#808000">--------</font><font color="#FF0000">O</font><font color="#808000">--</font><font color="#FF0000">OowO  woowO</font><font color="#808000">--</font><font color="#FF0000">OO</font><font color="#808000">-</font><font color="#FF0000">O</font><font color="#808000">--</font><font color="#FF0000">O</font><font color="#808000">----</font><font color="#FF0000">OO,</font><font color="#808000">--</font><font color="#FF0000">O            </font><font color="#FFFFFF">OOO
+  OOO                </font><font color="#FF0000">OO</font><font color="#808000">-----</font><font color="#FF0000">,</font><font color="#808000">--</font><font color="#FF0000">woOOOOooooww</font><font color="#808000">-</font><font color="#FF0000">O</font><font color="#808000">--</font><font color="#FF0000">w</font><font color="#808000">---</font><font color="#FF0000">O</font><font color="#808000">-----</font><font color="#FF0000">O    w           </font><font color="#FFFFFF">OOO 
+   OOO                </font><font color="#FF0000">OO</font><font color="#808000">---  </font><font color="#FF0000">OOOwwooowoowO</font><font color="#808000">- </font><font color="#FF0000">OOO</font><font color="#808000">-----</font><font color="#FF0000">O</font><font color="#808000">--                  </font><font color="#FFFFFF">OOO 
+    OOOO                </font><font color="#FF0000">O</font><font color="#808000">--        </font><font color="#FF0000">OOwO</font><font color="#808000">-</font><font color="#FF0000">O     </font><font color="#808000">-</font><font color="#FF0000">O</font><font color="#808000">------</font><font color="#FF0000">O</font><font color="#808000">-</font><font color="#FF0000">w              </font><font color="#FFFFFF">OOOO  
+     OOOO               </font><font color="#FF0000">O                      OO</font><font color="#808000">---   -</font><font color="#FF0000">O             </font><font color="#FFFFFF">OOOO   
+      OOOO                                      </font><font color="#FF0000">OO</font><font color="#808000">-                  </font><font color="#FFFFFF">OOO     
+        OOO                                      </font><font color="#FF0000">OO                 </font><font color="#FFFFFF">OOO      
+          OOO              </font><font color="#FF0000">**</font><font color="#FFFF00">=======================</font><font color="#FF0000">**            </font><font color="#FFFFFF">OOO        
+            OOOO           </font><font color="#FFFF00">||  </font><font color="#FF0000">A P O C A L Y P S E  </font><font color="#FFFF00">||         </font><font color="#FFFFFF">OOOO          
+              OOOOO        </font><font color="#FFFF00">||         </font><font color="#FF0000">VI.V          </font><font color="#FFFF00">||       </font><font color="#FFFFFF">OOOO          
+                 OOOOO     </font><font color="#FF0000">**</font><font color="#FFFF00">=======================</font><font color="#FF0000">**    </font><font color="#FFFFFF">OOOOO               
+                     OOOO                              OOOO               
+                           OOOOO OO  OOOOOO  OO OOOOO   
+                              
+</font><font color="#FF0000">.:-~-:._.:-~-:._.:-~-:._.:-~-:._.:-~-:._.:-~-:._.:-~-:._.:-~-:._.:-~-:._.:-~-:
+
+</font><font color="#C0C0C0">By what name do you wish to be known? Password: 
+
+                       
+        </font><font color="#FF0000">o-------------------------------------------------------------o
+        |:                                                           :|
+        |:                                                           :|
+        |:           </font><font color="#FFFF00">A  P  O  C  A  L  Y  P  S  E  :  V  I    </font><font color="#FF0000">       :|
+        |:                                                           :|
+        |:                                                           :|
+        `-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-'
+                         Where Classic Gaming Lives On
+
+                            Based on CircleMUD 3.1,
+                            Created by Jeremy Elson
+
+                      A derivative of DikuMUD (GAMMA 0.0),
+                created by Hans-Henrik Staerfeldt, Katja Nyboe,
+               Tom Madsen, Michael Seifert, and Sebastian Hammer
+
+Welcome to Apocalypse VI!
+
+Make sure you're familiar with the rules to play here. Type rules during
+game play.
+
+*** PRESS ENTER: 
+
+
+</font><font color="#FFFFFF">Welcome to Apocalypse VI!
+
+</font><font color="#00FFFF">0</font><font color="#FFFFFF">)</font><font color="#008000"> Exit from Apocalypse
+</font><font color="#00FFFF">1</font><font color="#FFFFFF">)</font><font color="#008000"> Enter the game
+</font><font color="#00FFFF">2</font><font color="#FFFFFF">)</font><font color="#008000"> Change password
+</font><font color="#00FFFF">3</font><font color="#FFFFFF">)</font><font color="#008000"> Change character description
+</font><font color="#00FFFF">4</font><font color="#FFFFFF">)</font><font color="#008000"> Game rules
+</font><font color="#00FFFF">5</font><font color="#FFFFFF">)</font><font color="#008000"> Delete this character
+
+</font><font color="#C0C0C0">   </font><font color="#FFFFFF">Make your choice:
+</font><font color="#C0C0C0">1
+
+</font><font color="#FFFFFF">You are now entering the world...
+
+</font><font color="#00FFFF">The Temple of Midgaard
+</font><font color="#C0C0C0">   Entering the great halls of the Temple of Midgaard is awe-inspiring, as you
+stand at an ornate entryway spanning nearly thirty feet across.  Huge copper
+braziers at each temple corner bathes the cool, marble walls in a fiery glow.  
+Elaborate tapestries bearing the crests and symbols of nobles who helped
+established the Temple long ago hang gracefully from the walls and ceilings.  A
+set of large stone steps inside the temple lead up to an altar dedicated to the
+heroes and patrons of this age.  The entire temple is elevated prominently above
+all the other buildings of Midgaard, reinforcing its position as the pinnacle
+landmark within the city.  
+</font><font color="#008080">[EXITS: n e s w d ]
+</font><font color="#008000">A large welcome sign hangs before the archway that leads into the city. Perhaps
+ you should read it.
+A marble altar rests at the heart of the temple.
+</font><font color="#C0C0C0">Nodri, the helpful Wizard, sits by the altar welcoming new adventurers. </font><font color="#808000">(QUEST)
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+prof
+
+You have 16 practice sessions remaining.
+
+You know the following skills:
+------------------------------
+
+You know the following spells:
+------------------------------
+[Prct] [Mana] Spell Name       
+------------------------------
+[ 98%] [ 20] acid arrow             [ 66%] [ 38] airwalk
+[ 66%] [ 10] armor                  [ 72%] [ 40] bind portal major
+[ 98%] [ 10] bind portal minor      [ 66%] [ 20] blindness
+[ 96%] [ 10] burning hands          [ 66%] [ 65] charm monster
+[ 66%] [ 53] charm person           [ 66%] [ 10] chill touch
+[ 66%] [ 25] color spray            [ 66%] [ 10] detect invisibility
+[ 66%] [ 10] detect magic           [ 66%] [ 15] dimension shift
+[ 66%] [ 40] dimension walk         [ 66%] [ 10] dispel magic
+[ 66%] [ 14] dreamsight             [ 66%] [ 20] enfeeblement
+[ 66%] [ 42] firebolt               [ 66%] [ 20] fumble
+[ 66%] [ 57] haste                  [ 66%] [ 19] hold monster
+[ 66%] [ 13] hold person            [ 72%] [ 32] ice lance
+[ 66%] [ 34] improved invisibility  [ 98%] [ 10] infravision
+[ 72%] [ 25] invisibility           [ 72%] [ 20] knock
+[ 72%] [ 15] lightning bolt         [ 66%] [ 20] locate object
+[ 98%] [ 10] magic missile          [ 66%] [ 42] phase door
+[ 66%] [ 42] scry greater           [ 66%] [ 20] scry lesser
+[ 66%] [ 60] mana shield            [ 66%] [ 15] shocking grasp
+[ 66%] [ 25] sleep                  [ 66%] [ 30] strength
+[ 84%] [ 44] vitalize mana          [ 66%] [ 20] waterwalk
+
+You know the following weapon types:
+------------------------------------
+[ 86%] pierce attack                [  0%] slash attack
+[  0%] bludgeon attack              [  0%] special attack
+[  0%] fist attack                  
+
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The children laugh and giggle at one of Nodri's many stories.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+s
+</font><font color="#00FFFF">Grand Gates of the Temple of Midgaard
+</font><font color="#C0C0C0">   You stand at the base of the huge mound upon which the Temple of Midgaard
+is built within the Grand Gates of the Temple.  The gates are gargantuan in
+size and are made of solid gold with ancient designs of Gods, Giants, Warriors,
+and peasants.
+   Steps hewn from huge marble blocks lead the way up the mound to the actual
+temple itself while south beyond the gates is what is commonly known as the
+Temple Square.
+   Braziers of eternal flame built upon the posts of the foundation of the
+temple wall brightly light up the sky, even in the day.
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#C0C0C0">A Guard of the Temple stands here eyeing people entering the temple.
+A Guard of the Temple stands here eyeing people entering the temple.
+A Guard of the Temple stands here eyeing people entering the temple.
+A Guard of the Temple stands here eyeing people entering the temple.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'charm person' guard
+You lost your concentration!
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">270M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'charm person' guard
+The Temple Guard starts following you.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">217M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+group new
+</font><font color="#00FFFF">[Group]</font><font color="#C0C0C0"> </font><font color="#00FFFF">Pouch becomes leader of the group.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">217M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The last remnants of night disappear as the day begins.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">237M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+order guard group join
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">237M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+group
+Your group consists of:
+  [</font><font color="#800000">197</font><font color="#C0C0C0">/</font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#008000">237</font><font color="#C0C0C0">/</font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#808000">134</font><font color="#C0C0C0">/</font><font color="#FFFF00">134V</font><font color="#C0C0C0">] [19 Ma] Pouch </font><font color="#008000">(Head of group)
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">237M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+order guard rep
+The Temple Guard reports: 276/276H, 100/100M, 100/100V, TNL: 1468750X
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">237M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+help tnl
+There is currently no help on 'tnl'
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">237M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look guard
+A big, strong, helpful, trustworthy guard.
+The Temple Guard appears to be a male Human.
+The Temple Guard is in excellent condition.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">237M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+consider guard
+
+Comparison         You   Opponent
+--------------     ---   --------
+Level          :    19   Greatly Inferior
+Hit Points     :   197   Superior
+Attacks/2rounds:     2   Higher
+Hit Ability    :     4   Superior
+Damage Ability :     1   Superior
+Magic Ability  :    19   Extremely Inferior
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">237M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Someone stares at you and orates the prayer, 'zuhiruhl'.
+You feel your hunger suddenly disappear.
+You burp loudly.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">257M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Someone orates the prayer, 'zuhiruhl'.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">257M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'detect invis'
+You lost your concentration!
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">252M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'detect invis'
+You lost your concentration!
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">267M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'detect invis'
+Your eyes briefly tingle.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">257M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'infravision'
+Your eyes glow red.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">247M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look in guard
+There doesn't seem to be a guard here.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">247M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+help npc
+NPC &quot;NON-PLAYER CHARACTER&quot;
+An NPC is a character that is controlled by the game and not a player.
+
+See Also:  PC
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">247M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look guard
+A big, strong, helpful, trustworthy guard.
+The Temple Guard appears to be a male Human.
+The Temple Guard is in excellent condition.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">267M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+help thief prof
+&quot;THIEF PROF&quot;
+These are the proficiencies that a Thief has the ability to perform.  An (S) 
+denotes a proficiency that is a skill and not a spell.
+
+          Level  Proficiency
+          =====  ===========
+           1st:  (S)Hide
+                 (S)Pick Lock
+                 (S)Steal
+           2nd:  (S)Sneak           (Prereq: Hide)
+           3rd:  (S)Backstab
+                 (S)Detect Trap
+           5th:  (S)Disable Trap    (Prereq: Detect Trap)
+          10th:  (S)Circle          (Prereq: Backstab)
+          13th:  (S)Envenom
+          18th:  (S)Throw
+          21st:  (S)Dodge
+          23rd:  (S)Ambush          (Prereq: Sneak)
+          25th:  (S)Estates         (Prereq: Steal)
+          27th:  (S)Vanish          (Prereq: Hide)
+          31st:  (S)Trip
+          33rd:  (S)Counterstrike   (Prereq: Dodge)
+          37th:  (S)Search          (Prereq: Detect Trap)
+          39th:  (S)Assassinate     (Prereq: Ambush)
+
+See Also: &quot;THIEF PERKS&quot;
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+help steal
+STEAL
+Level/Class : 1st Thief
+
+Use steal to steal gold or items from victims. The chance of not getting caught
+depends on how well you have practiced steal, as well as your dexterity ability
+score. 
+
+Note:  Should you fail to steel, it will initiate a fight with your target.
+
+Examples:
+steal gold drunk
+steal sword mercenary
+
+See also: THIEF
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+help thief
+THIEF
+The seediest of all Rogues -- cunning, nimbleness, and stealth are their
+hallmarks. With their very special qualities that no other class offers, they 
+have been known even to make the richest of merchants and lowest of peasants 
+squirm. Many of these qualities can come in handy in many situations, such as 
+picking locks or concealing their actions when working with containers. 
+Spending all their time keeping their reflexes cat-like, thieves have little 
+time to study magic.
+
+*============================*
+|Default Regeneration Ratings|
+|============================|
+|  HP  |XXXXX                |
+| MANA |XXXXXXXXXXX          |
+| MOVE |XXXXXXXXXXXXXXXXXXXXX|
+*============================*
+
+See Also:  &quot;THIEF PERKS&quot;, &quot;THIEF PROF&quot;, ROGUE
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+help thief prof
+&quot;THIEF PROF&quot;
+These are the proficiencies that a Thief has the ability to perform.  An (S) 
+denotes a proficiency that is a skill and not a spell.
+
+          Level  Proficiency
+          =====  ===========
+           1st:  (S)Hide
+                 (S)Pick Lock
+                 (S)Steal
+           2nd:  (S)Sneak           (Prereq: Hide)
+           3rd:  (S)Backstab
+                 (S)Detect Trap
+           5th:  (S)Disable Trap    (Prereq: Detect Trap)
+          10th:  (S)Circle          (Prereq: Backstab)
+          13th:  (S)Envenom
+          18th:  (S)Throw
+          21st:  (S)Dodge
+          23rd:  (S)Ambush          (Prereq: Sneak)
+          25th:  (S)Estates         (Prereq: Steal)
+          27th:  (S)Vanish          (Prereq: Hide)
+          31st:  (S)Trip
+          33rd:  (S)Counterstrike   (Prereq: Dodge)
+          37th:  (S)Search          (Prereq: Detect Trap)
+          39th:  (S)Assassinate     (Prereq: Ambush)
+
+See Also: &quot;THIEF PERKS&quot;
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+help hide
+HIDE
+Usage       : hide
+Duration    : special (see below)
+Level/Class : 1st Bard, 1st Thief, 2nd Ranger, 2nd Anti-Paladin
+
+When you type hide, there is a chance that you hide in the room. If hidden
+you can only be &quot;sensed&quot; by the &quot;sense life&quot; spell. Even if sensed your
+identity will remain hidden. Hide is broken by pressing return, regardless
+of whether you typed a command or not. In addition to this, hide reduces
+the desire of an enemy to want to aggressively pursue you by 10%.
+
+Example of usage scenario:
+       1. You enter hide as a command and it has been activated.
+       2. You remain hidden unless you are attacked by a mobile with the
+          ability to see you.
+       3. You will continue to remain hidden until you hit the enter key
+          in any way, shape, or form.
+
+See also: SNEAK
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+A warm front moves in, pushing the clouds away.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look
+</font><font color="#00FFFF">Grand Gates of the Temple of Midgaard
+</font><font color="#C0C0C0">   You stand at the base of the huge mound upon which the Temple of Midgaard
+is built within the Grand Gates of the Temple.  The gates are gargantuan in
+size and are made of solid gold with ancient designs of Gods, Giants, Warriors,
+and peasants.
+   Steps hewn from huge marble blocks lead the way up the mound to the actual
+temple itself while south beyond the gates is what is commonly known as the
+Temple Square.
+   Braziers of eternal flame built upon the posts of the foundation of the
+temple wall brightly light up the sky, even in the day.
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#C0C0C0">Bols the High Priest is here standing. (invisible)
+. . . he is surrounded by an aura of mystical peace and harmony!
+</font><font color="#FF00FF">(Charmed)</font><font color="#C0C0C0"> A Guard of the Temple stands here eyeing people entering the temple.
+A Guard of the Temple stands here eyeing people entering the temple.
+A Guard of the Temple stands here eyeing people entering the temple.
+A Guard of the Temple stands here eyeing people entering the temple.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'charm person' 2.guard
+The Temple Guard ignores your actions.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">243M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'charm person' 2.guard
+The Temple Guard starts following you.
+</font><font color="#00FFFF">[Group]</font><font color="#C0C0C0"> </font><font color="#00FFFF">The Temple Guard joins the group.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">190M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+group
+Your group consists of:
+  [</font><font color="#800000">197</font><font color="#C0C0C0">/</font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#008000">190</font><font color="#C0C0C0">/</font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#808000">134</font><font color="#C0C0C0">/</font><font color="#FFFF00">134V</font><font color="#C0C0C0">] [19 Ma] Pouch </font><font color="#008000">(Head of group)
+</font><font color="#C0C0C0">  [</font><font color="#800000">283</font><font color="#C0C0C0">/</font><font color="#FF0000">283H</font><font color="#C0C0C0"> </font><font color="#008000">100</font><font color="#C0C0C0">/</font><font color="#00FF00">100M</font><font color="#C0C0C0"> </font><font color="#808000">100</font><font color="#C0C0C0">/</font><font color="#FFFF00">100V</font><font color="#C0C0C0">] [13 Fi] The Temple Guard  
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">190M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+order guard report
+The Temple Guard reports: 276/276H, 100/100M, 100/100V, TNL: 1468750X
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">210M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+order 2.guard report
+The Temple Guard reports: 283/283H, 100/100M, 100/100V, TNL: 1468750X
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">210M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+order guard sleep
+The Temple Guard lies down and falls asleep.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">230M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+order 2.guard sleep
+The Temple Guard lies down and falls asleep.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">230M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Large clouds begin to form in the heavens above.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">270M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">270M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Bols orates the prayer, 'zuhiruhl'.
+Bols burps loudly.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">270M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Bols stares at you and orates the prayer, 'zuhiruhl'.
+You feel your hunger suddenly disappear.
+You burp loudly.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">270M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look
+</font><font color="#00FFFF">Grand Gates of the Temple of Midgaard
+</font><font color="#C0C0C0">   You stand at the base of the huge mound upon which the Temple of Midgaard
+is built within the Grand Gates of the Temple.  The gates are gargantuan in
+size and are made of solid gold with ancient designs of Gods, Giants, Warriors,
+and peasants.
+   Steps hewn from huge marble blocks lead the way up the mound to the actual
+temple itself while south beyond the gates is what is commonly known as the
+Temple Square.
+   Braziers of eternal flame built upon the posts of the foundation of the
+temple wall brightly light up the sky, even in the day.
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#C0C0C0">Bols the High Priest is here standing. (invisible)
+. . . he is surrounded by an aura of mystical peace and harmony!
+The Temple Guard is here sleeping. (Charmed)
+The Temple Guard is here sleeping. (Charmed)
+A Guard of the Temple stands here eyeing people entering the temple.
+A Guard of the Temple stands here eyeing people entering the temple.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">270M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look guard
+A big, strong, helpful, trustworthy guard.
+The Temple Guard appears to be a male Human.
+The Temple Guard is in excellent condition.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">270M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+examine guard
+Huh?!?
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">270M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The sky darkens as the sun slowly sets in the west.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">290M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look
+</font><font color="#00FFFF">Grand Gates of the Temple of Midgaard
+</font><font color="#C0C0C0">   You stand at the base of the huge mound upon which the Temple of Midgaard
+is built within the Grand Gates of the Temple.  The gates are gargantuan in
+size and are made of solid gold with ancient designs of Gods, Giants, Warriors,
+and peasants.
+   Steps hewn from huge marble blocks lead the way up the mound to the actual
+temple itself while south beyond the gates is what is commonly known as the
+Temple Square.
+   Braziers of eternal flame built upon the posts of the foundation of the
+temple wall brightly light up the sky, even in the day.
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#C0C0C0">Bols the High Priest is here standing. (invisible)
+. . . he is surrounded by an aura of mystical peace and harmony!
+The Temple Guard is here sleeping. (Charmed)
+The Temple Guard is here sleeping. (Charmed)
+A Guard of the Temple stands here eyeing people entering the temple.
+A Guard of the Temple stands here eyeing people entering the temple.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">290M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+All light is banished from the sky as night takes over.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look guard
+A big, strong, helpful, trustworthy guard.
+The Temple Guard appears to be a male Human.
+The Temple Guard is in excellent condition.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+wake guard
+You wake him up.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look
+</font><font color="#00FFFF">Grand Gates of the Temple of Midgaard
+</font><font color="#C0C0C0">   You stand at the base of the huge mound upon which the Temple of Midgaard
+is built within the Grand Gates of the Temple.  The gates are gargantuan in
+size and are made of solid gold with ancient designs of Gods, Giants, Warriors,
+and peasants.
+   Steps hewn from huge marble blocks lead the way up the mound to the actual
+temple itself while south beyond the gates is what is commonly known as the
+Temple Square.
+   Braziers of eternal flame built upon the posts of the foundation of the
+temple wall brightly light up the sky, even in the day.
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#C0C0C0">Bols the High Priest is here standing. (invisible)
+. . . he is surrounded by an aura of mystical peace and harmony!
+</font><font color="#FF00FF">(Charmed)</font><font color="#C0C0C0"> A Guard of the Temple stands here eyeing people entering the temple.
+The Temple Guard is here sleeping. (Charmed)
+A Guard of the Temple stands here eyeing people entering the temple.
+A Guard of the Temple stands here eyeing people entering the temple.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look guard
+A big, strong, helpful, trustworthy guard.
+The Temple Guard appears to be a male Human.
+The Temple Guard is in excellent condition.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look 2.guard
+A big, strong, helpful, trustworthy guard.
+The Temple Guard appears to be a male Human.
+The Temple Guard is in excellent condition.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look 3.guard
+A big, strong, helpful, trustworthy guard.
+The Temple Guard appears to be a male Human.
+The Temple Guard is in excellent condition.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'acid arrow' guard
+PVP/Arena Combat is currently disabled.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">276M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Bols looks at The Temple Guard.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">276M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look
+</font><font color="#00FFFF">Grand Gates of the Temple of Midgaard
+</font><font color="#C0C0C0">   You stand at the base of the huge mound upon which the Temple of Midgaard
+is built within the Grand Gates of the Temple.  The gates are gargantuan in
+size and are made of solid gold with ancient designs of Gods, Giants, Warriors,
+and peasants.
+   Steps hewn from huge marble blocks lead the way up the mound to the actual
+temple itself while south beyond the gates is what is commonly known as the
+Temple Square.
+   Braziers of eternal flame built upon the posts of the foundation of the
+temple wall brightly light up the sky, even in the day.
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#C0C0C0">Bols the High Priest is here standing. (invisible)
+. . . he is surrounded by an aura of mystical peace and harmony!
+</font><font color="#FF00FF">(Charmed)</font><font color="#C0C0C0"> A Guard of the Temple stands here eyeing people entering the temple.
+The Temple Guard is here sleeping. (Charmed)
+A Guard of the Temple stands here eyeing people entering the temple.
+A Guard of the Temple stands here eyeing people entering the temple.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">276M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'acid arrow' 3.guard
+</font><font color="#FF00FF">You throw bolts of acid at The Temple Guard which dissolve through his body.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">256M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: 79%</font><font color="#C0C0C0"> 
+Bols looks at The Temple Guard.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">256M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: 79%</font><font color="#C0C0C0"> 
+</font><font color="#FF0000">The Temple Guard hits YOU very hard</font><font color="#C0C0C0">.
+You miss THE TEMPLE GUARD with your hit.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">185H</font><font color="#C0C0C0"> </font><font color="#00FF00">256M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: 79%</font><font color="#C0C0C0"> 
+The Temple Guard jumps to the aid of The Temple Guard!
+The Temple Guard misses YOU with his hit.
+</font><font color="#FF0000">The Temple Guard hits YOU hard</font><font color="#C0C0C0">.
+</font><font color="#FF0000">The Temple Guard hits YOU very hard</font><font color="#C0C0C0">.
+</font><font color="#FF0000">The Temple Guard hits YOU very hard</font><font color="#C0C0C0">.
+You miss THE TEMPLE GUARD with your hit.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">155H</font><font color="#C0C0C0"> </font><font color="#00FF00">256M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: 79%</font><font color="#C0C0C0"> 
+</font><font color="#FF0000">The Temple Guard hits YOU hard</font><font color="#C0C0C0">.
+</font><font color="#FF0000">The Temple Guard hits YOU hard</font><font color="#C0C0C0">.
+The Temple Guard misses YOU with his hit.
+You miss THE TEMPLE GUARD with your hit.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">139H</font><font color="#C0C0C0"> </font><font color="#00FF00">256M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: 79%</font><font color="#C0C0C0"> 
+cast 'acid arrow' 3.guard
+</font><font color="#FF00FF">You throw bolts of acid at The Temple Guard which dissolve through his body.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">139H</font><font color="#C0C0C0"> </font><font color="#00FF00">236M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: 58%</font><font color="#C0C0C0"> 
+</font><font color="#FF0000">The Temple Guard hits YOU very hard</font><font color="#C0C0C0">.
+</font><font color="#FF0000">The Temple Guard hits YOU hard</font><font color="#C0C0C0">.
+</font><font color="#FF0000">The Temple Guard hits YOU hard</font><font color="#C0C0C0">.
+You miss THE TEMPLE GUARD with your hit.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">108H</font><font color="#C0C0C0"> </font><font color="#00FF00">236M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: 58%</font><font color="#C0C0C0"> 
+cast 'acid arrow' 3.guard
+</font><font color="#FF00FF">You throw bolts of acid at The Temple Guard which dissolve through his body.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">108H</font><font color="#C0C0C0"> </font><font color="#00FF00">216M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: 13%</font><font color="#C0C0C0"> 
+The Temple Guard misses YOU with his hit.
+</font><font color="#FF0000">The Temple Guard hits YOU hard</font><font color="#C0C0C0">.
+</font><font color="#FF0000">The Temple Guard hits YOU very hard</font><font color="#C0C0C0">.
+You miss THE TEMPLE GUARD with your hit.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">86H</font><font color="#C0C0C0"> </font><font color="#00FF00">216M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">317894X</font><font color="#C0C0C0"> </font><font color="#808000">5905SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: 13%</font><font color="#C0C0C0"> 
+cast 'acid arrow' 3.guard
+</font><font color="#FF00FF">The Temple Guard screams in defiance as your acid eats through his body.
+</font><font color="#C0C0C0">The Temple Guard is dead!  R.I.P.
+You have earned 41 SP!
+You receive 20260 experience points.
+Your blood freezes as you hear The Temple Guard's death cry.
+</font><font color="#00FFFF">In the heat of battle, you switch to attack THE TEMPLE GUARD!
+</font><font color="#C0C0C0">You get a big pile of gold coins from the corpse of The Temple Guard.
+There were 1024 coins.
+You split 1024 coins among 1 members -- 1024 coins each.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">86H</font><font color="#C0C0C0"> </font><font color="#00FF00">196M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297634X</font><font color="#C0C0C0"> </font><font color="#808000">5946SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: 100%</font><font color="#C0C0C0"> 
+You miss THE TEMPLE GUARD with your hit.
+</font><font color="#FF0000">The Temple Guard hits YOU hard</font><font color="#C0C0C0">.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">85H</font><font color="#C0C0C0"> </font><font color="#00FF00">212M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297634X</font><font color="#C0C0C0"> </font><font color="#808000">5946SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: 100%</font><font color="#C0C0C0"> 
+You miss THE TEMPLE GUARD with your hit.
+</font><font color="#FF0000">The Temple Guard hits YOU hard</font><font color="#C0C0C0">.
+</font><font color="#FF0000">The Temple Guard hits YOU hard</font><font color="#C0C0C0">.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">66H</font><font color="#C0C0C0"> </font><font color="#00FF00">212M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297634X</font><font color="#C0C0C0"> </font><font color="#808000">5946SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: 100%</font><font color="#C0C0C0"> 
+You miss THE TEMPLE GUARD with your hit.
+The Temple Guard misses YOU with his hit.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">66H</font><font color="#C0C0C0"> </font><font color="#00FF00">212M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297634X</font><font color="#C0C0C0"> </font><font color="#808000">5946SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: 100%</font><font color="#C0C0C0"> 
+cast 'acid arrow' 3.guard
+</font><font color="#FF00FF">You throw bolts of acid at The Temple Guard which dissolve through his body.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">66H</font><font color="#C0C0C0"> </font><font color="#00FF00">192M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297634X</font><font color="#C0C0C0"> </font><font color="#808000">5946SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: 60%</font><font color="#C0C0C0"> 
+You miss THE TEMPLE GUARD with your hit.
+The Temple Guard misses YOU with his hit.
+</font><font color="#FF0000">The Temple Guard hits YOU hard</font><font color="#C0C0C0">.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">58H</font><font color="#C0C0C0"> </font><font color="#00FF00">192M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297634X</font><font color="#C0C0C0"> </font><font color="#808000">5946SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: 60%</font><font color="#C0C0C0"> 
+cast 'acid arrow' guard
+PVP/Arena Combat is currently disabled.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">58H</font><font color="#C0C0C0"> </font><font color="#00FF00">172M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297634X</font><font color="#C0C0C0"> </font><font color="#808000">5946SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: 60%</font><font color="#C0C0C0"> 
+You miss THE TEMPLE GUARD with your hit.
+The Temple Guard misses YOU with his hit.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">58H</font><font color="#C0C0C0"> </font><font color="#00FF00">172M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297634X</font><font color="#C0C0C0"> </font><font color="#808000">5946SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: 60%</font><font color="#C0C0C0"> 
+cast 'acid arrow' guard
+PVP/Arena Combat is currently disabled.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">58H</font><font color="#C0C0C0"> </font><font color="#00FF00">152M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297634X</font><font color="#C0C0C0"> </font><font color="#808000">5946SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: 60%</font><font color="#C0C0C0"> 
+You miss THE TEMPLE GUARD with your hit.
+</font><font color="#FF0000">The Temple Guard hits YOU hard</font><font color="#C0C0C0">.
+</font><font color="#800000">You wish that your wounds would stop BLEEDING so much!
+</font><font color="#FF0000">The Temple Guard hits YOU hard</font><font color="#C0C0C0">.
+</font><font color="#800000">You wish that your wounds would stop BLEEDING so much!
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">40H</font><font color="#C0C0C0"> </font><font color="#00FF00">152M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297634X</font><font color="#C0C0C0"> </font><font color="#808000">5946SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: 60%</font><font color="#C0C0C0"> 
+You miss THE TEMPLE GUARD with your hit.
+The Temple Guard misses YOU with his hit.
+</font><font color="#800000">You wish that your wounds would stop BLEEDING so much!
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">40H</font><font color="#C0C0C0"> </font><font color="#00FF00">152M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297634X</font><font color="#C0C0C0"> </font><font color="#808000">5946SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: 60%</font><font color="#C0C0C0"> 
+Bols stares at you and orates the prayer, 'poir dies'.
+A warm feeling fills your body.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">111H</font><font color="#C0C0C0"> </font><font color="#00FF00">152M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297634X</font><font color="#C0C0C0"> </font><font color="#808000">5946SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: 60%</font><font color="#C0C0C0"> 
+You miss THE TEMPLE GUARD with your hit.
+The Temple Guard misses YOU with his hit.
+</font><font color="#FF0000">The Temple Guard hits YOU hard</font><font color="#C0C0C0">.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">102H</font><font color="#C0C0C0"> </font><font color="#00FF00">152M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297634X</font><font color="#C0C0C0"> </font><font color="#808000">5946SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: 60%</font><font color="#C0C0C0"> 
+You miss THE TEMPLE GUARD with your hit.
+</font><font color="#FF0000">The Temple Guard hits YOU hard</font><font color="#C0C0C0">.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">92H</font><font color="#C0C0C0"> </font><font color="#00FF00">152M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297634X</font><font color="#C0C0C0"> </font><font color="#808000">5946SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: 60%</font><font color="#C0C0C0"> 
+Bols stares at you and orates the prayer, 'gibqheabral'.
+You start glowing.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">92H</font><font color="#C0C0C0"> </font><font color="#00FF00">152M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297634X</font><font color="#C0C0C0"> </font><font color="#808000">5946SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: 60%</font><font color="#C0C0C0"> 
+You miss THE TEMPLE GUARD with your hit.
+</font><font color="#FF0000">The Temple Guard barely hits YOU.
+The Temple Guard barely hits YOU.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">84H</font><font color="#C0C0C0"> </font><font color="#00FF00">152M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297634X</font><font color="#C0C0C0"> </font><font color="#808000">5946SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: 60%</font><font color="#C0C0C0"> 
+Bols stares at you and orates the prayer, 'poir dies'.
+A warm feeling fills your body.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">155H</font><font color="#C0C0C0"> </font><font color="#00FF00">152M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297634X</font><font color="#C0C0C0"> </font><font color="#808000">5946SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: 60%</font><font color="#C0C0C0"> 
+You miss THE TEMPLE GUARD with your hit.
+</font><font color="#FF0000">The Temple Guard hits YOU.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">149H</font><font color="#C0C0C0"> </font><font color="#00FF00">152M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297634X</font><font color="#C0C0C0"> </font><font color="#808000">5946SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: 60%</font><font color="#C0C0C0"> 
+cast 'acid arrow'
+</font><font color="#FF00FF">You throw bolts of acid at The Temple Guard which dissolve through his body.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">149H</font><font color="#C0C0C0"> </font><font color="#00FF00">132M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297634X</font><font color="#C0C0C0"> </font><font color="#808000">5946SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: 22%</font><font color="#C0C0C0"> 
+You miss THE TEMPLE GUARD with your hit.
+The Temple Guard misses YOU with his hit.
+</font><font color="#FF0000">The Temple Guard barely hits YOU.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">145H</font><font color="#C0C0C0"> </font><font color="#00FF00">132M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">297634X</font><font color="#C0C0C0"> </font><font color="#808000">5946SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: 22%</font><font color="#C0C0C0"> 
+cast 'acid arrow'
+</font><font color="#FF00FF">The Temple Guard screams in defiance as your acid eats through his body.
+</font><font color="#C0C0C0">The Temple Guard is dead!  R.I.P.
+You have earned 41 SP!
+You receive 20263 experience points.
+Your blood freezes as you hear The Temple Guard's death cry.
+You get a big pile of gold coins from the corpse of The Temple Guard.
+There were 1023 coins.
+You split 1023 coins among 1 members -- 1023 coins each.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">145H</font><font color="#C0C0C0"> </font><font color="#00FF00">112M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look
+</font><font color="#00FFFF">Grand Gates of the Temple of Midgaard
+</font><font color="#C0C0C0">   You stand at the base of the huge mound upon which the Temple of Midgaard
+is built within the Grand Gates of the Temple.  The gates are gargantuan in
+size and are made of solid gold with ancient designs of Gods, Giants, Warriors,
+and peasants.
+   Steps hewn from huge marble blocks lead the way up the mound to the actual
+temple itself while south beyond the gates is what is commonly known as the
+Temple Square.
+   Braziers of eternal flame built upon the posts of the foundation of the
+temple wall brightly light up the sky, even in the day.
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#008000">The corpse of The Temple Guard is lying here.
+The corpse of The Temple Guard is lying here.
+</font><font color="#C0C0C0">Bols the High Priest is here standing. (invisible)
+. . . he is surrounded by an aura of mystical peace and harmony!
+</font><font color="#FF00FF">(Charmed)</font><font color="#C0C0C0"> A Guard of the Temple stands here eyeing people entering the temple.
+The Temple Guard is here sleeping. (Charmed)
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">145H</font><font color="#C0C0C0"> </font><font color="#00FF00">112M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+get all corpse
+The corpse of The Temple Guard seems to be empty.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">151H</font><font color="#C0C0C0"> </font><font color="#00FF00">132M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+get all 2.corpse
+The corpse of The Temple Guard seems to be empty.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">151H</font><font color="#C0C0C0"> </font><font color="#00FF00">132M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The dark sky starts to lighten as the sun begins to rise in the east.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">163H</font><font color="#C0C0C0"> </font><font color="#00FF00">172M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The last remnants of night disappear as the day begins.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">169H</font><font color="#C0C0C0"> </font><font color="#00FF00">192M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+consider guard
+
+Comparison         You   Opponent
+--------------     ---   --------
+Level          :    19   Greatly Inferior
+Hit Points     :   169   Greatly Superior
+Attacks/2rounds:     2   Higher
+Hit Ability    :     4   Superior
+Damage Ability :     1   Superior
+Magic Ability  :    19   Extremely Inferior
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">169H</font><font color="#C0C0C0"> </font><font color="#00FF00">192M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The white aura around your body fades.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">175H</font><font color="#C0C0C0"> </font><font color="#00FF00">212M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+A quivering horde of maggots consumes the corpse of The Temple Guard.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">187H</font><font color="#C0C0C0"> </font><font color="#00FF00">252M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+A quivering horde of maggots consumes the corpse of The Temple Guard.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">193H</font><font color="#C0C0C0"> </font><font color="#00FF00">272M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+orer guard drop all
+Huh?!?
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">193H</font><font color="#C0C0C0"> </font><font color="#00FF00">272M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+order guard drop all
+The Temple Guard has an indifferent look.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">193H</font><font color="#C0C0C0"> </font><font color="#00FF00">272M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+order guard rem all
+The Temple Guard has an indifferent look.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">193H</font><font color="#C0C0C0"> </font><font color="#00FF00">272M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look
+</font><font color="#00FFFF">Grand Gates of the Temple of Midgaard
+</font><font color="#C0C0C0">   You stand at the base of the huge mound upon which the Temple of Midgaard
+is built within the Grand Gates of the Temple.  The gates are gargantuan in
+size and are made of solid gold with ancient designs of Gods, Giants, Warriors,
+and peasants.
+   Steps hewn from huge marble blocks lead the way up the mound to the actual
+temple itself while south beyond the gates is what is commonly known as the
+Temple Square.
+   Braziers of eternal flame built upon the posts of the foundation of the
+temple wall brightly light up the sky, even in the day.
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#C0C0C0">A Guard of the Temple stands here eyeing people entering the temple.
+A Guard of the Temple stands here eyeing people entering the temple.
+Bols the High Priest is here standing. (invisible)
+. . . he is surrounded by an aura of mystical peace and harmony!
+</font><font color="#FF00FF">(Charmed)</font><font color="#C0C0C0"> A Guard of the Temple stands here eyeing people entering the temple.
+The Temple Guard is here sleeping. (Charmed)
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">193H</font><font color="#C0C0C0"> </font><font color="#00FF00">272M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+As quickly as they arrived, the clouds above you roll away.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">292M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+order guard report
+The Temple Guard has an indifferent look.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">292M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+order 3.guard drop all
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">292M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+order 3.guard rem all
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">292M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+order 3.guard report
+The Temple Guard reports: 276/276H, 100/100M, 100/100V, TNL: 1468750X
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">292M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+order 4.guard report
+The Temple Guard reports: 283/283H, 100/100M, 100/100V, TNL: 1468750X
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">292M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+s
+</font><font color="#00FFFF">North Temple Street
+</font><font color="#C0C0C0">   The historic Temple of Midgaard entrance is to the north and past that, the
+Grand Gates of Midgaard which controls passage into and out of the main city.  
+To the west is a room housing the Social Boards while to the east is an entrance
+to the Old Grunting Boar Inn.
+</font><font color="#008080">[EXITS: n e s w ]
+</font><font color="#C0C0C0">The Temple Guard arrives from the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">292M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+n
+</font><font color="#00FFFF">Grand Gates of the Temple of Midgaard
+</font><font color="#C0C0C0">   You stand at the base of the huge mound upon which the Temple of Midgaard
+is built within the Grand Gates of the Temple.  The gates are gargantuan in
+size and are made of solid gold with ancient designs of Gods, Giants, Warriors,
+and peasants.
+   Steps hewn from huge marble blocks lead the way up the mound to the actual
+temple itself while south beyond the gates is what is commonly known as the
+Temple Square.
+   Braziers of eternal flame built upon the posts of the foundation of the
+temple wall brightly light up the sky, even in the day.
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#C0C0C0">A Guard of the Temple stands here eyeing people entering the temple.
+A Guard of the Temple stands here eyeing people entering the temple.
+Bols the High Priest is here standing. (invisible)
+. . . he is surrounded by an aura of mystical peace and harmony!
+The Temple Guard is here sleeping. (Charmed)
+The Temple Guard arrives from the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">292M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+s
+</font><font color="#00FFFF">North Temple Street
+</font><font color="#C0C0C0">   The historic Temple of Midgaard entrance is to the north and past that, the
+Grand Gates of Midgaard which controls passage into and out of the main city.  
+To the west is a room housing the Social Boards while to the east is an entrance
+to the Old Grunting Boar Inn.
+</font><font color="#008080">[EXITS: n e s w ]
+</font><font color="#C0C0C0">A Mercenary is here waiting for someone to hire him.
+The Temple Guard arrives from the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">292M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'charm person' mercenary
+The mercenary starts following you.
+</font><font color="#00FFFF">[Group]</font><font color="#C0C0C0"> </font><font color="#00FFFF">The mercenary joins the group.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">243M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+group
+Your group consists of:
+  [</font><font color="#800000">197</font><font color="#C0C0C0">/</font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#008000">243</font><font color="#C0C0C0">/</font><font color="#00FF00">296M</font><font color="#C0C0C0"> </font><font color="#808000">134</font><font color="#C0C0C0">/</font><font color="#FFFF00">134V</font><font color="#C0C0C0">] [19 Ma] Pouch </font><font color="#008000">(Head of group)
+</font><font color="#C0C0C0">  [</font><font color="#800000">283</font><font color="#C0C0C0">/</font><font color="#FF0000">283H</font><font color="#C0C0C0"> </font><font color="#008000">100</font><font color="#C0C0C0">/</font><font color="#00FF00">100M</font><font color="#C0C0C0"> </font><font color="#808000">100</font><font color="#C0C0C0">/</font><font color="#FFFF00">100V</font><font color="#C0C0C0">] [13 Fi] The Temple Guard  
+  [</font><font color="#800000"> 52</font><font color="#C0C0C0">/</font><font color="#FF0000"> 52H</font><font color="#C0C0C0"> </font><font color="#008000">100</font><font color="#C0C0C0">/</font><font color="#00FF00">100M</font><font color="#C0C0C0"> </font><font color="#808000"> 50</font><font color="#C0C0C0">/</font><font color="#FFFF00"> 50V</font><font color="#C0C0C0">] [ 5 Fi] The mercenary  
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">243M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+order guard report
+The Temple Guard reports: 276/276H, 100/100M, 100/100V, TNL: 1468750X
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">243M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+order mercenary report
+The mercenary reports: 52/52H, 100/100M, 50/50V, TNL: 31500X
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">243M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The Elite Cityguard arrives from the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">263M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The Elite Cityguard leaves south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">283M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+s
+</font><font color="#00FFFF">South Temple Street
+</font><font color="#C0C0C0">   The newly renovated Temple Street is wide and clean, with light colored
+bricks gleaming from being freshly washed.  Nobles, common folk and adventurers
+alike move about in a steady stream as they make their way through town.  The
+Market Square to the south is a common destination, which locals consider to be
+the heart of the city.
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#C0C0C0">A Cityguard is here keeping the peace.
+The mercenary arrives from the north.
+The Temple Guard arrives from the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">283M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+s
+</font><font color="#00FFFF">Market Square
+</font><font color="#C0C0C0">   You are standing on the Market Square, the famous Square of Midgaard.  It is
+said that the North, East, South, and West all meet here.  This square is the
+busiest in the realms for Midgaard is the center of the known civilization.  
+People from all lands can be found wandering here.  At the four corners can be
+found tall poles with magical lanterns, provided by the Mage's Guild, that glow
+with a bright light when it gets dark.  
+   A large fountain of an angel pouring water stands in the center of the
+square.  Roads lead in every direction, north to the temple square, south to
+the bazaar, east and west bound is the main street.
+</font><font color="#008080">[EXITS: n e s w ]
+</font><font color="#008000">A fountain of an angel cascades with sparkling water here.
+</font><font color="#C0C0C0">The Midgaard Baker sells bread from a horse drawn wagon.
+The mercenary arrives from the north.
+The Temple Guard arrives from the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">283M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+s
+</font><font color="#00FFFF">Northern Bazaar
+</font><font color="#C0C0C0">   Merchant selling chants echo above the excited buzz of buyers.  Here, all 
+kinds of goods can be purchased and sold for profit and never the same thing 
+two days in a row.  Along the street can be found tall poles with magical 
+lanterns, provided by the sorcerer's guild, that glow with a bright light 
+when it gets dark.  Market Square lies to the north and the Common Square 
+can be seen to the south.
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#C0C0C0">A Beastly Fido is here barking at the people passing by.
+A Cityguard is here keeping the peace.
+The mercenary arrives from the north.
+The Temple Guard arrives from the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">283M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+order mercenary kill fido
+The mercenary misses The Beastly Fido with his hit.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">283M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The Beastly Fido misses The mercenary with its bite.
+The mercenary barely hits The Beastly Fido.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">283M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The Beastly Fido barely bites The mercenary.
+The mercenary misses The Beastly Fido with his hit.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">283M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The Elite Cityguard jumps to the aid of The Beastly Fido!
+The Elite Cityguard mutilates The mercenary with his hit.
+The Elite Cityguard hits The mercenary extremely hard.
+The Elite Cityguard hits The mercenary's head so hard that his skull cracks
+ open!
+The mercenary is dead!  R.I.P.
+You lose control of The mercenary!
+</font><font color="#00FFFF">[Group]</font><font color="#C0C0C0"> </font><font color="#00FFFF">The mercenary has left the group.
+</font><font color="#C0C0C0">The mercenary hates your guts!
+Your blood freezes as you hear The mercenary's death cry.
+The Beastly Fido savagely devours a corpse.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">283M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The Elite Cityguard leaves south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">283M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+get all corpse
+You don't have a corpse.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">283M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'charm monster' fido
+This spell doesn't affect the victim's race.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">218M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+cast 'charm person' fido
+This spell doesn't affect the victim's race.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">165M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look
+</font><font color="#00FFFF">Northern Bazaar
+</font><font color="#C0C0C0">   Merchant selling chants echo above the excited buzz of buyers.  Here, all 
+kinds of goods can be purchased and sold for profit and never the same thing 
+two days in a row.  Along the street can be found tall poles with magical 
+lanterns, provided by the sorcerer's guild, that glow with a bright light 
+when it gets dark.  Market Square lies to the north and the Common Square 
+can be seen to the south.
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#008000">A little pile of gold coins is lying here.
+</font><font color="#FF00FF">(Charmed)</font><font color="#C0C0C0"> A Guard of the Temple stands here eyeing people entering the temple.
+A Beastly Fido is here barking at the people passing by.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">165M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The Beastly Fido barks loudly.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">165M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+get all
+You get a little pile of gold coins.
+There were 56 coins.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">185M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+prof
+
+You have 16 practice sessions remaining.
+
+You know the following skills:
+------------------------------
+
+You know the following spells:
+------------------------------
+[Prct] [Mana] Spell Name       
+------------------------------
+[ 98%] [ 20] acid arrow             [ 66%] [ 38] airwalk
+[ 66%] [ 10] armor                  [ 72%] [ 40] bind portal major
+[ 98%] [ 10] bind portal minor      [ 66%] [ 20] blindness
+[ 96%] [ 10] burning hands          [ 66%] [ 65] charm monster
+[ 66%] [ 53] charm person           [ 66%] [ 10] chill touch
+[ 66%] [ 25] color spray            [ 66%] [ 10] detect invisibility
+[ 66%] [ 10] detect magic           [ 66%] [ 15] dimension shift
+[ 66%] [ 40] dimension walk         [ 66%] [ 10] dispel magic
+[ 66%] [ 14] dreamsight             [ 66%] [ 20] enfeeblement
+[ 66%] [ 42] firebolt               [ 66%] [ 20] fumble
+[ 66%] [ 57] haste                  [ 66%] [ 19] hold monster
+[ 66%] [ 13] hold person            [ 72%] [ 32] ice lance
+[ 66%] [ 34] improved invisibility  [ 98%] [ 10] infravision
+[ 72%] [ 25] invisibility           [ 72%] [ 20] knock
+[ 72%] [ 15] lightning bolt         [ 66%] [ 20] locate object
+[ 98%] [ 10] magic missile          [ 66%] [ 42] phase door
+[ 66%] [ 42] scry greater           [ 66%] [ 20] scry lesser
+[ 66%] [ 60] mana shield            [ 66%] [ 15] shocking grasp
+[ 66%] [ 25] sleep                  [ 66%] [ 30] strength
+[ 84%] [ 44] vitalize mana          [ 66%] [ 20] waterwalk
+
+You know the following weapon types:
+------------------------------------
+[ 86%] pierce attack                [  0%] slash attack
+[  0%] bludgeon attack              [  0%] special attack
+[  0%] fist attack                  
+
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">185M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+s
+</font><font color="#00FFFF">Southern Bazaar
+</font><font color="#C0C0C0">   Merchant selling chants echo above the excited buzz of buyers.  Here, all 
+kinds of goods can be purchased and sold for profit and never the same thing 
+two days in a row.  Along the street can be found tall poles with magical 
+lanterns, provided by the sorcerer's guild, that glow with a bright light 
+when it gets dark.  The bazaar continues to the north and the Common Square 
+can be seen to the south.
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#C0C0C0">A Cityguard is here keeping the peace.
+A Cityguard is here keeping the peace.
+The Temple Guard arrives from the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">185M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+s
+</font><font color="#00FFFF">The Common Square
+</font><font color="#C0C0C0">   You are in the common square of Midgaard.  The sound of merchants can be
+heard off to the north as they chant their goods for sale.  People full of
+chatter pass you by as they enter or leave the bazaar.  To the east and west,
+alleys lead to shadier side of Midgaard.  At the corners of the square can be
+found tall poles with magical lanterns, provided by the sorcerer's guild, that
+glow with a bright light when it gets dark.  South leads across the bridge to
+Southern Midgaard.  
+</font><font color="#008080">[EXITS: n e s w ]
+</font><font color="#C0C0C0">The Temple Guard arrives from the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">185M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+s
+</font><font color="#00FFFF">Bridge Road
+</font><font color="#C0C0C0">   The stone cobbled path leads to the Midgaard Bridge to the south.  This
+bridge separates Northern and Southern Midgaard.  People of all shapes, sizes,
+and races traverse this path.  
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#C0C0C0">The Temple Guard arrives from the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">185M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+s
+</font><font color="#00FFFF">Bridge Road
+</font><font color="#C0C0C0">   The stone cobbled path leads to the Midgaard Bridge to the south.  This
+bridge separates Northern and Southern Midgaard.  People of all shapes, sizes,
+and races traverse this path.  
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#C0C0C0">The Temple Guard arrives from the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">185M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+s
+</font><font color="#00FFFF">Midgaard Bridge
+</font><font color="#C0C0C0">   You are standing on a stone bridge crossing the Candlebriar River that
+separates Northern and Southern Midgaard.  The bridge is built out from the city
+walls and the river flows west and east through an opening ten feet below the
+bridge.  Along the length of the bridge can be found tall poles with magical
+lanterns, provided by the Mage's Guild, that glow with a bright light when it
+gets dark.  
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#C0C0C0">The Temple Guard arrives from the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">185M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+s
+</font><font color="#00FFFF">Bridge Road
+</font><font color="#C0C0C0">   The stone cobbled path leads to the Midgaard Bridge to the south.  This
+bridge separates Northern and Southern Midgaard.  People of all shapes, sizes,
+and races traverse this path.  
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#C0C0C0">The Temple Guard arrives from the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">185M</font><font color="#C0C0C0"> </font><font color="#FFFF00">128V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+scan
+You quickly scan the area.
+The Temple Guard                              : immediate area 
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">185M</font><font color="#C0C0C0"> </font><font color="#FFFF00">128V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+s
+</font><font color="#00FFFF">Bridge Intersection
+</font><font color="#C0C0C0">   You are at the northern area of Southern Midgaard, or as some call
+it -- New and Improved Midgaard.  Quaint houses with white picket fences
+next to small cozy shops abound in this area.  Obviously from the looks of the
+area, the more well to do live in this area.  Along the street can be found 
+tall poles with magical lanterns, provided by the Mage's Guild, that glow
+with a bright light when it gets dark.
+   The street leads off east and west to an extension of Wall Road.  
+The Midgaard Bridge leading to Northern Midgaard is just north of here.
+</font><font color="#008080">[EXITS: n e w ]
+</font><font color="#C0C0C0">The Temple Guard arrives from the north.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">185M</font><font color="#C0C0C0"> </font><font color="#FFFF00">127V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+scan
+You quickly scan the area.
+The Temple Guard                              : immediate area 
+The mercenary                                 : 1 move east
+The Beggar                                    : 3 moves east
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">185M</font><font color="#C0C0C0"> </font><font color="#FFFF00">127V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+e
+</font><font color="#00FFFF">Wall Road
+</font><font color="#C0C0C0">   You are on wall road that runs east-west of Southern Midgaard.  The wall
+itself runs the entire perimeter of the City.  The street is quite busy for it
+is a popular route taken by travelers to enter the Southern Midgaard.  From the
+tall city wall that runs parallel to the road along its western edge, it is
+quite easy to figure out where the name for this street came from.  Along the
+street can be found tall poles with magical lanterns, provided by the Mage's
+Guild, that glow with a bright light when it gets dark.  The street continues
+east and west.  To the south lies Wizdale Avenue.  
+</font><font color="#008080">[EXITS: e s w ]
+</font><font color="#C0C0C0">A Mercenary is here waiting for someone to hire him.
+The Temple Guard arrives from the west.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">185M</font><font color="#C0C0C0"> </font><font color="#FFFF00">126V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+order guard rep
+The Temple Guard reports: 276/276H, 100/100M, 100/100V, TNL: 1468750X
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">185M</font><font color="#C0C0C0"> </font><font color="#FFFF00">126V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+order guard kill mercenary
+The Temple Guard hits The mercenary very hard.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">185M</font><font color="#C0C0C0"> </font><font color="#FFFF00">126V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The mercenary misses The Temple Guard with his hit.
+The Temple Guard hits The mercenary hard.
+</font><font color="#00FFFF">The mercenary switches to attack YOU!
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">185M</font><font color="#C0C0C0"> </font><font color="#FFFF00">126V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The mercenary misses YOU with his hit.
+The Temple Guard hits The mercenary very hard.
+The Temple Guard hits The mercenary hard.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">185M</font><font color="#C0C0C0"> </font><font color="#FFFF00">126V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: 12%</font><font color="#C0C0C0"> 
+You miss THE MERCENARY with your hit.
+</font><font color="#FF0000">The mercenary barely hits YOU.
+</font><font color="#C0C0C0">The Temple Guard hits The mercenary hard.
+The mercenary is incapacitated and will slowly die, if not aided.
+The mercenary lies immobile on the ground, suffering...
+The mercenary is incapacitated and will slowly die, if not aided.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">201M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font><font color="#008080">[Enemy]: -10%</font><font color="#C0C0C0"> 
+</font><font color="#FFFF00">You tickle THE MERCENARY as you hit him.
+</font><font color="#C0C0C0">The mercenary is mortally wounded, and will die soon, if not aided.
+The Temple Guard hits The mercenary's head so hard that his skull cracks open!
+The mercenary is dead!  R.I.P.
+Your blood freezes as you hear The mercenary's death cry.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">201M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The Beggar arrives from the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">201M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+order guard report
+The Temple Guard reports: 276/276H, 100/100M, 100/100V, TNL: 1468750X
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">201M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The Beggar leaves south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">201M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+get all corpse
+You get a little pile of gold coins from the corpse of The mercenary.
+There were 55 coins.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">201M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The Beggar arrives from the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">221M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">221M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+look
+</font><font color="#00FFFF">Wall Road
+</font><font color="#C0C0C0">   You are on wall road that runs east-west of Southern Midgaard.  The wall
+itself runs the entire perimeter of the City.  The street is quite busy for it
+is a popular route taken by travelers to enter the Southern Midgaard.  From the
+tall city wall that runs parallel to the road along its western edge, it is
+quite easy to figure out where the name for this street came from.  Along the
+street can be found tall poles with magical lanterns, provided by the Mage's
+Guild, that glow with a bright light when it gets dark.  The street continues
+east and west.  To the south lies Wizdale Avenue.  
+</font><font color="#008080">[EXITS: e s w ]
+</font><font color="#008000">The corpse of The mercenary is lying here.
+</font><font color="#C0C0C0">A beggar is here, asking for a few coins.
+</font><font color="#FF00FF">(Charmed)</font><font color="#C0C0C0"> A Guard of the Temple stands here eyeing people entering the temple.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">241M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+You are hungry.
+You are thirsty.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">247M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The Beggar leaves south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">247M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+w
+</font><font color="#00FFFF">Bridge Intersection
+</font><font color="#C0C0C0">   You are at the northern area of Southern Midgaard, or as some call
+it -- New and Improved Midgaard.  Quaint houses with white picket fences
+next to small cozy shops abound in this area.  Obviously from the looks of the
+area, the more well to do live in this area.  Along the street can be found 
+tall poles with magical lanterns, provided by the Mage's Guild, that glow
+with a bright light when it gets dark.
+   The street leads off east and west to an extension of Wall Road.  
+The Midgaard Bridge leading to Northern Midgaard is just north of here.
+</font><font color="#008080">[EXITS: n e w ]
+</font><font color="#C0C0C0">The Temple Guard arrives from the east.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">247M</font><font color="#C0C0C0"> </font><font color="#FFFF00">133V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+n
+</font><font color="#00FFFF">Bridge Road
+</font><font color="#C0C0C0">   The stone cobbled path leads to the Midgaard Bridge to the south.  This
+bridge separates Northern and Southern Midgaard.  People of all shapes, sizes,
+and races traverse this path.  
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#C0C0C0">The Temple Guard arrives from the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">247M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+n
+</font><font color="#00FFFF">Midgaard Bridge
+</font><font color="#C0C0C0">   You are standing on a stone bridge crossing the Candlebriar River that
+separates Northern and Southern Midgaard.  The bridge is built out from the city
+walls and the river flows west and east through an opening ten feet below the
+bridge.  Along the length of the bridge can be found tall poles with magical
+lanterns, provided by the Mage's Guild, that glow with a bright light when it
+gets dark.  
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#C0C0C0">The Temple Guard arrives from the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">247M</font><font color="#C0C0C0"> </font><font color="#FFFF00">131V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+n
+</font><font color="#00FFFF">Bridge Road
+</font><font color="#C0C0C0">   The stone cobbled path leads to the Midgaard Bridge to the south.  This
+bridge separates Northern and Southern Midgaard.  People of all shapes, sizes,
+and races traverse this path.  
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#C0C0C0">The Temple Guard arrives from the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">247M</font><font color="#C0C0C0"> </font><font color="#FFFF00">130V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+n
+</font><font color="#00FFFF">Bridge Road
+</font><font color="#C0C0C0">   The stone cobbled path leads to the Midgaard Bridge to the south.  This
+bridge separates Northern and Southern Midgaard.  People of all shapes, sizes,
+and races traverse this path.  
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#C0C0C0">The Temple Guard arrives from the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">247M</font><font color="#C0C0C0"> </font><font color="#FFFF00">129V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+n
+</font><font color="#00FFFF">The Common Square
+</font><font color="#C0C0C0">   You are in the common square of Midgaard.  The sound of merchants can be
+heard off to the north as they chant their goods for sale.  People full of
+chatter pass you by as they enter or leave the bazaar.  To the east and west,
+alleys lead to shadier side of Midgaard.  At the corners of the square can be
+found tall poles with magical lanterns, provided by the sorcerer's guild, that
+glow with a bright light when it gets dark.  South leads across the bridge to
+Southern Midgaard.  
+</font><font color="#008080">[EXITS: n e s w ]
+</font><font color="#C0C0C0">A Cityguard is here keeping the peace.
+The Temple Guard arrives from the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">247M</font><font color="#C0C0C0"> </font><font color="#FFFF00">128V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+n
+</font><font color="#00FFFF">Southern Bazaar
+</font><font color="#C0C0C0">   Merchant selling chants echo above the excited buzz of buyers.  Here, all 
+kinds of goods can be purchased and sold for profit and never the same thing 
+two days in a row.  Along the street can be found tall poles with magical 
+lanterns, provided by the sorcerer's guild, that glow with a bright light 
+when it gets dark.  The bazaar continues to the north and the Common Square 
+can be seen to the south.
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#C0C0C0">A Cityguard is here keeping the peace.
+The Temple Guard arrives from the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">247M</font><font color="#C0C0C0"> </font><font color="#FFFF00">127V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+n
+</font><font color="#00FFFF">Northern Bazaar
+</font><font color="#C0C0C0">   Merchant selling chants echo above the excited buzz of buyers.  Here, all 
+kinds of goods can be purchased and sold for profit and never the same thing 
+two days in a row.  Along the street can be found tall poles with magical 
+lanterns, provided by the sorcerer's guild, that glow with a bright light 
+when it gets dark.  Market Square lies to the north and the Common Square 
+can be seen to the south.
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#C0C0C0">The Temple Guard arrives from the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">247M</font><font color="#C0C0C0"> </font><font color="#FFFF00">126V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+n
+</font><font color="#00FFFF">Market Square
+</font><font color="#C0C0C0">   You are standing on the Market Square, the famous Square of Midgaard.  It is
+said that the North, East, South, and West all meet here.  This square is the
+busiest in the realms for Midgaard is the center of the known civilization.  
+People from all lands can be found wandering here.  At the four corners can be
+found tall poles with magical lanterns, provided by the Mage's Guild, that glow
+with a bright light when it gets dark.  
+   A large fountain of an angel pouring water stands in the center of the
+square.  Roads lead in every direction, north to the temple square, south to
+the bazaar, east and west bound is the main street.
+</font><font color="#008080">[EXITS: n e s w ]
+</font><font color="#008000">A fountain of an angel cascades with sparkling water here.
+</font><font color="#C0C0C0">The Temple Guard arrives from the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">247M</font><font color="#C0C0C0"> </font><font color="#FFFF00">125V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+n
+</font><font color="#00FFFF">South Temple Street
+</font><font color="#C0C0C0">   The newly renovated Temple Street is wide and clean, with light colored
+bricks gleaming from being freshly washed.  Nobles, common folk and adventurers
+alike move about in a steady stream as they make their way through town.  The
+Market Square to the south is a common destination, which locals consider to be
+the heart of the city.
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#C0C0C0">The Temple Guard arrives from the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">247M</font><font color="#C0C0C0"> </font><font color="#FFFF00">124V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+n
+</font><font color="#00FFFF">North Temple Street
+</font><font color="#C0C0C0">   The historic Temple of Midgaard entrance is to the north and past that, the
+Grand Gates of Midgaard which controls passage into and out of the main city.  
+To the west is a room housing the Social Boards while to the east is an entrance
+to the Old Grunting Boar Inn.
+</font><font color="#008080">[EXITS: n e s w ]
+</font><font color="#C0C0C0">A scantily clad prostitute walks the streets.
+The Temple Guard arrives from the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">247M</font><font color="#C0C0C0"> </font><font color="#FFFF00">123V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+n
+</font><font color="#00FFFF">Grand Gates of the Temple of Midgaard
+</font><font color="#C0C0C0">   You stand at the base of the huge mound upon which the Temple of Midgaard
+is built within the Grand Gates of the Temple.  The gates are gargantuan in
+size and are made of solid gold with ancient designs of Gods, Giants, Warriors,
+and peasants.
+   Steps hewn from huge marble blocks lead the way up the mound to the actual
+temple itself while south beyond the gates is what is commonly known as the
+Temple Square.
+   Braziers of eternal flame built upon the posts of the foundation of the
+temple wall brightly light up the sky, even in the day.
+</font><font color="#008080">[EXITS: n s ]
+</font><font color="#C0C0C0">A Guard of the Temple stands here eyeing people entering the temple.
+A Guard of the Temple stands here eyeing people entering the temple.
+Bols the High Priest is here standing. (invisible)
+. . . he is surrounded by an aura of mystical peace and harmony!
+The Temple Guard is here sleeping. (Charmed)
+The Temple Guard arrives from the south.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">247M</font><font color="#C0C0C0"> </font><font color="#FFFF00">122V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The Temple Guard says, 'HOLD IT!  Papers please.  Ok, you can pass.'
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">247M</font><font color="#C0C0C0"> </font><font color="#FFFF00">122V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Bols stares at you and orates the prayer, 'zuhiruhl'.
+You feel your hunger suddenly disappear.
+You burp loudly.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">247M</font><font color="#C0C0C0"> </font><font color="#FFFF00">122V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+Bols orates the prayer, 'zuhiruhl'.
+Bols burps loudly.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">247M</font><font color="#C0C0C0"> </font><font color="#FFFF00">122V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+The sky darkens as the sun slowly sets in the west.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">267M</font><font color="#C0C0C0"> </font><font color="#FFFF00">132V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+All light is banished from the sky as night takes over.
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">287M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+</font></font>
+<font size=2 face="FixedSys, Lucida Console, Courier New, Courier"><font color="#0">
+</font><font color="#C0C0C0">quit
+You have run out of time to complete the quest.
+Goodbye, friend... Come back soon!
+
+</font><font color="#FFFFFF">&lt;</font><font color="#C0C0C0"> </font><font color="#FF0000">197H</font><font color="#C0C0C0"> </font><font color="#00FF00">287M</font><font color="#C0C0C0"> </font><font color="#FFFF00">134V</font><font color="#C0C0C0"> </font><font color="#00FFFF">277371X</font><font color="#C0C0C0"> </font><font color="#808000">5987SP</font><font color="#C0C0C0"> </font><font color="#FFFFFF">&gt;</font><font color="#C0C0C0"> 
+
+</font><font color="#FFFFFF">Welcome to Apocalypse VI!
+
+</font><font color="#00FFFF">0</font><font color="#FFFFFF">)</font><font color="#008000"> Exit from Apocalypse
+</font><font color="#00FFFF">1</font><font color="#FFFFFF">)</font><font color="#008000"> Enter the game
+</font><font color="#00FFFF">2</font><font color="#FFFFFF">)</font><font color="#008000"> Change password
+</font><font color="#00FFFF">3</font><font color="#FFFFFF">)</font><font color="#008000"> Change character description
+</font><font color="#00FFFF">4</font><font color="#FFFFFF">)</font><font color="#008000"> Game rules
+</font><font color="#00FFFF">5</font><font color="#FFFFFF">)</font><font color="#008000"> Delete this character
+
+</font><font color="#C0C0C0">   </font><font color="#FFFFFF">Make your choice:</font><font color="#C0C0C0">The Temple Guard hates your guts!
+The Temple Guard hates your guts!
+-
+
+Goodbye, friend... Come back soon!
+</font></font></code></pre>
+</td></tr></table>
