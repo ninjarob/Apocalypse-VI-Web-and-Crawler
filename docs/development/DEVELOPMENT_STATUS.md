@@ -1,3 +1,65 @@
+## Zone 19 - Forest of Haon-Dor Exploration & Parsing (2025-11-24) ✅ **COMPLETED**
+**Status**: ✅ **COMPLETED** - Forest of Haon-Dor exploration log successfully parsed with zone alias fix and corrected zone boundary
+
+### Issue Addressed:
+- **Zone Alias Missing**: Parser initially assigned rooms to wrong zones (null zone_id, Haunted Forest, etc.)
+- **Root Cause**: Zone 19 had name "The Forest of Haon-Dor" but exploration log used "Forest of Haon-Dor"
+- **Zone Boundary Error**: Room 226 "The edge of the forest" (portal_key: cder) was incorrectly assigned to zone 2 instead of zone 19
+- **Solution**: Added alias 'Forest of Haon-Dor' to zone 19 in seed.ts + deleted and re-parsed the room to correct zone assignment
+
+### Process Completed:
+
+#### 1. Zone Alias Addition
+- ✅ **Modified seed.ts**: Added `alias: 'Forest of Haon-Dor'` to zone 19 definition (line 1364)
+- ✅ **Database Re-seeded**: Ran `npm run seed` to update zone definitions
+- ✅ **Result**: Zone 19 now has both name and alias for proper detection
+
+#### 2. Corrected Zone Boundary Room
+- ✅ **Identified Issue**: Room 226 "The edge of the forest" (cder) was in zone 2, should be zone 19
+- ✅ **Fix Applied**: 
+  - Deleted room 226 and its 6 exits from database
+  - Re-parsed Forest of Haon-Dor exploration log
+  - Room recreated as ID 416 in zone 19
+  - Proper cross-zone exits established between zones 19 and 2
+- ✅ **Result**: Zone boundary correctly established at "The edge of the forest" (zone 19) ↔ "Outside the Western Gate" (zone 2)
+
+#### 3. Forest of Haon-Dor Parsing (Final)
+- ✅ **Parsed**: `scripts/sessions/Exploration - Forest of Haon-Dor.txt`
+  - **Rooms**: 94 rooms saved (94 with portal keys) - includes corrected "The edge of the forest"
+  - **Exits**: 323 exits created
+  - **Zone Detection**: Automatically detected "Forest of Haon-Dor" and assigned to zone 19
+  - **Cross-Zone Connections**: 28 exits to 8 different zones (Midgaard: 2, Rome: 13, Candlebriar: 8, King Fredrick: 61, Mahn-Tor: 57, Bonne Terre: 15, Black Market: 37)
+  - **Zone Exits**: Marked 16 rooms as zone boundaries
+
+#### 4. Coordinate Calculation (Final)
+- ✅ **Coordinates**: Calculated with BFS algorithm
+  - **Coverage**: 91 rooms positioned (includes corrected "The edge of the forest")
+  - **Map Size**: Width 2701px (X: -2400 to 300), Height 1156px (Y: -105 to 1050)
+  - **Sub-levels**: Down transition skipped (room 400 reachable via non-vertical paths)
+  - **Collisions**: Resolved 1 collision conflict
+
+### Summary Statistics:
+- **Total Rooms in Zone 19**: 91 rooms (after correction)
+- **Zone Boundary**: "The edge of the forest" (zone 19) properly connects to "Outside the Western Gate" (zone 2)
+- **Zone Coverage**: All rooms properly assigned to zone 19
+- **Coordinate Coverage**: 91/91 rooms positioned (100%)
+
+### Files Modified:
+- `scripts/seed.ts` - Added alias 'Forest of Haon-Dor' to zone 19
+- `scripts/fix-zone-19-room.ts` - Created script to delete incorrectly assigned room 226
+- `scripts/mark-zone-exit-room.ts` - Created script to mark room 225 as zone exit
+- `scripts/export-via-api.ts` - Created script to export database to JSON files via API
+- `data/mud-data.db` - Corrected with 91 rooms for zone 19 and proper cross-zone exits
+- `data/rooms_for_zone_2.json` - Updated with room 225 marked as zone_exit
+- `data/room_exits_for_zone_2.json` - Updated with west exit (225→416) marked as zone exit
+- `data/rooms_for_zone_19.json` - Updated with 91 rooms including corrected room 416
+- `data/room_exits_for_zone_19.json` - Updated with 203 exits including zone boundary exits
+- All other zone JSON files (zones 8, 9, 12, 13, 15, 37, 57, 61) - Regenerated from current database state
+
+**Result**: Zone 19 is now fully mapped with proper zone detection, corrected zone boundaries, coordinate calculations, and JSON export files updated for proper database seeding.
+
+---
+
 ## Full Database Reseed & All Exploration Sessions Reprocessed (2025-11-24) ✅ **COMPLETED**
 **Status**: ✅ **COMPLETED** - Complete database rebuild with all three exploration sessions parsed and coordinates calculated
 

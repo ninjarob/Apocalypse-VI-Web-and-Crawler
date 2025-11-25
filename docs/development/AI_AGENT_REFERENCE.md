@@ -15,13 +15,54 @@
 
 ## 🚀 Critical Commands (Copy-Paste Ready)
 
+### 📊 Complete Data Processing Workflow
+**IMPORTANT**: JSON files in `data/` are the SOURCE OF TRUTH for seeding. After making database changes, you MUST export back to JSON.
+
+```powershell
+# 1. Seed database from JSON files (zones + existing rooms)
+cd scripts
+npm run seed
+
+# 2. Parse new exploration log (adds/updates rooms in database)
+npm run parse-logs "../scripts/sessions/Exploration - Forest of Haon-Dor.txt" --zone-id 19
+
+# 3. Calculate coordinates for the zone
+npm run calculate-coordinates 19
+
+# 4. Export database back to JSON files (CRITICAL - preserves changes for next seed)
+npx tsx export-via-api.ts
+```
+
+**Why Step 4 is Critical**: 
+- The seed script reads from `data/rooms_for_zone_*.json` and `data/room_exits_for_zone_*.json`
+- If you don't export, your database changes will be LOST on next seed
+- JSON files = persistent storage, Database = working copy
+
+### 🔄 Export Database to JSON (After ANY Database Changes)
+```powershell
+cd scripts
+npx tsx export-via-api.ts
+```
+
+**This exports via API**:
+- `GET /api/zones` - Get all zones
+- `GET /api/rooms?zone_id=X` - Get rooms for each zone → `rooms_for_zone_X.json`
+- `GET /api/room_exits?zone_id=X` - Get exits for each zone → `room_exits_for_zone_X.json`
+
+**When to use**:
+- ✅ After parsing new exploration logs
+- ✅ After manually fixing room assignments
+- ✅ After marking zone exits
+- ✅ After calculating coordinates
+- ✅ Before committing changes to git
+
 ### Test Zone Alias System
 ```powershell
 cd scripts
 # Test Juris zone alias detection
 npm run seed
 npm run parse-logs "../scripts/sessions/Exploration - Haunted Forest.txt" --zone-id 12
-npx tsx "c:\work\other\Apocalypse VI MUD\scripts\query-db.ts" "SELECT r.portal_key, r.name, r.zone_id, z.name as zone_name FROM rooms r JOIN zones z ON r.zone_id = z.id WHERE r.name LIKE '%juris%' OR r.portal_key IN ('cdefimopq', 'dghklopq')"
+npx tsx query-db.ts "SELECT r.portal_key, r.name, r.zone_id, z.name as zone_name FROM rooms r JOIN zones z ON r.zone_id = z.id WHERE r.name LIKE '%juris%' OR r.portal_key IN ('cdefimopq', 'dghklopq')"
 ```
 
 **Expected**: Juris rooms in zone 47, zone exits marked
@@ -29,34 +70,6 @@ npx tsx "c:\work\other\Apocalypse VI MUD\scripts\query-db.ts" "SELECT r.portal_k
 - "The West Gate of Juris" (cdefimopq) in zone 47 ✅
 - "Outside the West Gates of Juris" (dghklopq) in zone 12 ✅
 - Zone exits between zones 12 ↔ 47 established ✅
-
-### Full Data Processing Pipeline
-```powershell
-# 1. Clean database with updated zone aliases
-cd scripts
-npm run seed
-
-# 2. Parse exploration log (automatic zone detection)
-npm run parse-logs "../scripts/sessions/Exploration - Haunted Forest.txt" --zone-id 12
-
-# 3. Calculate coordinates
-npm run calculate-coordinates 12
-```
-
-### Full Data Processing Pipeline
-```powershell
-# 1. Clean database
-cd backend
-npm run seed
-
-# 2. Parse exploration log
-cd ../crawler
-npx tsx parse-logs.ts "sessions/Exploration - Astyll Hills.txt" --zone-id 9
-
-# 3. Calculate coordinates
-cd ../backend
-node calculate-coordinates.js 9
-```
 
 ### Start All Services
 ```powershell
@@ -85,6 +98,18 @@ node calculate-coordinates.js 9
 
 ## 🔍 Key Files & Locations
 
+### Data Files (SOURCE OF TRUTH)
+- **Room Data**: `data/rooms_for_zone_X.json` (all room properties including zone_exit flag)
+- **Exit Data**: `data/room_exits_for_zone_X.json` (all exits including is_zone_exit flag)
+- **Database**: `data/mud-data.db` (working copy, regenerated from JSON on seed)
+- **Export Script**: `scripts/export-via-api.ts` (exports database → JSON via API)
+
+### API Endpoints (Backend on localhost:3002)
+- **GET /api/zones** - List all zones
+- **GET /api/rooms?zone_id=X** - Get all rooms in zone X
+- **GET /api/room_exits?zone_id=X** - Get all exits for rooms in zone X
+- **GET /api/rooms?portal_key=KEY** - Find room by portal key
+
 ### Current Investigation Files
 - **Zone Aliases**: `scripts/seed.ts` (zone definitions with aliases)
 - **Parser Zone Detection**: `crawler/src/mudLogParser.ts` (zone change detection)
@@ -96,6 +121,7 @@ node calculate-coordinates.js 9
 - **Session Context**: `docs/development/SESSION_HANDOFF.md`
 - **Zone System**: `docs/technical/QUICK_REFERENCE.md` (Zone Alias System section)
 - **Quick Commands**: `docs/technical/QUICK_REFERENCE.md`
+- **API Reference**: `docs/technical/BACKEND_API.md`
 
 ## 🎯 Next Steps (Priority Order)
 
@@ -106,10 +132,22 @@ node calculate-coordinates.js 9
 ## ⚠️ Critical Reminders
 
 - **Always use PowerShell `;` separator** (not `&&`)
-- **Never use direct database access** - use API endpoints
+- **ALWAYS export to JSON after database changes** - `npx tsx export-via-api.ts`
+- **JSON files are the source of truth** - database is just working copy
+- **Use API for data access** - Backend API on `http://localhost:3002/api`
 - **Update DEVELOPMENT_STATUS.md after EVERY change**
 - **Test zone aliases with full pipeline**
 - **Add zone aliases to seed.ts for new zone variations**
+
+### 📁 Data Storage Architecture
+```
+data/
+  ├── rooms_for_zone_2.json      ← SOURCE OF TRUTH (seed reads from here)
+  ├── room_exits_for_zone_2.json ← SOURCE OF TRUTH (seed reads from here)
+  └── mud-data.db                ← WORKING COPY (export back to JSON)
+```
+
+**Flow**: JSON → Database (seed) → Database (parse/edit) → JSON (export) → Git commit
 
 ## 📊 Current System State
 
