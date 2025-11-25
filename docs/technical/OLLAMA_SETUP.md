@@ -198,6 +198,34 @@ ollama create mud-explorer -f MudExplorer
 ollama run mud-explorer
 ```
 
+### Training Data Preparation
+
+For fine-tuning with your gameplay logs, annotate your sessions with training comments:
+
+**Use In-Game `say` Commands:**
+```
+say [TRAINING] STRATEGY: Exploring systematically, north first
+say [TRAINING] TIMING: Waiting for HP to regenerate (currently 45/80)
+say [TRAINING] COMBAT: Using bash to stun enemy before big attack
+say [TRAINING] MISTAKE: Entered combat at low HP, should have rested first
+```
+
+**Benefits:**
+- Captures expert decision-making process
+- Explains WHY actions were taken
+- Teaches cause-and-effect relationships
+- Identifies anti-patterns (mistakes to avoid)
+- Provides context for game state and timing
+
+**Converting Logs to Training Format:**
+```powershell
+# Extract training annotations from logs
+Select-String -Path "session.txt" -Pattern "\[TRAINING\]" | ForEach-Object {
+  # Parse into MESSAGE user/assistant pairs
+  # Game state → Decision → Action → Outcome
+}
+```
+
 Then in `.env`:
 ```env
 OLLAMA_MODEL=mud-explorer

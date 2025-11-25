@@ -2,6 +2,52 @@
 Last Updated: 2025-10-30
 Total Sessions: 1
 
+## Autonomous Character Management
+
+### Login and Character Selection
+The AI agent can autonomously manage character lifecycle:
+
+**Login Process:**
+1. Connect to MUD server
+2. Enter account credentials
+3. View character list
+4. Select existing character OR create new one
+5. Enter game world
+
+**Character Creation:**
+- Autonomous character generation based on exploration goals
+- Strategic race/class selection for specific tasks
+- Random name generation or predefined naming conventions
+- Attribute allocation based on class optimization
+
+**Character Deletion:**
+- Remove unused or deprecated characters
+- Clean up test characters after experiments
+- Proactively manage character roster to avoid clutter
+
+### Character Management Strategy
+- **Multiple Characters**: Maintain pool of specialized characters (combat, exploration, social)
+- **Character Specialization**: Create characters optimized for specific zones or tasks
+- **Character Rotation**: Use different characters for different exploration objectives
+- **Responsible Management**: No hard account limits, but practice good stewardship
+- **Comprehensive Tracking**: Every character creation must be logged with:
+  - Creation timestamp
+  - Purpose/specialization
+  - Last used timestamp
+  - Usage statistics (sessions, areas explored)
+  - Active status
+- **Cleanup Policy**: 
+  - Delete characters unused for 7+ days
+  - Remove failed experimental characters immediately
+  - Keep only characters with clear ongoing purpose
+  - Regularly audit character list for obsolete entries
+
+### Character Persistence
+- Store character data in backend database
+- Track character stats, equipment, location
+- Remember which characters are specialized for which tasks
+- Reuse successful character builds
+
 ## Priority Commands to Try First
 - commands: Lists all available game commands (DO THIS FIRST!)
 - help: Shows help information
@@ -32,6 +78,49 @@ Total Sessions: 1
 - **Help files**: `help <topic>` for game lore and mechanics
 
 **AI Strategy**: Focus on exploration, environmental interaction, and combat rather than attempting extensive NPC conversations.
+
+## Training Data Annotations
+
+### In-Game Training Comments
+Human players creating training logs should use the `say` command to annotate their decision-making:
+
+**Annotation Format:** `say [TRAINING] <category>: <explanation>`
+
+**Categories:**
+- `STRATEGY` - Why making this choice ("exploring north because fewer players there")
+- `TIMING` - Waiting for game mechanics ("waiting for HP regen", "cooldown on bash")
+- `DANGER` - Risk assessment ("mob too strong, fleeing", "low HP, need safety")
+- `RESOURCE` - Managing HP/mana/moves ("resting to full mana before boss")
+- `EXPLORATION` - Navigation strategy ("marking this room as safe", "dead end")
+- `COMBAT` - Fighting tactics ("using bash to interrupt caster")
+- `OPTIMIZATION` - Efficient patterns ("recall faster than walking")
+- `MISTAKE` - Anti-patterns ("shouldn't have fought without preparation")
+
+**Why This Works:**
+- Annotations captured in logs with full context
+- AI learns cause-and-effect from expert gameplay
+- Explains WHY commands were chosen, not just WHAT
+- Easy to parse: look for `say [TRAINING]` prefix
+- Human-readable for verification
+
+**Example Annotated Session:**
+```
+look
+> You are in a dark hallway. Exits: north, south
+say [TRAINING] EXPLORATION: Checking north exit first, systematic exploration
+north
+> A goblin warrior is here!
+say [TRAINING] DANGER: Goblin is red (higher level), need to assess
+consider goblin
+> The goblin looks fairly easy
+say [TRAINING] COMBAT: Consider shows manageable, engaging combat
+kill goblin
+> You hit the goblin hard!
+say [TRAINING] TIMING: Waiting for bash cooldown before using
+... combat continues ...
+say [TRAINING] RESOURCE: HP at 60%, safe to continue exploring
+south
+```
 
 ## Help System & Pagination
 The MUD has a comprehensive help system accessible via "help <topic>" commands.

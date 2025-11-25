@@ -4,6 +4,95 @@
 
 Character creation in Apocalypse VI MUD is a deep and strategic process that determines your playstyle, strengths, and progression path. This guide covers all aspects of creating and developing your character.
 
+## AI Agent Character Management
+
+### Autonomous Character Lifecycle
+The AI crawler can autonomously manage characters:
+
+**Login Flow:**
+```
+Connect → Enter credentials → View character list
+  ↓
+  ├→ Select existing character → Enter game
+  └→ Create new character → Configure → Enter game
+```
+
+**Character Creation Flow:**
+```
+Create command → Choose name → Select race → Select class
+  → Allocate attributes → Confirm → Enter game
+```
+
+**Character Deletion:**
+- Access character management menu at login
+- Select character to delete
+- Confirm deletion
+- Character removed from account
+
+### Strategic Character Management
+
+**Multiple Character Strategy:**
+- **Explorer**: High DEX/CON for survival and mapping
+- **Combat**: High STR/CON for fighting and leveling
+- **Caster**: High INT/WIS for magic-based exploration
+- **Social**: High CHA for NPC interactions and quests
+
+**Character Specialization:**
+- Create characters optimized for specific zones
+- Build race/class combinations for specific tasks
+- Maintain pool of characters at different level ranges
+
+**Character Maintenance:**
+- Track character stats and equipment in database
+- Monitor character effectiveness for tasks
+- Delete underperforming or obsolete characters
+- **No Hard Account Limits**: System allows unlimited characters, but practice responsible management
+- **Mandatory Tracking**: Log every character creation with full metadata
+- **Regular Audits**: Review character list weekly for unused/obsolete characters
+- **Cleanup Criteria**:
+  - Not used in 7+ days → Mark for deletion
+  - Failed build/experiment → Delete immediately
+  - Duplicate specialization → Keep best performer only
+  - No clear purpose → Delete during audit
+
+**Naming Conventions:**
+- Prefix/suffix to indicate purpose (e.g., "Scout_" for explorers)
+- Sequential numbering for test characters
+- Descriptive names based on specialization
+
+### Character Data Persistence
+
+Characters are tracked in the backend database with comprehensive metadata:
+
+**Core Identity:**
+- Name, race, class, level
+- Current HP, mana, movement
+- Last known location
+- Equipment and inventory
+
+**Management Metadata (Critical):**
+- `created_at`: Timestamp of character creation
+- `last_played_at`: Last session timestamp
+- `purpose`: Why this character was created (e.g., "Explore Astyll Hills", "Combat test", "Mage build experiment")
+- `specialization`: Character role (explorer, combat, caster, social)
+- `is_active`: Currently in use
+- `session_count`: Number of times logged in
+- `areas_explored`: Count of unique areas visited
+- `total_playtime`: Cumulative time played
+- `notes`: Human-readable notes about character status
+
+**Audit Trail:**
+- All character creations logged to separate audit file
+- Deletion events logged with reason
+- Character list exportable for manual review
+- Weekly automated reports of character roster status
+
+**Cleanup Automation:**
+- Flag characters unused for 7+ days
+- Generate cleanup recommendations
+- Require manual approval before deletion (safety check)
+- Maintain deletion history for accountability
+
 ## Core Abilities
 
 Your character has 6 core abilities that define their fundamental capabilities. Each ability ranges from 0-25 and provides specific bonuses.

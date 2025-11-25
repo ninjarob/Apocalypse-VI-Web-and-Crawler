@@ -92,6 +92,144 @@ Save a discovered spell.
 **Parameters:**
 - `spell` (Partial<Spell>) - Spell data
 
+### Character Management Operations
+
+#### saveCharacter(character: Partial<Character>): Promise<Character | null>
+Save or update a character managed by the AI agent.
+
+**Parameters:**
+- `character` (Partial<Character>) - Character data with comprehensive tracking metadata
+
+**Returns:** Saved character object or null if failed
+
+**Required Fields for New Characters:**
+- `name`, `race`, `class`, `level`
+- `purpose`: Why character was created (required for tracking)
+- `specialization`: Character role/type
+- `account_name`: AI agent account identifier
+
+**Example:**
+```typescript
+const character = await api.saveCharacter({
+  name: 'Zelthar',
+  race: 'Elf',
+  class: 'Ranger',
+  level: 5,
+  hp: 45,
+  mana: 60,
+  moves: 120,
+  account_name: 'ai_agent',
+  is_active: true,
+  purpose: 'Explore Haunted Forest zone - high DEX build',
+  specialization: 'explorer',
+  created_at: new Date().toISOString(),
+  session_count: 0,
+  areas_explored: 0
+});
+
+// Log creation to audit trail
+await api.logCharacterEvent({
+  character_id: character.id,
+  event_type: 'created',
+  details: `Created for: ${character.purpose}`
+});
+```
+
+#### getCharacterByName(name: string): Promise<Character | null>
+Find an existing character by name.
+
+**Parameters:**
+- `name` (string) - Character name
+
+**Returns:** Character object or null if not found
+
+#### getAllCharacters(accountName?: string): Promise<Character[]>
+Get all characters, optionally filtered by account.
+
+**Parameters:**
+- `accountName` (optional string) - Filter by account name
+
+**Returns:** Array of characters
+
+#### deleteCharacter(characterId: number): Promise<void>
+Delete a character from the database (mirrors in-game deletion).
+
+**Parameters:**
+- `characterId` (number) - ID of character to delete
+
+**Example:**
+```typescript
+// Delete test character after experiment
+await api.deleteCharacter(testChar.id);
+```
+
+#### setActiveCharacter(characterId: number): Promise<void>
+Mark a character as the currently active one.
+
+**Parameters:**
+- `characterId` (number) - ID of character to make active
+
+#### getUnusedCharacters(daysInactive: number = 7): Promise<Character[]>
+Find characters that haven't been used recently.
+
+**Parameters:**
+- `daysInactive` (number) - Days since last played (default: 7)
+
+**Returns:** Array of inactive characters
+
+**Example:**
+```typescript
+// Find characters unused for 7+ days
+const staleChars = await api.getUnusedCharacters(7);
+console.log(`Found ${staleChars.length} unused characters`);
+```
+
+#### getCharacterAuditReport(): Promise<CharacterAuditReport>
+Generate comprehensive character roster report.
+
+**Returns:** Audit report with statistics and recommendations
+
+**Example:**
+```typescript
+const report = await api.getCharacterAuditReport();
+console.log(`Total characters: ${report.total_count}`);
+console.log(`Active: ${report.active_count}`);
+console.log(`Candidates for deletion: ${report.deletion_candidates.length}`);
+```
+
+#### logCharacterEvent(event: CharacterEvent): Promise<void>
+Log character lifecycle events for audit trail.
+
+**Parameters:**
+- `event` (CharacterEvent) - Event data (type, character_id, details)
+
+**Event Types:** 'created', 'deleted', 'logged_in', 'logged_out', 'purpose_changed'
+
+**Example:**
+```typescript
+await api.logCharacterEvent({
+  character_id: char.id,
+  event_type: 'deleted',
+  details: 'Unused for 14 days, failed experimental build',
+  timestamp: new Date().toISOString()
+});
+```
+
+#### exportCharacterList(format: 'json' | 'csv' = 'json'): Promise<string>
+Export character list for manual review.
+
+**Parameters:**
+- `format` (string) - Output format (json or csv)
+
+**Returns:** Formatted character list
+
+**Example:**
+```typescript
+// Export for human review
+const csv = await api.exportCharacterList('csv');
+fs.writeFileSync('character-audit.csv', csv);
+```
+
 ### Player Action Operations
 
 #### savePlayerAction(action: PlayerActionData): Promise<void>

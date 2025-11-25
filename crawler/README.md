@@ -65,10 +65,27 @@ exits: 'north, south, west'
 - **`parse-logs.ts`** - CLI for parsing session logs
 
 ### AI & Knowledge
-- **`ai-knowledge.md`** - AI agent's knowledge base
+- **`ai-knowledge.md`** - AI agent's knowledge base (includes character management)
 - **`ai-knowledge-template.md`** - Template for new knowledge
 - **`src/aiAgent.ts`** - AI decision making
 - **`src/knowledgeManager.ts`** - Knowledge persistence
+- **`src/CharacterMaintenance.ts`** - Autonomous character lifecycle management
+
+### Character Management
+The AI agent can autonomously:
+- **Login**: Connect and authenticate to the MUD
+- **Select Characters**: Choose from existing characters or create new ones
+- **Create Characters**: Generate optimized characters for specific tasks
+- **Delete Characters**: Remove unused or test characters
+- **Track Characters**: Store character data in backend database
+
+**Supported Workflows:**
+```
+1. First-time login → Create initial exploration character
+2. Subsequent logins → Select best character for current task
+3. Character limit reached → Delete least useful character
+4. Failed character build → Delete and recreate with better stats
+```
 
 ### Utilities
 - **`src/logger.ts`** - Logging system

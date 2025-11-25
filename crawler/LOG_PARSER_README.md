@@ -32,6 +32,43 @@ Start-Transcript -Path midgaard-session.txt
 Stop-Transcript
 ```
 
+### Training Annotations (For AI Model Training)
+
+When creating logs for AI training, use the `say` command to add inline annotations explaining your strategy and decision-making:
+
+**Annotation Format:**
+```
+say [TRAINING] <category>: <explanation>
+```
+
+**Recommended Categories:**
+- `STRATEGY` - High-level decision making
+- `TIMING` - Waiting for cooldowns, regen, ticks
+- `DANGER` - Risk assessment and safety
+- `RESOURCE` - HP/mana/movement management  
+- `EXPLORATION` - Navigation and mapping strategy
+- `COMBAT` - Fighting tactics
+- `OPTIMIZATION` - Efficient gameplay patterns
+- `MISTAKE` - What NOT to do (anti-patterns)
+
+**Examples:**
+```
+say [TRAINING] TIMING: Waiting 3 ticks for HP to regenerate before next fight
+say [TRAINING] STRATEGY: Exploring north first because it's unexplored
+say [TRAINING] DANGER: This mob is too high level, fleeing to safety
+say [TRAINING] RESOURCE: HP below 50%, need to rest before continuing
+say [TRAINING] COMBAT: Using bash to stun before big damage
+say [TRAINING] OPTIMIZATION: Recall to town is faster than walking back
+say [TRAINING] MISTAKE: Should have checked exits before entering combat
+```
+
+**Benefits:**
+- Annotations appear in logs with full game context
+- AI can learn cause-and-effect relationships
+- Captures expert decision-making process
+- Easy to filter/extract during training data preparation
+- Human-readable for manual review
+
 ### Step 2: Run the Parser
 
 ```bash

@@ -1,5 +1,162 @@
 # AI Agent Quick Reference
 
+## 📝 Training Data Annotation Guidelines
+
+### Creating High-Quality Training Logs
+
+When playing manually to generate training data, use the `say` command to annotate your decision-making process:
+
+**Standard Annotation Format:**
+```
+say [TRAINING] <CATEGORY>: <explanation>
+```
+
+**Annotation Categories:**
+
+| Category | Use For | Example |
+|----------|---------|----------|
+| `STRATEGY` | High-level decisions | `say [TRAINING] STRATEGY: Exploring north wing before south to avoid backtracking` |
+| `TIMING` | Waiting for mechanics | `say [TRAINING] TIMING: Waiting 3 ticks for mana regen (15/80 current)` |
+| `DANGER` | Risk assessment | `say [TRAINING] DANGER: Mob is red con, too dangerous at current HP` |
+| `RESOURCE` | HP/mana/move mgmt | `say [TRAINING] RESOURCE: HP at 40%, retreating to safe room` |
+| `EXPLORATION` | Navigation strategy | `say [TRAINING] EXPLORATION: Dead end, marking room and backtracking` |
+| `COMBAT` | Fighting tactics | `say [TRAINING] COMBAT: Bash on cooldown, using kick instead` |
+| `OPTIMIZATION` | Efficiency patterns | `say [TRAINING] OPTIMIZATION: Recall is 1 tick vs 5 ticks walking` |
+| `MISTAKE` | Anti-patterns | `say [TRAINING] MISTAKE: Should NOT engage multiple mobs at low HP` |
+
+**Best Practices:**
+- Annotate BEFORE taking action (captures intent)
+- Include specific numbers (HP values, cooldowns, distances)
+- Explain WHY, not just WHAT
+- Mark mistakes explicitly (AI learns what NOT to do)
+- Annotate waiting periods (teaches patience and timing)
+- Note optimization opportunities
+
+**Example Annotated Combat:**
+```
+say [TRAINING] STRATEGY: Engaging single goblin to test combat strength
+kill goblin
+say [TRAINING] COMBAT: Using bash to interrupt goblin's spellcasting
+bash goblin
+say [TRAINING] TIMING: Waiting for bash cooldown (5 seconds)
+say [TRAINING] RESOURCE: HP at 65/80, safe to continue
+say [TRAINING] OPTIMIZATION: Looting before next fight to avoid inventory full
+get all corpse
+```
+
+**Parsing Training Annotations:**
+```powershell
+# Extract all training comments from logs
+Select-String -Path "sessions/*.txt" -Pattern "say \[TRAINING\]" |
+  ForEach-Object { $_.Line } |
+  Out-File "training-annotations.txt"
+
+# Count annotations by category
+Select-String -Path "sessions/*.txt" -Pattern "\[TRAINING\] (\w+):" |
+  ForEach-Object { $_.Matches.Groups[1].Value } |
+  Group-Object |
+  Sort-Object Count -Descending
+```
+
+## 🤖 Autonomous Character Management
+
+### Character Lifecycle Commands
+
+**Test Character Creation (Manual Verification):**
+```powershell
+# Connect to MUD and verify character creation flow
+telnet apocalypse6.furryfire.net 2003
+# Follow prompts: login → create character → configure
+```
+
+**Character Database Operations:**
+```sql
+-- View all AI-managed characters with tracking metadata
+SELECT 
+  id, name, race, class, level,
+  purpose, specialization, is_active,
+  created_at, last_played_at,
+  session_count, areas_explored
+FROM characters 
+WHERE account_name = 'ai_agent'
+ORDER BY last_played_at DESC;
+
+-- Check active character
+SELECT * FROM characters WHERE is_active = 1;
+
+-- Find unused characters (7+ days inactive)
+SELECT 
+  name, purpose, 
+  DATEDIFF(NOW(), last_played_at) as days_inactive
+FROM characters
+WHERE last_played_at < DATE_SUB(NOW(), INTERVAL 7 DAY)
+ORDER BY days_inactive DESC;
+
+-- Character audit summary
+SELECT 
+  COUNT(*) as total_characters,
+  SUM(CASE WHEN is_active = 1 THEN 1 ELSE 0 END) as active_count,
+  SUM(CASE WHEN last_played_at < DATE_SUB(NOW(), INTERVAL 7 DAY) THEN 1 ELSE 0 END) as stale_count,
+  AVG(session_count) as avg_sessions,
+  AVG(areas_explored) as avg_areas
+FROM characters
+WHERE account_name = 'ai_agent';
+
+-- View character event audit trail
+SELECT 
+  ce.timestamp, ce.event_type, c.name, ce.details
+FROM character_events ce
+JOIN characters c ON ce.character_id = c.id
+ORDER BY ce.timestamp DESC
+LIMIT 50;
+```
+
+**Character Management Strategy:**
+- Create specialized characters for different tasks
+- **No Hard Limits**: Account allows unlimited characters
+- **Responsible Stewardship**: Track and audit all characters carefully
+- **Mandatory Logging**: Every character creation must include:
+  - Clear purpose statement
+  - Specialization tag
+  - Creation timestamp
+- **Regular Audits**: Weekly character roster review
+- **Proactive Cleanup**: Delete unused/obsolete characters promptly
+- **Audit Trail**: All creations and deletions logged with reasons
+- **Human Review**: Export character list regularly for manual inspection
+- **Cleanup Criteria**:
+  - 7+ days inactive → Flag for review
+  - 14+ days inactive → Recommend deletion
+  - Failed experiment → Delete immediately
+  - No clear purpose → Delete during audit
+
+### Login Flow Patterns
+
+**Pattern Detection:**
+```
+Connection prompt → Enter username → Enter password
+→ Character list or "Create Character" prompt
+→ Select character number OR type "create"
+→ Enter game OR character creation sequence
+```
+
+**Character Creation Sequence:**
+```
+1. Enter character name (validation: unique, 3-12 chars)
+2. Select race (number from list)
+3. Select class (number from list)
+4. Allocate bonus attributes (if applicable)
+5. Confirm choices
+6. Enter game world
+```
+
+**Character Deletion:**
+```
+At character select screen:
+→ Type "delete <character_name>"
+→ Confirm deletion
+→ Character removed from account
+```
+
 ## 🎯 Current Objectives & Context
 
 ### Primary Objective: Zone Exit Parser Improvements ✅ COMPLETED
