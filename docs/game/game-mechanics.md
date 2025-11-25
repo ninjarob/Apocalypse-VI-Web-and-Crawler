@@ -1,14 +1,41 @@
 # Apocalypse VI MUD - Game Mechanics Guide
 
 ## Table of Contents
-1. [Movement and Navigation](#movement-and-navigation)
-2. [Rooms and Geography](#rooms-and-geography)
-3. [Character System](#character-system)
-4. [Items and Equipment](#items-and-equipment)
-5. [Combat System](#combat-system)
-6. [Magic and Spells](#magic-and-spells)
-7. [Social and Economic Systems](#social-and-economic-systems)
-8. [Time and Environment](#time-and-environment)
+1. [Concurrent Character Limit](#concurrent-character-limit)
+2. [Movement and Navigation](#movement-and-navigation)
+3. [Rooms and Geography](#rooms-and-geography)
+4. [Character System](#character-system)
+5. [Items and Equipment](#items-and-equipment)
+6. [Combat System](#combat-system)
+7. [Magic and Spells](#magic-and-spells)
+8. [Social and Economic Systems](#social-and-economic-systems)
+9. [Time and Environment](#time-and-environment)
+
+---
+
+## Concurrent Character Limit
+
+**Server Rule: Maximum 2 characters online per player simultaneously.**
+
+### Why This Matters
+- **Standard Playstyle**: Two-character parties are the expected gameplay mode
+- **Content Balance**: Zones and encounters designed for 2-character coordination
+- **Group Dynamics**: Tank + Healer is the fundamental party structure
+- **Strategic Gameplay**: Managing two characters adds depth without overwhelming complexity
+
+### Commands for Multi-Character Play
+- `follow <character>`: Make one character follow another
+- `group <character>`: Form a group for shared XP and coordination
+- `rescue <character>`: Pull enemies off your partner (tank ability)
+- `heal <character>`: Direct healing to specific group member
+- `buff <character>`: Apply beneficial spells to partner
+
+### Practical Tips
+1. **Movement**: Leader moves, follower auto-follows
+2. **Combat Initiation**: Tank engages first, healer stays back
+3. **Communication**: Use `say` to coordinate (visible to both characters)
+4. **Positioning**: Keep healer out of melee range when possible
+5. **Resource Sharing**: Drop/give items between characters as needed
 
 ---
 

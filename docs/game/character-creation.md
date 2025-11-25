@@ -4,6 +4,69 @@
 
 Character creation in Apocalypse VI MUD is a deep and strategic process that determines your playstyle, strengths, and progression path. This guide covers all aspects of creating and developing your character.
 
+## Dual-Character Gameplay
+
+### Server Limit: Two Concurrent Characters
+**Apocalypse VI limits concurrent play to TWO characters per player.** This is not a restriction - it's a feature that shapes the entire game experience.
+
+### Why Two Characters?
+- **Game Balance**: Content is designed around 2-character parties
+- **Role Synergy**: Tank + Healer is the fundamental pairing
+- **Solo Difficulty**: Playing with one character is significantly harder
+- **Strategic Depth**: Managing two characters adds complexity and fun
+- **Common Practice**: Most experienced players always play with two characters
+
+### Standard Party Compositions
+
+**1. Fighter + Cleric** ⭐ **RECOMMENDED - SIMPLEST & MOST SUCCESSFUL**
+- **Fighter**: Takes damage, deals consistent physical damage, straightforward gameplay
+- **Cleric**: Heals fighter, provides buffs and support spells
+- **Strategy**: Fighter engages enemies in melee, cleric stays back and heals
+- **Why This Works**: Clear roles, reliable in most situations, easy to coordinate
+- **Best For**: Beginners, general exploration, sustained combat, most zones
+- **Success Rate**: Highest across all zone difficulties
+
+**2. Other Tank + Healer Combinations**
+- **Paladin + Cleric**: Self-healing tank + healer (very safe, slower damage)
+- **Berserker + Cleric**: High burst DPS + healing (riskier, can't flee while raging)
+- **Anti-Paladin + Cleric**: Evil tank + healer (alignment conflicts may limit zones)
+
+**2. DPS + Support**
+- **DPS**: Berserker, Ranger, Samurai
+- **Support**: Cleric (healing + buffs), Bard (buffs + utility)
+- **Strategy**: High damage output with emergency healing
+- **Best For**: Fast clears, exploring lower-level content
+
+**3. Magic + Support**
+- **Caster**: Magic User, Warlock, Necromancer
+- **Healer**: Cleric
+- **Strategy**: Powerful spells with healing backup
+- **Best For**: Burst damage, ranged combat, mana management challenges
+
+**4. Hybrid Versatility**
+- **Hybrid 1**: Ranger, Monk, Druid
+- **Hybrid 2**: Bard, Cleric, Paladin
+- **Strategy**: Both characters can fight and heal/support
+- **Best For**: Flexibility, adapting to different challenges
+
+### Solo-Capable Classes (Single Character)
+If you choose to play with only one character (harder but viable):
+- **Paladin**: Self-healing, tank, decent damage
+- **Ranger**: High damage, self-sufficient
+- **Monk**: Ki powers, self-healing, evasion
+- **Druid**: Shapeshifting, healing, nature magic
+
+**Note**: Solo play limits your zone options and progression speed significantly.
+
+### AI Agent Dual-Character Strategy
+For AI exploration and testing:
+1. **Create complementary pairs**: Always make two characters that work together
+2. **Test combinations**: Try different race/class pairings to find optimal synergies
+3. **Document effectiveness**: Track which duos perform best in different zones
+4. **Coordinate commands**: Both characters should move and act in coordination
+5. **Resource management**: Monitor HP/mana across both characters
+6. **Experiment freely**: The 2-character limit encourages creative combinations
+
 ## AI Agent Character Management
 
 ### Autonomous Character Lifecycle

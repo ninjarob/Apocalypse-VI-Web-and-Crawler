@@ -60,13 +60,46 @@ Select-String -Path "sessions/*.txt" -Pattern "\[TRAINING\] (\w+):" |
 
 ## 🤖 Autonomous Character Management
 
+### Dual-Character Gameplay (CRITICAL)
+
+**Server Limit: 2 concurrent characters per player**
+
+This is the **standard playstyle** for Apocalypse VI:
+- Tank/DPS character (Fighter, Paladin, Berserker, Ranger)
+- Healer/Support character (Cleric, Druid)
+
+**AI Implementation:**
+- Maintain TWO concurrent MudClient instances
+- Coordinate commands between both characters
+- Test different race/class combinations
+- Document effectiveness of character pairs
+
+**Recommended Dual-Character Combinations:**
+1. **Fighter + Cleric** ⭐ **DEFAULT - Use this for initial testing**
+   - Simplest and most successful duo in most situations
+   - Fighter: Takes and deals damage (straightforward melee)
+   - Cleric: Heals and supports (reliable healing)
+   - Clear roles, easy coordination, high success rate
+
+2. Berserker + Druid (high DPS + support - test after Fighter+Cleric works)
+3. Ranger + Cleric (versatile DPS + healing)
+4. Paladin + Cleric (very safe but slower)
+5. Magic User + Cleric (risky, mana management challenges)
+
 ### Character Lifecycle Commands
 
-**Test Character Creation (Manual Verification):**
+**Test Dual-Character Connection:**
 ```powershell
-# Connect to MUD and verify character creation flow
+# Test two concurrent MUD connections
+# Terminal 1 (Account 1 - Tank)
 telnet apocalypse6.furryfire.net 2003
-# Follow prompts: login → create character → configure
+# login → select/create fighter-type character
+
+# Terminal 2 (Account 2 - Healer)  
+telnet apocalypse6.furryfire.net 2003
+# login → select/create healer-type character
+
+# Coordinate: use 'follow' and 'group' commands
 ```
 
 **Character Database Operations:**

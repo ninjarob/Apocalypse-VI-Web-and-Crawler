@@ -4,24 +4,67 @@ Total Sessions: 1
 
 ## Autonomous Character Management
 
+### Dual-Character Gameplay (CRITICAL)
+**Apocalypse VI allows concurrent play with TWO characters per player.**
+
+This is the **standard playstyle** - most players use two characters simultaneously:
+
+**Standard Party Composition:**
+- **Tank/DPS (Account 1)**: Fighter, Paladin, Berserker, Ranger - handles combat
+- **Healer/Support (Account 2)**: Cleric, Druid - keeps tank alive
+
+**Why Dual Characters?**
+- Game is balanced around 2-character parties
+- Solo play is significantly harder (limited to certain classes)
+- Healing/resurrection requires a partner
+- Resource management across two characters is strategic
+- Increases survivability and exploration range
+
+**AI Implementation Requirements:**
+- Maintain TWO concurrent MUD connections (two MudClient instances)
+- Coordinate commands between both characters
+- Strategic positioning (leader/follower or synchronized movement)
+- Cross-character resource management (tank HP, healer mana)
+- Experiment with different race/class combinations
+
+**Recommended Dual-Character Combinations:**
+1. **Fighter + Cleric** ⭐ **RECOMMENDED - SIMPLEST & MOST SUCCESSFUL**
+   - Fighter: Takes damage, deals consistent physical damage
+   - Cleric: Heals fighter, provides buffs and support
+   - **Why This Works**: Clear roles, straightforward strategy, reliable in most situations
+   - **Best For**: New AI implementations, general exploration, most zones
+
+2. **Paladin + Cleric**: Self-healing tank + dedicated healer (very safe)
+3. **Berserker + Druid**: High DPS + nature support
+4. **Ranger + Cleric**: Versatile DPS + healing
+5. **Magic User + Cleric**: High burst damage + healing (risky, mana-intensive)
+6. **Solo Capable** (if single character needed): Paladin, Ranger, Monk
+
+**AI Exploration Strategy:**
+- Test multiple race/class combinations
+- Document effectiveness of different pairings
+- Track which combinations work best for different zones
+- Store successful duo builds in knowledge base
+
 ### Login and Character Selection
 The AI agent can autonomously manage character lifecycle:
 
-**Login Process:**
-1. Connect to MUD server
-2. Enter account credentials
-3. View character list
-4. Select existing character OR create new one
-5. Enter game world
+**Login Process (For Dual Characters):**
+1. Open TWO concurrent MUD connections
+2. Account 1: Login → Select/Create Fighter-type character
+3. Account 2: Login → Select/Create Healer-type character
+4. Coordinate entry into game world
+5. Position characters together (follow/group commands)
 
 **Character Creation:**
 - Autonomous character generation based on exploration goals
 - Strategic race/class selection for specific tasks
+- **Dual-character pairs**: Create complementary characters
 - Random name generation or predefined naming conventions
 - Attribute allocation based on class optimization
 
 **Character Deletion:**
-- Remove unused or deprecated characters
+- Remove unused or deprecated character pairs
 - Clean up test characters after experiments
 - Proactively manage character roster to avoid clutter
 
